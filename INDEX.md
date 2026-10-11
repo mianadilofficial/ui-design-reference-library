@@ -49,6 +49,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [laradashboard](references/laradashboard) | LaraDashboard | Laravel | MIT | Admin panel + CMS: RBAC, modules, REST API, CRUD generator |
 | [volt-laravel-dashboard](references/volt-laravel-dashboard) | Themesberg | Laravel | MIT | Lighter admin panel: Livewire + Alpine, auth, 100+ components |
 | [django-saas-boilerplate](references/django-saas-boilerplate) | Erik Taveras | Django | MIT | SaaS boilerplate: HTMX + Tailwind, best-practice layout |
+| [go-clean-arch](references/go-clean-arch) | Imam Achmad Wahyudi | Go | MIT | Clean architecture: domain, use cases, repo, handlers |
 
 ## Motion
 
