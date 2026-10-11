@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![References](https://img.shields.io/badge/references-11-blue?style=flat-square)](INDEX.md)
+[![References](https://img.shields.io/badge/references-12-blue?style=flat-square)](INDEX.md)
 
 ![UI Design Reference Library](assets/banner.png)
 
@@ -23,6 +23,9 @@ AI-generated UI too often looks the same: generic gradients, predictable layouts
 | [ui-ux-pro-max-skill](references/ui-ux-pro-max-skill) | Design skill | Agnostic | MIT | 79 UI styles, 192 palettes, 74 font pairings, anti-patterns |
 | [impeccable](references/impeccable) | Design skill | Agnostic | Apache-2.0 | 24 commands + 59 detector rules against AI-design tells |
 | [emilkowalski-skills](references/emilkowalski-skills) | Design skill | Agnostic | MIT | 15 elite UI/animation skills (ex-Vercel/Linear) |
+| [diagram-design](references/diagram-design) | Design skill | Agnostic | MIT | Brand-styled HTML+SVG diagrams, 44 types |
+| [ux-ui-agent-skills](references/ux-ui-agent-skills) | Design skill | Agnostic | MIT | 138 design systems, 52 specs, a11y gates |
+| [taste-skill](references/taste-skill) | Design skill | Agnostic | MIT | Anti-slop frontend taste: layout, type, motion |
 | [inspira-ui](references/inspira-ui) | Components | Vue / Nuxt | MIT | Animated copy-paste components: backgrounds, text effects, grids |
 | [animate-ui](references/animate-ui) | Components | React / Tailwind | MIT + Commons Clause | Hand-crafted animated components and micro-interactions |
 | [audiocn-ui](references/audiocn-ui) | Components | React | MIT | Audio UI: meters, visualizers, faders, knobs, mixer |
