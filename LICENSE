@@ -1,0 +1,30 @@
+MIT License
+
+Copyright (c) 2026 Mian Adil
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of the curation, index, documentation and other original material in this
+repository (the "Curation"), to deal in the Curation without restriction,
+including without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Curation, and to permit
+persons to whom the Curation is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Curation.
+
+THE CURATION IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE CURATION OR THE USE OR OTHER DEALINGS IN THE
+CURATION.
+
+---
+
+NOTE: This license covers only the original curation material (README,
+AGENTS.md, INDEX.md, attribution files and other documentation written for
+this repository). Every mirrored third-party repository inside `references/`
+retains its own original license and attribution — see each folder's
+ATTRIBUTION.md.
