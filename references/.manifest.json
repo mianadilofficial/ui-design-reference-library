@@ -143,5 +143,11 @@
     "branch": "v3",
     "commit": "ece1e4e15ea5d21e86cc4dcd11dd21647f96c678",
     "date": "2026-10-09"
+  },
+  "go-clean-arch": {
+    "repo": "bxcodec/go-clean-arch",
+    "branch": "master",
+    "commit": "e06c6d0cb37069b0ef56e3df67f80ca130a1ab82",
+    "date": "2024-03-08"
   }
 }
