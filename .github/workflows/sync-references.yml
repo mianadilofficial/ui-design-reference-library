@@ -1,0 +1,76 @@
+name: Sync references
+
+# Weekly auto-sync: each folder in references/ is a verbatim snapshot of its
+# upstream repo (see references/.manifest.json). This workflow checks upstream
+# for new commits and refreshes changed folders. ATTRIBUTION.md files are
+# preserved (only their snapshot line is updated). Hand edits inside mirrored
+# folders are overwritten — that is by design; keep custom work outside them.
+
+on:
+  schedule:
+    - cron: "0 3 * * 0" # Sundays 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync each reference from upstream
+        run: |
+          set -u
+          MANIFEST="references/.manifest.json"
+          TMP="$(mktemp -d)"
+          trap 'rm -rf "$TMP"' EXIT
+          updated=0
+
+          for folder in $(jq -r 'keys[]' "$MANIFEST" | grep -v '^_note$'); do
+            repo=$(jq -r --arg f "$folder" '.[$f].repo' "$MANIFEST")
+            branch=$(jq -r --arg f "$folder" '.[$f].branch' "$MANIFEST")
+            old_commit=$(jq -r --arg f "$folder" '.[$f].commit' "$MANIFEST")
+            target="references/$folder"
+
+            echo "--- $folder ($repo) ---"
+            new_commit=$(git ls-remote "https://github.com/$repo.git" "refs/heads/$branch" | cut -f1) || { echo "ls-remote failed, skipping"; continue; }
+            if [ -z "$new_commit" ]; then echo "empty HEAD, skipping"; continue; fi
+            if [ "$new_commit" = "$old_commit" ]; then echo "up to date"; continue; fi
+
+            echo "updating $old_commit -> $new_commit"
+            rm -rf "$TMP/new" && git clone --depth 1 --branch "$branch" "https://github.com/$repo.git" "$TMP/new" || { echo "clone failed, skipping"; continue; }
+
+            # Secret scan before accepting the update
+            if grep -rIlE '(ghp_|gho_|xox[bap]-|AIza|BEGIN (RSA |OPENSSH |EC )?PRIVATE KEY)' --exclude-dir=.git "$TMP/new" | head -3 | grep -q .; then
+              echo "SECRET SCAN HIT — skipping update for $folder"; continue
+            fi
+
+            rm -rf "$TMP/new/.git"
+            # Preserve our attribution file, refresh everything else
+            cp "$target/ATTRIBUTION.md" "$TMP/attr.md"
+            rm -rf "$target"
+            mkdir -p "$target"
+            cp -a "$TMP/new/." "$target/"
+            cp "$TMP/attr.md" "$target/ATTRIBUTION.md"
+
+            # Update snapshot line in ATTRIBUTION.md and manifest
+            today=$(date +%F)
+            sed -i -E "s|commit \`[0-9a-f]{40}\` \([0-9-]{10}\)|commit \`${new_commit}\` (${today})|" "$target/ATTRIBUTION.md"
+            jq --arg f "$folder" --arg c "$new_commit" --arg d "$today" '.[$f].commit=$c | .[$f].date=$d' "$MANIFEST" > "$TMP/manifest.json" && mv "$TMP/manifest.json" "$MANIFEST"
+
+            updated=$((updated+1))
+          done
+
+          echo "updated=$updated" >> "$GITHUB_OUTPUT"
+          echo "UPDATED_COUNT=$updated"
+
+      - name: Commit and push if anything changed
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then echo "nothing changed"; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: weekly reference sync ($(date +%F))"
+          git push
