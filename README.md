@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![References](https://img.shields.io/badge/references-23-blue?style=flat-square)](INDEX.md)
+[![References](https://img.shields.io/badge/references-24-blue?style=flat-square)](INDEX.md)
 
 ![UI Design Reference Library](assets/banner.png)
 
@@ -33,6 +33,7 @@ AI-generated UI too often looks the same: generic gradients, predictable layouts
 | [generativecharts](references/generativecharts) | Components | React | MIT | Accessible charts, 18 families, themed |
 | [shadcn-ui](references/shadcn-ui) | Components | React | MIT | The canonical shadcn collection (Radix + Tailwind) |
 | [magicui](references/magicui) | Components | React | MIT | Landing-page motion: beams, marquee, bento, shine |
+| [heroui](references/heroui) | Components | React | Apache-2.0 | Pro library (ex-NextUI): themeable, accessible |
 | [lenis](references/lenis) | Motion | Agnostic (JS) | MIT | Buttery-smooth scroll — premium scroll-driven experiences |
 | [realworld](references/realworld) | Structure | 100+ stacks | MIT | Same app in every stack — idiomatic project layouts |
 | [bulletproof-react](references/bulletproof-react) | Structure | React | MIT | Feature-folder architecture for scalable apps |
