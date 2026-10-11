@@ -23,10 +23,16 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [audiocn-ui](references/audiocn-ui) | OrcDev | React | MIT | — | Audio UI components (shadcn-style): meters, visualizers, faders, knobs, mixer |
 | [arc-library](references/arc-library) | Elia Kuratli | React | MIT | — | Components + blocks with calm, crafted motion (shadcn CLI install) |
 | [generativecharts](references/generativecharts) | Kasturi Khanke | React | MIT | — | Accessible charts: 18 families, 3 themes, light/dark, live gallery |
+| [shadcn-ui](references/shadcn-ui) | shadcn | React | MIT | — | The canonical shadcn component collection (Radix + Tailwind) |
+| [magicui](references/magicui) | Dillion Verma | React | MIT | — | Landing-page motion components: beams, marquee, bento, shine |
 
 ## Patterns
 
 *No entries yet — landing pages, dashboards and portfolios go here.*
+
+## Project structure
+
+*No entries yet — clean, well-organized full-stack project references go here: folder-wise architecture, backend structure, no random-file mess. Agents study these to scaffold properly structured projects in any field.*
 
 ## Motion
 
