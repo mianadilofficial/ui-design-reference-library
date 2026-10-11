@@ -107,5 +107,23 @@
     "branch": "master",
     "commit": "7257e606cb94eada1dca40173e2b7f99dd549bc6",
     "date": "2026-10-08"
+  },
+  "node-api-boilerplate": {
+    "repo": "talyssonoc/node-api-boilerplate",
+    "branch": "main",
+    "commit": "7e6ae0e968e032b92baf262622d6075260332b28",
+    "date": "2022-08-25"
+  },
+  "laravel-realworld-example-app": {
+    "repo": "alexeymezenin/laravel-realworld-example-app",
+    "branch": "main",
+    "commit": "1f482bfe92e0419ab5b9bb7c4c01b9e776c020b1",
+    "date": "2024-01-17"
+  },
+  "laradashboard": {
+    "repo": "laradashboard/laradashboard",
+    "branch": "main",
+    "commit": "49604f9942761fdb1e63dc60bbd6ef92d505a596",
+    "date": "2026-10-03"
   }
 }
