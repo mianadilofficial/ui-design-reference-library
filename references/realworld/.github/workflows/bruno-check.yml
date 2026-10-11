@@ -1,0 +1,20 @@
+name: 'Bruno Check'
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  bruno-check:
+    name: Verify Bruno collection is up-to-date
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Check Bruno collection is up-to-date
+        run: make bruno-check
