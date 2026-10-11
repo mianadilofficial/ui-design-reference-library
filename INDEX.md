@@ -42,7 +42,10 @@ Every entry lives in `references/<name>/` with its original files plus an
 | Reference | Author | Stack | License | Notes |
 |---|---|---|---|---|
 | [node-express-boilerplate](references/node-express-boilerplate) | Hagop Janoyan | Node / Express | MIT | Production API layout: routes, controllers, services, JWT auth |
+| [node-api-boilerplate](references/node-api-boilerplate) | Talysson de Oliveira Cassiano | Node / TS | MIT | DDD-style layered API: modules, DI, tests |
+| [laravel-realworld-example-app](references/laravel-realworld-example-app) | Alexey Mezenin | Laravel | MIT | RealWorld API spec in idiomatic Laravel |
 | [full-stack-fastapi-template](references/full-stack-fastapi-template) | Sebastián Ramírez | FastAPI + React | MIT | Official full-stack template: backend, auth, DB, Docker |
+| [laradashboard](references/laradashboard) | LaraDashboard | Laravel | MIT | Admin panel + CMS: RBAC, modules, REST API, CRUD generator |
 
 ## Motion
 
