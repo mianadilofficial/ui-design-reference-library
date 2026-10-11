@@ -1,0 +1,11 @@
+.lb-page-content .lb-text {
+    margin-bottom: 1em;
+}
+
+.lb-page-content .lb-text:last-child {
+    margin-bottom: 0;
+}
+
+.lb-page-content .lb-heading {
+    margin-bottom: 0.75em;
+}

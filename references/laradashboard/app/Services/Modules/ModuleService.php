@@ -1,0 +1,1699 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Services\Modules;
+
+use App\Enums\Hooks\ModuleActionHook;
+use App\Exceptions\ModuleConflictException;
+use App\Exceptions\ModuleException;
+use App\Support\Facades\Hook;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+use Nwidart\Modules\Facades\Module as ModuleFacade;
+use Nwidart\Modules\Module;
+use App\Models\Module as ModuleModel;
+use Symfony\Component\Process\Process;
+use Illuminate\Support\Facades\Vite;
+use Illuminate\Foundation\Vite as ViteFoundation;
+
+class ModuleService
+{
+    public string $modulesPath;
+
+    public string $modulesStatusesPath;
+
+    public function __construct()
+    {
+        $this->modulesPath = config('modules.paths.modules');
+        $this->modulesStatusesPath = base_path('modules_statuses.json');
+    }
+
+    /**
+     * Normalize module name to lowercase for comparison purposes.
+     */
+    public function normalizeModuleName(string $moduleName): string
+    {
+        return strtolower(trim($moduleName));
+    }
+
+    /**
+     * Get the actual module folder name from disk (case-sensitive).
+     * Returns null if module folder doesn't exist.
+     */
+    public function getActualModuleFolderName(string $moduleName): ?string
+    {
+        $normalizedSearch = $this->normalizeModuleName($moduleName);
+
+        if (! File::exists($this->modulesPath)) {
+            return null;
+        }
+
+        foreach (File::directories($this->modulesPath) as $directory) {
+            $folderName = basename($directory);
+            if ($this->normalizeModuleName($folderName) === $normalizedSearch) {
+                return $folderName;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the module name as defined in module.json.
+     * Returns the raw name as nwidart/laravel-modules uses it for status keys.
+     */
+    public function getModuleJsonName(string $moduleName): ?string
+    {
+        $folderName = $this->getActualModuleFolderName($moduleName);
+        if (! $folderName) {
+            return null;
+        }
+
+        $moduleJsonPath = $this->modulesPath . '/' . $folderName . '/module.json';
+        if (! File::exists($moduleJsonPath)) {
+            return $folderName; // Fallback to folder name
+        }
+
+        $moduleData = json_decode(File::get($moduleJsonPath), true);
+
+        // Return raw name as-is (nwidart uses this exact value as the status key)
+        return $moduleData['name'] ?? $folderName;
+    }
+
+    /**
+     * Get the module title for display purposes.
+     */
+    public function getModuleTitle(string $moduleName): ?string
+    {
+        $folderName = $this->getActualModuleFolderName($moduleName);
+        if (! $folderName) {
+            return null;
+        }
+
+        $moduleJsonPath = $this->modulesPath . '/' . $folderName . '/module.json';
+        if (! File::exists($moduleJsonPath)) {
+            return ucfirst($folderName);
+        }
+
+        $moduleData = json_decode(File::get($moduleJsonPath), true);
+
+        return $moduleData['title'] ?? $moduleData['name'] ?? ucfirst($folderName);
+    }
+
+    public function findModuleByName(string $moduleName): ?Module
+    {
+        // Use actual folder name for lookup
+        $actualName = $this->getActualModuleFolderName($moduleName);
+        if (! $actualName) {
+            return null;
+        }
+
+        return ModuleFacade::find($actualName);
+    }
+
+    public function getModuleByName(string $moduleName): ?ModuleModel
+    {
+        $module = $this->findModuleByName($moduleName);
+        if (! $module) {
+            return null;
+        }
+
+        $moduleData = json_decode(File::get($module->getPath() . '/module.json'), true);
+        $moduleStatuses = $this->getModuleStatuses();
+
+        // Use lowercase name from module.json for status lookup
+        $jsonName = $this->normalizeModuleName($moduleData['name'] ?? $module->getName());
+
+        // Read description from description.md file if it exists
+        $description = $this->getModuleDescriptionFromFile($module->getPath());
+
+        return new ModuleModel([
+            'id' => $jsonName,
+            'name' => $jsonName,
+            'title' => $moduleData['title'] ?? $moduleData['name'] ?? $module->getName(),
+            'description' => $description,
+            'icon' => $moduleData['icon'] ?? 'lucide:box',
+            'logo_image' => $moduleData['logo_image'] ?? null,
+            'banner_image' => $moduleData['banner_image'] ?? null,
+            'status' => $moduleStatuses[$jsonName] ?? false,
+            'version' => $moduleData['version'] ?? '1.0.0',
+            'author' => $moduleData['author'] ?? null,
+            'author_url' => $moduleData['author_url'] ?? null,
+            'documentation_url' => $moduleData['documentation_url'] ?? null,
+            'tags' => $moduleData['keywords'] ?? [],
+            'category' => $moduleData['category'] ?? null,
+            'priority' => $moduleData['priority'] ?? 0,
+            'min_laradashboard_required' => $moduleData['min_laradashboard_required'] ?? null,
+        ]);
+    }
+
+    /**
+     * Get module description from description.md file.
+     */
+    protected function getModuleDescriptionFromFile(string $modulePath): string
+    {
+        $descriptionFile = $modulePath . '/description.md';
+
+        if (! File::exists($descriptionFile)) {
+            return '';
+        }
+
+        $markdown = File::get($descriptionFile);
+
+        return Str::markdown($markdown);
+    }
+
+    /**
+     * Get the module statuses from the modules_statuses.json file.
+     * Returns statuses with lowercase keys for consistent lookups.
+     */
+    public function getModuleStatuses(): array
+    {
+        if (! File::exists(path: $this->modulesStatusesPath)) {
+            return [];
+        }
+
+        $statuses = json_decode(File::get($this->modulesStatusesPath), true) ?? [];
+
+        // Normalize to lowercase keys for consistent lookups, merge duplicates preferring enabled
+        $normalized = [];
+        foreach ($statuses as $name => $status) {
+            $lowerName = $this->normalizeModuleName($name);
+            // If duplicate exists (case difference), prefer the enabled status
+            if (isset($normalized[$lowerName])) {
+                $normalized[$lowerName] = $normalized[$lowerName] || $status;
+            } else {
+                $normalized[$lowerName] = $status;
+            }
+        }
+
+        return $normalized;
+    }
+
+    /**
+     * Get raw module statuses from the modules_statuses.json file.
+     * Returns statuses with original keys (as nwidart writes them).
+     */
+    public function getRawModuleStatuses(): array
+    {
+        if (! File::exists($this->modulesStatusesPath)) {
+            return [];
+        }
+
+        return json_decode(File::get($this->modulesStatusesPath), true) ?? [];
+    }
+
+    /**
+     * Set a module's status in the modules_statuses.json file.
+     * Uses module.json name as key to match nwidart/laravel-modules convention.
+     * Removes any duplicate entries with different case.
+     */
+    public function setModuleStatus(string $moduleName, bool $status): void
+    {
+        $rawStatuses = $this->getRawModuleStatuses();
+
+        // Get the module.json name for this module (the key nwidart uses)
+        $jsonName = $this->getModuleJsonName($moduleName);
+        $keyToUse = $jsonName ?? $moduleName;
+
+        // Remove any duplicate entries with different case
+        $normalizedSearch = $this->normalizeModuleName($keyToUse);
+        $cleanedStatuses = [];
+        foreach ($rawStatuses as $name => $existingStatus) {
+            if ($this->normalizeModuleName($name) !== $normalizedSearch) {
+                $cleanedStatuses[$name] = $existingStatus;
+            }
+        }
+
+        // Add the status with the correct key (module.json name)
+        $cleanedStatuses[$keyToUse] = $status;
+
+        File::put($this->modulesStatusesPath, json_encode($cleanedStatuses, JSON_PRETTY_PRINT));
+
+        Log::info("Module status set: {$keyToUse} = " . ($status ? 'enabled' : 'disabled'));
+    }
+
+    /**
+     * Save module statuses to the modules_statuses.json file.
+     * Preserves keys as-is, only cleaning up duplicates.
+     *
+     * @deprecated Use setModuleStatus() for individual module updates
+     */
+    protected function saveModuleStatuses(array $statuses): void
+    {
+        // Clean up duplicates by keeping only one entry per module (case-insensitive)
+        $seen = [];
+        $cleaned = [];
+        foreach ($statuses as $name => $status) {
+            $lowerName = $this->normalizeModuleName($name);
+            if (! isset($seen[$lowerName])) {
+                $seen[$lowerName] = true;
+                $cleaned[$name] = $status;
+            }
+        }
+
+        File::put($this->modulesStatusesPath, json_encode($cleaned, JSON_PRETTY_PRINT));
+    }
+
+    /**
+     * Clean up orphaned entries and duplicates from module_statuses.json.
+     * - Removes entries for modules whose folders have been manually deleted.
+     * - Merges duplicate entries (case-insensitive) preferring enabled status.
+     * - Uses module.json name as key to match nwidart/laravel-modules convention.
+     */
+    /**
+     * Remove duplicate case entries for a module from modules_statuses.json.
+     *
+     * After nwidart writes "Forum": true, there may be a stale "forum": true entry.
+     * This keeps only the entry matching the module.json name.
+     */
+    public function cleanupDuplicateStatusEntries(string $moduleName): void
+    {
+        $rawStatuses = $this->getRawModuleStatuses();
+        $jsonName = $this->getModuleJsonName($moduleName);
+        $keyToKeep = $jsonName ?? $moduleName;
+        $normalizedSearch = $this->normalizeModuleName($keyToKeep);
+
+        $cleaned = [];
+        $hadDuplicates = false;
+
+        foreach ($rawStatuses as $name => $status) {
+            if ($this->normalizeModuleName($name) === $normalizedSearch) {
+                if ($name === $keyToKeep) {
+                    $cleaned[$name] = $status;
+                } else {
+                    // Duplicate with different case — drop it, keep the status if enabled
+                    $hadDuplicates = true;
+                    $cleaned[$keyToKeep] = ($cleaned[$keyToKeep] ?? false) || $status;
+                }
+            } else {
+                $cleaned[$name] = $status;
+            }
+        }
+
+        if ($hadDuplicates) {
+            File::put($this->modulesStatusesPath, json_encode($cleaned, JSON_PRETTY_PRINT));
+            Log::info("Cleaned up duplicate status entries for module: {$keyToKeep}");
+        }
+    }
+
+    public function cleanupOrphanedModuleStatuses(): void
+    {
+        if (! File::exists($this->modulesStatusesPath)) {
+            return;
+        }
+
+        $rawStatuses = json_decode(File::get($this->modulesStatusesPath), true) ?? [];
+        $cleanedStatuses = [];
+        $seenModules = []; // Track seen modules (lowercase) to detect duplicates
+        $needsSave = false;
+
+        foreach ($rawStatuses as $moduleName => $status) {
+            // Get the module.json name (what nwidart uses as the key)
+            $jsonName = $this->getModuleJsonName($moduleName);
+
+            if (! $jsonName) {
+                // Module folder doesn't exist - orphaned entry
+                $needsSave = true;
+                Log::info("Cleaned up orphaned module status entry: {$moduleName}");
+
+                continue;
+            }
+
+            $lowerName = $this->normalizeModuleName($jsonName);
+
+            // Check for duplicates (case-insensitive)
+            if (isset($seenModules[$lowerName])) {
+                // Duplicate found - merge status (prefer enabled)
+                $needsSave = true;
+                $existingKey = $seenModules[$lowerName];
+                $cleanedStatuses[$existingKey] = $cleanedStatuses[$existingKey] || $status;
+                Log::info("Merged duplicate module status: {$moduleName} -> {$existingKey}");
+
+                continue;
+            }
+
+            // Use module.json name as key to match nwidart convention
+            if ($moduleName !== $jsonName) {
+                $needsSave = true;
+                Log::info("Normalizing module key to module.json name: {$moduleName} -> {$jsonName}");
+            }
+
+            $seenModules[$lowerName] = $jsonName;
+            $cleanedStatuses[$jsonName] = $status;
+        }
+
+        // Save if any changes were made
+        if ($needsSave) {
+            File::put($this->modulesStatusesPath, json_encode($cleanedStatuses, JSON_PRETTY_PRINT));
+            Log::info("Module statuses cleaned up and saved");
+        }
+    }
+
+    /**
+     * Get all modules from the Modules folder.
+     */
+    public function getPaginatedModules(int $perPage = 15): LengthAwarePaginator
+    {
+        $modules = [];
+        if (! File::exists($this->modulesPath)) {
+            throw new ModuleException(message: __('Modules directory does not exist. Please ensure the "modules" directory is present in the application root.'));
+        }
+
+        $moduleDirectories = File::directories($this->modulesPath);
+
+        foreach ($moduleDirectories as $moduleDirectory) {
+            $module = $this->getModuleByName(basename($moduleDirectory));
+            if ($module) {
+                $modules[] = $module;
+            }
+        }
+
+        // Manually paginate the array.
+        $page = request('page', 1);
+        $collection = collect($modules);
+        $paged = new LengthAwarePaginator(
+            $collection->forPage($page, $perPage),
+            $collection->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
+
+        return $paged;
+    }
+
+    /**
+     * Upload a new module from a zip file.
+     *
+     * @throws ModuleException If the upload fails
+     * @throws ModuleConflictException If a module with the same name already exists
+     */
+    public function uploadModule(Request $request): string
+    {
+        // First, clean up orphaned entries from module_statuses.json
+        // This handles cases where module folders were manually deleted
+        $this->cleanupOrphanedModuleStatuses();
+
+        $file = $request->file('module');
+        $filePath = $file->storeAs('modules', $file->getClientOriginalName());
+
+        // Extract and install the module.
+        $modulePath = storage_path('app/' . $filePath);
+        $zip = new \ZipArchive();
+
+        if (! $zip->open($modulePath)) {
+            throw new ModuleException(__('Module upload failed. The file may not be a valid zip archive.'));
+        }
+
+        // Extract to a temporary location first to read module.json
+        $tempPath = storage_path('app/modules_temp/' . uniqid('module_', true));
+        File::ensureDirectoryExists($tempPath);
+        $zip->extractTo($tempPath);
+        $zip->close();
+
+        // Find the module folder and module.json (handles various zip structures)
+        $moduleInfo = $this->findModuleInTempPath($tempPath);
+
+        if (! $moduleInfo) {
+            // Clean up the temp files if module.json is missing
+            File::deleteDirectory($tempPath);
+            throw new ModuleException(__('Failed to find the module in the system. Please ensure the module has a valid module.json file.'));
+        }
+
+        $extractedPath = $moduleInfo['path'];
+        $folderName = $moduleInfo['folder'];
+        $moduleJsonPath = $extractedPath . '/module.json';
+
+        // Get the uploaded module info from module.json
+        $uploadedModuleJson = json_decode(File::get($moduleJsonPath), true);
+        $moduleName = $uploadedModuleJson['name'] ?? $folderName;
+
+        // Check if a module with this name already exists
+        $existingModulePath = $this->modulesPath . '/' . $folderName;
+        $moduleStatuses = $this->getModuleStatuses();
+        $conflictingModule = null;
+
+        // First check by folder name
+        if (File::exists($existingModulePath)) {
+            $conflictingModule = $folderName;
+        }
+
+        // Also check case-insensitive by module name in statuses
+        if (! $conflictingModule) {
+            foreach (array_keys($moduleStatuses) as $existingModule) {
+                if (strcasecmp($existingModule, $moduleName) === 0 && File::exists($this->modulesPath . '/' . $existingModule)) {
+                    $conflictingModule = $existingModule;
+                    break;
+                }
+            }
+        }
+
+        // If there's a conflict, throw ModuleConflictException with comparison data
+        if ($conflictingModule) {
+            $currentModuleInfo = $this->getModuleInfoFromPath($this->modulesPath . '/' . $conflictingModule);
+            $uploadedModuleInfo = $this->getModuleInfoFromPath($extractedPath);
+
+            throw new ModuleConflictException(
+                __('A module with this name already exists.'),
+                $currentModuleInfo,
+                $uploadedModuleInfo,
+                $tempPath
+            );
+        }
+
+        // No conflict - proceed with installation
+        return $this->installModuleFromTemp($tempPath, $folderName, $moduleName);
+    }
+
+    /**
+     * Replace an existing module with the uploaded one.
+     *
+     * @param string $tempPath The temporary path where the uploaded module was extracted
+     * @param string $existingModuleName The name of the existing module to replace (from module.json)
+     */
+    public function replaceModule(string $tempPath, string $existingModuleName): string
+    {
+        // Find the module folder and module.json
+        $moduleInfo = $this->findModuleInTempPath($tempPath);
+
+        if (! $moduleInfo) {
+            File::deleteDirectory($tempPath);
+            throw new ModuleException(__('Failed to find the module in the system. Please ensure the module has a valid module.json file.'));
+        }
+
+        $extractedPath = $moduleInfo['path'];
+        $folderName = $moduleInfo['folder'];
+        $moduleJsonPath = $extractedPath . '/module.json';
+
+        $uploadedModuleJson = json_decode(File::get($moduleJsonPath), true);
+        $moduleName = $uploadedModuleJson['name'] ?? $folderName;
+
+        // Check if module was enabled (use normalized name for status lookup)
+        $normalizedExisting = $this->normalizeModuleName($existingModuleName);
+        $moduleStatuses = $this->getModuleStatuses();
+        $wasEnabled = $moduleStatuses[$normalizedExisting] ?? false;
+
+        // Get the actual folder name (may be different case than status key)
+        $actualFolderName = $this->getActualModuleFolderName($existingModuleName);
+        if ($actualFolderName) {
+            $existingModulePath = $this->modulesPath . '/' . $actualFolderName;
+
+            // Clean up old assets first
+            $this->cleanupModuleAssets($actualFolderName);
+
+            // Clean up old images
+            $this->cleanupModuleImages($normalizedExisting);
+
+            // Disable the module before deletion
+            if ($wasEnabled) {
+                try {
+                    Artisan::call('module:disable', ['module' => $normalizedExisting]);
+                } catch (\Throwable $e) {
+                    Log::warning("Could not disable module before replacement: " . $e->getMessage());
+                }
+            }
+
+            // Delete the old module files
+            File::deleteDirectory($existingModulePath);
+        }
+
+        // Remove old status entry if module name changed
+        // This is handled automatically by setModuleStatus() which cleans up duplicates
+
+        // Install the new module
+        $this->installModuleFromTemp($tempPath, $folderName, $moduleName);
+
+        // Replacing is an intentional upgrade — always activate so the module is usable immediately.
+        $jsonName = $this->getModuleJsonName($moduleName) ?? $moduleName;
+        $this->activateModuleAfterInstall($jsonName);
+
+        return $this->normalizeModuleName($jsonName);
+    }
+
+    /**
+     * Install a module from a temporary extraction path.
+     *
+     * @param string $tempPath The temporary extraction path
+     * @param string $folderName The PascalCase folder name for PSR-4 autoloading
+     * @param string $moduleName The lowercase name from module.json for status tracking
+     */
+    protected function installModuleFromTemp(string $tempPath, string $folderName, string $moduleName): string
+    {
+        // Fire action before module installation
+        Hook::doAction(ModuleActionHook::MODULE_INSTALLING_BEFORE, $moduleName, ['folder' => $folderName, 'path' => $tempPath]);
+
+        $targetPath = $this->modulesPath . '/' . $folderName;
+
+        // Check if the module is in a subdirectory or at the root of temp path
+        $extractedPath = $tempPath . '/' . $folderName;
+
+        if (File::isDirectory($extractedPath) && File::exists($extractedPath . '/module.json')) {
+            // Module is in a subdirectory (standard structure)
+            File::moveDirectory($extractedPath, $targetPath);
+            // Clean up temp directory
+            File::deleteDirectory($tempPath);
+        } elseif (File::exists($tempPath . '/module.json')) {
+            // Module is at root of temp path (zipped from inside module folder)
+            // We need to move the entire temp directory content to target
+            File::moveDirectory($tempPath, $targetPath);
+        } else {
+            // Fallback: try the subdirectory approach
+            File::moveDirectory($extractedPath, $targetPath);
+            File::deleteDirectory($tempPath);
+        }
+
+        // Refresh nwidart's in-memory module registry so the new files are discoverable.
+        $this->refreshModuleRegistry();
+
+        // Save this module to the modules_statuses.json file as DISABLED.
+        // New modules are disabled by default for security - admin must explicitly enable them.
+        // Use module.json name as key to match nwidart/laravel-modules convention.
+        // $moduleName comes from module.json, so use it directly (nwidart uses exact same value)
+        $this->setModuleStatus($moduleName, false);
+
+        // Normalized name (lowercase) is used for images directory
+        $normalizedName = $this->normalizeModuleName($moduleName);
+
+        Log::info("Module installed: folder={$folderName}, status_key={$moduleName}, target={$targetPath}");
+
+        // Publish pre-built assets if the module contains them.
+        // Use path-based method since module isn't registered in Module facade yet.
+        // Use slug for asset paths (lowercase) since that's what the build system uses.
+        $moduleSlug = Str::slug($folderName);
+        if ($this->hasPrebuiltAssetsAtPath($targetPath, $moduleSlug)) {
+            $this->publishModuleAssetsFromPath($targetPath, $moduleSlug, force: true);
+            Log::info("Published pre-built assets for module {$folderName}");
+        }
+
+        // Publish module images (logo, banner) to public directory
+        $this->publishModuleImagesFromPath($targetPath, $normalizedName);
+
+        // Regenerate Composer autoloader so the new module classes can be found.
+        // Without this, activating the module will fail with "Class not found" error.
+        $this->regenerateAutoloader();
+
+        // Clear the cache.
+        Artisan::call('cache:clear');
+
+        // Fire action after module installation
+        Hook::doAction(ModuleActionHook::MODULE_INSTALLED_AFTER, $normalizedName, $targetPath);
+
+        // Return the lowercase module name (from module.json) as the module identifier
+        // This is what the UI and other parts of the system use to identify the module
+        return $normalizedName;
+    }
+
+    /**
+     * Get module information from a module path.
+     *
+     * @return array<string, mixed>
+     */
+    protected function getModuleInfoFromPath(string $modulePath): array
+    {
+        $moduleJsonPath = $modulePath . '/module.json';
+
+        if (! File::exists($moduleJsonPath)) {
+            return [
+                'name' => basename($modulePath),
+                'version' => 'Unknown',
+                'description' => '',
+                'author' => '',
+            ];
+        }
+
+        $moduleJson = json_decode(File::get($moduleJsonPath), true);
+
+        // Read description from description.md file
+        $description = $this->getModuleDescriptionFromFile($modulePath);
+
+        return [
+            'name' => $moduleJson['name'] ?? basename($modulePath),
+            'version' => $moduleJson['version'] ?? '1.0.0',
+            'description' => $description,
+            'author' => $this->extractAuthor($moduleJson),
+            'keywords' => $moduleJson['keywords'] ?? [],
+            'icon' => $moduleJson['icon'] ?? 'bi-box',
+        ];
+    }
+
+    /**
+     * Extract author name from module.json.
+     */
+    protected function extractAuthor(array $moduleJson): string
+    {
+        if (isset($moduleJson['author'])) {
+            if (is_string($moduleJson['author'])) {
+                return $moduleJson['author'];
+            }
+            if (is_array($moduleJson['author']) && isset($moduleJson['author']['name'])) {
+                return $moduleJson['author']['name'];
+            }
+        }
+
+        if (isset($moduleJson['authors']) && is_array($moduleJson['authors'])) {
+            $firstAuthor = $moduleJson['authors'][0] ?? null;
+            if ($firstAuthor && isset($firstAuthor['name'])) {
+                return $firstAuthor['name'];
+            }
+        }
+
+        return '';
+    }
+
+    /**
+     * Cancel a pending module replacement by cleaning up temp files.
+     */
+    public function cancelModuleReplacement(string $tempPath): void
+    {
+        if (File::exists($tempPath) && str_starts_with($tempPath, storage_path('app/modules_temp/'))) {
+            File::deleteDirectory($tempPath);
+        }
+    }
+
+    /**
+     * Find module.json in the temp extraction path.
+     * Handles various zip structures:
+     * - ModuleName/module.json (standard)
+     * - module.json at root (zipped from inside module folder)
+     * - Nested structures
+     *
+     * @return array{path: string, folder: string}|null
+     */
+    protected function findModuleInTempPath(string $tempPath): ?array
+    {
+        // First, check if module.json is directly in temp path (zipped from inside module)
+        if (File::exists($tempPath . '/module.json')) {
+            // Extract the PascalCase folder name from providers or composer.json
+            // This is critical for case-sensitive filesystems (Linux)
+            $folderName = $this->extractNamespaceFolderFromPath($tempPath);
+
+            return [
+                'path' => $tempPath,
+                'folder' => $folderName,
+            ];
+        }
+
+        // Check subdirectories for module.json
+        $directories = File::directories($tempPath);
+        foreach ($directories as $directory) {
+            if (File::exists($directory . '/module.json')) {
+                return [
+                    'path' => $directory,
+                    'folder' => basename($directory),
+                ];
+            }
+        }
+
+        // Not found
+        return null;
+    }
+
+    /**
+     * Extract the PascalCase folder name from a module's providers or composer.json.
+     *
+     * This is critical for case-sensitive filesystems (Linux). The folder name must
+     * match the PSR-4 namespace (e.g., "Crm" not "crm") for autoloading to work.
+     *
+     * Priority:
+     * 1. Extract from module.json providers: "Modules\\Crm\\..." -> "Crm"
+     * 2. Extract from composer.json PSR-4: "Modules\\Crm\\": "app/" -> "Crm"
+     * 3. Fallback to module.json name converted to StudlyCase
+     */
+    protected function extractNamespaceFolderFromPath(string $modulePath): string
+    {
+        // Try to extract from module.json providers first
+        $moduleJsonPath = $modulePath . '/module.json';
+        if (File::exists($moduleJsonPath)) {
+            $moduleJson = json_decode(File::get($moduleJsonPath), true);
+
+            // Check providers array for namespace
+            $providers = $moduleJson['providers'] ?? [];
+            foreach ($providers as $provider) {
+                // Match pattern: Modules\{ModuleName}\...
+                if (preg_match('/^Modules\\\\([^\\\\]+)\\\\/', $provider, $matches)) {
+                    return $matches[1]; // Returns "Crm" from "Modules\Crm\..."
+                }
+            }
+        }
+
+        // Try to extract from composer.json PSR-4 namespaces
+        $composerJsonPath = $modulePath . '/composer.json';
+        if (File::exists($composerJsonPath)) {
+            $composerJson = json_decode(File::get($composerJsonPath), true);
+            $psr4 = $composerJson['autoload']['psr-4'] ?? [];
+
+            foreach (array_keys($psr4) as $namespace) {
+                // Match pattern: Modules\{ModuleName}\
+                if (preg_match('/^Modules\\\\([^\\\\]+)\\\\/', $namespace, $matches)) {
+                    return $matches[1]; // Returns "Crm" from "Modules\Crm\"
+                }
+            }
+        }
+
+        // Fallback: convert module.json name to StudlyCase
+        if (File::exists($moduleJsonPath)) {
+            $moduleJson = json_decode(File::get($moduleJsonPath), true);
+            $name = $moduleJson['name'] ?? basename($modulePath);
+
+            return Str::studly($name);
+        }
+
+        return Str::studly(basename($modulePath));
+    }
+
+    /**
+     * Clear nwidart's cached module scan results.
+     *
+     * Required after upload/replace — otherwise module:enable may target stale paths.
+     */
+    public function refreshModuleRegistry(): void
+    {
+        app('modules')->resetModules();
+    }
+
+    /**
+     * Enable a module that was just installed or replaced on disk.
+     */
+    public function activateModuleAfterInstall(string $moduleName): void
+    {
+        $jsonName = $this->getModuleJsonName($moduleName) ?? $moduleName;
+        $this->refreshModuleRegistry();
+        $this->toggleModule($jsonName, true);
+    }
+
+    public function toggleModule($moduleName, $enable = true, bool $skipMigrations = false): bool
+    {
+        $action = $enable ? 'enable' : 'disable';
+        Log::info("Attempting to {$action} module: {$moduleName}" . ($skipMigrations ? ' (skipping migrations)' : ''), [
+            'user_id' => Auth::id(),
+            'ip' => request()->ip(),
+        ]);
+
+        $this->refreshModuleRegistry();
+
+        // Fire action hooks before enabling/disabling
+        if ($enable) {
+            Hook::doAction(ModuleActionHook::MODULE_ENABLING_BEFORE, $moduleName);
+        } else {
+            Hook::doAction(ModuleActionHook::MODULE_DISABLING_BEFORE, $moduleName);
+        }
+
+        try {
+            // Reload Composer autoloader to ensure newly uploaded module classes are available.
+            // This is critical when activating a module that was just uploaded in a previous request.
+            $this->reloadAutoloader();
+            Log::info("Autoloader reloaded for module {$moduleName}");
+
+            // Clear the cache.
+            Artisan::call('cache:clear');
+
+            // Activate/Deactivate the module.
+            $callbackName = $enable ? 'module:enable' : 'module:disable';
+            Log::info("Calling artisan {$callbackName} for module {$moduleName}");
+
+            $exitCode = Artisan::call($callbackName, ['module' => $moduleName]);
+            $output = Artisan::output();
+
+            Log::info("Artisan {$callbackName} result for {$moduleName}: exit={$exitCode}, output={$output}");
+
+            if ($exitCode !== 0) {
+                throw new \RuntimeException("Artisan command failed with exit code {$exitCode}: {$output}");
+            }
+
+            // Clean up duplicate case entries in modules_statuses.json.
+            // nwidart writes with its own key (e.g., "Forum"), but there may be
+            // a stale lowercase entry (e.g., "forum") from earlier versions.
+            $this->cleanupDuplicateStatusEntries($moduleName);
+
+            // When enabling a module, run migrations and publish assets
+            if ($enable) {
+                // Regenerate composer autoloader to ensure module classes are available
+                // This is critical for migrations that reference module classes
+                $this->regenerateAutoloader();
+                Log::info("Autoloader regenerated for module {$moduleName}");
+
+                // Discover packages to register module's service provider
+                Artisan::call('package:discover', ['--ansi' => true]);
+                Log::info("Package discovery completed for module {$moduleName}");
+
+                // Run migrations unless skipped (frontend may call separately for better UX)
+                if (! $skipMigrations) {
+                    Hook::doAction(ModuleActionHook::MODULE_MIGRATING_BEFORE, $moduleName);
+                    $this->runModuleMigrations($moduleName);
+                    Hook::doAction(ModuleActionHook::MODULE_MIGRATED_AFTER, $moduleName);
+
+                    // Re-sync permissions for this module after migrations.
+                    // Migrations may have already run (e.g., "Nothing to migrate") but the role
+                    // assignment could have been missed if the role didn't exist at migration time.
+                    // This is idempotent — permissions are created via firstOrCreate, roles get
+                    // givePermissionTo which skips already-assigned permissions.
+                    $this->syncModulePermissions($moduleName);
+
+                    // Flush Spatie's permission cache after migrations so any new permissions
+                    // and role assignments made during the migration are immediately visible.
+                    app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
+                } else {
+                    Log::info("Skipping migrations for module {$moduleName} (will be run separately)");
+                }
+
+                Hook::doAction(ModuleActionHook::MODULE_ASSETS_PUBLISHING_BEFORE, $moduleName);
+                $this->publishModuleAssets($moduleName);
+
+                // Re-publish module images (logo, banner) to ensure they reflect the latest module.json.
+                // This covers scenarios where module files were updated outside the upload flow.
+                // We overwrite in place (File::copy overwrites by default) without deleting first,
+                // so a simple re-enable doesn't unnecessarily remove and re-copy identical images.
+                $moduleObj = $this->findModuleByName($moduleName);
+                if ($moduleObj) {
+                    $normalizedName = $this->normalizeModuleName($moduleName);
+                    $this->publishModuleImagesFromPath($moduleObj->getPath(), $normalizedName);
+                }
+
+                Hook::doAction(ModuleActionHook::MODULE_ASSETS_PUBLISHED_AFTER, $moduleName);
+
+                // Clear route and config caches so module routes/config are loaded
+                try {
+                    Artisan::call('route:clear');
+                    Artisan::call('config:clear');
+                    Artisan::call('view:clear');
+                } catch (\Throwable $e) {
+                    Log::warning("Cache clear warning: " . $e->getMessage());
+                }
+            }
+
+            Log::info("Successfully {$action}d module: {$moduleName}");
+
+            // Fire action hooks after enabling/disabling
+            if ($enable) {
+                Hook::doAction(ModuleActionHook::MODULE_ENABLED_AFTER, $moduleName);
+            } else {
+                Hook::doAction(ModuleActionHook::MODULE_DISABLED_AFTER, $moduleName);
+            }
+        } catch (\Throwable $th) {
+            Log::error("Failed to {$action} module {$moduleName}: " . $th->getMessage(), [
+                'exception' => $th::class,
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString(),
+            ]);
+            throw new ModuleException(__('Failed to :action module. Error: :error', [
+                'action' => $action,
+                'error' => $th->getMessage(),
+            ]));
+        }
+
+        return true;
+    }
+
+    /**
+     * Run database migrations for a specific module.
+     *
+     * This ensures that when a module is enabled or updated,
+     * its database schema is properly set up.
+     */
+    public function runModuleMigrations(string $moduleName): void
+    {
+        Log::info("Running migrations for module: {$moduleName}");
+
+        // Get the actual folder name for the module (handles case sensitivity)
+        $folderName = $this->getActualModuleFolderName($moduleName);
+        $moduleFolder = $folderName ?? $moduleName;
+
+        Log::info("Module folder name resolved: {$moduleFolder}");
+
+        // Build the migration path relative to base_path (required by migrate --path)
+        $migrationPath = "modules/{$moduleFolder}/database/migrations";
+        $fullMigrationPath = base_path($migrationPath);
+
+        // Check if migration directory exists
+        if (! File::isDirectory($fullMigrationPath)) {
+            Log::info("No migrations directory found for module {$moduleName} at {$fullMigrationPath}");
+
+            return;
+        }
+
+        // Count migration files
+        $migrationFiles = File::glob($fullMigrationPath . '/*.php');
+        Log::info("Found " . count($migrationFiles) . " migration files for module {$moduleName}");
+
+        try {
+            // Use migrate with explicit --path to ensure migrations are found
+            // This bypasses the need for the module's service provider to be loaded
+            $exitCode = Artisan::call('migrate', [
+                '--path' => $migrationPath,
+                '--force' => true,
+            ]);
+            $output = Artisan::output();
+
+            Log::info("Migration result for {$moduleName}: exit={$exitCode}, output={$output}");
+
+            if ($exitCode !== 0) {
+                Log::warning("Migration for module {$moduleName} returned non-zero exit code: {$exitCode}");
+            }
+        } catch (\Throwable $th) {
+            Log::error("Failed to run migrations for module {$moduleName}: " . $th->getMessage(), [
+                'exception' => $th::class,
+                'trace' => $th->getTraceAsString(),
+            ]);
+            // Don't throw - migrations might fail if tables already exist, which is fine
+        }
+    }
+
+    /**
+     * Re-sync a module's permissions after enabling.
+     *
+     * Modules define their permissions via the PermissionFilterHook::PERMISSION_GROUPS hook.
+     * When enabling, the module's service provider registers this hook, but during enable
+     * the hook may not have fired yet. We look for a static getPermissions() method on the
+     * module's ModuleService class, and if found, sync those permissions to roles.
+     *
+     * This is idempotent — permissions use firstOrCreate and roles skip already-assigned.
+     */
+    protected function syncModulePermissions(string $moduleName): void
+    {
+        try {
+            // Find the module's ModuleService class which typically has getPermissions()
+            $folderName = $this->getActualModuleFolderName($moduleName);
+
+            if (! $folderName) {
+                return;
+            }
+
+            // Read module.json to get namespace
+            $moduleJsonPath = $this->modulesPath . '/' . $folderName . '/module.json';
+
+            if (! File::exists($moduleJsonPath)) {
+                return;
+            }
+
+            $moduleData = json_decode(File::get($moduleJsonPath), true);
+            $namespace = null;
+
+            if (! empty($moduleData['providers'])) {
+                foreach ($moduleData['providers'] as $provider) {
+                    if (preg_match('/^(Modules\\\\[^\\\\]+)\\\\/', $provider, $matches)) {
+                        $namespace = $matches[1];
+
+                        break;
+                    }
+                }
+            }
+
+            if (! $namespace) {
+                return;
+            }
+
+            // Scan the module's Services directory for a class with a static
+            // permission method. Modules use varying names:
+            //   ModuleService::getPermissions()
+            //   CrmService::getCrmPermissions()
+            //   EcomService::getEcomPermissions()
+            //   CustomFormService::getCustomFormPermissions()
+            $servicesPath = $this->modulesPath . '/' . $folderName . '/app/Services';
+
+            if (! File::isDirectory($servicesPath)) {
+                return;
+            }
+
+            $permissionGroups = null;
+
+            foreach (File::files($servicesPath) as $file) {
+                if ($file->getExtension() !== 'php') {
+                    continue;
+                }
+
+                $className = $namespace . '\\Services\\' . $file->getFilenameWithoutExtension();
+
+                if (! class_exists($className)) {
+                    continue;
+                }
+
+                // Look for any public static method matching *Permissions or *permissions
+                $reflection = new \ReflectionClass($className);
+
+                foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC) as $method) {
+                    if (preg_match('/^get.*[Pp]ermissions$/', $method->getName()) && $method->getNumberOfRequiredParameters() === 0) {
+                        $result = $className::{$method->getName()}();
+
+                        if (is_array($result) && ! empty($result)) {
+                            $permissionGroups = $result;
+
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            if (empty($permissionGroups)) {
+                return;
+            }
+
+            // Use the existing syncPermissionsForRoles which creates + assigns to Superadmin
+            \App\Services\PermissionService::syncPermissionsForRoles($permissionGroups);
+
+            Log::info("Synced permissions for module {$moduleName}: " . count($permissionGroups) . ' groups');
+        } catch (\Throwable $e) {
+            Log::warning("Could not sync permissions for module {$moduleName}: " . $e->getMessage());
+        }
+    }
+
+    /**
+     * Reload Composer autoloader to pick up newly added module classes.
+     *
+     * This reads each module's composer.json to get the correct PSR-4 mappings,
+     * since modules may have their classes in subdirectories (e.g., app/).
+     */
+    protected function reloadAutoloader(): void
+    {
+        $autoloadFile = base_path('vendor/autoload.php');
+        if (! File::exists($autoloadFile)) {
+            return;
+        }
+
+        // Get the Composer ClassLoader instance
+        $loader = require $autoloadFile;
+
+        // Re-register the PSR-4 autoload mappings for each module
+        $modulesPath = $this->modulesPath;
+        if (! File::isDirectory($modulesPath)) {
+            return;
+        }
+
+        foreach (File::directories($modulesPath) as $moduleDir) {
+            $moduleName = basename($moduleDir);
+            $composerJsonPath = $moduleDir . '/composer.json';
+
+            // Read module's composer.json for PSR-4 mappings
+            if (File::exists($composerJsonPath)) {
+                try {
+                    $composerJson = json_decode(File::get($composerJsonPath), true);
+                    $psr4 = $composerJson['autoload']['psr-4'] ?? [];
+
+                    foreach ($psr4 as $namespace => $path) {
+                        // Handle both string and array paths
+                        $paths = is_array($path) ? $path : [$path];
+                        foreach ($paths as $p) {
+                            $fullPath = $moduleDir . '/' . trim($p, '/');
+                            if (File::isDirectory($fullPath)) {
+                                $loader->addPsr4($namespace, $fullPath . '/');
+                            }
+                        }
+                    }
+
+                    // Also register files autoload if present
+                    $files = $composerJson['autoload']['files'] ?? [];
+                    foreach ($files as $file) {
+                        $filePath = $moduleDir . '/' . $file;
+                        if (File::exists($filePath)) {
+                            require_once $filePath;
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning("Failed to parse composer.json for module {$moduleName}: " . $e->getMessage());
+                }
+            } else {
+                // Fallback: register module root as PSR-4 path
+                $namespace = "Modules\\{$moduleName}\\";
+                $loader->addPsr4($namespace, $moduleDir . '/');
+            }
+        }
+    }
+
+    public function toggleModuleStatus(string $moduleName, bool $skipMigrations = false): bool
+    {
+        $jsonName = $this->getModuleJsonName($moduleName);
+
+        if (! $jsonName) {
+            throw new ModuleException(__('Module not found.'));
+        }
+
+        $moduleStatuses = $this->getModuleStatuses();
+
+        // getModuleStatuses() normalizes keys to lowercase, so we must use
+        // the same normalization when looking up the current status.
+        $statusKey = $this->normalizeModuleName($jsonName);
+
+        // If module is not in statuses file, add it as disabled first
+        // then the toggle will enable it (fixing the double-click issue)
+        if (! isset($moduleStatuses[$statusKey])) {
+            $moduleStatuses[$statusKey] = false;
+        }
+
+        // Toggle the status.
+        $moduleStatuses[$statusKey] = ! $moduleStatuses[$statusKey];
+        $newStatus = $moduleStatuses[$statusKey];
+
+        // Run the module enable/disable artisan command (uses module.json name)
+        $this->toggleModule($jsonName, $newStatus, $skipMigrations);
+
+        return $newStatus;
+    }
+
+    /**
+     * Bulk activate multiple modules.
+     *
+     * @param  array<string>  $moduleNames
+     * @return array<string, bool> Results for each module
+     */
+    public function bulkActivate(array $moduleNames): array
+    {
+        $results = [];
+
+        foreach ($moduleNames as $moduleName) {
+            $jsonName = $this->getModuleJsonName($moduleName);
+            try {
+                if (! $jsonName) {
+                    $results[$moduleName] = false;
+                    continue;
+                }
+
+                $this->toggleModule($jsonName, true);
+                $results[$jsonName] = true;
+            } catch (\Throwable $e) {
+                Log::error("Failed to activate module " . $jsonName . ": " . $e->getMessage());
+                $results[$jsonName] = false;
+            }
+        }
+
+        Artisan::call('cache:clear');
+
+        return $results;
+    }
+
+    /**
+     * Bulk deactivate multiple modules.
+     *
+     * @param  array<string>  $moduleNames
+     * @return array<string, bool> Results for each module
+     */
+    public function bulkDeactivate(array $moduleNames): array
+    {
+        $results = [];
+
+        foreach ($moduleNames as $moduleName) {
+            $jsonName = $this->getModuleJsonName($moduleName);
+            try {
+                if (! $jsonName) {
+                    $results[$moduleName] = false;
+                    continue;
+                }
+
+                $this->toggleModule($jsonName, false);
+                $results[$jsonName] = true;
+            } catch (\Throwable $e) {
+                Log::error("Failed to deactivate module " . $jsonName . ": " . $e->getMessage());
+                $results[$jsonName] = false;
+            }
+        }
+
+        Artisan::call('cache:clear');
+
+        return $results;
+    }
+
+    public function deleteModule(string $moduleName): void
+    {
+        $module = $this->findModuleByName($moduleName);
+
+        if (! $module) {
+            throw new ModuleException(__('Module not found.'), Response::HTTP_NOT_FOUND);
+        }
+
+        // Fire action before module deletion
+        Hook::doAction(ModuleActionHook::MODULE_DELETING_BEFORE, $moduleName);
+
+        // Disable the module before deletion.
+        Artisan::call('module:disable', ['module' => $module->getName()]);
+
+        // Remove the module files using the actual module path.
+        $modulePath = $module->getPath();
+
+        if (! is_dir($modulePath)) {
+            throw new ModuleException(__('Module directory does not exist. Please ensure the module is installed correctly.'));
+        }
+
+        // Clean up published assets from public directory.
+        $this->cleanupModuleAssets($module->getName());
+
+        // Clean up published images from public directory.
+        $jsonName = $this->getModuleJsonName($moduleName);
+        if ($jsonName) {
+            $this->cleanupModuleImages($jsonName);
+        }
+
+        // Delete the module from the database.
+        ModuleFacade::delete($module->getName());
+
+        // Clear the cache.
+        Artisan::call('cache:clear');
+
+        // Fire action after module deletion
+        Hook::doAction(ModuleActionHook::MODULE_DELETED_AFTER, $moduleName);
+    }
+
+    /**
+     * Regenerate Composer autoloader and Laravel bootstrap caches.
+     * This is necessary after uploading a module via zip file.
+     */
+    protected function regenerateAutoloader(): void
+    {
+        // Set HOME/COMPOSER_HOME for shared hosting environments
+        $env = array_merge($_ENV, $_SERVER, [
+            'HOME' => getenv('HOME') ?: base_path(),
+            'COMPOSER_HOME' => getenv('COMPOSER_HOME') ?: base_path('.composer'),
+        ]);
+
+        // Run composer dump-autoload
+        try {
+            $composerPath = base_path('composer.phar');
+            $command = file_exists($composerPath)
+                ? ['php', $composerPath, 'dump-autoload', '--no-interaction']
+                : ['composer', 'dump-autoload', '--no-interaction'];
+
+            $process = new Process($command, base_path());
+            $process->setTimeout(120);
+            $process->setEnv($env);
+            $process->run();
+
+            if (! $process->isSuccessful()) {
+                Log::warning('Failed to regenerate autoloader: ' . $process->getErrorOutput());
+            } else {
+                Log::info('Composer autoloader regenerated successfully');
+            }
+        } catch (\Throwable $e) {
+            Log::warning('Failed to regenerate autoloader: ' . $e->getMessage());
+        }
+
+        // Regenerate Laravel bootstrap caches (packages.php, services.php)
+        try {
+            Artisan::call('package:discover', ['--ansi' => true]);
+            Log::info('Package discovery completed');
+        } catch (\Throwable $e) {
+            Log::warning('Failed to run package:discover: ' . $e->getMessage());
+        }
+    }
+
+    public function getModuleAssetPath(): array
+    {
+        $paths = [];
+        if (file_exists('build/manifest.json')) {
+            $files = json_decode(file_get_contents('build/manifest.json'), true);
+            foreach ($files as $file) {
+                $paths[] = $file['src'];
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Support for Vite hot reload overriding manifest file.
+     */
+    public function moduleViteCompile(string $module, string $asset, ?string $hotFilePath = null, $manifestFile = 'manifest.json'): ViteFoundation
+    {
+        return Vite::useHotFile($hotFilePath ?: storage_path('vite.hot'))
+            ->useBuildDirectory($module)
+            ->useManifestFilename($manifestFile)
+            ->withEntryPoints([$asset]);
+    }
+
+    /**
+     * Publish pre-built assets from module's dist directory to public directory.
+     * This allows modules with pre-compiled CSS/JS to work without npm build.
+     *
+     * @param string $moduleName The module name
+     * @param bool $force Whether to overwrite existing assets
+     * @return bool Whether assets were published
+     */
+    public function publishModuleAssets(string $moduleName, bool $force = false): bool
+    {
+        $module = $this->findModuleByName($moduleName);
+        if (! $module) {
+            Log::info("Module {$moduleName} not found for asset publishing");
+            return false;
+        }
+
+        $moduleSlug = Str::slug($moduleName);
+        // Use actual module path to handle case sensitivity (folder might be lowercase)
+        $sourcePath = $module->getPath() . '/dist/build-' . $moduleSlug;
+        $targetPath = public_path('build-' . $moduleSlug);
+
+        // Check if module has pre-built assets
+        if (! File::isDirectory($sourcePath)) {
+            Log::info("Module {$moduleName} has no pre-built assets at {$sourcePath}");
+            return false;
+        }
+
+        // Check if target already exists
+        if (File::isDirectory($targetPath)) {
+            if (! $force) {
+                Log::info("Assets for module {$moduleName} already exist at {$targetPath}, skipping");
+                return true;
+            }
+            // Remove existing assets
+            File::deleteDirectory($targetPath);
+        }
+
+        // Copy assets from module dist to public
+        try {
+            File::copyDirectory($sourcePath, $targetPath);
+            Log::info("Published assets for module {$moduleName} from {$sourcePath} to {$targetPath}");
+            return true;
+        } catch (\Throwable $e) {
+            Log::error("Failed to publish assets for module {$moduleName}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if a module has pre-built assets in its dist directory.
+     *
+     * @param string $moduleName The module name
+     * @return bool Whether the module has pre-built assets
+     */
+    public function hasPrebuiltAssets(string $moduleName): bool
+    {
+        $module = $this->findModuleByName($moduleName);
+        if (! $module) {
+            return false;
+        }
+
+        $moduleSlug = Str::slug($moduleName);
+        // Use actual module path to handle case sensitivity
+        $distPath = $module->getPath() . '/dist/build-' . $moduleSlug;
+
+        return File::isDirectory($distPath) && $this->manifestExistsInBuildDir($distPath);
+    }
+
+    /**
+     * Clean up published assets for a module from the public directory.
+     *
+     * @param string $moduleName The module name
+     * @return bool Whether cleanup was successful
+     */
+    public function cleanupModuleAssets(string $moduleName): bool
+    {
+        $moduleSlug = Str::slug($moduleName);
+        $targetPath = public_path('build-' . $moduleSlug);
+
+        if (! File::isDirectory($targetPath)) {
+            return true; // Nothing to clean up
+        }
+
+        try {
+            File::deleteDirectory($targetPath);
+            Log::info("Cleaned up assets for module {$moduleName} from {$targetPath}");
+            return true;
+        } catch (\Throwable $e) {
+            Log::error("Failed to clean up assets for module {$moduleName}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if a module has pre-built assets using a direct filesystem path.
+     * Use this during upload when the module isn't registered in the Module facade yet.
+     *
+     * @param string $modulePath The absolute path to the module directory
+     * @param string $moduleName The module name (for slug generation)
+     * @return bool Whether the module has pre-built assets
+     */
+    public function hasPrebuiltAssetsAtPath(string $modulePath, string $moduleName): bool
+    {
+        $moduleSlug = Str::slug($moduleName);
+        $distPath = $modulePath . '/dist/build-' . $moduleSlug;
+
+        return File::isDirectory($distPath) && $this->manifestExistsInBuildDir($distPath);
+    }
+
+    /**
+     * Check whether a Vite manifest exists in a build directory.
+     *
+     * Handles both manifest locations:
+     * - Old Vite / laravel-vite-plugin: {buildDir}/manifest.json
+     * - Vite 5+ default:               {buildDir}/.vite/manifest.json
+     */
+    protected function manifestExistsInBuildDir(string $buildDir): bool
+    {
+        return File::exists($buildDir . '/manifest.json')
+            || File::exists($buildDir . '/.vite/manifest.json');
+    }
+
+    /**
+     * Publish module images (logo, banner) from module's marketplace-assets directory to public.
+     *
+     * Looks for logo_image and banner_image in module.json, then copies
+     * the corresponding files from the module's marketplace-assets/ folder
+     * to public/images/modules/{module}/
+     *
+     * Expected module structure:
+     * - modules/YourModule/marketplace-assets/logo.png
+     * - modules/YourModule/marketplace-assets/banner.png
+     * - modules/YourModule/marketplace-assets/screenshots/...
+     *
+     * @param string $modulePath The absolute path to the module directory
+     * @param string $moduleName The module name (lowercase)
+     * @return bool Whether any images were published
+     */
+    public function publishModuleImagesFromPath(string $modulePath, string $moduleName): bool
+    {
+        $moduleJsonPath = $modulePath . '/module.json';
+        if (! File::exists($moduleJsonPath)) {
+            return false;
+        }
+
+        $moduleJson = json_decode(File::get($moduleJsonPath), true);
+        $published = false;
+
+        // Target directory for module images
+        $targetDir = public_path("images/modules/{$moduleName}");
+
+        // Base path for marketplace assets
+        $marketplaceAssetsPath = $modulePath . '/marketplace-assets';
+
+        // Process logo_image
+        $logoImage = $moduleJson['logo_image'] ?? null;
+        if ($logoImage) {
+            $sourcePath = $this->resolveSafeModuleAssetPath($modulePath, $logoImage);
+
+            if ($sourcePath !== null && $this->isAllowedModuleImageExtension($sourcePath)) {
+                File::ensureDirectoryExists($targetDir);
+                File::copy($sourcePath, $targetDir . '/' . basename($logoImage));
+                Log::info("Published logo for module {$moduleName}: " . basename($logoImage));
+                $published = true;
+            } elseif ($sourcePath === null) {
+                Log::warning("Rejected unsafe logo path for module {$moduleName}: {$logoImage}");
+            }
+        }
+
+        // Process banner_image
+        $bannerImage = $moduleJson['banner_image'] ?? null;
+        if ($bannerImage) {
+            $sourcePath = $this->resolveSafeModuleAssetPath($modulePath, $bannerImage);
+
+            if ($sourcePath !== null && $this->isAllowedModuleImageExtension($sourcePath)) {
+                File::ensureDirectoryExists($targetDir);
+                File::copy($sourcePath, $targetDir . '/' . basename($bannerImage));
+                Log::info("Published banner for module {$moduleName}: " . basename($bannerImage));
+                $published = true;
+            } elseif ($sourcePath === null) {
+                Log::warning("Rejected unsafe banner path for module {$moduleName}: {$bannerImage}");
+            }
+        }
+
+        // Copy all files from marketplace-assets if the directory exists
+        if (File::isDirectory($marketplaceAssetsPath)) {
+            File::ensureDirectoryExists($targetDir);
+
+            // Copy all files from marketplace-assets (logo, banner, screenshots, etc.)
+            // Always overwrite to ensure updated assets take effect after module replacement.
+            foreach (File::files($marketplaceAssetsPath) as $file) {
+                $targetFile = $targetDir . '/' . $file->getFilename();
+                File::copy($file->getPathname(), $targetFile);
+                $published = true;
+            }
+
+            // Also copy subdirectories like screenshots/
+            foreach (File::directories($marketplaceAssetsPath) as $subDir) {
+                $subDirName = basename($subDir);
+                $targetSubDir = $targetDir . '/' . $subDirName;
+                File::copyDirectory($subDir, $targetSubDir);
+                $published = true;
+            }
+
+            if ($published) {
+                Log::info("Published marketplace assets for module {$moduleName}");
+            }
+        }
+
+        return $published;
+    }
+
+    /**
+     * Resolve a module asset path and ensure it stays within the module directory.
+     */
+    protected function resolveSafeModuleAssetPath(string $modulePath, string $relativePath): ?string
+    {
+        if (
+            str_starts_with($relativePath, '/')
+            || str_starts_with($relativePath, 'http://')
+            || str_starts_with($relativePath, 'https://')
+            || str_contains($relativePath, "\0")
+            || str_contains($relativePath, '..')
+        ) {
+            return null;
+        }
+
+        $moduleRealPath = realpath($modulePath);
+        if ($moduleRealPath === false) {
+            return null;
+        }
+
+        $candidatePaths = [
+            $modulePath . '/marketplace-assets/' . $relativePath,
+            $modulePath . '/' . $relativePath,
+        ];
+
+        foreach ($candidatePaths as $candidatePath) {
+            if (! File::exists($candidatePath)) {
+                continue;
+            }
+
+            $resolvedPath = realpath($candidatePath);
+            if ($resolvedPath === false) {
+                continue;
+            }
+
+            if (str_starts_with($resolvedPath, $moduleRealPath . DIRECTORY_SEPARATOR) || $resolvedPath === $moduleRealPath) {
+                return $resolvedPath;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Allow only common image extensions for published module assets.
+     */
+    protected function isAllowedModuleImageExtension(string $path): bool
+    {
+        $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
+        return in_array($extension, ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'], true);
+    }
+
+    /**
+     * Clean up published module images from public directory.
+     *
+     * @param string $moduleName The module name
+     * @return bool Whether cleanup was successful
+     */
+    public function cleanupModuleImages(string $moduleName): bool
+    {
+        $targetPath = public_path("images/modules/{$moduleName}");
+
+        if (! File::isDirectory($targetPath)) {
+            return true; // Nothing to clean up
+        }
+
+        try {
+            File::deleteDirectory($targetPath);
+            Log::info("Cleaned up images for module {$moduleName} from {$targetPath}");
+            return true;
+        } catch (\Throwable $e) {
+            Log::error("Failed to clean up images for module {$moduleName}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Publish pre-built assets from a module's dist directory using a direct filesystem path.
+     * Use this during upload when the module isn't registered in the Module facade yet.
+     *
+     * @param string $modulePath The absolute path to the module directory
+     * @param string $moduleName The module name (for slug generation)
+     * @param bool $force Whether to overwrite existing assets
+     * @return bool Whether assets were published
+     */
+    public function publishModuleAssetsFromPath(string $modulePath, string $moduleName, bool $force = false): bool
+    {
+        $moduleSlug = Str::slug($moduleName);
+        $sourcePath = $modulePath . '/dist/build-' . $moduleSlug;
+        $targetPath = public_path('build-' . $moduleSlug);
+
+        // Check if module has pre-built assets
+        if (! File::isDirectory($sourcePath)) {
+            Log::info("Module {$moduleName} has no pre-built assets at {$sourcePath}");
+            return false;
+        }
+
+        // Check if target already exists
+        if (File::isDirectory($targetPath)) {
+            if (! $force) {
+                Log::info("Assets for module {$moduleName} already exist at {$targetPath}, skipping");
+                return true;
+            }
+            // Remove existing assets
+            File::deleteDirectory($targetPath);
+        }
+
+        // Copy assets from module dist to public
+        try {
+            File::copyDirectory($sourcePath, $targetPath);
+            Log::info("Published assets for module {$moduleName} from {$sourcePath} to {$targetPath}");
+            return true;
+        } catch (\Throwable $e) {
+            Log::error("Failed to publish assets for module {$moduleName}: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Publish logo/banner images for a registered module.
+     */
+    public function publishModuleImages(string $moduleName): bool
+    {
+        $module = $this->findModuleByName($moduleName);
+
+        if (! $module) {
+            Log::info("Module {$moduleName} not found for image publishing");
+
+            return false;
+        }
+
+        return $this->publishModuleImagesFromPath(
+            $module->getPath(),
+            $this->normalizeModuleName($moduleName)
+        );
+    }
+
+    /**
+     * Publish logo/banner images for every enabled module on disk.
+     *
+     * @return int Number of modules whose images were published
+     */
+    public function publishModuleImagesForEnabledModules(): int
+    {
+        $publishedCount = 0;
+
+        foreach ($this->getModuleStatuses() as $moduleName => $enabled) {
+            if (! $enabled) {
+                continue;
+            }
+
+            if ($this->publishModuleImages($moduleName)) {
+                $publishedCount++;
+            }
+        }
+
+        return $publishedCount;
+    }
+}

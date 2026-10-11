@@ -1,0 +1,75 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Enums\Hooks;
+
+enum SettingFilterHook: string
+{
+    // Validation hooks
+    case SETTINGS_UPDATE_VALIDATION_RULES = 'filter.settings.update.validation.rules';
+
+    // Data filtering hooks
+    case SETTINGS_TABS = 'filter.settings.tabs';
+    case SETTINGS_RESTRICTED_FIELDS = 'filter.settings.restricted_fields';
+
+    /** @param list<string> $keys Additional option_name values treated as secrets */
+    case SETTINGS_SENSITIVE_KEYS = 'filter.settings.sensitive_keys';
+
+    /** @param list<string> $keys Option names omitted from settings API index/show */
+    case SETTINGS_HIDDEN_FROM_API_KEYS = 'filter.settings.hidden_from_api_keys';
+
+    // UI Hooks - General tab
+    case SETTINGS_GENERAL_TAB_BEFORE_SECTION_START = 'filter.settings.general_tab_before_section_start';
+    case SETTINGS_GENERAL_TAB_BEFORE_SECTION_END = 'filter.settings.general_tab_before_section_end';
+
+    // UI Hooks - Appearance tab
+    case SETTINGS_APPEARANCE_TAB_BEFORE_SECTION_START = 'filter.settings.appearance_tab_before_section_start';
+    case SETTINGS_APPEARANCE_TAB_BEFORE_SECTION_END = 'filter.settings.appearance_tab_before_section_end';
+    case SETTINGS_APPEARANCE_TAB_AFTER_SECTION_END = 'filter.settings.appearance_tab_after_section_end';
+
+    // UI Hooks - Content tab
+    case SETTINGS_CONTENT_TAB_BEFORE_SECTION_START = 'filter.settings.content_tab_before_section_start';
+    case SETTINGS_CONTENT_TAB_BEFORE_SECTION_END = 'filter.settings.content_tab_before_section_end';
+    case SETTINGS_CONTENT_TAB_AFTER_SECTION_END = 'filter.settings.content_tab_after_section_end';
+
+    // UI Hooks - Security tab
+    case SETTINGS_PERFORMANCE_SECURITY_TAB_BEFORE_SECTION_START = 'filter.settings.performance_security_tab_before_section_start';
+    case SETTINGS_PERFORMANCE_SECURITY_TAB_AFTER_SECTION_END = 'filter.settings.performance_security_tab_after_section_end';
+
+    // UI Hooks - Integration tab
+    case SETTINGS_INTEGRATIONS_TAB_BEFORE_SECTION_START = 'filter.settings.integrations_tab_before_section_start';
+    case SETTINGS_INTEGRATIONS_TAB_BEFORE_SECTION_END = 'filter.settings.integrations_tab_before_section_end';
+    case SETTINGS_INTEGRATIONS_TAB_AFTER_SECTION_END = 'filter.settings.integrations_tab_after_section_end';
+
+    // UI Hooks - AI tab
+    case SETTINGS_AI_INTEGRATIONS_TAB_BEFORE_SECTION_START = 'filter.settings.ai_integrations_tab_before_section_start';
+    case SETTINGS_AI_INTEGRATIONS_TAB_BEFORE_SECTION_END = 'filter.settings.ai_integrations_tab_before_section_end';
+    case SETTINGS_AI_INTEGRATIONS_TAB_AFTER_SECTION_END = 'filter.settings.ai_integrations_tab_after_section_end';
+
+    // MCP settings tab hooks
+    case SETTINGS_MCP_TAB_BEFORE_SECTION_START = 'filter.settings.mcp_tab_before_section_start';
+    case SETTINGS_MCP_TAB_BEFORE_SECTION_END = 'filter.settings.mcp_tab_before_section_end';
+    case SETTINGS_MCP_TAB_AFTER_SECTION_END = 'filter.settings.mcp_tab_after_section_end';
+
+    // UI Hooks - reCAPTCHA tab
+    case SETTINGS_RECAPTCHA_INTEGRATIONS_TAB_BEFORE_SECTION_START = 'filter.settings.recaptcha_integrations_tab_before_section_start';
+    case SETTINGS_RECAPTCHA_INTEGRATIONS_TAB_BEFORE_SECTION_END = 'filter.settings.recaptcha_integrations_tab_before_section_end';
+
+    // UI Hooks - Site Identity tab
+    case SETTINGS_SITE_IDENTITY_TAB_BEFORE_SECTION_START = 'filter.settings.site_identity_tab_before_section_start';
+    case SETTINGS_SITE_IDENTITY_TAB_BEFORE_SECTION_END = 'filter.settings.site_identity_tab_before_section_end';
+    case SETTINGS_SITE_IDENTITY_TAB_AFTER_SECTION_END = 'filter.settings.site_identity_tab_after_section_end';
+
+    // UI Hooks - Tab menu and content
+    case SETTINGS_TAB_MENU_BEFORE = 'filter.settings.tab_menu_before_';
+    case SETTINGS_TAB_MENU_AFTER = 'filter.settings.tab_menu_after_';
+    case SETTINGS_TAB_CONTENT_BEFORE = 'filter.settings.tab_content_before_';
+    case SETTINGS_TAB_CONTENT_AFTER = 'filter.settings.tab_content_after_';
+
+    // UI Hooks - Theme tab
+    case THEME_COLOR_PRESETS = 'filter.theme.color_presets';
+
+    // Breadcrumbs
+    case SETTINGS_AFTER_BREADCRUMBS = 'filter.settings.after_breadcrumbs';
+}

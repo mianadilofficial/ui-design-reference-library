@@ -1,0 +1,260 @@
+/* Ensure minimum heights to prevent layout shift */
+.sidebar {
+    min-height: 100vh;
+}
+
+@utility menu-item {
+    @apply relative flex items-center gap-3 px-4 py-2 rounded-md font-medium text-theme-sm transition-colors duration-200 ease-in-out;
+    &:hover {
+        background-color: var(--sidebar-hover-bg, rgba(0, 0, 0, 0.08));
+    }
+}
+
+:root {
+    --sidebar-hover-bg: rgba(0, 0, 0, 0.08);
+    --sidebar-active-bg: var(--color-brand-100, rgba(0, 0, 0, 0.12));
+    --sidebar-active-text: var(--color-brand-500, #635bff);
+}
+
+.dark {
+    --sidebar-hover-bg: rgba(255, 255, 255, 0.08);
+    --sidebar-active-bg: var(--color-brand-500, rgba(255, 255, 255, 0.12));
+    --sidebar-active-text: var(--color-brand-25, #ffffff);
+}
+
+@utility menu-item-active {
+    background-color: var(--sidebar-active-bg) !important;
+    color: var(--sidebar-active-text) !important;
+    &:hover {
+        background-color: var(--sidebar-active-bg) !important;
+        color: var(--sidebar-active-text) !important;
+    }
+
+    .submenu & {
+        background-color: transparent !important;
+        &:hover {
+            background-color: var(--sidebar-hover-bg) !important;
+        }
+    }
+}
+
+/* @utility menu-item-inactive {
+    @apply text-gray-300 hover:text-gray-300;
+} */
+
+@utility menu-item-icon-active {
+    @apply fill-brand-500 dark:fill-brand-400;
+}
+
+@utility menu-item-icon-inactive {
+    @apply fill-gray-400 group-hover:fill-gray-300;
+}
+
+@utility menu-item-icon {
+    @apply flex items-center justify-center;
+}
+
+@utility menu-item-text {
+    @apply flex items-center;
+}
+
+@utility menu-item-arrow {
+    @apply absolute top-1/2 right-2.5 -translate-y-1/2;
+}
+
+@utility menu-item-arrow-active {
+    @apply rotate-180 stroke-brand-500 dark:stroke-brand-400;
+}
+
+@utility menu-item-arrow-inactive {
+    @apply stroke-gray-500 group-hover:stroke-gray-700 dark:stroke-gray-400 dark:group-hover:stroke-gray-300;
+}
+
+@utility menu-dropdown-item {
+    @apply text-theme-sm relative flex items-center gap-3 rounded-md px-3 py-2.5 font-medium;
+}
+
+@utility menu-dropdown-item-active {
+    @apply bg-brand-500/[0.12] text-brand-400;
+}
+
+@utility menu-dropdown-item-inactive {
+    @apply text-gray-300 hover:bg-white/5;
+}
+
+@utility menu-dropdown-badge {
+    @apply text-brand-500 dark:text-brand-400 block rounded-full px-2.5 py-0.5 text-xs font-medium uppercase;
+}
+
+@utility menu-dropdown-badge-active {
+    @apply bg-brand-100 dark:bg-brand-500/20;
+}
+
+@utility menu-dropdown-badge-inactive {
+    @apply bg-brand-50 group-hover:bg-brand-100 dark:bg-brand-500/15 dark:group-hover:bg-brand-500/20;
+}
+
+/* Submenu Animation Styles */
+.submenu {
+    @apply transition-all duration-300 ease-in-out overflow-hidden;
+    transform-origin: top;
+}
+
+.submenu-collapsed {
+    @apply opacity-0 mt-0 pointer-events-none;
+    max-height: 0;
+    transform: scaleY(0.95) translateY(-5px);
+}
+
+.submenu-expanded {
+    @apply opacity-100 mt-1 pointer-events-auto;
+    /* Large max-height so all submenu items are visible without scrolling.
+       The outer sidebar wrapper handles scroll when the full nav overflows. */
+    max-height: 2000px;
+    transform: scaleY(1) translateY(0);
+}
+
+.menu-item-arrow {
+    @apply transition-transform duration-300 ease-in-out;
+    transform-origin: center;
+}
+
+.submenu-expanded .menu-item {
+    animation: slideInFromTop 0.2s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@utility no-scrollbar {
+    /* Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+@utility custom-scrollbar {
+    &::-webkit-scrollbar {
+        @apply size-1.5;
+    }
+
+    &::-webkit-scrollbar-track {
+        @apply rounded-full;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        @apply bg-gray-200 rounded-full;
+    }
+}
+
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #344054;
+}
+
+.app-sidebar-minified .submenu {
+    @apply hidden;
+}
+
+.app-sidebar-minified .menu-group-heading {
+    @apply hidden;
+}
+
+.submenu li .menu-item {
+    @apply pl-12;
+}
+
+/* Deeper nesting (3rd level) gets extra indentation so it visually sits under its parent submenu item. */
+.submenu .submenu li .menu-item {
+    @apply pl-16 text-[13px];
+}
+
+.submenu .submenu .submenu li .menu-item {
+    @apply pl-20;
+}
+
+/* .submenu .menu-item,
+.submenu li,
+.submenu li:hover,
+.submenu li:hover a {
+    @apply rounded-md bg-transparent text-primary dark:text-white py-1 px-0 mx-0 my-0;
+} */
+
+/* submenu active override is inside @utility menu-item-active */
+
+/* .submenu li:hover a:hover,
+.submenu li:hover a:hover .menu-item-text {
+    @apply text-primary dark:text-white;
+} */
+
+@media (min-width: 1024px) {
+    .app-sidebar-minified .menu-item .menu-item-text,
+    .app-sidebar-minified .menu-item .menu-item-arrow {
+        display: none;
+    }
+    /* .app-sidebar-minified .menu-item .menu-item-icon {
+        margin-left: 10px;
+    } */
+}
+@media (max-width: 1023px) {
+    .app-sidebar-minified .menu-item .menu-item-text,
+    .app-sidebar-minified .menu-item .menu-item-arrow {
+        display: inline-block;
+    }
+
+    /* On mobile, show submenus and menu group headings even when sidebar is "minified" */
+    .app-sidebar-minified .submenu.submenu-expanded {
+        display: block;
+    }
+
+    .app-sidebar-minified .menu-group-heading {
+        display: block;
+    }
+
+    /* On mobile, always show the full logo and hide the icon when sidebar is open */
+    .app-sidebar-minified .logo {
+        display: block !important;
+        opacity: 1 !important;
+    }
+
+    .app-sidebar-minified .logo-icon {
+        display: none !important;
+    }
+}
+.sidebar:hover {
+    width: 290px;
+}
+.sidebar:hover .logo {
+    display: block;
+}
+.sidebar:hover .logo-icon {
+    display: none;
+}
+.sidebar:hover .menu-group-title {
+    display: block;
+}
+.sidebar:hover .menu-group-icon {
+    display: none;
+}
+
+.sidebar:hover .menu-item-text {
+    display: inline;
+}
+
+.sidebar:hover .menu-item-arrow {
+    display: block;
+}
+
+.sidebar:hover .menu-dropdown {
+    display: flex;
+}

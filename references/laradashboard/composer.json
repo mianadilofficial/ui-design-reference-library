@@ -1,0 +1,168 @@
+{
+    "name": "laradashboard/laradashboard",
+    "type": "project",
+    "description": "Lara Dashboard - A Laravel CMS with Role, Permission, Module, Translation, Content Management",
+    "keywords": [
+        "framework",
+        "laravel",
+        "cms",
+        "dashboard",
+        "role",
+        "permission",
+        "module",
+        "translation",
+        "content management"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.3|^8.4",
+        "cweagans/composer-patches": "^1.7",
+        "dedoc/scramble": "^0.13.0",
+        "enshrined/svg-sanitize": "^0.22.0",
+        "fakerphp/faker": "^1.24",
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/cashier": "^16.5",
+        "laravel/framework": "^13.0",
+        "laravel/mcp": "^0.6.0",
+        "laravel/pulse": "^1.4",
+        "laravel/sanctum": "^4.1",
+        "laravel/socialite": "^5.24",
+        "laravel/telescope": "^5.18",
+        "laravel/tinker": "^3.0",
+        "laravel/ui": "^4.5",
+        "livewire/livewire": "^4.0",
+        "mhmiton/laravel-modules-livewire": "^7.0",
+        "nwidart/laravel-modules": "^13.0",
+        "opis/closure": "^3.7",
+        "spatie/laravel-medialibrary": "^11.13",
+        "spatie/laravel-permission": "^6.4",
+        "spatie/laravel-query-builder": "^6.3",
+        "tormjens/eventy": "^0.8.0"
+    },
+    "require-dev": {
+        "barryvdh/laravel-debugbar": "^4.0",
+        "brianium/paratest": "*",
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.0",
+        "laravel/pint": "^1.22",
+        "laravel/sail": "^1.41",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.6",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-browser": "^4.0",
+        "pestphp/pest-plugin-drift": "^4.0",
+        "rector/rector": "^2.0",
+        "spatie/laravel-ignition": "^2.9"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "cweagans/composer-patches": true,
+            "pestphp/pest-plugin": true,
+            "wikimedia/composer-merge-plugin": true
+        },
+        "platform-check": false
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+                "barryvdh/laravel-debugbar"
+            ]
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "files": [
+            "app/Support/Helper/common.php",
+            "app/Support/Helper/hooks.php",
+            "app/Support/Helper/content.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-install-cmd": [
+            "@protect-local-files"
+        ],
+        "post-update-cmd": [
+            "@protect-local-files",
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan vendor:publish --tag=livewire:assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi"
+        ],
+        "protect-local-files": [
+            "@php scripts/protect-local-files.php"
+        ],
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"npm run dev\" --names=server,queue,vite"
+        ],
+        "format": [
+            "./vendor/bin/pint --config pint.json",
+            "./vendor/bin/rector process"
+        ],
+        "pint": [
+            "./vendor/bin/pint --test --config pint-no-modules.json"
+        ],
+        "pint:all": [
+            "./vendor/bin/pint --test --config pint.json"
+        ],
+        "phpstan": [
+            "./vendor/bin/phpstan analyse --memory-limit=5G"
+        ],
+        "pest": [
+            "./vendor/bin/pest --parallel --testsuite=Unit,Feature,Smoke,Browser && ./vendor/bin/pest --testsuite=Sequential"
+        ],
+        "pest:modules": [
+            "./vendor/bin/pest --parallel --testsuite=Modules"
+        ],
+        "pest:all": [
+            "./vendor/bin/pest --parallel"
+        ],
+        "type-check": [
+            "./vendor/bin/rector process"
+        ],
+        "test": [
+            "@pint",
+            "@phpstan",
+            "@type-check",
+            "@pest"
+        ],
+        "test:modules": [
+            "@pint:all",
+            "@phpstan",
+            "@pest:modules",
+            "@type-check"
+        ],
+        "test-all": [
+            "@pint:all",
+            "@phpstan",
+            "@pest:all",
+            "@type-check"
+        ],
+        "fresh:seed": [
+            "@php artisan migrate:fresh --seed",
+            "@php artisan module:seed"
+        ]
+    },
+    "minimum-stability": "beta",
+    "prefer-stable": true
+}

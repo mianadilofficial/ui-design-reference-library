@@ -1,0 +1,562 @@
+@layer components {
+    /* Container styles */
+    .ld-container {
+        @apply mx-auto px-4 sm:px-6 lg:px-8 py-6;
+        max-width: var(--breakpoint-2xl);
+    }
+
+    /* Buttons */
+    .btn {
+        @apply inline-flex gap-1 justify-center items-center text-white hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center focus:ring-blue-300 dark:focus:ring-blue-800;
+    }
+
+    .btn-primary {
+        @apply inline-flex gap-1 justify-center items-center text-white hover:opacity-90 transition-all font-medium rounded-md text-sm px-5 py-2.5 text-center bg-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 dark:focus:ring-blue-800;
+    }
+
+    .btn-secondary {
+        @apply inline-flex gap-1 justify-center items-center text-gray-800 hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center bg-gray-100 hover:bg-gray-200 focus:ring-gray-100 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-500;
+    }
+
+    .btn-danger {
+        @apply inline-flex gap-1 justify-center items-center text-white hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center bg-red-500 focus:ring-red-300 dark:focus:ring-red-800;
+    }
+
+    .btn-success {
+        @apply inline-flex gap-1 justify-center items-center text-white hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center bg-green-500 focus:ring-green-300 dark:focus:ring-green-800;
+    }
+
+    .btn-default {
+        @apply inline-flex gap-1 justify-center items-center hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center text-gray-800 dark:text-white bg-gray-200 dark:bg-gray-800 focus:ring-gray-100 dark:focus:ring-green-800;
+    }
+
+    .btn-warning {
+        @apply inline-flex gap-1 justify-center items-center text-white hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center bg-orange-500 focus:ring-orange-300 dark:focus:ring-orange-800;
+    }
+
+    .btn-info {
+        @apply inline-flex gap-1 justify-center items-center text-white hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center bg-blue-500 focus:ring-blue-300 dark:focus:ring-blue-800;
+    }
+
+    .btn-link {
+        @apply inline-flex gap-1 justify-center items-center text-primary hover:opacity-90 transition-all font-medium rounded-md text-sm px-2 py-1 text-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 dark:focus:ring-blue-800;
+    }
+
+    /* Small/mini buttons */
+    .btn-sm {
+        @apply px-3 py-1.5 text-xs;
+    }
+
+    .btn-lg {
+        @apply px-6 py-3 text-base;
+    }
+
+    /* Icon button */
+    .btn-icon {
+        @apply inline-flex items-center justify-center p-2 rounded-lg transition-colors;
+    }
+
+    .btn-icon-primary {
+        @apply inline-flex items-center justify-center p-2 rounded-lg transition-colors bg-primary text-white hover:opacity-90;
+    }
+
+    .btn-icon-secondary {
+        @apply inline-flex items-center justify-center p-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700;
+    }
+
+    /* Outline buttons */
+    .btn-outline-primary {
+        @apply inline-flex gap-1 justify-center items-center text-primary hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center border border-primary bg-transparent focus:ring-primary/50;
+    }
+
+    .btn-outline-secondary {
+        @apply inline-flex gap-1 justify-center items-center text-gray-800 hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center border border-gray-300 bg-transparent hover:bg-gray-100 focus:ring-gray-100 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-500;
+    }
+
+    .btn-outline-danger {
+        @apply inline-flex gap-1 justify-center items-center text-red-500 hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center border border-red-500 bg-transparent focus:ring-red-300;
+    }
+
+    .btn-outline-success {
+        @apply inline-flex gap-1 justify-center items-center text-green-500 hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center border border-green-500 bg-transparent focus:ring-green-300;
+    }
+
+    .btn-outline-warning {
+        @apply inline-flex gap-1 justify-center items-center text-orange-500 hover:opacity-90 transition-all focus:ring-2 focus:ring-offset-2 focus:outline-none font-medium rounded-md text-sm px-5 py-2.5 text-center border border-orange-500 bg-transparent focus:ring-orange-300;
+    }
+
+    /* Badge */
+    .badge {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400 rounded-full;
+    }
+
+    .badge-primary {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-white bg-brand-500 dark:bg-primary/20 rounded-full;
+    }
+
+    .badge-success {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 dark:bg-green-900/20 dark:text-green-400 rounded-full;
+    }
+
+    .badge-info {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 rounded-full;
+    }
+
+    .badge-warning {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-orange-800 bg-orange-100 dark:bg-orange-900/20 dark:text-orange-400 rounded-full;
+    }
+
+    .badge-danger {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 dark:bg-red-900/20 dark:text-red-400 rounded-full;
+    }
+
+    .badge-secondary {
+        @apply inline-flex items-center justify-center px-2 py-1 text-xs font-medium text-gray-700 bg-gray-200 dark:bg-gray-800 dark:text-gray-300 rounded-full;
+    }
+
+    /* Inputs */
+    .form-control {
+        @apply rounded border-0 px-4 py-2.5 text-sm leading-5 text-gray-800 ring-1 ring-gray-200 h-10 w-full placeholder:text-gray-400 focus:outline-primary focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 dark:ring-gray-700 dark:focus:border-brand-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30;
+    }
+
+    /* Select specific styling with chevron icon */
+    select.form-control {
+        @apply appearance-none cursor-pointer;
+        padding-right: 2.5rem;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2398a2b3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-position: right 1.2rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+    }
+
+    /* Dark mode chevron for select */
+    .dark select.form-control {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2398a2b3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+    }
+
+    .form-control-file {
+        @apply cursor-pointer border-0 file:border-0 focus:file:ring-primary ring-1 ring-gray-200 h-10 w-full overflow-hidden rounded-md bg-transparent text-sm text-gray-500 transition-colors file:mr-5 file:-mt-0.5 file:border-collapse file:cursor-pointer dark:ring-gray-700 file:rounded-l-lg file:py-3 file:px-4 file:text-sm file:text-gray-700 placeholder:text-gray-400 file:bg-gray-100 hover:file:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:file:bg-white/[0.03] dark:file:text-gray-400 focus:ring-2 focus:ring-primary focus-visible:ring-2 focus-visible:ring-primary;
+    }
+
+    .form-control-textarea {
+        @apply rounded border-0 px-4 py-2.5 text-sm leading-5 text-gray-800 ring-1 ring-gray-200 w-full placeholder:text-gray-400 focus:outline-primary focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 dark:ring-gray-700 dark:focus:border-brand-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30;
+    }
+
+    .form-label {
+        @apply block font-medium mb-1.5 text-sm text-gray-700 dark:text-gray-300;
+    }
+
+    .form-checkbox {
+        @apply h-4 w-4 border checked:border-primary text-primary border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-primary dark:ring-offset-gray-800 dark:bg-gray-700 dark:border-gray-600;
+        appearance: none;
+        print-color-adjust: exact;
+        --tw-shadow: 0 0 #0000;
+        background-origin: border-box;
+        flex-shrink: 0;
+    }
+
+    .form-checkbox:checked {
+        @apply bg-primary;
+        print-color-adjust: exact;
+        background-image: url("data:image/svg+xml,%3csvg aria-hidden='true' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 12'%3e %3cpath stroke='white' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M1 5.917 5.724 10.5 15 1.5'/%3e %3c/svg%3e");
+        background-repeat: no-repeat;
+        background-size: 0.55em 0.55em;
+        background-position: 50%;
+    }
+
+    .form-control-combobox {
+        @apply rounded border-0 px-4 py-2.5 text-sm leading-5 text-gray-800 ring-1 ring-gray-200 h-10 w-full inline-flex items-center justify-between gap-2 whitespace-nowrap placeholder:text-gray-400 focus:outline-primary focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-50 dark:ring-gray-700 dark:focus:border-brand-800 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 cursor-pointer appearance-none;
+    }
+
+    /* Input Group */
+    .form-input-group {
+        @apply flex w-full;
+    }
+
+    .form-input-group .form-control {
+        @apply rounded-none min-w-0 flex-1;
+    }
+
+    .form-input-group > .form-control:first-child {
+        border-top-left-radius: 0.375rem;
+        border-bottom-left-radius: 0.375rem;
+    }
+
+    .form-input-group > .form-control:last-child {
+        border-top-right-radius: 0.375rem;
+        border-bottom-right-radius: 0.375rem;
+    }
+
+    /* Checkbox styles */
+    .tableCheckbox:checked ~ span span {
+        @apply opacity-100;
+    }
+    .tableCheckbox:checked ~ span {
+        @apply border-brand-500 bg-brand-500;
+    }
+
+    .form-check-input:checked ~ span {
+        @apply border-brand-500 dark:border-brand-500 border-[6px];
+    }
+
+    .taskCheckbox:checked ~ .box span {
+        @apply opacity-100;
+    }
+    .taskCheckbox:checked ~ p {
+        @apply text-gray-400 line-through;
+    }
+    .taskCheckbox:checked ~ .box {
+        @apply border-brand-500 bg-brand-500 dark:border-brand-500;
+    }
+
+    /* Task styles */
+    .task {
+        transition: all 0.2s ease; /* Smooth transition for visual effects */
+    }
+
+    .task.is-dragging {
+        border-radius: 0.75rem;
+        box-shadow:
+            0px 1px 3px 0px rgba(16, 24, 40, 0.1),
+            0px 1px 2px 0px rgba(16, 24, 40, 0.06);
+        opacity: 0.8;
+        cursor: grabbing; /* Changes the cursor to indicate dragging */
+    }
+
+    /* Table styles */
+    .table-responsive {
+        @apply space-y-3 border-t border-gray-100 dark:border-gray-800 overflow-x-auto overflow-y-visible;
+    }
+
+    .datatable-scroll-area {
+        @apply max-h-[calc(100dvh-15rem)] overflow-y-auto;
+    }
+
+    .datatable-scroll-area .table-thead-sticky .table-thead-th {
+        @apply sticky top-0 z-10;
+        box-shadow: 0 1px 0 0 rgb(243 244 246);
+    }
+
+    .dark .datatable-scroll-area .table-thead-sticky .table-thead-th {
+        box-shadow: 0 1px 0 0 rgb(31 41 55);
+    }
+
+    /* Wrapper only: -mx/px on the w-full breadcrumb row shrinks title + CTA vs the table. */
+    .datatable-unified-scroll-header {
+        @apply sticky top-0 z-5 -mx-4 bg-body px-4 py-3 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 dark:bg-gray-900;
+    }
+
+    .datatable-unified-scroll-header > div {
+        @apply mb-0 w-full;
+    }
+
+    /* Single page-level scroll: toolbar leaves, thead sticks below the page header. */
+    .table-responsive.datatable-page-scroll {
+        overflow: visible;
+    }
+
+    .datatable-page-scroll .table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .datatable-page-scroll .table-thead-sticky .table-thead-th {
+        @apply sticky z-5;
+        top: var(--admin-page-header-height, 4.5rem);
+        box-shadow: 0 1px 0 0 rgb(243 244 246);
+    }
+
+    .dark .datatable-page-scroll .table-thead-sticky .table-thead-th {
+        box-shadow: 0 1px 0 0 rgb(31 41 55);
+    }
+
+    /* An overflow-x container can't stick to the page, so the thead scrolls with the rows here. */
+    .datatable-page-scroll .datatable-table-scroll.is-scrollable-x {
+        @apply mb-0 overflow-x-auto;
+        scrollbar-width: none;
+    }
+
+    .datatable-page-scroll .datatable-table-scroll.is-scrollable-x::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Stand-in for the table's scrollbar, pinned in the sticky footer. */
+    .datatable-scrollbar {
+        @apply overflow-x-auto overflow-y-hidden border-b border-gray-100 dark:border-gray-800;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-gray-300) transparent;
+    }
+
+    .dark .datatable-scrollbar {
+        scrollbar-color: var(--color-gray-600) transparent;
+    }
+
+    .datatable-scrollbar::-webkit-scrollbar {
+        @apply h-2;
+    }
+
+    .datatable-scrollbar::-webkit-scrollbar-thumb {
+        @apply rounded-full bg-gray-300;
+    }
+
+    .dark .datatable-scrollbar::-webkit-scrollbar-thumb {
+        @apply bg-gray-600;
+    }
+
+    .datatable-page-scroll .datatable-table-scroll.is-scrollable-x .table-thead-sticky .table-thead-th {
+        @apply static;
+    }
+
+    .datatable-page-scroll .datatable-pagination-sticky {
+        @apply sticky bottom-0 z-5 bg-white dark:bg-gray-900;
+        box-shadow: 0 -1px 0 0 rgb(243 244 246);
+    }
+
+    .dark .datatable-page-scroll .datatable-pagination-sticky {
+        box-shadow: 0 -1px 0 0 rgb(31 41 55);
+    }
+
+    .table {
+        @apply w-full dark:text-gray-300;
+    }
+
+    .table-thead {
+        @apply bg-gray-50 capitalize;
+    }
+
+    .table-thead-th {
+        @apply p-2 bg-gray-50 dark:bg-gray-800 dark:text-white text-left px-5;
+    }
+
+    .table-thead-th-last {
+        @apply text-center;
+    }
+
+    .table-tr {
+        @apply border-b border-gray-100 dark:border-gray-800;
+    }
+
+    .table-td {
+        @apply px-5 py-4 sm:px-6;
+    }
+
+    .table-td-checkbox {
+        @apply p-2 px-5;
+    }
+
+    /* Alerts */
+    .alert {
+        @apply rounded-lg p-4 mb-4 flex items-start gap-3;
+    }
+
+    .alert-success {
+        @apply bg-green-50 border border-green-200 text-green-800;
+    }
+
+    .alert-danger {
+        @apply bg-red-50 border border-red-200 text-red-800;
+    }
+
+    .alert-warning {
+        @apply bg-amber-50 border border-amber-200 text-amber-800;
+    }
+
+    .alert-info {
+        @apply bg-blue-50 border border-blue-200 text-blue-800;
+    }
+
+    /* Cards */
+    .card {
+        @apply bg-white rounded-xl shadow-sm border border-gray-100 dark:bg-gray-800 dark:border-gray-700;
+    }
+
+    .card-header {
+        @apply px-6 py-4 border-b border-gray-100 dark:border-gray-700;
+    }
+
+    .card-body {
+        @apply p-6;
+    }
+
+    .card-footer {
+        @apply px-6 py-4 border-t border-gray-100 dark:border-gray-700;
+    }
+
+    .card-title {
+        @apply font-semibold text-gray-900 dark:text-white;
+    }
+
+    .card-description {
+        @apply text-sm text-gray-500 mt-1 dark:text-gray-400;
+    }
+
+    /* Text links */
+    .link {
+        @apply text-primary hover:opacity-80 transition-colors;
+    }
+
+    .link-secondary {
+        @apply text-gray-600 hover:text-gray-900 transition-colors dark:text-gray-400 dark:hover:text-gray-200;
+    }
+
+    .link-danger {
+        @apply text-red-600 hover:text-red-800 transition-colors;
+    }
+
+    /* Page titles */
+    .page-title {
+        @apply text-2xl font-bold text-gray-900 dark:text-white;
+    }
+
+    .page-description {
+        @apply mt-1 text-gray-600 dark:text-gray-400;
+    }
+
+    /* Section titles */
+    .section-title {
+        @apply text-lg font-semibold text-gray-900 dark:text-white;
+    }
+
+    /* Prose - Typography styles for markdown content */
+    .prose {
+        @apply text-gray-700 dark:text-gray-300 leading-relaxed;
+    }
+
+    .prose h1 {
+        @apply text-2xl font-bold text-gray-900 dark:text-white mt-6 mb-4 first:mt-0;
+    }
+
+    .prose h2 {
+        @apply text-xl font-semibold text-gray-900 dark:text-white mt-6 mb-3 pb-2 border-b border-gray-200 dark:border-gray-700 first:mt-0;
+    }
+
+    .prose h3 {
+        @apply text-lg font-semibold text-gray-900 dark:text-white mt-5 mb-2 first:mt-0;
+    }
+
+    .prose h4 {
+        @apply text-base font-semibold text-gray-900 dark:text-white mt-4 mb-2 first:mt-0;
+    }
+
+    .prose p {
+        @apply my-3 first:mt-0 last:mb-0;
+    }
+
+    .prose ul {
+        @apply my-4 pl-6 space-y-2 list-disc;
+    }
+
+    .prose ol {
+        @apply my-4 pl-6 space-y-2 list-decimal;
+    }
+
+    .prose li {
+        @apply pl-1;
+    }
+
+    .prose li::marker {
+        @apply text-gray-400 dark:text-gray-500;
+    }
+
+    .prose strong {
+        @apply font-semibold text-gray-900 dark:text-white;
+    }
+
+    .prose em {
+        @apply italic;
+    }
+
+    .prose a {
+        @apply text-primary underline hover:opacity-80;
+    }
+
+    .prose blockquote {
+        @apply pl-4 border-l-4 border-gray-200 dark:border-gray-600 italic text-gray-600 dark:text-gray-400 my-4;
+    }
+
+    .prose code {
+        @apply font-mono text-sm bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200;
+    }
+
+    .prose pre {
+        @apply my-4 p-4 bg-gray-900 dark:bg-gray-950 rounded-lg overflow-x-auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .prose pre code {
+        @apply bg-transparent p-0 text-gray-100;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    /* LaraBuilder code block */
+    .prose .lb-code pre {
+        @apply my-0;
+        white-space: pre;
+        overflow-x: auto;
+    }
+
+    .prose .lb-code pre code {
+        display: block;
+        white-space: pre;
+    }
+
+    /* LaraBuilder preformatted block */
+    .prose .lb-preformatted,
+    .prose pre.lb-block {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    .prose hr {
+        @apply my-6 border-gray-200 dark:border-gray-700;
+    }
+
+    .prose table {
+        @apply w-full my-4 text-sm;
+    }
+
+    .prose thead {
+        @apply bg-gray-50 dark:bg-gray-800;
+    }
+
+    .prose th {
+        @apply px-4 py-2 text-left font-semibold text-gray-900 dark:text-white border-b border-gray-200 dark:border-gray-700;
+    }
+
+    .prose td {
+        @apply px-4 py-2 border-b border-gray-100 dark:border-gray-700;
+    }
+
+    .prose img {
+        @apply rounded-lg my-4 max-w-full;
+    }
+
+    /* Prose size variants */
+    .prose-sm {
+        @apply text-sm;
+    }
+
+    .prose-sm h1 {
+        @apply text-xl;
+    }
+
+    .prose-sm h2 {
+        @apply text-lg;
+    }
+
+    .prose-sm h3 {
+        @apply text-base;
+    }
+
+    .prose-sm p,
+    .prose-sm ul,
+    .prose-sm ol {
+        @apply my-2;
+    }
+
+    .prose-sm pre {
+        @apply my-3 p-3;
+    }
+}

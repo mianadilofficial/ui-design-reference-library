@@ -1,0 +1,22 @@
+<x-buttons.action-buttons
+    :label="__('Actions')"
+    :showLabel="false"
+    align="right"
+>
+    <x-buttons.action-item
+        href="https://example.com/1"
+        icon="lucide:pencil"
+        :label="__('Edit')"
+    />
+    <x-buttons.action-item
+        href="https://example.com/1"
+        icon="lucide:eye"
+        :label="__('View')"
+    />
+    <x-buttons.action-item
+        href="https://example.com/1"
+        icon="lucide:trash"
+        :label="__('Delete')"
+        class="text-red-600 dark:text-red-400"
+    />
+</x-buttons.action-buttons>

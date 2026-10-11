@@ -1,0 +1,30 @@
+@extends('$LOWER_NAME$::layouts.master')
+
+@section('title')
+    {{ $breadcrumbs['title'] . ' | ' . config('app.name') }}
+@endsection
+
+@section('$LOWER_NAME$-admin-content')
+    <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <x-breadcrumbs :breadcrumbs="$breadcrumbs" />
+
+        <div class="mt-6">
+            <x-card.card>
+                <x-slot name="header">{{ __('$MODEL_NAME$ Information') }}</x-slot>
+
+                <dl class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                    $DISPLAY_FIELDS$
+                </dl>
+
+                <div class="mt-6 flex gap-3">
+                    <a href="{{ route('admin.$LOWER_NAME$.$MODEL_PLURAL_LOWER$.edit', $$MODEL_LOWER$->id) }}" class="btn btn-primary">
+                        {{ __('Edit') }}
+                    </a>
+                    <a href="{{ route('admin.$LOWER_NAME$.$MODEL_PLURAL_LOWER$.index') }}" class="btn btn-default">
+                        {{ __('Back to List') }}
+                    </a>
+                </div>
+            </x-card.card>
+        </div>
+    </div>
+@endsection

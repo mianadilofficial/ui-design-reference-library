@@ -1,0 +1,193 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Backend;
+
+use App\Enums\ActionType;
+use App\Enums\Hooks\SettingFilterHook;
+use App\Http\Controllers\Controller;
+use App\Models\Setting;
+use App\Services\CacheService;
+use App\Services\EnvWriter;
+use App\Services\ImageService;
+use App\Services\RecaptchaService;
+use App\Services\SettingService;
+use App\Support\Settings\SensitiveSettingValue;
+use App\Support\Facades\Hook;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+
+class SettingController extends Controller
+{
+    public function __construct(
+        private readonly SettingService $settingService,
+        private readonly EnvWriter $envWriter,
+        private readonly CacheService $cacheService,
+        private readonly ImageService $imageService,
+        private readonly RecaptchaService $recaptchaService,
+    ) {
+    }
+
+    public function index($tab = null): Renderable|RedirectResponse
+    {
+        $this->authorize('manage', Setting::class);
+
+        $tab = $tab ?? request()->input('tab', 'general');
+
+        if ($tab === 'mcp') {
+            return redirect()->route('admin.settings.mcp.index');
+        }
+
+        $this->setBreadcrumbTitle(__('Settings'))
+            ->setBreadcrumbIcon('lucide:settings');
+
+        return $this->renderViewWithBreadcrumbs('backend.pages.settings.index', compact('tab'));
+    }
+
+    public function store(Request $request)
+    {
+        $this->authorize('manage', Setting::class);
+
+        // Restrict specific fields in demo mode.
+        if (config('app.demo_mode', false)) {
+            $restrictedFields = Hook::applyFilters(SettingFilterHook::SETTINGS_RESTRICTED_FIELDS, [
+                'app_name',
+                'google_analytics_script',
+                'recaptcha_site_key',
+                'recaptcha_secret_key',
+                'recaptcha_enabled_pages',
+                'recaptcha_score_threshold',
+                'email_verification_api_key',
+                'hide_admin_url',
+                'custom_login_route',
+                'hide_default_login_url',
+                'auth_redirect_after_login',
+                'auth_redirect_after_register',
+                'mcp_enabled',
+            ]);
+            $fields = $request->except($restrictedFields);
+        } else {
+            $fields = $request->all();
+        }
+
+        // Validate custom login route if provided
+        if ($request->filled('custom_login_route')) {
+            $request->validate([
+                'custom_login_route' => 'regex:/^[a-zA-Z0-9\-\_\/]+$/|min:3|max:50',
+            ], [
+                'custom_login_route.regex' => __('The custom login route can only contain letters, numbers, hyphens, underscores and forward slashes.'),
+            ]);
+        }
+
+        $uploadPath = 'uploads/settings';
+
+        // If the error-notifications recipient is left blank, default it to the
+        // currently logged-in admin so the scheduled digest knows where to send.
+        if (
+            array_key_exists('error_notifications_email', $fields)
+            && trim((string) $fields['error_notifications_email']) === ''
+            && ($currentEmail = $request->user()?->email)
+        ) {
+            $fields['error_notifications_email'] = $currentEmail;
+        }
+
+        // Handle checkbox fields that might not be present when unchecked
+        $checkboxFields = [
+            'hide_admin_url',
+            'hide_default_login_url',
+            'error_notifications_enabled',
+            'auth_registration_honeypot_enabled',
+            'auth_registration_ip_limit_enabled',
+            'auth_registration_email_domain_check_enabled',
+            'auth_defer_welcome_email_until_verified',
+            'email_verification_enabled',
+        ];
+        foreach ($checkboxFields as $checkboxField) {
+            // Skip restricted fields in demo mode
+            if (config('app.demo_mode', false) && in_array($checkboxField, $restrictedFields ?? [])) {
+                continue;
+            }
+
+            if (! isset($fields[$checkboxField]) && $request->has('_token')) {
+                // If the form was submitted but checkbox wasn't checked, set to 0
+                $fields[$checkboxField] = '0';
+            }
+        }
+
+        foreach ($fields as $fieldName => $fieldValue) {
+            if ($request->hasFile($fieldName)) {
+                $this->imageService->deleteImageFromPublic((string) config($fieldName));
+                $fileUrl = $this->imageService->storeImageAndGetUrl($request, $fieldName, $uploadPath);
+                $this->settingService->addSetting($fieldName, $fileUrl);
+            } elseif ($fieldName === 'social_links') {
+                // Social links are submitted as JSON string from Alpine.js
+                $this->settingService->addSetting($fieldName, $fieldValue);
+            } elseif ($fieldName === 'recaptcha_enabled_pages') {
+                // Validate enabled pages against allowed list.
+                $enabledPages = $request->input('recaptcha_enabled_pages', []);
+                $validPages = array_keys($this->recaptchaService::getAvailablePages());
+                $enabledPages = array_intersect($enabledPages, $validPages);
+                $this->settingService->addSetting($fieldName, json_encode(array_values($enabledPages)));
+            } else {
+                $this->settingService->addSetting($fieldName, $fieldValue);
+            }
+        }
+
+        $this->envWriter->batchWriteKeysToEnvFile($fields);
+
+        $loggedFields = collect($fields)
+            ->map(function (mixed $value, string $key): mixed {
+                if (
+                    SensitiveSettingValue::isSensitive($key)
+                    && $value !== ''
+                    && ! SensitiveSettingValue::isMaskedSubmission($value)
+                ) {
+                    return SensitiveSettingValue::MASK;
+                }
+
+                return $value;
+            })
+            ->all();
+
+        $this->storeActionLog(ActionType::UPDATED, [
+            'settings' => $loggedFields,
+        ]);
+
+        return redirect()->back()->with('success', 'Settings saved successfully.');
+    }
+
+    /**
+     * Remove an uploaded image for a given setting key via AJAX.
+     */
+    public function removeImage(Request $request): JsonResponse
+    {
+        $this->authorize('manage', Setting::class);
+
+        $allowedKeys = ['site_logo_lite', 'site_logo_dark', 'site_icon', 'site_favicon'];
+
+        $request->validate([
+            'option_key' => ['required', 'string', 'in:' . implode(',', $allowedKeys)],
+        ]);
+
+        $optionKey = $request->input('option_key');
+        $existingValue = (string) config("settings.{$optionKey}");
+
+        if ($existingValue !== '') {
+            $this->imageService->deleteImageFromPublic($existingValue);
+        }
+
+        $this->settingService->addSetting($optionKey, '');
+
+        $this->storeActionLog(ActionType::UPDATED, [
+            'setting_image_removed' => $optionKey,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('Image removed successfully.'),
+        ]);
+    }
+}

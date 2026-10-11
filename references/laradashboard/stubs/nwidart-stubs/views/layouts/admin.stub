@@ -1,0 +1,9 @@
+@extends('$LOWER_NAME$::layouts.master')
+
+@section('$LOWER_NAME$-admin-content')
+    <div class="space-y-6">
+        <div>
+            {{ $slot }}
+        </div>
+    </div>
+@endsection

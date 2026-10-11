@@ -1,0 +1,243 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use ArrayAccess;
+use Illuminate\Contracts\Support\Arrayable;
+
+/**
+ * Module model representing a filesystem-based module.
+ *
+ * @property string $id
+ * @property string $name
+ * @property string $title
+ * @property string $description
+ * @property string $icon
+ * @property string|null $logo_image
+ * @property string|null $banner_image
+ * @property string $version
+ * @property string|null $author
+ * @property string|null $author_url
+ * @property string|null $documentation_url
+ * @property array $tags
+ * @property bool $status
+ * @property string|null $category
+ * @property int $priority
+ */
+class Module implements Arrayable, ArrayAccess
+{
+    public string $id;
+
+    public string $name;
+
+    public string $title = '';
+
+    public string $description = '';
+
+    public string $icon = 'lucide:box';
+
+    public ?string $logo_image = null;
+
+    public ?string $banner_image = null;
+
+    public string $version = '1.0.0';
+
+    public ?string $author = null;
+
+    public ?string $author_url = null;
+
+    public ?string $documentation_url = null;
+
+    public array $tags = [];
+
+    public bool $status = false;
+
+    public ?string $category = null;
+
+    public int $priority = 0;
+
+    public ?string $min_laradashboard_required = null;
+
+    public function __construct(array $attributes)
+    {
+        foreach ($attributes as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->{$key} = $value;
+            }
+        }
+
+        if ($this->id === '') {
+            $this->id = $this->name;
+        }
+
+        $this->status = $attributes['status'] ?? false;
+    }
+
+    /**
+     * Check if this module is compatible with the current LaraDashboard version.
+     */
+    public function isCompatibleWithCore(): bool
+    {
+        if (empty($this->min_laradashboard_required)) {
+            return true;
+        }
+
+        $coreVersion = self::getCoreVersion();
+
+        if (! $coreVersion) {
+            return true;
+        }
+
+        return version_compare($coreVersion, $this->min_laradashboard_required, '>=');
+    }
+
+    /**
+     * Get the core LaraDashboard version from version.json.
+     */
+    public static function getCoreVersion(): ?string
+    {
+        static $version = null;
+
+        if ($version === null) {
+            $versionFile = base_path('version.json');
+
+            if (file_exists($versionFile)) {
+                $data = json_decode(file_get_contents($versionFile), true);
+                $version = $data['version'] ?? '';
+            } else {
+                $version = '';
+            }
+        }
+
+        return $version ?: null;
+    }
+
+    /**
+     * Check if module has a logo image.
+     */
+    public function hasLogoImage(): bool
+    {
+        return ! empty($this->logo_image);
+    }
+
+    /**
+     * Check if module has a banner image.
+     */
+    public function hasBannerImage(): bool
+    {
+        return ! empty($this->banner_image);
+    }
+
+    /**
+     * Get the logo URL (handles various path formats).
+     *
+     * Supported formats:
+     * - Full URL: "https://example.com/logo.png" -> used as-is
+     * - Absolute path: "/images/custom/logo.png" -> asset('/images/custom/logo.png')
+     * - Simple filename: "logo.png" -> asset('/images/modules/{module}/logo.png')
+     *
+     * For simple filenames, the logo should be placed in the module root directory
+     * and will be copied to public/images/modules/{module}/ during installation.
+     */
+    public function getLogoUrl(): ?string
+    {
+        if (! $this->hasLogoImage()) {
+            return null;
+        }
+
+        // If it's already a URL, return as-is
+        if (str_starts_with($this->logo_image, 'http://') || str_starts_with($this->logo_image, 'https://')) {
+            return $this->logo_image;
+        }
+
+        // If it starts with /, treat as absolute path from public directory
+        if (str_starts_with($this->logo_image, '/')) {
+            return asset($this->logo_image);
+        }
+
+        // Simple filename - use the module images directory
+        // Append version as cache-buster so browsers fetch the new image after module updates
+        return asset("images/modules/{$this->name}/{$this->logo_image}") . '?v=' . urlencode($this->version);
+    }
+
+    /**
+     * Get the banner URL (handles various path formats).
+     *
+     * Supported formats:
+     * - Full URL: "https://example.com/banner.png" -> used as-is
+     * - Absolute path: "/images/custom/banner.png" -> asset('/images/custom/banner.png')
+     * - Simple filename: "banner.png" -> asset('/images/modules/{module}/banner.png')
+     *
+     * For simple filenames, the banner should be placed in the module root directory
+     * and will be copied to public/images/modules/{module}/ during installation.
+     */
+    public function getBannerUrl(): ?string
+    {
+        if (! $this->hasBannerImage()) {
+            return null;
+        }
+
+        // If it's already a URL, return as-is
+        if (str_starts_with($this->banner_image, 'http://') || str_starts_with($this->banner_image, 'https://')) {
+            return $this->banner_image;
+        }
+
+        // If it starts with /, treat as absolute path from public directory
+        if (str_starts_with($this->banner_image, '/')) {
+            return asset($this->banner_image);
+        }
+
+        // Simple filename - use the module images directory
+        // Append version as cache-buster so browsers fetch the new image after module updates
+        return asset("images/modules/{$this->name}/{$this->banner_image}") . '?v=' . urlencode($this->version);
+    }
+
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * Get attributes as array for compatibility with datatable.
+     *
+     * @return array<string, mixed>
+     */
+    public function getAttributes(): array
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * ArrayAccess: Check if offset exists.
+     */
+    public function offsetExists(mixed $offset): bool
+    {
+        return property_exists($this, $offset);
+    }
+
+    /**
+     * ArrayAccess: Get value at offset.
+     */
+    public function offsetGet(mixed $offset): mixed
+    {
+        return $this->{$offset} ?? null;
+    }
+
+    /**
+     * ArrayAccess: Set value at offset.
+     */
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        $this->{$offset} = $value;
+    }
+
+    /**
+     * ArrayAccess: Unset value at offset.
+     */
+    public function offsetUnset(mixed $offset): void
+    {
+        unset($this->{$offset});
+    }
+}

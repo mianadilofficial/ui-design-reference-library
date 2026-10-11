@@ -1,0 +1,82 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Requests\Setting\UpdateSettingsRequest;
+use App\Http\Resources\SettingResource;
+use App\Models\Setting;
+use App\Services\SettingService;
+use App\Support\Settings\SensitiveSettingValue;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+
+class SettingController extends ApiController
+{
+    public function __construct(private readonly SettingService $settingService)
+    {
+    }
+
+    /**
+     * Settings list.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $this->authorize('viewAny', Setting::class);
+        $settings = $this->settingService->getAllSettingsForApi(
+            $request->input('search'),
+            $request->integer('autoload')
+        );
+
+        return $this->resourceResponse(
+            SettingResource::collection($settings),
+            'Settings retrieved successfully'
+        );
+    }
+
+    /**
+     * Show Setting.
+     */
+    public function show(string $option_name): JsonResponse
+    {
+        $setting = $this->settingService->getSettingByKey($option_name);
+
+        if (! $setting || SensitiveSettingValue::isHiddenFromApi($setting->option_name)) {
+            return $this->errorResponse('Setting not found', 404);
+        }
+
+        $this->authorize('view', $setting);
+
+        return $this->resourceResponse(
+            new SettingResource($setting),
+            'Setting retrieved successfully'
+        );
+    }
+
+    /**
+     * Update Settings.
+     */
+    public function update(UpdateSettingsRequest $request): JsonResponse
+    {
+        $this->authorize('update', Setting::class);
+
+        $settings = $request->input('settings', []);
+        $updatedSettings = [];
+
+        foreach ($settings as $key => $value) {
+            $setting = $this->settingService->updateOrCreateSetting((string) $key, $value);
+
+            if ($setting !== null) {
+                $updatedSettings[] = $setting;
+            }
+        }
+
+        $this->logAction('Settings Updated', null, ['updated_keys' => array_keys($settings)]);
+
+        return $this->resourceResponse(
+            SettingResource::collection(collect($updatedSettings)),
+            'Settings updated successfully'
+        );
+    }
+}

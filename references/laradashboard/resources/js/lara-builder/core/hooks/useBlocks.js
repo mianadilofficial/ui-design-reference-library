@@ -1,0 +1,226 @@
+/**
+ * useBlocks - Hook for Block Management
+ *
+ * Provides convenient methods for managing blocks in the builder.
+ *
+ * @example
+ * const { blocks, addBlock, updateBlock, deleteBlock } = useBlocks();
+ */
+
+import { useCallback, useMemo } from 'react';
+import { useBuilder } from '../BuilderContext';
+import { blockRegistry } from '../../registry/BlockRegistry';
+import { pendingCursors } from '../pendingCursors';
+
+/**
+ * Hook for block management operations
+ */
+export function useBlocks() {
+    const { state, actions, context } = useBuilder();
+
+    const { blocks, selectedBlockId } = state;
+
+    /**
+     * Get the currently selected block
+     */
+    const selectedBlock = useMemo(() => {
+        if (!selectedBlockId) return null;
+
+        const findBlock = (items) => {
+            if (!Array.isArray(items)) return null;
+
+            for (const item of items) {
+                if (Array.isArray(item)) {
+                    // Item is a column (array of blocks)
+                    const found = findBlock(item);
+                    if (found) return found;
+                } else if (item && typeof item === 'object' && item.type) {
+                    // Item is a block
+                    if (item.id === selectedBlockId) return item;
+                    if (Array.isArray(item.props?.children)) {
+                        const found = findBlock(item.props.children);
+                        if (found) return found;
+                    }
+                }
+            }
+            return null;
+        };
+
+        return findBlock(blocks);
+    }, [blocks, selectedBlockId]);
+
+    /**
+     * Add a new block by type
+     */
+    const addBlockByType = useCallback(
+        (type, index, props = {}) => {
+            const instance = blockRegistry.createInstance(type, props);
+            if (instance) {
+                actions.addBlock(instance, index);
+                return instance;
+            }
+            return null;
+        },
+        [actions]
+    );
+
+    /**
+     * Add a block after the selected block
+     */
+    const addBlockAfterSelected = useCallback(
+        (type, props = {}) => {
+            const selectedIndex = blocks.findIndex((b) => b.id === selectedBlockId);
+            const insertIndex = selectedIndex > -1 ? selectedIndex + 1 : blocks.length;
+
+            const instance = addBlockByType(type, insertIndex, props);
+
+            if (instance) {
+                actions.selectBlock(instance.id);
+
+                if (["text", "heading"].includes(type)) {
+                    pendingCursors.set(instance.id, "start");
+                }
+            }
+
+            return instance;
+        },
+        [blocks, selectedBlockId, addBlockByType, actions]
+    );
+
+    /**
+     * Get block index in array
+     */
+    const getBlockIndex = useCallback(
+        (blockId) => {
+            return blocks.findIndex((b) => b.id === blockId);
+        },
+        [blocks]
+    );
+
+    /**
+     * Check if a block can be moved up
+     */
+    const canMoveUp = useCallback(
+        (blockId) => {
+            const index = getBlockIndex(blockId);
+            return index > 0;
+        },
+        [getBlockIndex]
+    );
+
+    /**
+     * Check if a block can be moved down
+     */
+    const canMoveDown = useCallback(
+        (blockId) => {
+            const index = getBlockIndex(blockId);
+            return index > -1 && index < blocks.length - 1;
+        },
+        [blocks.length, getBlockIndex]
+    );
+
+    /**
+     * Move block up
+     */
+    const moveBlockUp = useCallback(
+        (blockId) => {
+            const index = getBlockIndex(blockId);
+            if (index > 0) {
+                actions.moveBlock(index, index - 1);
+            }
+        },
+        [getBlockIndex, actions]
+    );
+
+    /**
+     * Move block down
+     */
+    const moveBlockDown = useCallback(
+        (blockId) => {
+            const index = getBlockIndex(blockId);
+            if (index > -1 && index < blocks.length - 1) {
+                actions.moveBlock(index, index + 1);
+            }
+        },
+        [blocks.length, getBlockIndex, actions]
+    );
+
+    /**
+     * Get blocks of a specific type
+     */
+    const getBlocksByType = useCallback(
+        (type) => {
+            return blocks.filter((b) => b.type === type);
+        },
+        [blocks]
+    );
+
+    /**
+     * Check if builder has any blocks
+     */
+    const hasBlocks = blocks.length > 0;
+
+    /**
+     * Get total block count (including nested)
+     */
+    const totalBlockCount = useMemo(() => {
+        let count = 0;
+
+        const countBlocks = (items) => {
+            if (!Array.isArray(items)) return;
+
+            for (const item of items) {
+                if (Array.isArray(item)) {
+                    // Item is a column (array of blocks)
+                    countBlocks(item);
+                } else if (item && typeof item === 'object' && item.type) {
+                    // Item is a block
+                    count++;
+                    if (Array.isArray(item.props?.children)) {
+                        countBlocks(item.props.children);
+                    }
+                }
+            }
+        };
+
+        countBlocks(blocks);
+        return count;
+    }, [blocks]);
+
+    return {
+        // State
+        blocks,
+        selectedBlockId,
+        selectedBlock,
+        hasBlocks,
+        totalBlockCount,
+
+        // Actions from context
+        addBlock: actions.addBlock,
+        updateBlock: actions.updateBlock,
+        deleteBlock: actions.deleteBlock,
+        moveBlock: actions.moveBlock,
+        duplicateBlock: actions.duplicateBlock,
+        selectBlock: actions.selectBlock,
+        deselectAll: actions.deselectAll,
+
+        // Extended actions
+        addBlockByType,
+        addBlockAfterSelected,
+
+        // Movement
+        canMoveUp,
+        canMoveDown,
+        moveBlockUp,
+        moveBlockDown,
+
+        // Utilities
+        getBlockIndex,
+        getBlocksByType,
+
+        // Context
+        context,
+    };
+}
+
+export default useBlocks;

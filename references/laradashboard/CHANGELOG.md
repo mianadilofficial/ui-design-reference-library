@@ -1,0 +1,533 @@
+# Changelog
+
+All notable changes to **Lara Dashboard** are documented in this file. This project follows [Semantic Versioning](https://semver.org/).
+
+> **Latest release:** [v1.4.8](https://github.com/laradashboard/laradashboard/releases/tag/v1.4.8) • [View all releases](https://github.com/laradashboard/laradashboard/releases)
+
+---
+
+## [v1.4.8] — 2026-10-03**
+-   **Fix (Security):** Fixed some security improvements.
+-   **Fix:** Fixed some mobile responsive issues.
+
+## [v1.4.7] — 2026-10-02
+
+### Security
+
+- **Fix:** Settings API no longer returns secret values to callers who only have `settings.view`.
+- **Fix:** Password recovery uses the same public-form DNS email checks as registration.
+- **Fix:** The registration IP limit can no longer be skipped by concurrent signups.
+- **Fix:** The Superadmin role can no longer be renamed, reassigned, or minted outside the intended path.
+- **Fix:** Publishing a post requires the publish permission. A client-supplied status can no longer approve a post.
+- **Fix:** Email builder redirect URLs are limited to safe same-application targets.
+- **Fix:** MCP base64 `upload-media` is size-capped before the payload is decoded.
+- **Fix:** `GET /api/translations/{lang}` only reads a locale file inside `resources/lang`. Locale names are restricted to letters, numbers, underscores, and hyphens, which closes the Windows backslash traversal reported in GHSA-43jp-66c9-7cgh.
+
+### Datatable
+
+- **Fix:** Wide tables scroll horizontally again.
+- **Fix:** Page scroll no longer shakes when off-screen icons are measured.
+- **Fix:** Toolbar, pager, and filter dropdowns stay usable on small screens.
+- **Fix:** Sticky header and pagination stack above the table instead of covering the page title.
+
+### Other
+
+- **Chore:** `phpseclib/phpseclib` 3.0.57 and `js-yaml` 5.4.2.
+
+## [v1.4.5] — 2026-09-23
+
+### Datatable
+
+- **New:** Column visibility on every datatable by default — a Columns dropdown that remembers the choice in the browser, including generated module tables.
+- **New:** Unified page scroll is the default — sticky headers and sticky pagination on every list table.
+- **Fix:** List-page title row and breadcrumbs stay aligned with the table; unified-scroll padding no longer shrinks the page action button.
+
+### Posts and pages
+
+- **New:** View counts on Posts and Pages admin lists. Public visits are stored in `post_meta` (`views`) and shown as a sortable Views column.
+
+### MCP
+
+- **New:** Multipart hero upload with `serve_ok` verification so featured images fail when the file is not publicly serveable (#327).
+- **Improve:** Base64 `upload-media` is limited to about 100KB; larger images use the multipart route.
+- **Fix:** Corrupted raster uploads are rejected, and public media URLs are probed before `serve_ok` is reported.
+- **Fix:** Signed multipart uploads no longer require a bearer token.
+- **Docs:** Admin MCP connection guide includes multipart hero upload steps and a curl example.
+
+### Security
+
+- **Fix:** Core upgrade restore, download, and replace actions are Superadmin-only. An admin with `settings.edit` could previously replace application files.
+- **Fix:** Installed-modules Livewire actions (enable, disable, delete, update) now go through `ModulePolicy`, matching the HTTP controller.
+
+### Editor and AI
+
+- **Fix:** Text editor autoresize after content changes and when embedded images, iframes, or video finish loading.
+- **New:** `AiContentGeneratorService::chatCompletion()` for multi-turn chat across OpenAI, Claude, Gemini, and Ollama.
+
+### Other
+
+- **Fix:** Media security tests delete only files created during the test, so they no longer wipe the local media library.
+
+## [v1.4.2] — 2026-09-14
+
+### Public form spam protection
+
+- **New:** Shared public-form guard layer — honeypot, reCAPTCHA v3, disposable/typo/domain email validation via `PublicFormGuardService` and `ValidatesPublicFormSubmissions`.
+- **New:** Reusable Blade components — `<x-public-form.honeypot>`, `<x-public-form.livewire-recaptcha>`, `<x-public-form.submit-button>`.
+- **New:** `EmailDomainCheckService`, `EmailSubmissionValidator`, and `EmailVerificationService` for registration and public form email quality checks.
+- **Improve:** Auth settings UI for email domain checks, reCAPTCHA page targeting, and blocked domains.
+- **Improve:** Registration, forgot-password, and reset-password flows use dedicated Form Request classes and spam guards.
+
+### MCP
+
+- **New:** `UploadMediaTool` — MCP agents can upload media and attach featured images.
+- **Fix:** MCP media URLs for standalone uploads use `resolveMediaUrl()` instead of signed conversion URLs.
+- **Improve:** MCP token service, token storage validation, and Settings → MCP management UI.
+
+### Datatable
+
+- **New:** Shift-click range selection for bulk checkboxes (current page).
+- **New:** Sticky table headers when scrolling long lists.
+- **Fix:** Bulk actions dropdown not opening — `@click.outside` moved to the wrapper that includes the trigger button.
+- **Fix:** Selection sync deferred until bulk actions run (prevents Livewire re-render from breaking shift-click anchor).
+
+### Module management
+
+- **Improve:** Module replace auto-activates and reports `already_activated` in the JSON response.
+- **Improve:** Upload queue shows **Replaced & active** badge instead of a stale **Activate** button after replace.
+- **Improve:** Conflict modal copy clarifies that replace auto-activates the uploaded version.
+
+### Other
+
+- **Fix:** Pulse database storage compatibility on fresh installs.
+- **Improve:** `ModuleZipCommand` packaging reliability.
+- **Chore:** 200+ new translation strings synced across 31 locales.
+
+## [v1.4.0] — 2026-09-07
+- **New:** LaraDashboard MCP server — connect Cursor, Claude, and other MCP agents to manage content, CRM, forms, email, cache, logs, and daily briefings from **Settings → MCP**.
+- **New:** MCP agent tokens with ability-scoped permissions (`McpFilterHook` registry for core and module tools).
+- **New:** Core MCP tools — posts, SEO meta, email templates, daily briefing, cache clear, and storage log listing.
+- **Improve:** Module vendor autoload guard on Laravel 13+ (prevents stale Illuminate copies from breaking Eloquent).
+
+## [v1.3.2] — 2026-09-06
+- **New:** Dashboard widget customization — per-user show/hide for stat cards and dashboard sections via the new widget customizer panel.
+- **Improve:** Lara Builder drag preview, pending-save flush, clearer save-error handling, and list block styling/reliability.
+- **Fix:** `ModuleStyles` component — tighter asset scoping, broader manifest coverage, and safer module CSS loading when builds are missing.
+- **Fix:** Module replace/install activation edge cases during marketplace and upload flows.
+- **Fix (Security):** Marketplace Livewire install now requires Superadmin (`ModulePolicy::create`), closing unauthorized module install and auto-activation.
+- **Fix (Security):** Post builder image/video uploads require `post.create` or `post.edit`; stored extensions derive from detected MIME type (blocks `.pht` and similar bypasses).
+- **Fix (Security):** Manual core upgrade ZIP upload restricted to Superadmin (marketplace-driven upgrades unchanged for `settings.edit`).
+- **Fix (Security):** Builder markdown fetch hardened against SSRF — git-host allowlist, private/reserved IP blocking, no redirect following, and builder permission gate on API routes.
+- **Chore:** Dependency updates — `livewire/livewire` 4.3.4, `league/commonmark` 2.10.0, `browserslist` 4.28.8, `fast-uri` 3.1.7.
+
+## [v1.3.1] — 2026-08-31
+- **Fix:** Password visibility toggle — dynamic `aria-label`, `aria-pressed`, and separate hide tooltip for screen readers (#296).
+- **Fix:** Mobile sidebar toggle — correct open/close icon on small screens plus `aria-label` and `aria-expanded` (#295).
+- **Fix:** Fresh install migration failure when `posts.design_json` is missing — new guard migration runs before canvas padding data fix.
+- **Fix:** Page canvas content-padding migration skips safely when `design_json` column is absent.
+- **Improve:** Core upgrade accepts `UPGRADE_ZIP_PATH` for CI/demo upgrades from a pre-staged release ZIP.
+- **Improve:** Release workflow upgrade-demo job uses the built artifact ZIP instead of downloading from marketplace.
+- **Chore:** PHPStan fix in `CoreUpgradeService`; ignore `config.bat` in `.gitignore`.
+- **Chore:** Synced 3 new accessibility strings (`Hide password`, `Open sidebar`, `Close sidebar`) across 31 locales.
+
+## [v1.3.0] — 2026-08-30
+- **Fix:** Hardened media uploads — SVG sanitization, server-detected MIME validation, filename sanitization, and `.htaccess` rules blocking script execution on public storage.
+- **Fix:** License API now requires authentication and `module.activate` permission; low-privileged users can no longer read stored license keys.
+- **Fix:** Backup restore rejects path traversal and symlink escapes in backup filenames.
+- **Fix:** Media library upload modal Alpine.js `x-data` attribute quoting; restored header upload button.
+- **New:** GitHub Actions release pipeline — demo deploy, auto-release on `version.json` bump, marketplace publish, and `/api/health` smoke tests.
+- **New:** Headless upgrade commands (`core:upgrade`, `core:verify`, `core:snapshot`, `core:rollback`), Hostinger deploy scripts, and `module:publish-images` on deploy/upgrade.
+- **Fix:** CRM and Custom Forms menu logos republish after deploy — fixes broken module icons when `public/images/modules` is gitignored.
+- **Change:** Demo database refresh moved from every 15 minutes to hourly; updated popover copy across 21 locales.
+- **Fix:** README star-history chart URL; demo deploy PHP 8.3 detection on Hostinger.
+- **Chore:** Dependency updates (`league/commonmark`, `guzzlehttp/guzzle`, `axios`, `js-yaml`, `nanoid`, `fast-uri`, `ip-address`).
+
+## [v1.2.2] — 2026-07-17
+- **Fix:** Core upgrade no longer deletes `vendor/` in-place during the same HTTP request — new vendor is staged, validated, and swapped atomically.
+- **Fix:** Post-upgrade migrations and cache clearing run in a fresh PHP CLI subprocess, preventing stale Composer autoloader failures on shared hosting (e.g. missing Livewire `ExtendedCompilerEngine.php`).
+- **Improve:** Pre-upgrade backups now include the `vendor/` folder so restore fully rolls back a failed upgrade.
+- **Fix:** `protect-local-files` Composer script runs via PHP for cross-platform compatibility (Windows).
+
+
+## [v1.2.1] — 2026-07-15
+
+### Lara Builder
+
+- **Fix:** Text Editor block lifecycle stabilized — cleaner mount/unmount, reliable content persistence, and restored list markers in the canvas.
+- **Fix:** List blocks preserve content when changing list type (ordered ↔ unordered).
+- **New:** Native Ctrl+Z / Cmd+Z undo support in the builder via history integration.
+
+### Modules & scaffolding
+
+- **Fix:** `module:make-crud` command and related stubs (controller, Vite, master view).
+- **New:** `ModuleStyles` Blade component safely renders module Vite CSS without crashing when the build/manifest is missing.
+
+### Dependencies
+
+- **Chore:** Bumped `spatie/laravel-medialibrary` from 11.21.0 to 11.23.0.
+
+### Tests
+
+- Added/updated: `TextEditorBlockBuilderTest`, `TextEditorBlockTest`, `ModuleMakeCrudCommandTest`, `ModuleStylesComponentTest`, `BlockServiceTest`.
+
+## [v1.2.0] — 2026-06-21
+
+### Lara Builder — SEO & content editing
+
+- **New:** SEO drawer in the post/page builder with live score, checklist, SERP preview, and per-field guidance (`SeoDrawer`, `seoAnalyzer.js`).
+- **New:** AI “Generate SEO” action for meta title, description, keywords, Open Graph fields, and schema type.
+- **New:** Advanced SEO meta persisted on posts (canonical, noindex/nofollow, schema type, OG title/description).
+- **New:** Debounced auto-save for draft/pending posts once a title exists.
+- **New:** Text ↔ heading block conversion in the properties sidebar (`BlockConvertSection`).
+- **New:** Unified content typography tokens with CSS variables — consistent near-black defaults, inherit-by-default text/heading/list blocks, section-level text color override, and variable-based dark mode (`ContentTokens`, `content-tokens.css`).
+- **Improve:** Builder header redesign — Publish / Save draft / Update actions, SEO score badge, AI content button, save status indicator.
+- **Improve:** Auto-focus title field when creating a new post/page (no longer steals focus via auto-selected first block).
+- **Improve:** AI Content modal — “Generate Content” moved to footer for clearer primary action.
+- **Improve:** Excerpt auto-regenerates from content when cleared on save.
+- **Improve:** Canvas/page settings in post properties panel (width, padding, layout styles).
+
+### Media library & featured images
+
+- **Fix:** Featured images no longer duplicate media files when reusing library items or sharing across posts.
+- **Fix:** Posts reference library media via `featured_media_id` meta instead of copying files; legacy Spatie attachments still supported.
+- **Fix:** Broken featured image URLs/thumbnails after save (legacy path + missing thumb conversion fallback).
+- **Fix:** Replacing a featured image no longer deletes the previous file from the library.
+- **Fix:** Post list admin thumbnails use resolved URLs with thumb → original fallback.
+- **Improve:** Media picker auto-selects uploaded files (single = that file; multiple = last uploaded + all checked in multi-select).
+- **Improve:** Media library index auto-selects uploaded items after reload; upload API returns normalized file payloads with URLs.
+- **Fix:** Media modal broken thumbnails/truncated URLs in Select Media dialog.
+
+### Save / publish UX
+
+- **Fix:** Publish no longer leaves form in false “Unsaved” state or triggers leave-page reload warnings (status baseline + in-place URL update for new posts).
+
+### Frontend SEO
+
+- **Improve:** `seo-head` component and `SeoHelper` support builder meta, featured images, and structured data defaults.
+
+### Tests
+
+- Added/updated: `PostBuilderImprovementsTest`, `MediaLibraryServiceTest`, `PostBuilderServiceTest`, `MediaUploadTest`, `ContentTokensTest`, `SeoHelperTest`.
+
+## [v1.1.5] — 2026-05-18
+
+- **Fix:** Migration is now idempotent — safe to re-run on databases that half-applied the v1.1.4 release.
+
+## [v1.1.4] — 2026-05-18
+
+- **New:** Daily error digest email notifications for admins with error details.
+- **Improve:** Improved module generator command to support custom stub templates and better error handling.
+- **Fix:** Fixed switch toggle component styling.
+
+## [v1.1.3] — 2026-05-04
+
+- **Improve:** Improved file upload component with close button and better error handling.
+- **Fix:** Fixed minor upgrade issue for demo mode.
+
+## [v1.1.2] — 2026-04-19
+
+- **Fix:** Fixed Module generator command improvement for Windows OS.
+- **Improve:** Added more extendibility support for email templates.
+- **Improve:** Added more extendibility support for authentication pages.
+
+## [v1.1.1] — 2026-04-10
+
+- **Feat:** Scheduled queue worker — runs every minute via `schedule:run` to process queued jobs (workflow actions, emails) without requiring a long-running worker.
+- **Improve:** Sidebar submenu supports deeper (3rd and 4th level) nesting with proper indentation.
+- **Improve:** Sidebar submenu expands without an inner scrollbar; the sidebar wrapper handles overflow when nav is long.
+- **Fix:** Cleaned up user dropdown styling in the admin header — removed stray borders and uneven top margins for consistent spacing.
+
+## [v1.1.0] — 2026-04-05
+
+- **Feat:** Account created notification — admin-created users receive an email with login link and password-set URL.
+- **Feat:** Quick-add dropdown in admin header with hook support (`filter.quick_add_dropdown`).
+- **Feat:** Admin menu badge support (`setBadge()` / `setBadgeClass()` on `AdminMenuItem`).
+- **Feat:** Email connection toggle (activate/deactivate) with inline action button.
+- **Feat:** Email connection status filter (active, disabled, connected, failed).
+- **Feat:** Setting image removal endpoint for site logos/icons via AJAX.
+- **Feat:** Send login link action on user edit page.
+- **Improve:** Demo mode restrictions on core upgrade, backup, and restore operations.
+- **Improve:** Seeder defaults for authentication, site tagline, copyright, and contact settings.
+- **Fix:** Renamed "Inactive" to "Disabled" for email connection status labels (consistency).
+- **Fix:** Removed duplicate demo-mode check in module update flow.
+
+## [v1.0.3] — 2026-03-29
+
+- **Fix:** Fixed marketplace module images not loading (JSON-encoded icon/banner URLs from API were not decoded properly).
+
+## [v1.0.2] — 2026-03-29
+
+- **Feat:** Marketplace module browser — browse, search, and install modules from the marketplace.
+- **Feat:** Module packaging and distribution commands (`module:zip`, `module:package`, `module:compile-css`).
+- **Feat:** Claude Code agents and commands for faster module development workflow.
+- **Docs:** Added developer documentation for Tailwind CSS prefixing, AI architecture, theme development, permissions, and module packaging.
+- **Fix:** Fixed CRUD generator base controller replacement test for updated nwidart stubs.
+- **Fix:** Assign menu permissions to superadmin migration.
+
+## [v1.0.1] — 2026-03-28
+
+- **Fix:** Fixed automatic module and core upgrade issue on some servers.
+- **Fix:** Fixed module stubs and CRUD command to generate files properly.
+
+## [v1.0.0] — 2026-03-27
+
+- **Feat:** Upgraded to Laravel 13 and Livewire 4.
+- **Feat:** Base setup for Starter 26 theme.
+- **Feat:** CRUD Generator (`module:make-crud`) with Model, Datatable, Views, Routes, Menu scaffolding.
+- **Feat:** Inbound/Outbound email connection management.
+- **Feat:** Manual core upgrade system with backup/restore functionality.
+- **Feat:** Social authentication with Laravel Socialite.
+- **Feat:** Cache/performance management section in settings page.
+- **Feat:** Menu architecture for frontend with filter hooks support.
+- **Feat:** Compact file uploader component.
+- **Feat:** Clean all action logs button.
+- **Feat:** AI filter hooks for extensible AI integrations.
+- **Enhancement:** Module CRUD command improved — generates Blade views instead of Livewire components.
+- **Enhancement:** Translation system refactored with chunked data saving.
+- **Enhancement:** Quick links dropdown at navbar.
+- **Enhancement:** Post list updated with Updated column and activity log timestamps.
+- **Enhancement:** Media selector modal responsive improvement.
+- **Refactor:** Unified server-side block rendering for email and page contexts.
+- **Refactor:** Blocks refactored to remove unnecessary padding and standalone page improvement.
+- **Refactor:** Better structure for module installations.
+- **Fix:** Security fixes with sanitization in content rendering.
+- **Fix:** Email verification link, template preview, and campaign tracking fixes.
+- **Fix:** Fixed missing authorization checks.
+- **Fix:** Module installation, upload, and delete bug fixes.
+- **Fix:** Fixed cached permission issues.
+- **Fix:** Numerous test fixes and CI improvements.
+
+## [v0.9.14] — 2026-03-16
+
+- **Refactor:** Unified server-side block rendering for email and page contexts via `render.php`.
+- **New:** `EmailStyleHelper` PHP utility for email-safe inline CSS from `layoutStyles`.
+- **New:** Server-side `render.php` for 13 blocks (divider, spacer, footer, social, preformatted, accordion, countdown, table, video, text-editor, html, columns, section).
+- **Improvement:** Email blocks now use server-side placeholders for consistent rendering with `layoutStyles` support.
+- **Fix:** Email campaign preview, send, and tracking now process dynamic blocks correctly.
+
+## [v0.9.13] — 2026-03-16
+
+- **Refactor:** Block improvements for emails.
+- **Fix:** Module approval now syncs updated version assets and metadata.
+
+## [v0.9.12] — 2026-03-14
+
+- **Fix:** Fixed security issue with sanitization in content rendering.
+- **Improvement:** Refactored code and `<pre>` block for better code snippet support.
+- **Fix:** Fixed email verification link to show valid link.
+
+## [v0.9.11] — 2026-03-09
+
+- **Fix:** Fixed missing authorization checks.
+- **Fix:** Module CRUD with migration and some other registration logics.
+- **Improvement:** Translation system chunks data saving.
+
+## [v0.9.10] — 2026-02-26
+
+- **Fix:** Block editor text block, heading block line break and some other issues.
+- **Fix:** Module list page module icon was not consistent.
+
+## [v0.9.9.4] — 2026-02-24
+
+- **Fix:** Fixed cached permission.
+
+## [v0.9.9.1] — 2026-02-24
+
+- **Fix:** Upgrade core issue on some servers.
+- **Enhancement:** Added mailer class column to email logs table.
+
+## [v0.9.9] — 2026-02-22
+
+- **Feat:** Menu management for frontend.
+- **Enhancement:** Module command, module CRUD command improvements.
+- **Enhancement:** Several pages more filter hook supported.
+- **Fix:** Improved several test cases.
+
+## [v0.9.8] — 2026-02-17
+
+- **Feat:** Social authentication with Laravel Socialite.
+- **Feat:** Cache / performance management section in settings page with cache clear, config cache, route cache, view cache and so on.
+- **Enhancement:** Improved core download and update system with better UI/UX.
+
+## [v0.9.7] — 2026-02-14
+
+- **Fix:** Demo was not loading the faker.
+- **Enhancement:** Post list updated with Updated column.
+- **Enhancement:** Created date in activity log list page.
+- **Enhancement:** Media library modal responsive improvement.
+- **Fix:** Fixed `module:make-crud` command to generate menus properly.
+- **Feat:** Added clean all logs button in activity log list page.
+
+## [v0.9.6] — 2026-02-13
+
+- **Feat:** Compact attachment component.
+- **Fix:** Fixed module replace modal scroll issue.
+- **Fix:** Demo app refresh issue.
+
+## [v0.9.5] — 2026-02-12
+
+- **Fix:** Fixed module installation issue on some servers.
+
+## [v0.9.3] — 2026-02-08
+
+- **Feat:** Inbound/Outbound email connection management.
+- **Feat:** CRUD Generator (`module:make-crud`) — rapid scaffolding for modules with Model, Datatable, Views, Routes, Menu.
+- **Enhancement:** Fallback queue handling management.
+- **Enhancement:** Quick links dropdown at navbar.
+- **Enhancement:** Updated some stubs for easy module generation following Lara Dashboard.
+
+## [v0.9.2] — 2026-01-11
+
+- **Feat:** Manual core upgrade system with backup/restore functionality.
+- **Feat:** Production-ready zip distribution with vendor folder support.
+- **Feat:** cPanel/shared hosting support without document root changes.
+- **Enhancement:** Storage directory structure auto-creation during upgrades.
+
+## [v0.9.1] — 2026-01-04
+
+- **Feat:** AI Agent — agentic CMS assistant to help you create, manage, and optimize content using AI.
+- **Feat:** Beautiful onboarding experience for initial installation.
+- **Enhancement:** Improved AI content generation and fine-tuning options in post/page editor.
+- **Enhancement:** Module improvement stability, upgrade notices.
+
+## [v0.9.0] — 2025-12-19
+
+- **Chore:** Revamping the versions to v0.9.x.
+
+## [v2.4.0-beta] — 2025-12-19
+
+- **Feat:** Post / Page Builder — manage posts/pages with visual drag-and-drop builder.
+- **Feat:** Email Management System — email connections, email templates with visual builder.
+- **Feat:** Notifications Management — centralized notification settings and management.
+- **Feat:** Detail Pages — User, Role, Permission, Module detail views with comprehensive information.
+- **Enhancement:** Improved module detail page with better UI/UX.
+- **Enhancement:** Improved role detail page with better UI/UX.
+- **Enhancement:** Module installation process improved with better UI/UX.
+
+## [v2.3.0-beta] — 2025-09-07
+
+- **Feat:** Datatable integration for Users, Roles, Permissions, Posts, Categories, Tags.
+- **Feat:** Several new components.
+- **Feat:** Observer added for models.
+- **Feat:** Introduce hooks with more managed/documented way.
+- **Enhancement:** Updated code structure, new components, improved code quality.
+- **Fix:** Several small UI bugs.
+
+## [v2.2.0-beta] — 2025-08-17
+
+- **Feat:** Media library manager.
+- **Feat:** Improved user / profile UI/UX with lots of options.
+- **Feat:** Implement reCAPTCHA and custom admin login integration with configurable page settings.
+- **Enhancement:** Update menu structure.
+- **Fix:** Several small UI bugs.
+
+## [v2.0.1-beta] — 2025-07-27
+
+- **Feat:** Refactor Lara Dashboard whole Admin UI — icons, accessibility, components, pages, layouts and so on.
+- **Enhancement:** Keep search form design consistent as `form-control` height.
+- **Enhancement:** Global variable for editor script to handle from any module.
+- **Enhancement:** Cleanup many codes to separate service to keep business logics separated.
+- **Enhancement:** Fixed several unit tests.
+- **Fix:** User chart data with SQLite supported.
+- **Fix:** Remove some unnecessary console logs.
+- **Doc:** Added Coding Standard docs.
+
+## [v2.0-beta] — 2025-07-20
+
+- **Feat:** Refactor Lara Dashboard whole Admin UI — icons, accessibility, components, pages, layouts and so on.
+- **Enhancement:** Improve components, reusability, and code quality.
+- **Fix:** Some random UI fixes.
+
+## [v1.7.0-beta] — 2025-07-13
+
+- **Feat:** REST API for Lara Dashboard, Scramble API documentation.
+- **Enhancement:** Cleanup class names to use more standard class names.
+- **Fix:** Some random UI fixes.
+
+## [v1.6.0-beta] — 2025-06-21
+
+- **Enhancement:** Write/Update standard unit tests, Pint, Rector, PHPStan for the project.
+- **Fix:** Potential fix for code scanning alert no. 1: Workflow does not contain permissions.
+- **Fix:** Language switcher if no icon is selected.
+- **Fix:** Non-translated keys keep empty instead of the placeholder.
+
+## [v1.5.0-beta] — 2025-06-01
+
+- **Feature:** Content Management System (CMS) with Content (Post/Page), Content Category, Content Tag management.
+- **Feature:** Post/Page activity chart in Dashboard.
+- **Feature:** Bulk delete for Users, Roles, Posts, Categories, Tags.
+- **Enhancement:** Sorting features for Users, Roles, Permissions, Posts, Categories, Tags.
+- **Enhancement:** Components — Confirm delete, Success/Error messages, Toast, Text Editor, Breadcrumbs, Action dropdown.
+- **Fix:** System dark mode issues.
+- **Fix:** Modules refactoring in demo mode.
+
+## [v1.3.0-beta] — 2025-05-18
+
+- **Feature:** Admin Menu architecture with more extendible way.
+- **Feature:** Permission List and detail page.
+- **Enhancement:** Improved module compatibility.
+
+## [v1.2.0-beta] — 2025-05-12
+
+- **Feature — Translation Management:** Added translation management system supporting 21 languages by default and possibility to add any in seconds.
+- **Enhancement — Dashboard Redesign:** Dashboard redesigned with new cards, user history chart, several more design improvements.
+- **Enhancement:** Role list page, user list page to add links of users list sorting by role and role edit page linkings.
+- **Enhancement:** Cleanup codebase to use services, requests more, use SOLID whenever needed.
+- **Fix:** Fixed #109 Submenu dropdown icon doesn't change on open/close submenu of a menu item.
+- **Fix:** Fixed #105 Sidebar icon not working good if collapsed.
+- **Fix:** Fixed #93 Theme primary color, secondary color was not working.
+- **Fix:** Fixed #99 Superadmin role shouldn't be edited.
+- **Fix:** Fixed mobile responsive has some issues.
+- **Fix:** Fixed sidebar toggle was not persistent issue.
+- **Fix:** Fixed role create — selecting permission group can't check the permissions in that group checkboxes automatically.
+
+## [v1.0.0-beta] — 2025-04-21
+
+- **Feature — Forget Password Management:** Enhanced the forget password functionality for better reliability and user experience.
+- **Feature — Settings Management:** Added comprehensive settings management features, including API support.
+- **Enhancement — Role-Based Access Control (RBAC) Improvements:** Improved authorization mechanisms and role-based access control.
+- **Feature — Admin Impersonation:** Administrators can now log in as other users and switch back to their original accounts seamlessly.
+- **Enhancement — UI/UX Enhancements:** Updated the role create/edit form for a more intuitive and user-friendly experience.
+- **Enhancement — User Profile and Management Enhancements:** Refactored user-related operations to utilize `UserService` and `RolesService` for better separation of concerns and maintainability.
+- **Docs — Documentation and Configuration Updates:**
+    - Updated `.env.example` to include a `GITHUB_LINK` variable for improved project visibility.
+
+---
+
+## Previous Laravel-version releases
+
+<details>
+<summary>View older Laravel-version tags</summary>
+
+- **Laravel 7.x & PHP 7.x**
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/Laravel7.x
+    - Branch — https://github.com/ManiruzzamanAkash/laravel-role/tree/Laravel7.x
+
+- **Laravel 9.7 & PHP 8.x**
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/Laravel9.x
+
+- **Laravel 11.x**
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v11.x-main
+
+- **Laravel 12.x & PHP >= 8.3**
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/Laravel12.x
+
+- **Laravel 12.x & TailAdmin template integration**
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/Laravel12.x-tailadmin
+
+- **Laravel 12.x & Module & Action Log integration**
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/Laravel12.x-module-logs
+
+- **v1.0.0** — Settings, Forget Password and lots of refactoring
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v1.0.0
+- **v1.2.0** — Translation Management, Dashboard Redesign, Role/User List improvements
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v1.2.0
+- **v1.3.0** — Admin Menu architecture, Permission List and detail page
+    - Tag — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v1.3.0
+- **v1.5.0** — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v1.5.0
+- **v1.6.0** — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v1.6.0
+- **v1.7.0** — https://github.com/ManiruzzamanAkash/laravel-role/releases/tag/v1.7.0
+
+More release tags — https://github.com/laradashboard/laradashboard/releases
+
+</details>
