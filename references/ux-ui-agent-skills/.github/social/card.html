@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8" />
+<title>ux-ui-agent-skills social card</title>
+<link rel="stylesheet" href="../../examples/brandkit-demo/theme.css" />
+<link rel="stylesheet" href="../../examples/directions.css" />
+<style>
+  *{box-sizing:border-box;margin:0}
+  html,body{inline-size:1280px;block-size:640px;overflow:hidden}
+  body{background:var(--lin-canvas);color:var(--lin-ink);font-family:var(--font-sans);
+    -webkit-font-smoothing:antialiased;position:relative}
+
+  /* the same topographic field the front door uses, quieted right down */
+  .field{position:absolute;inset:0;opacity:.5}
+  .field path{fill:none;stroke:var(--lin-hairline);stroke-width:1}
+  .glow{position:absolute;inset-block-start:-30%;inset-inline-start:-10%;inline-size:60%;block-size:120%;
+    background:radial-gradient(closest-side,color-mix(in oklab,var(--lin-accent) 26%,transparent),transparent);
+    filter:blur(var(--blur-lg,60px))}
+
+  .wrap{position:relative;block-size:100%;display:grid;grid-template-columns:1fr 1fr;
+    align-items:center;gap:var(--space-8);padding:var(--space-10) var(--space-12)}
+
+  .eyebrow{font-family:var(--font-mono);font-size:var(--text-sm);letter-spacing:.22em;
+    text-transform:uppercase;color:var(--lin-ink-3)}
+  h1{font-size:4.25rem;line-height:.98;letter-spacing:-0.045em;font-weight:700;
+    margin-block:var(--space-5) var(--space-4);text-wrap:balance}
+  .lede{font-size:var(--text-xl);line-height:var(--leading-snug);color:var(--lin-ink-2);
+    max-inline-size:26ch}
+
+  /* Four auto columns let the labels decide the width, and the labels are wider
+     than the numbers, so they ran into each other. Fixed tracks and short labels. */
+  .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+    margin-block-start:var(--space-8);max-inline-size:32rem}
+  .stat{padding-inline-start:var(--space-4);border-inline-start:2px solid var(--lin-hairline)}
+  .stat:first-child{padding-inline-start:0;border-inline-start:0}
+  .stat b{display:block;font-size:var(--text-4xl);font-weight:700;letter-spacing:-0.035em;
+    line-height:1;font-variant-numeric:tabular-nums;color:var(--trm-accent)}
+  .stat span{display:block;font-family:var(--font-mono);font-size:.625rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--lin-ink-3);margin-block-start:var(--space-3)}
+
+  /* three real screens, one of them light, so the card shows range not a mood */
+  .shots{position:relative;block-size:100%}
+  .shots img{position:absolute;inline-size:30rem;border-radius:var(--radius-card);
+    border:1px solid var(--lin-hairline);box-shadow:0 2.5rem 5rem rgb(0 0 0 / .62);display:block}
+  .s1{inset-block-start:2.5rem;inset-inline-start:2rem;transform:rotate(-3.2deg)}
+  .s2{inset-block-start:11rem;inset-inline-start:7.5rem;transform:rotate(1.6deg)}
+  .s3{inset-block-start:20rem;inset-inline-start:2.75rem;transform:rotate(-1.4deg)}
+
+  /* Anchored to the text column only: spanning the full width put it underneath
+     the screenshots, where it read as a printing error. */
+  .foot{position:absolute;inset-inline-start:var(--space-12);inset-block-end:var(--space-8);
+    display:flex;align-items:baseline;gap:var(--space-5);flex-wrap:wrap;max-inline-size:34rem}
+  .foot code{font-family:var(--font-mono);font-size:var(--text-base);color:var(--lin-ink-2)}
+  .foot .tag{font-family:var(--font-mono);font-size:.6875rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--lin-ink-3)}
+</style>
+</head>
+<body>
+<div class="glow" aria-hidden="true"></div>
+<svg class="field" viewBox="0 0 1280 640" preserveAspectRatio="none" aria-hidden="true" id="field"></svg>
+
+<div class="wrap">
+  <div>
+    <p class="eyebrow">ux-ui-agent-skills</p>
+    <h1>Screens an agent built.</h1>
+    <p class="lede">A design-system kit for Claude Code. Every screen renders from one
+      token theme and passes every objective gate, in light and in dark.</p>
+    <!-- No gate count here on purpose: the card is uploaded by hand, so a number
+         that moves every time a gate is added is the one claim on this page that
+         nothing can keep honest. The three below change rarely, and the gated
+         claim is made in words instead. -->
+    <div class="stats">
+      <div class="stat"><b>20</b><span>screens</span></div>
+      <div class="stat"><b>23</b><span>harnesses</span></div>
+      <div class="stat"><b>138</b><span>systems</span></div>
+      <div class="stat"><b>0</b><span>chart libs</span></div>
+    </div>
+  </div>
+
+  <div class="shots" aria-hidden="true">
+    <img class="s1" src="../images/terminal-dark.png" alt="" />
+    <img class="s2" src="../../examples/thumbs/tpl-trial.png" alt="" />
+    <img class="s3" src="../../examples/thumbs/tpl-rail.png" alt="" />
+  </div>
+</div>
+
+<div class="foot">
+  <code>github.com/plugin87/ux-ui-agent-skills</code>
+  <span class="tag">MIT &middot; no build step</span>
+</div>
+
+<script>
+  // the same generated topography as the front door: deterministic, not hand-drawn
+  let s = 20260915;
+  const rnd = () => (s = (s * 1103515245 + 12345) % 2147483648) / 2147483648;
+  const out = [];
+  for (let i = 0; i < 16; i++) {
+    const base = 40 + i * 40, amp = 16 + rnd() * 26, ph = rnd() * 6.283;
+    let d = '';
+    for (let x = 0; x <= 1280; x += 32) {
+      const y = base + Math.sin(x / 190 + ph) * amp + Math.sin(x / 61 + ph * 2) * (amp * 0.26);
+      d += (x === 0 ? 'M ' : ' L ') + x + ',' + y.toFixed(1);
+    }
+    out.push('<path d="' + d + '"/>');
+  }
+  document.getElementById('field').innerHTML = out.join('');
+</script>
+</body>
+</html>

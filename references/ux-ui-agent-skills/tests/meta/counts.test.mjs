@@ -1,0 +1,161 @@
+/**
+ * The README states how the checks split between the ones that open a real
+ * browser and the ones that read files. Until 2026-10-07 it said 35/16 in one
+ * place and 31 in another, and the real answer was 33/18 - three numbers, none
+ * of them measured, inside the section about never stating a number you did not
+ * measure. That is the failure this whole repo is about, printed on its own
+ * front page.
+ *
+ * So the split is derived here rather than trusted: a check opens a browser if
+ * and only if some gate it runs imports Playwright. If the report gains a gate,
+ * or a gate gains or loses a browser, this fails until the README agrees.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { ROOT, gate } from '../helpers/run.mjs';
+
+/**
+ * Gate scripts that actually drive a browser.
+ *
+ * Both spellings count: a static `import { chromium } from 'playwright'` and
+ * the `await import('playwright')` inside a try that lets a gate print SKIPPED
+ * when the browser is absent. Matching only the static form found one gate and
+ * would have let this whole test pass by measuring almost nothing - which is
+ * the exact shape of failure the file is here to prevent, so the count is
+ * asserted to be plausible before anything is derived from it.
+ */
+function browserGates() {
+  const dir = join(ROOT, 'scripts');
+  return readdirSync(dir)
+    .filter(f => f.endsWith('.mjs'))
+    .filter(f => /(^import[^;]*from '|await import\(')(playwright|playwright-core)'/m
+      .test(readFileSync(join(dir, f), 'utf8')));
+}
+
+/** Every top-level entry of the CHECKS array, as one string each. */
+function checkEntries() {
+  const lines = readFileSync(join(ROOT, 'scripts', 'accuracy_report.mjs'), 'utf8').split('\n');
+  const out = [];
+  let cur = null;
+  const close = () => { if (cur !== null) out.push(cur); cur = null; };
+  for (const l of lines) {
+    if (/^ {2}\[/.test(l)) { close(); cur = l; }
+    else if (/^\];/.test(l)) close();
+    else if (cur !== null) cur += l;
+  }
+  close();
+  return out;
+}
+
+test('the README states the browser/file split the report actually has', () => {
+  const gates = browserGates();
+  assert.ok(gates.length > 10, `only ${gates.length} browser gates found - the import check is wrong`);
+
+  const re = new RegExp(gates.map(f => f.replace('.', '\\.')).join('|'));
+  const entries = checkEntries();
+  const browser = entries.filter(e => re.test(e)).length;
+  const files = entries.length - browser;
+
+  const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
+
+  assert.match(readme, new RegExp(`\\*\\*${browser} of them open a real browser`),
+    `README does not say ${browser} browser checks`);
+  assert.match(readme, new RegExp(`those ${browser} report \`REQUIRED, FAILING\``),
+    `the REQUIRED/FAILING sentence does not say ${browser}`);
+  assert.match(readme, new RegExp(`${browser} of the ${entries.length} checks open a real`),
+    `the "stated exactly" paragraph does not say ${browser} of ${entries.length}`);
+  assert.match(readme, new RegExp(`The other ${files} read\\s+files`),
+    `the "stated exactly" paragraph does not say ${files} file checks`);
+
+  // And the total the README leads with must be the real number of checks.
+  assert.match(readme, new RegExp(`\\*\\*${entries.length} objective gates\\*\\*`),
+    `README does not lead with ${entries.length} gates`);
+});
+
+test('every browser gate refuses a path that is not there, by running it', () => {
+  /* `_targets.mjs` exists because thirteen render gates handed a missing path
+     straight to Playwright: on macOS that exited 1, and on Linux CI
+     `verify_states.mjs tests/fixtures/nope.html` exited **0** - a typo in a
+     filename reading as a clean pass.
+
+     This checks the behaviour, not the implementation. An earlier version of
+     this test looked for a `requireTargets` import and flagged
+     `verify_mobile_first.mjs`, which guards its targets correctly in its own
+     collect() - the test was wrong, the gate was fine. What matters is the exit
+     code the gate actually produces, so run it.
+
+     Exit 2, never 1: 1 means "I looked and found something wrong", 2 means "I
+     could not look". A caller that treats them the same is already wrong. */
+  const nowhere = 'tests/fixtures/__no_such_file__.html';
+  const exempt = new Set(['screenshot_docs.mjs']);  // writes a directory, takes no target
+
+  const bad = [];
+  for (const g of browserGates()) {
+    if (exempt.has(g)) continue;
+    const r = gate(g, [nowhere]);
+    if (r.status !== 2) bad.push(`${g}: exit ${r.status}`);
+    else if (!/not found|Nothing was measured/i.test(r.out)) bad.push(`${g}: exit 2 but said nothing about the path`);
+  }
+  assert.deepEqual(bad, [], `gates mishandled a missing path:\n  ${bad.join('\n  ')}`);
+});
+
+test('the brand cards state the gate count the report actually has', () => {
+  /* The cover reads the count out of `accuracy_report.mjs` when it is
+     generated. The social card typed it: the string "52 gates" sat in the
+     generator, so the first gate added after that would have left the card
+     lying on every link unfurl that reads og:image - GitHub, Slack, X,
+     LinkedIn - while the README beside it stayed correct.
+
+     An image is the one surface no gate in this repo renders, which is
+     exactly why the number in it has to be checked from here. The SVG is
+     text; the assertion is cheap. */
+  const n = checkEntries().length;
+  const cards = ['xias-social.svg', 'xias-cover-dark.svg', 'xias-cover-light.svg'];
+
+  for (const f of cards) {
+    const svg = readFileSync(join(ROOT, '.github', 'brand', f), 'utf8');
+    const stated = [...svg.matchAll(/(\d+)\s+(?:objective\s+)?gates/g)].map(m => Number(m[1]));
+    assert.ok(stated.length > 0, `${f} states no gate count at all`);
+    const wrong = stated.filter(v => v !== n);
+    assert.deepEqual(wrong, [], `${f} says ${wrong.join(', ')} gates; the report has ${n}`);
+  }
+});
+
+test('the brand README states the size every image actually is', () => {
+  /* The row this replaces said `xias-cover.png` | 1920x945, two commits after
+     that file stopped existing and the cover became 1920x1000. Nothing caught
+     it because a markdown table of pixel dimensions is prose to every gate in
+     this repo.
+
+     Read the dimensions out of the PNG itself. IHDR is fixed-position: an
+     8-byte signature, then a 4-byte length and the "IHDR" tag, then width and
+     height as big-endian uint32. No decoder, no dependency. */
+  const size = (file) => {
+    const b = readFileSync(file);
+    assert.equal(b.subarray(1, 4).toString('latin1'), 'PNG', `${file} is not a PNG`);
+    return `${b.readUInt32BE(16)}x${b.readUInt32BE(20)}`;
+  };
+
+  const brand = join(ROOT, '.github', 'brand');
+  const rows = [...readFileSync(join(brand, 'README.md'), 'utf8')
+    .matchAll(/^\| `([^`]+\.png)` \| (\d+x\d+) \|/gm)]
+    .map(m => ({ file: m[1], stated: m[2] }));
+  assert.ok(rows.length >= 7, `only ${rows.length} image rows parsed from the brand README`);
+
+  const wrong = rows
+    .map(r => ({ ...r, real: size(join(brand, r.file)) }))
+    .filter(r => r.real !== r.stated)
+    .map(r => `${r.file}: README says ${r.stated}, file is ${r.real}`);
+  assert.deepEqual(wrong, [], `brand README sizes are stale:\n  ${wrong.join('\n  ')}`);
+
+  // And nothing in the folder is left out of the table.
+  const listed = new Set(rows.map(r => r.file));
+  const onDisk = [
+    ...readdirSync(brand).filter(f => f.endsWith('.png')),
+    ...readdirSync(join(brand, 'wallpaper')).filter(f => f.endsWith('.png')).map(f => `wallpaper/${f}`),
+  ];
+  const missing = onDisk.filter(f => !listed.has(f) && !/^xias-(90s|y2k|mark)/.test(f));
+  assert.deepEqual(missing, [], `brand images not in the README table: ${missing.join(', ')}`);
+});

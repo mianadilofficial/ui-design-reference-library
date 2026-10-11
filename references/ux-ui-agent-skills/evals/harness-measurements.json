@@ -1,0 +1,40 @@
+{
+  "$comment": [
+    "Indicators that need a paid model run, recorded with the commit they were",
+    "measured at. measure_harness.mjs reads this file and marks an entry STALE",
+    "when HEAD has moved past that commit, so a number is never quietly carried",
+    "forward as if it were fresh.",
+    "",
+    "Only record a value a command actually printed, and put that command in",
+    "`command` so anyone can reproduce it. An entry with no command is a claim,",
+    "not a measurement."
+  ],
+  "H2": {
+    "value": 1,
+    "commit": "14f8d44",
+    "at": "2026-10-07T05:56:43.008Z",
+    "command": "claude plugin eval . --runs 2 --ablation none --trust-plugin --no-publish",
+    "detail": "12/12 cases, $4.34, 682s"
+  },
+  "H6": {
+    "value": 1,
+    "commit": "14f8d44",
+    "at": "2026-10-07T02:00:00Z",
+    "command": "node evals/score_critic.mjs critique-*.md  (four blind design-critic runs, one per fixture)",
+    "detail": "14/14 seeded defects caught. Read with the three caveats in HARNESS.md: fixtures and key written in the same session, and the keyword matcher was widened against these same four critiques after a hand-read of 14/14."
+  },
+  "H7": {
+    "value": 1,
+    "commit": "a89deca",
+    "at": "2026-10-08T02:24:11.118Z",
+    "command": "claude plugin eval . --case taste-applied --runs 5 --ablation none",
+    "detail": "5/5 runs wrote the Brief Inference block, up from 2/3 before the block was moved to the top of design-screen. Small samples either side: 2/3 and 5/5 are not a significance test, they are the best evidence available at $1.51 a run of five."
+  },
+  "H5": {
+    "value": 0.6666666666666666,
+    "commit": "b8ad5d7",
+    "at": "2026-10-08T03:05:03.659Z",
+    "command": "claude -p in an empty dir with only the plugin installed, then node evals/run.mjs 02-first-run-empty --dir <out>",
+    "detail": "init and plugin routes now each have a blind run that passed every gate on first submission, files unedited. The plugin run scored 13/14 first and the one failure was a false positive in verify_reduced_motion, fixed in the gate - see evals/RESULTS.md. skills-add still has none and installs no kit, so it cannot."
+  }
+}
