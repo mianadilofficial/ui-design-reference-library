@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![References](https://img.shields.io/badge/references-6-blue?style=flat-square)](INDEX.md)
+[![References](https://img.shields.io/badge/references-7-blue?style=flat-square)](INDEX.md)
 
 ![UI Design Reference Library](assets/banner.png)
 
