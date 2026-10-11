@@ -1,0 +1,49 @@
+name: Component request
+description: Suggest a new component or block, or a new variant of an existing one.
+title: "[Request]: "
+labels: ["component request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New items ship regularly. Check the [full library](https://uiarc.dev/components) first, the thing you need may already be there under another name.
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: Kanban column, date range presets, ...
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - Component
+        - Block (a section or screen)
+        - Variant of an existing item
+    validations:
+      required: true
+  - type: textarea
+    id: job
+    attributes:
+      label: What job does it do?
+      description: Describe the problem it solves and where you would use it.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Behavior and motion
+      description: How should it look, feel and respond to mouse, touch and keyboard?
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links or screenshots of examples you like.
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contributing
+      options:
+        - label: I would like to help build it.

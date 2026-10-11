@@ -1,0 +1,76 @@
+name: Bug report
+description: Something in an Arc component or block does not work as documented.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this. Please check the [live preview](https://uiarc.dev/components) first to see whether it happens there too.
+  - type: input
+    id: item
+    attributes:
+      label: Component or block id
+      description: The id from the URL or install command, for example `date-picker`.
+      placeholder: date-picker
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: The smallest steps or code that show the problem. A link to a repository or sandbox is ideal.
+      placeholder: |
+        1. Install with `npx shadcn@latest add @uiarc/...`
+        2. Render ...
+        3. Click ...
+    validations:
+      required: true
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      options:
+        - Next.js (App Router)
+        - Next.js (Pages Router)
+        - Vite
+        - Other
+    validations:
+      required: true
+  - type: dropdown
+    id: install
+    attributes:
+      label: How did you install it?
+      options:
+        - shadcn CLI (@uiarc registry)
+        - shadcn CLI (full URL)
+        - Copied the files
+        - MCP or an AI tool
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Safari 19 on macOS, Chrome on Android
+  - type: dropdown
+    id: theme
+    attributes:
+      label: Theme
+      multiple: true
+      options:
+        - Light
+        - Dark
+        - Reduced motion on
+  - type: textarea
+    id: extra
+    attributes:
+      label: Anything else?
+      description: Screenshots, screen recordings, console errors, versions of react, next and motion.
