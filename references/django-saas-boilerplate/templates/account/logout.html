@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Out - Django SaaS{% endblock %}
+
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center py-16 px-8">
+  <div class="w-full max-w-md space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-medium tracking-tighter text-black">
+        SIGN OUT
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray">
+        Are you sure you want to sign out?
+      </p>
+    </div>
+
+    <form class="mt-8 space-y-6" method="POST" action="{% url 'account_logout' %}">
+      {% csrf_token %}
+      {% if redirect_field_value %}
+      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+      {% endif %}
+
+      <div>
+        <button type="submit"
+                class="relative w-full flex justify-center py-3 px-6 bg-black text-white hover:bg-dark-gray focus:outline-none transition-all duration-300 text-sm font-medium uppercase tracking-wider">
+          <span class="absolute left-0 inset-y-0 flex items-center pl-3">
+            <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          </span>
+          SIGN OUT
+        </button>
+      </div>
+
+      <div class="text-sm text-center mt-4">
+        <a href="{% url 'dashboard:home' %}" class="font-medium text-black hover:text-dark-gray transition-all duration-300 uppercase tracking-wider">
+          CANCEL AND RETURN TO DASHBOARD
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

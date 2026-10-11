@@ -1,0 +1,152 @@
+{% extends "dashboard/base.html" %}
+
+{% block title %}Plans | SaaS Boilerplate{% endblock %}
+{% block page_title %}Plans{% endblock %}
+
+{% block dashboard_content %}
+<div>
+    <h2 class="text-xl font-medium text-black">Plans & Billing</h2>
+    <p class="mt-1 text-sm text-gray">Manage your subscription and billing details.</p>
+
+    <!-- Current plan status -->
+    <div class="mt-6 bg-white border border-light-gray rounded">
+        <div class="px-6 py-4 border-b border-light-gray">
+            <h3 class="text-sm font-medium text-black">Current plan</h3>
+        </div>
+        <div class="p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-black rounded flex items-center justify-center">
+                    <i class="fa-solid fa-gem text-white"></i>
+                </div>
+                <div>
+                    <p class="text-lg font-medium text-black">{{ current_plan.name|default:"Free" }} Plan</p>
+                    <p class="text-sm text-gray mt-0.5">
+                        {% if is_subscription_active %}
+                            Active &middot; Renews {{ subscription_end_date|date:"M d, Y"|default:"—" }}
+                        {% elif is_trial_active %}
+                            Trial &middot; Ends {{ trial_end_date|date:"M d, Y" }}
+                        {% else %}
+                            {{ subscription_status|default:"No active subscription"|title }}
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            {% if is_subscription_active %}
+            <form method="POST" action="{% url 'dashboard:cancel_subscription' %}">
+                {% csrf_token %}
+                <button type="submit" class="text-sm px-4 py-1.5 border border-light-gray rounded text-gray hover:text-black hover:border-black transition-colors">Cancel plan</button>
+            </form>
+            {% elif not is_trial_active %}
+            <form method="POST" action="{% url 'dashboard:start_trial' %}">
+                {% csrf_token %}
+                <button type="submit" class="text-sm px-4 py-2 bg-black text-white rounded hover:bg-dark-gray transition-colors">Start 14-day trial</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if is_trial_active %}
+    <div class="mt-4 bg-white border border-light-gray rounded p-4 flex items-start gap-3">
+        <div class="w-8 h-8 bg-[#fafafa] rounded flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-clock text-gray text-xs"></i>
+        </div>
+        <div>
+            <p class="text-sm text-black">Trial period active</p>
+            <p class="text-xs text-gray mt-0.5">Your trial ends on {{ trial_end_date|date:"F j, Y" }}. Choose a plan below to continue after your trial.</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Available plans -->
+    <div class="mt-6">
+        <h3 class="text-sm font-medium text-black mb-4">Available plans</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            {% for plan in plans %}
+            <div class="bg-white border rounded flex flex-col {% if current_plan == plan %}border-black{% else %}border-light-gray{% endif %}">
+                <!-- Plan header -->
+                <div class="p-5 border-b border-light-gray">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 {% if current_plan == plan %}bg-black{% else %}bg-[#fafafa]{% endif %} rounded flex items-center justify-center">
+                                {% if plan.slug == 'free' %}
+                                    <i class="fa-solid fa-seedling {% if current_plan == plan %}text-white{% else %}text-gray{% endif %} text-xs"></i>
+                                {% elif plan.slug == 'pro' %}
+                                    <i class="fa-solid fa-bolt {% if current_plan == plan %}text-white{% else %}text-gray{% endif %} text-xs"></i>
+                                {% else %}
+                                    <i class="fa-solid fa-building {% if current_plan == plan %}text-white{% else %}text-gray{% endif %} text-xs"></i>
+                                {% endif %}
+                            </div>
+                            <p class="text-sm font-medium text-black">{{ plan.name }}</p>
+                        </div>
+                        {% if current_plan == plan %}
+                        <span class="text-[10px] font-medium uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded">Current</span>
+                        {% endif %}
+                    </div>
+                    <p class="mt-3"><span class="text-3xl font-medium text-black">${{ plan.price }}</span><span class="text-gray text-sm ml-1">/{{ plan.interval }}</span></p>
+                    <p class="mt-1 text-xs text-gray">{{ plan.description }}</p>
+                </div>
+
+                <!-- Features -->
+                <div class="p-5 flex-1">
+                    <p class="text-xs text-gray uppercase tracking-wider mb-3">Includes</p>
+                    <ul class="space-y-2.5">
+                        {% for feature in plan.features %}
+                        <li class="flex items-start gap-2">
+                            <i class="fa-solid fa-check text-black text-[10px] mt-1"></i>
+                            <span class="text-sm text-gray">{{ feature }}</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Action -->
+                <div class="p-5 border-t border-light-gray bg-[#fafafa] rounded-b">
+                    {% if current_plan == plan %}
+                        <div class="w-full text-sm py-2.5 text-center text-gray">Current plan</div>
+                    {% else %}
+                        <form method="POST" action="{% url 'dashboard:subscribe_to_plan' plan.slug %}">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-sm py-2.5 bg-black text-white rounded hover:bg-dark-gray transition-colors">
+                                {% if plan.price == 0 %}Downgrade to Free{% else %}Upgrade to {{ plan.name }}{% endif %}
+                            </button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Billing info -->
+    <div class="mt-6 bg-white border border-light-gray rounded">
+        <div class="px-6 py-4 border-b border-light-gray">
+            <h3 class="text-sm font-medium text-black">Billing</h3>
+        </div>
+        <div class="divide-y divide-light-gray">
+            <div class="p-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-9 h-9 bg-[#fafafa] rounded flex items-center justify-center">
+                        <i class="fa-solid fa-credit-card text-gray text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-black">Payment method</p>
+                        <p class="text-xs text-gray mt-0.5">No payment method on file.</p>
+                    </div>
+                </div>
+                <button type="button" class="text-sm px-4 py-1.5 border border-light-gray rounded text-gray hover:text-black hover:border-black transition-colors">Add card</button>
+            </div>
+            <div class="p-5 flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                    <div class="w-9 h-9 bg-[#fafafa] rounded flex items-center justify-center">
+                        <i class="fa-solid fa-file-invoice text-gray text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-black">Invoices</p>
+                        <p class="text-xs text-gray mt-0.5">No invoices yet.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

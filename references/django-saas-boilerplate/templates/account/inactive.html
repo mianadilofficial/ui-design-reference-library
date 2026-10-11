@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Account Inactive - Django SaaS{% endblock %}
+
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center py-16 px-8">
+  <div class="w-full max-w-md space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-medium tracking-tighter text-black">
+        ACCOUNT INACTIVE
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray">
+        This account is currently inactive.
+      </p>
+    </div>
+
+    <div class="border border-light-gray p-8 mt-6">
+      <div class="flex">
+        <i class="fa-solid fa-triangle-exclamation text-black self-start mt-1"></i>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium uppercase tracking-widest text-black">
+            Account Status
+          </h3>
+          <div class="mt-2 text-sm text-gray">
+            <p>
+              Your account has been marked as inactive. This could be due to:
+            </p>
+            <ul class="list-disc pl-5 space-y-1 mt-2">
+              <li>Email verification pending</li>
+              <li>Account suspension</li>
+              <li>Administrative action</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-sm text-center space-y-4 mt-6">
+      <p class="text-gray">
+        Please contact support if you believe this is an error.
+      </p>
+      <div class="mt-4">
+        <a href="{% url 'account_login' %}" class="inline-block py-3 px-6 bg-black text-white hover:bg-dark-gray transition-all duration-300 text-sm font-medium uppercase tracking-wider">
+          RETURN TO SIGN IN
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
