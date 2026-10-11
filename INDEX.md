@@ -32,7 +32,17 @@ Every entry lives in `references/<name>/` with its original files plus an
 
 ## Project structure
 
-*No entries yet — clean, well-organized full-stack project references go here: folder-wise architecture, backend structure, no random-file mess. Agents study these to scaffold properly structured projects in any field.*
+| Reference | Author | Stack | License | Notes |
+|---|---|---|---|---|
+| [realworld](references/realworld) | Thinkster | 100+ stacks | MIT | Same Medium-clone spec in every stack — compare idiomatic layouts |
+| [bulletproof-react](references/bulletproof-react) | Alan Alickovic | React | MIT | Feature-folder architecture for scalable React apps |
+
+## Backend
+
+| Reference | Author | Stack | License | Notes |
+|---|---|---|---|---|
+| [node-express-boilerplate](references/node-express-boilerplate) | Hagop Janoyan | Node / Express | MIT | Production API layout: routes, controllers, services, JWT auth |
+| [full-stack-fastapi-template](references/full-stack-fastapi-template) | Sebastián Ramírez | FastAPI + React | MIT | Official full-stack template: backend, auth, DB, Docker |
 
 ## Motion
 
