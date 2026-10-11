@@ -1,0 +1,224 @@
+name: Release on tag
+
+# Auto-create a GitHub Release whenever a vX.Y.Z tag is pushed.
+# Uses the built-in GITHUB_TOKEN — no manual `gh auth login` / npm login needed.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:           # manual run to backfill an existing tag
+    inputs:
+      tag:
+        description: 'Existing tag to create a Release for (e.g. v1.2.0).'
+        required: false
+
+permissions:
+  contents: write              # required for gh release create/edit
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve tag name
+        id: tag
+        run: echo "name=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
+
+      - name: Extract the tag's section from CHANGELOG.md
+        run: |
+          TAG='${{ steps.tag.outputs.name }}'
+          VER="${TAG#v}"
+          awk -v ver="$VER" '
+            $0 ~ ("^### `v" ver "`") { flag=1; next }
+            flag && /^### `v/ { flag=0 }
+            flag { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
+          echo "----- release notes -----"
+          cat RELEASE_NOTES.md
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG='${{ steps.tag.outputs.name }}'
+          if [ -s RELEASE_NOTES.md ]; then
+            NOTES=(--notes-file RELEASE_NOTES.md)
+          else
+            NOTES=(--generate-notes)
+          fi
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" "${NOTES[@]}"
+          else
+            gh release create "$TAG" --title "$TAG" --verify-tag "${NOTES[@]}"
+          fi
+
+  publish-npm:
+    # Only on a real tag push (not manual backfill of an old tag).
+    #
+    # No NPM_TOKEN. This publishes through npm Trusted Publishing: GitHub mints a
+    # short-lived OIDC token scoped to this one workflow, and npm trusts it
+    # because the package is configured to. Nothing to rotate, nothing to leak,
+    # and no 2FA prompt - which is what made a scripted publish impossible before.
+    #
+    # One-time setup on npmjs.com, under the package's Settings -> Trusted Publisher:
+    #   Publisher: GitHub Actions
+    #   Organization or user: plugin87
+    #   Repository: ux-ui-agent-skills
+    #   Workflow filename: release.yml        <- must match this file's name
+    # Leave Environment blank.
+    #
+    # Trusted publishing needs npm >= 11.5.1 and Node >= 22.14.0, which is why
+    # this job pins Node 22 and upgrades npm before publishing.
+    # Validated on 2026-10-07 by v2.9.3, which published with no token at all.
+    #
+    # There used to be an `auth_check` input here that was meant to answer "will
+    # this publish?" without spending a version number. It could not: `npm
+    # whoami` does not exercise OIDC - npm mints the trusted-publishing token
+    # inside the publish flow itself - so the check failed while publishing
+    # worked, and as a blocking step it would have failed every real release.
+    # A knob that cannot answer its own question is worse than no knob: it sends
+    # a failure email for a run that proved nothing. Removed.
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write          # required for OIDC, and enables provenance
+    steps:
+      - uses: actions/checkout@v4
+
+      # registry-url IS needed: it writes the registry into .npmrc, and npm
+      # attaches the OIDC exchange to a configured registry. Removing it was the
+      # wrong fix - v2.9.2 then failed with ENEEDAUTH, npm having no registry
+      # entry to authenticate against at all.
+      #
+      # What actually has to go is the credential LINE setup-node writes next to
+      # it: //registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}. With no secret
+      # set that is a placeholder, npm finds it, tries it, and never mints an
+      # OIDC token - which is what failed v2.9.1 with E404.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: npm new enough for trusted publishing
+        run: |
+          npm install -g npm@latest
+          echo "npm $(npm --version), node $(node --version)"
+
+      - name: Keep the registry, drop the placeholder credential
+        run: |
+          NPMRC="${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}"
+          if [ -f "$NPMRC" ]; then
+            echo "before:"; sed 's/=.*/=<redacted>/' "$NPMRC"
+            # strip only the auth line; the registry line stays
+            sed -i '/_authToken/d' "$NPMRC"
+            echo "after:"; cat "$NPMRC"
+          fi
+          echo "registry: $(npm config get registry)"
+          echo "OIDC available: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}${ACTIONS_ID_TOKEN_REQUEST_URL:-no}"
+
+      - name: Guard — tag must match package.json version
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME#v}"
+          echo "package.json=$PKG  tag=$TAG"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::Tag v$TAG does not match package.json version $PKG — bump package.json before tagging."
+            exit 1
+          fi
+
+      - name: Is this version already on the registry?
+        id: exists
+        run: |
+          VER="$(node -p "require('./package.json').version")"
+          NAME="$(node -p "require('./package.json').name")"
+          # Unauthenticated read - this must work even when NPM_TOKEN is broken.
+          CODE="$(curl -s -o /dev/null -w '%{http_code}' "https://registry.npmjs.org/$NAME/$VER")"
+          if [ "$CODE" = "200" ]; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::$NAME@$VER is already published (a manual npm publish, or a re-run of this tag). Nothing to do - npm cannot publish over an existing version, so this is success, not failure."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "$NAME@$VER is not on the registry yet (HTTP $CODE) - publishing."
+          fi
+
+      # Informational only, and it must never gate the publish. `npm whoami` does
+      # NOT exercise OIDC, so it reports ENEEDAUTH here whether or not the
+      # trusted publisher is configured correctly. It is printed because it is
+      # useful context in a log, never because it decides anything.
+      - name: Environment, for the record
+        run: |
+          echo "npm $(npm --version), node $(node --version)"
+          echo "registry: $(npm config get registry)"
+          echo "OIDC endpoint present: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}${ACTIONS_ID_TOKEN_REQUEST_URL:-no}"
+          npm whoami 2>&1 | sed 's/^/whoami: /' || true
+          echo "whoami above does not test OIDC - only a publish does."
+
+      - name: Publish to npm (OIDC, no token)
+        if: steps.exists.outputs.skip != 'true'
+        run: npm publish --provenance --access public
+
+      # Tell the tap a release happened, so `brew install` is current within a
+      # minute instead of within a day.
+      #
+      # No token is set, and that is the decision rather than an omission. The
+      # tap already runs its own daily schedule and accepts workflow_dispatch,
+      # so the only thing a token buys is latency: the formula follows within a
+      # minute instead of by 05:20 UTC the next morning. Paying for that with a
+      # long-lived cross-repo PAT - a standing Contents: write credential on
+      # plugin87/homebrew-tap, sitting in a second repository's secrets, that
+      # nothing rotates - is the wrong trade for a one-day lag on a formula
+      # that pins whatever npm already calls latest.
+      #
+      # The step stays because the trade can be worth making for a release that
+      # has to land immediately. Set TAP_DISPATCH_TOKEN to a fine-grained PAT
+      # with Contents: write on plugin87/homebrew-tap only, give it a short
+      # expiry, and delete it afterwards. Unset, this step says so and succeeds.
+      - name: Nudge the Homebrew tap
+        if: steps.exists.outputs.skip != 'true'
+        env:
+          TAP_TOKEN: ${{ secrets.TAP_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$TAP_TOKEN" ]; then
+            echo "::notice::TAP_DISPATCH_TOKEN is not set - the Homebrew tap will pick this up on its daily schedule instead."
+            exit 0
+          fi
+          VER="$(node -p "require('./package.json').version")"
+          CODE=$(curl -s -o /tmp/dispatch.out -w '%{http_code}' -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $TAP_TOKEN" \
+            https://api.github.com/repos/plugin87/homebrew-tap/dispatches \
+            -d "{\"event_type\":\"npm-published\",\"client_payload\":{\"version\":\"$VER\"}}")
+          if [ "$CODE" = "204" ]; then
+            echo "tap notified of $VER"
+          else
+            echo "::warning::tap dispatch returned HTTP $CODE - the tap's daily schedule will catch up."
+            cat /tmp/dispatch.out || true
+          fi
+
+      - name: Say what to fix when the registry refuses
+        if: failure() && steps.exists.outputs.skip != 'true'
+        run: |
+          echo "::error::npm refused the publish. The GitHub Release above was created"
+          echo "::error::regardless - only the registry push failed."
+          echo "::error::"
+          echo "::error::Almost always this is the one-time setup not being done yet:"
+          echo "::error::npmjs.com -> ux-ui-agent-skills -> Settings -> Trusted Publisher"
+          echo "::error::  Publisher: GitHub Actions"
+          echo "::error::  Organization or user: plugin87"
+          echo "::error::  Repository: ux-ui-agent-skills"
+          echo "::error::  Workflow filename: release.yml"
+          echo "::error::Environment must be left blank, and the workflow filename has to"
+          echo "::error::match exactly or npm will not recognise the OIDC token."
+          echo "::error::"
+          echo "::error::If it IS configured, check the package is not also requiring 2FA for"
+          echo "::error::publishes: npmjs.com -> Settings -> Require two-factor authentication"
+          echo "::error::should be 'Authorization only', not 'Authorization and writes'."
+          echo "::error::"
+          echo "::error::E404 on a PUT is npm saying the credential was rejected, not that the"
+          echo "::error::package is missing. It answers 404 rather than 401 so an attacker"
+          echo "::error::cannot probe which private packages exist."
+          exit 1

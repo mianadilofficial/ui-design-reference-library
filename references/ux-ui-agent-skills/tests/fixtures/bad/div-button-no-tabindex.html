@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>div button with no tabindex</title>
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; display:grid; gap:16px; justify-items:start; }
+  .btn { display:inline-flex; align-items:center; min-height:44px; padding:10px 16px;
+         border:1px solid #6b6b70; border-radius:8px; cursor:pointer; background:#ffffff; }
+</style></head>
+<body><main>
+  <h1>Saved searches</h1>
+
+  <!-- The classic keyboard bug: an interactive ROLE on a div with no tabindex.
+       A mouse can use it, Tab never reaches it, and the gate used to filter it
+       out before auditing anything - it only looked at controls already in the
+       tab order, so the commonest failure was the one it could not see. -->
+  <div class="btn" role="button"
+       onclick="document.getElementById('out').textContent = 'ran'">Run search</div>
+
+  <!-- The control below is the same shape done right, so a gate that flags the
+       role rather than the missing tabindex would fail this file for the wrong
+       reason. -->
+  <div class="btn" role="button" tabindex="0"
+       onclick="document.getElementById('out').textContent = 'saved'"
+       onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();this.click()}">Save search</div>
+
+  <p id="out">idle</p>
+</main></body></html>
