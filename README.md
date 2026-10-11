@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![References](https://img.shields.io/badge/references-4-blue?style=flat-square)](INDEX.md)
+[![References](https://img.shields.io/badge/references-6-blue?style=flat-square)](INDEX.md)
 
 ![UI Design Reference Library](assets/banner.png)
 
@@ -21,6 +21,8 @@ AI-generated UI too often looks the same: generic gradients, predictable layouts
 | Reference | Category | Stack | License | What it gives you |
 |---|---|---|---|---|
 | [ui-ux-pro-max-skill](references/ui-ux-pro-max-skill) | Design skill | Agnostic | MIT | 79 UI styles, 192 palettes, 74 font pairings, anti-patterns |
+| [impeccable](references/impeccable) | Design skill | Agnostic | Apache-2.0 | 24 commands + 59 detector rules against AI-design tells |
+| [emilkowalski-skills](references/emilkowalski-skills) | Design skill | Agnostic | MIT | 15 elite UI/animation skills (ex-Vercel/Linear) |
 | [inspira-ui](references/inspira-ui) | Components | Vue / Nuxt | MIT | Animated copy-paste components: backgrounds, text effects, grids |
 | [animate-ui](references/animate-ui) | Components | React / Tailwind | MIT + Commons Clause | Hand-crafted animated components and micro-interactions |
 | [lenis](references/lenis) | Motion | Agnostic (JS) | MIT | Buttery-smooth scroll — premium scroll-driven experiences |
