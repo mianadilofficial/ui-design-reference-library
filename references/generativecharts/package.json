@@ -1,0 +1,72 @@
+{
+  "name": "generative-charts-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run build:package && next dev",
+    "start": "node scripts/serve-static.mjs",
+    "build:package": "npm run build --workspace generative-charts",
+    "build": "npm run build:package && CHARTKIT_STATIC_EXPORT=1 next build && node scripts/build-worker.mjs",
+    "build:site": "npm run build",
+    "start:site": "node scripts/serve-static.mjs",
+    "typecheck": "tsc --noEmit && npm run typecheck --workspace generative-charts",
+    "lint": "eslint . --ignore-pattern packages/chartkit/dist --ignore-pattern .next",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test",
+    "test:consumers": "node scripts/test-consumers.mjs",
+    "test": "npm run build:package && npm run typecheck && npm run test:unit && npm run build",
+    "pack:package": "npm_config_cache=/tmp/chartkit-npm-cache npm pack --workspace generative-charts --dry-run",
+    "release:check": "npm run lint && npm run build:package && npm run typecheck && npm run test:unit && npm run test:consumers && npm run pack:package",
+    "pack:release": "npm pack --workspace generative-charts",
+    "publish:package": "npm run release:check && npm publish --workspace generative-charts",
+    "db:generate": "drizzle-kit generate",
+    "test:analytics": "node --experimental-sqlite node_modules/vitest/vitest.mjs run --config vitest.analytics.config.ts",
+    "start:analytics": "node --experimental-sqlite scripts/preview-analytics.mjs"
+  },
+  "dependencies": {
+    "generative-charts": "workspace:*",
+    "next": "^16.3.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@playwright/test": "^1.57.0",
+    "@testing-library/jest-dom": "^6.9.0",
+    "@testing-library/react": "^16.3.0",
+    "@types/node": "^22.19.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^9.39.0",
+    "eslint-config-next": "^16.3.3",
+    "jsdom": "26.1.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.50.0",
+    "vite": "^6.4.3",
+    "vitest": "^4.1.11",
+    "drizzle-orm": "0.45.2",
+    "drizzle-kit": "0.31.11",
+    "esbuild": "^0.25.12"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kasturikhanke/generativecharts.git"
+  },
+  "homepage": "https://generativecharts.com",
+  "bugs": {
+    "url": "https://github.com/kasturikhanke/generativecharts/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/kasturibuilds"
+  }
+}
