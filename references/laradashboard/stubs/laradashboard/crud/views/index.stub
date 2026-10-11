@@ -1,0 +1,17 @@
+@extends('$LOWER_NAME$::layouts.master')
+
+@section('title')
+    {{ $breadcrumbs['title'] . ' | ' . config('app.name') }}
+@endsection
+
+@section('$LOWER_NAME$-admin-content')
+    <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <x-datatable.unified-scroll-header>
+            <x-breadcrumbs :breadcrumbs="$breadcrumbs" />
+        </x-datatable.unified-scroll-header>
+
+        <div class="mt-6">
+            <livewire:$LOWER_NAME$::components.$MODEL_LOWER$-datatable lazy />
+        </div>
+    </div>
+@endsection

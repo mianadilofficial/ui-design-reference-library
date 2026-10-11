@@ -1,0 +1,48 @@
+permissions:
+  contents: read
+  pull-requests: write
+name: QA Build
+
+on:
+  pull_request:
+    types: [ labeled ]
+  pull_request_review:
+      types: [submitted]
+
+jobs:
+  build:
+    if: github.event.label.name == 'QA Ready' || github.event.review.state == 'APPROVED'
+    name: "Build Zip For QA"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, intl, zip, pdo, pdo_mysql, bcmath, gd, curl, xml, json, fileinfo, tokenizer, openssl
+          tools: composer
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Get version from version.json
+        id: version
+        run: echo "VERSION=$(php -r 'echo json_decode(file_get_contents("version.json"), true)["version"];')" >> $GITHUB_OUTPUT
+
+      - name: Install Composer dependencies (bootstrap artisan)
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
+
+      - name: Build distributable ZIP via core:zip
+        run: php artisan core:zip --output="laradashboard-v${{ steps.version.outputs.VERSION }}.zip"
+
+      - name: Upload Zip
+        uses: actions/upload-artifact@v4
+        with:
+          name: laradashboard-v${{ steps.version.outputs.VERSION }}
+          path: laradashboard-v${{ steps.version.outputs.VERSION }}.zip

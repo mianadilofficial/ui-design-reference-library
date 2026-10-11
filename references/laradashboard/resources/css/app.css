@@ -1,0 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap")
+layer(base);
+
+@import "tailwindcss";
+
+/* Import base styles */
+@import "./base.css";
+
+/* Import sidebar styles */
+@import "./sidebar.css";
+
+/* Import utility styles */
+@import "./utilities.css";
+
+/* Import component styles */
+@import "./components.css";
+
+/* Import block editor styles */
+@import "./block-editor.css";
+
+/* Import third-party library styles */
+@import "./third-party.css";
+
+@plugin 'tailwindcss-animate';
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+/* Smooth fade-in animation for the main content */
+.app-container {
+    opacity: 0;
+    transition: opacity 0.2s ease-in;
+}
+
+.app-container.loaded {
+    opacity: 1;
+}

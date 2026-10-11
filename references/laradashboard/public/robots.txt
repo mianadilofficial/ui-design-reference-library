@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /checkout/
+Disallow: /_debugbar/
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Production deploys should remove this file so /robots.txt is served by
+# Laravel and the Sitemap URL is computed from APP_URL automatically.
+Sitemap: /sitemap.xml

@@ -1,0 +1,40 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Requests\Role;
+
+use App\Enums\Hooks\RoleFilterHook;
+use App\Http\Requests\FormRequest;
+use App\Support\Facades\Hook;
+
+class StoreRoleRequest extends FormRequest
+{
+    /**
+     * Determine if the user is authorized to make this request.
+     */
+    public function authorize(): bool
+    {
+        // Authorization is handled by the controller using policies.
+        return true;
+    }
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     */
+    public function rules(): array
+    {
+        return Hook::applyFilters(RoleFilterHook::ROLE_STORE_VALIDATION_RULES, [
+            /** @example "Content Writer" */
+            'name' => 'required|max:100|unique:roles,name',
+
+            /** @example ["post.create", "post.edit", "post.delete"] */
+            'permissions' => 'required|array|min:1',
+
+            /** @example "post.create" */
+            'permissions.*' => 'string|exists:permissions,name',
+        ]);
+    }
+}

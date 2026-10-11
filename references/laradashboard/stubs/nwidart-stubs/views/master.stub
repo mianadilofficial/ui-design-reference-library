@@ -1,0 +1,21 @@
+@extends('backend.layouts.app')
+
+@section('title')
+    @yield('$LOWER_NAME$-title', $breadcrumbs['title'] ?? __('$STUDLY_NAME$')) | {{ __('$STUDLY_NAME$') }} | {{ config('app.name') }}
+@endsection
+
+@push('styles')
+    {{-- Resilient CSS loader: renders the compiled module bundle when present and
+         degrades gracefully (no 500) when it has not been built yet. --}}
+    <x-module-styles :entrypoints="['modules/$STUDLY_NAME$/resources/assets/css/app.css']" build="build-$LOWER_NAME$" />
+@endpush
+
+@section('admin-content')
+    <div class="$LOWER_NAME$-module container px-6 py-8 mx-auto min-h-[80vh]">
+        @yield('$LOWER_NAME$-admin-content')
+    </div>
+@endsection
+
+@push('scripts')
+    @stack('$LOWER_NAME$-scripts')
+@endpush

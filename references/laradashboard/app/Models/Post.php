@@ -1,0 +1,542 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Enums\Hooks\AdminFilterHook;
+use App\Enums\Hooks\FrontendActionHook;
+use App\Services\Builder\BlockRenderer;
+use App\Services\Builder\DesignJsonRenderer;
+use App\Services\Builder\PostBuilderService;
+use App\Services\Content\ContentService;
+use App\Services\Content\PostType;
+use App\Services\MediaLibraryService;
+use App\Support\Facades\Hook;
+use App\Concerns\QueryBuilderTrait;
+use App\Concerns\HasMedia;
+use App\Enums\PostStatus;
+use App\Observers\PostObserver;
+use Spatie\MediaLibrary\HasMedia as SpatieHasMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media as SpatieMedia;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Spatie\Image\Enums\Fit;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
+
+#[ObservedBy([PostObserver::class])]
+class Post extends Model implements SpatieHasMedia
+{
+    use HasFactory;
+    use QueryBuilderTrait;
+    use HasMedia;
+
+    public const VIEWS_META_KEY = 'views';
+
+    protected $fillable = [
+        'user_id',
+        'post_type',
+        'title',
+        'slug',
+        'excerpt',
+        'content',
+        'design_json',
+        'status',
+        'meta',
+        'parent_id',
+        'published_at',
+    ];
+
+    protected $casts = [
+        'meta' => 'array',
+        'design_json' => 'array',
+        'published_at' => 'datetime',
+    ];
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::creating(function (Post $post) {
+            if (empty($post->slug)) {
+                $post->slug = Str::slug($post->title);
+            }
+
+            if (empty($post->user_id) && Auth::check()) {
+                $post->user_id = Auth::id();
+            }
+        });
+    }
+
+    public static function getPostStatuses(): array
+    {
+        return collect(PostStatus::cases())
+            ->mapWithKeys(fn ($case) => [$case->value => __(Str::of($case->name)->title()->toString())])
+            ->toArray();
+    }
+
+    /**
+     * Get the user that owns the post.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the author of the post.
+     */
+    public function author(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /**
+     * Get the post-type object for this post
+     */
+    public function getPostTypeObject(): ?PostType
+    {
+        return app(ContentService::class)->getPostType($this->post_type);
+    }
+
+    /**
+     * Get the parent post.
+     */
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Post::class, 'parent_id');
+    }
+
+    /**
+     * Get the child posts.
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(Post::class, 'parent_id');
+    }
+
+    /**
+     * The terms that belong to the post.
+     */
+    public function terms(): BelongsToMany
+    {
+        return $this->belongsToMany(Term::class, 'term_relationships');
+    }
+
+    /**
+     * Get the post meta.
+     */
+    public function postMeta(): HasMany
+    {
+        return $this->hasMany(PostMeta::class);
+    }
+
+    /**
+     * Get a specific meta value
+     *
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getMeta(string $key, $default = null)
+    {
+        $meta = $this->postMeta()->where('meta_key', $key)->first();
+
+        return $meta ? $meta->getAttribute('meta_value') : $default;
+    }
+
+    /**
+     * Set a meta-value
+     *
+     * @param  mixed  $value
+     */
+    public function setMeta(string $key, $value): PostMeta
+    {
+        $meta = $this->postMeta()->updateOrCreate(
+            ['meta_key' => $key],
+            ['meta_value' => $value]
+        );
+
+        return $meta instanceof PostMeta ? $meta : new PostMeta($meta->getAttributes());
+    }
+
+    /**
+     * Delete a meta value
+     */
+    public function deleteMeta(string $key): bool
+    {
+        return $this->postMeta()->where('meta_key', $key)->delete() > 0;
+    }
+
+    /**
+     * Get all meta as array with full info
+     */
+    public function getAllMeta(): array
+    {
+        // Make sure we're loading the postMeta relationship
+        if (! $this->relationLoaded('postMeta')) {
+            $this->load('postMeta');
+        }
+
+        return $this->postMeta
+            ->mapWithKeys(function ($meta) {
+                return [
+                    $meta->getAttribute('meta_key') => [
+                        'value' => $meta->getAttribute('meta_value') ?? '',
+                        'type' => $meta->getAttribute('type') ?? 'input',
+                        'default_value' => $meta->getAttribute('default_value') ?? '',
+                    ],
+                ];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Get all meta as simple key-value pairs
+     */
+    public function getAllMetaValues(): array
+    {
+        return $this->postMeta()
+            ->pluck('meta_value', 'meta_key')
+            ->toArray();
+    }
+
+    /**
+     * Public view count stored in post_meta (`meta_key` = views).
+     */
+    public function getViewCountAttribute(): int
+    {
+        if ($this->relationLoaded('postMeta')) {
+            $viewsMeta = $this->postMeta->firstWhere('meta_key', self::VIEWS_META_KEY);
+
+            return $viewsMeta !== null ? (int) $viewsMeta->meta_value : 0;
+        }
+
+        return (int) $this->getMeta(self::VIEWS_META_KEY, 0);
+    }
+
+    /**
+     * Compact admin display: 850, 2.1k, or — when there are no views.
+     */
+    public function formattedViewCount(): string
+    {
+        $count = $this->view_count;
+
+        if ($count < 1) {
+            return '—';
+        }
+
+        if ($count < 1000) {
+            return (string) $count;
+        }
+
+        if ($count < 1_000_000) {
+            $thousands = $count / 1000;
+            $formatted = $thousands >= 10
+                ? (string) round($thousands)
+                : rtrim(rtrim(sprintf('%.1f', $thousands), '0'), '.');
+
+            return $formatted . 'k';
+        }
+
+        $millions = $count / 1_000_000;
+        $formatted = $millions >= 10
+            ? (string) round($millions)
+            : rtrim(rtrim(sprintf('%.1f', $millions), '0'), '.');
+
+        return $formatted . 'm';
+    }
+
+    /**
+     * Atomically increment the view counter in post_meta.
+     */
+    public function incrementViews(): void
+    {
+        if ($this->status !== PostStatus::PUBLISHED->value) {
+            return;
+        }
+
+        $updated = $this->postMeta()
+            ->where('meta_key', self::VIEWS_META_KEY)
+            ->update([
+                'meta_value' => DB::raw('CAST(COALESCE(meta_value, 0) AS INTEGER) + 1'),
+            ]);
+
+        if ($updated === 0) {
+            $this->postMeta()->create([
+                'meta_key' => self::VIEWS_META_KEY,
+                'meta_value' => '1',
+            ]);
+        }
+
+        $this->unsetRelation('postMeta');
+
+        $hook = $this->post_type === PostType::PAGE
+            ? FrontendActionHook::PAGE_VIEWED
+            : FrontendActionHook::POST_VIEWED;
+
+        Hook::doAction($hook, $this);
+    }
+
+    /**
+     * Register media collections for posts
+     */
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('featured')
+            ->singleFile()
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+
+        $this->addMediaCollection('gallery')
+            ->acceptsMimeTypes(['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+    }
+
+    /**
+     * Register media conversions for posts
+     */
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('preview')
+            ->fit(Fit::Contain, 300, 300);
+
+        $this->addMediaConversion('thumb')
+            ->width(200)
+            ->height(200)
+            ->sharpen(10);
+
+        $this->addMediaConversion('medium')
+            ->width(500)
+            ->height(500);
+
+        $this->addMediaConversion('large')
+            ->width(1000)
+            ->height(1000);
+    }
+
+    /**
+     * Get the featured media item for this post.
+     */
+    public function getFeaturedMedia(): ?SpatieMedia
+    {
+        $mediaId = $this->getMeta(PostBuilderService::META_FEATURED_MEDIA_ID);
+
+        if ($mediaId) {
+            $media = SpatieMedia::find((int) $mediaId);
+
+            if ($media) {
+                return $media;
+            }
+        }
+
+        return $this->getFirstMedia('featured');
+    }
+
+    /**
+     * Get the featured image URL.
+     *
+     * Falls back to original image when the requested conversion
+     * hasn't been generated yet (e.g. queue not processed).
+     */
+    public function getFeaturedImageUrl(string $conversion = ''): ?string
+    {
+        $media = $this->getFeaturedMedia();
+
+        if (! $media) {
+            return null;
+        }
+
+        $service = app(MediaLibraryService::class);
+        $url = $service->resolveMediaUrl($media, $conversion);
+
+        if ($url === null && $conversion !== '') {
+            $url = $service->resolveMediaUrl($media);
+        }
+
+        return $url;
+    }
+
+    /**
+     * Check if post has featured image
+     */
+    public function hasFeaturedImage(): bool
+    {
+        return $this->getFeaturedMedia() !== null;
+    }
+
+    /**
+     * Get gallery images with fallback to original when conversions aren't ready.
+     */
+    public function getGalleryImages(): array
+    {
+        return $this->getMedia('gallery')->map(function ($media) {
+            $url = fn (string $conversion) => $media->hasGeneratedConversion($conversion)
+                ? $media->getUrl($conversion)
+                : $media->getUrl();
+
+            return [
+                'id' => $media->id,
+                'name' => $media->name,
+                'original' => $media->getUrl(),
+                'thumb' => $url('thumb'),
+                'medium' => $url('medium'),
+                'large' => $url('large'),
+            ];
+        })->toArray();
+    }
+
+    /**
+     * Get categories for the post
+     */
+    public function categories()
+    {
+        return $this->terms()->where('taxonomy', 'category');
+    }
+
+    /**
+     * Get tags for the post
+     */
+    public function tags()
+    {
+        return $this->terms()->where('taxonomy', 'tag');
+    }
+
+    /**
+     * Scope a query to only include published posts.
+     */
+    public function scopePublished(Builder $query): void
+    {
+        $query->where('status', PostStatus::PUBLISHED->value)
+            ->where(function ($query) {
+                $query->whereNull('published_at')
+                    ->orWhere('published_at', '<=', now());
+            });
+    }
+
+    /**
+     * Scope a query to only include posts of a given type.
+     */
+    public function scopeType(Builder $query, string $type): void
+    {
+        $query->where('post_type', $type);
+    }
+
+    /**
+     * Apply category filter to the query
+     */
+    public function scopeFilterByCategory(Builder $query, $categoryId): void
+    {
+        $query->whereHas('terms', function ($q) use ($categoryId) {
+            $q->where('id', $categoryId)
+                ->where('taxonomy', 'category');
+        });
+    }
+
+    /**
+     * Apply tag filter to the query
+     */
+    public function scopeFilterByTag(Builder $query, $tagId): void
+    {
+        $query->whereHas('terms', function ($q) use ($tagId) {
+            $q->where('id', $tagId)
+                ->where('taxonomy', 'tag');
+        });
+    }
+
+    /**
+     * Check if this post type supports a specific feature
+     *
+     * @param  string  $feature  Feature name (e.g., 'editor', 'thumbnail', 'excerpt')
+     */
+    public function supportsFeature(string $feature): bool
+    {
+        $postType = $this->getPostTypeObject();
+
+        return $postType ? $postType->supports($feature) : false;
+    }
+
+    /**
+     * Render the post content with dynamic blocks processed.
+     *
+     * Processes any dynamic blocks (like CRM Contact) through server-side
+     * rendering via BlockRenderer. Use this method instead of accessing
+     * $post->content directly when displaying content.
+     *
+     * If content is empty but design_json exists, it will render directly
+     * from the design_json blocks (useful for pages created via migration).
+     *
+     * @param  string  $context  The rendering context ('page', 'email', 'campaign')
+     * @return string The processed HTML content
+     */
+    public function renderContent(string $context = 'page'): string
+    {
+        // Prefer design_json when it exists — it may contain dynamic blocks
+        // (e.g. latest-posts with interactive mode) that need server-side rendering.
+        // The content field is a stale HTML snapshot that can't render dynamic blocks.
+        if (! empty($this->design_json) && is_array($this->design_json)) {
+            $blocks = $this->design_json['blocks'] ?? $this->design_json;
+            $canvasSettings = $this->design_json['canvasSettings'] ?? [];
+
+            return app(DesignJsonRenderer::class)->render($blocks, $context, $canvasSettings);
+        }
+
+        // Fall back to content field processed through BlockRenderer
+        if (! empty($this->content)) {
+            return app(BlockRenderer::class)->processContent($this->content, $context);
+        }
+
+        return '';
+    }
+
+    /**
+     * Get the frontend URL for this post.
+     *
+     * Modules/themes can register a filter on POST_FRONTEND_URL to provide
+     * theme-specific URLs. Falls back to generic URL patterns.
+     */
+    public function getFrontendUrl(): ?string
+    {
+        $url = Hook::applyFilters(AdminFilterHook::POST_FRONTEND_URL, null, $this);
+
+        if (! empty($url)) {
+            return $url;
+        }
+
+        // Fallback when no theme registers a filter
+        return match ($this->post_type) {
+            'page' => url('/' . $this->slug),
+            default => url('/post/' . $this->slug),
+        };
+    }
+
+    /**
+     * Get a display title with fallbacks for empty post titles.
+     */
+    public function getDisplayTitle(): string
+    {
+        return app(PostBuilderService::class)->getDisplayTitle($this);
+    }
+
+    /**
+     * Get searchable columns for the model.
+     */
+    protected function getSearchableColumns(): array
+    {
+        return ['title', 'excerpt', 'content'];
+    }
+
+    /**
+     * Get columns that should be excluded from sorting.
+     */
+    protected function getExcludedSortColumns(): array
+    {
+        return ['content', 'excerpt', 'meta'];
+    }
+}

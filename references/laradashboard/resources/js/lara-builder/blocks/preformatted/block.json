@@ -1,0 +1,23 @@
+{
+    "type": "preformatted",
+    "version": "1.0.0",
+    "label": "Preformatted",
+    "category": "Content",
+    "icon": "mdi:format-text-wrapping-wrap",
+    "description": "Add preformatted text with monospace font",
+    "keywords": ["preformatted", "pre", "monospace", "fixed", "code"],
+    "contexts": ["email", "page", "campaign"],
+    "supports": {
+        "layout": true,
+        "html": true,
+        "duplicate": true,
+        "remove": true
+    },
+    "defaultProps": {
+        "text": "Write preformatted text...",
+        "backgroundColor": "var(--color-gray-100, #f3f4f6)",
+        "textColor": "var(--color-gray-800, #1f2937)",
+        "borderColor": "var(--color-gray-200, #e5e7eb)",
+        "borderRadius": "4px"
+    }
+}

@@ -1,0 +1,85 @@
+name: Code Review
+
+on:
+  pull_request:
+    branches: [test] #SKIP it for now, enable it agian, once Claude code is ready. set then to `main` here.
+
+jobs:
+  code-review:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft != true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, intl
+          coverage: none
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+      - name: Run Pint (Code Style Check)
+        id: pint
+        run: |
+          ./vendor/bin/pint --test > pint_output.txt || echo "PINT_FAILED=true" >> $GITHUB_ENV
+          echo "PINT_OUTPUT<<EOF" >> $GITHUB_ENV
+          cat pint_output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Run PHPStan (Static Analysis)
+        id: phpstan
+        continue-on-error: true
+        run: |
+          ./vendor/bin/phpstan analyse --memory-limit=5G --error-format=github > phpstan_output.txt || echo "PHPSTAN_FAILED=true" >> $GITHUB_ENV
+          echo "PHPSTAN_OUTPUT<<EOF" >> $GITHUB_ENV
+          cat phpstan_output.txt >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Comment PR with Code Style Issues
+        if: env.PINT_FAILED == 'true'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ## 🔍 Code Style Issues Detected
+
+            The code in this PR doesn't follow the project's coding standards. Please run:
+
+            ```bash
+            composer run format
+            ```
+
+            And commit the changes before merging.
+
+            <details>
+            <summary>See details</summary>
+
+            ```
+            ${{ env.PINT_OUTPUT }}
+            ```
+            </details>
+          comment_tag: code-style
+
+      - name: Comment PR with Static Analysis Issues
+        if: env.PHPSTAN_FAILED == 'true'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ## 🔍 Static Analysis Issues Detected
+
+            PHPStan found potential issues in your code. Please review and fix them:
+
+            <details>
+            <summary>See details</summary>
+
+            ```
+            ${{ env.PHPSTAN_OUTPUT }}
+            ```
+            </details>
+            Or you can just run: `composer run format`, which will fix most of the issues automatically.
+          comment_tag: static-analysis

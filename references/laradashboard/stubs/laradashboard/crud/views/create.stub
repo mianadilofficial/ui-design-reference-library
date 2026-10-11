@@ -1,0 +1,25 @@
+@extends('$LOWER_NAME$::layouts.master')
+
+@section('title')
+    {{ $breadcrumbs['title'] . ' | ' . config('app.name') }}
+@endsection
+
+@section('$LOWER_NAME$-admin-content')
+    <div class="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <x-breadcrumbs :breadcrumbs="$breadcrumbs" />
+
+        <div class="mt-6">
+            <div class="rounded-md border border-gray-200 bg-white dark:border-gray-800 dark:bg-white/[0.03]">
+                <div class="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+                    <h3 class="text-base font-medium text-gray-800 dark:text-white/90">
+                        {{ __('Create $MODEL_NAME$') }}
+                    </h3>
+                </div>
+                <div class="p-5 sm:p-6">
+                    @include('$LOWER_NAME$::pages.$MODEL_PLURAL_LOWER$.partials.form')
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+$EDITOR_ASSETS$
