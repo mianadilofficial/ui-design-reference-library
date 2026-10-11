@@ -1,0 +1,32 @@
+{
+  "common": {
+    "or": "or",
+    "error": {
+      "title": "Page not found",
+      "description": "We are sorry but this page could not be found."
+    }
+  },
+  "docs": {
+    "copy": {
+      "page": "Copy page",
+      "link": "Copy Markdown page",
+      "view": "View as Markdown",
+      "gpt": "Open in ChatGPT",
+      "claude": "Open in Claude"
+    },
+    "links": "Community",
+    "toc": "On this page",
+    "report": "Report an issue",
+    "edit": "Edit this page"
+  },
+
+  "toc": {
+    "title": "On This Page",
+    "StarOnGitHub": "Star on GitHub",
+    "CreateIssues": "Create Issues",
+    "JoinDiscord": "Join Discord",
+    "Forum": "Forum",
+    "FollowOnX": "Follow on X",
+    "FollowOnBluesky": "Follow on Bluesky"
+  }
+}
