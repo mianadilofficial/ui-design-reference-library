@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://uiarc.dev/docs/introduction
+    about: Installation, theming, motion and every component with a live preview.
+  - name: Installation help
+    url: https://uiarc.dev/docs/installation
+    about: Set up the @uiarc registry with the shadcn CLI, or copy the files by hand.
+  - name: AI tools and MCP
+    url: https://uiarc.dev/docs/ai
+    about: Connect Claude Code, Cursor, VS Code or Codex to the Arc MCP server.
+  - name: Security issue
+    url: https://github.com/kuratlielia/arc-library/security/policy
+    about: Please report security problems privately, not as an issue.
