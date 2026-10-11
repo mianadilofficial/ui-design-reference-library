@@ -1,0 +1,38 @@
+name: Validate references
+
+on:
+  push:
+    paths:
+      - "references/**"
+  pull_request:
+    paths:
+      - "references/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Every reference has ATTRIBUTION.md with required fields
+        run: |
+          fail=0
+          for dir in references/*/; do
+            [ -d "$dir" ] || continue
+            file="${dir}ATTRIBUTION.md"
+            if [ ! -f "$file" ]; then
+              echo "MISSING: $file"; fail=1; continue
+            fi
+            for field in "Original repository" "Author" "Original URL" "License"; do
+              grep -q "$field" "$file" || { echo "MISSING FIELD '$field' in $file"; fail=1; }
+            done
+            [ -f "${dir}LICENSE" ] || [ -f "${dir}LICENSE.md" ] || { echo "MISSING LICENSE in $dir"; fail=1; }
+          done
+          exit $fail
+
+      - name: No nested git repos (snapshots only, no submodules)
+        run: |
+          if find references -name ".git" -maxdepth 3 | grep -q .; then
+            echo "Nested .git found — mirrors must be plain snapshots"; exit 1
+          fi
+          echo "OK: no nested git repos"
