@@ -11,6 +11,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [impeccable](references/impeccable) | pbakaus | Agnostic | Apache-2.0 | — | Design guidance skill: 24 commands + 59 detector rules against AI-design tells |
 | [emilkowalski-skills](references/emilkowalski-skills) | Emil Kowalski | Agnostic | MIT | — | 15 elite UI/animation skills from ex-Vercel/Linear + performance cheatsheet |
 | [diagram-design](references/diagram-design) | Cathryn Lavery | Agnostic | MIT | — | Agent skill for brand-styled HTML+SVG diagrams — 44 types, editorial taste |
+| [ux-ui-agent-skills](references/ux-ui-agent-skills) | Thientan Soparat | Agnostic | MIT | — | XIAS: 138 design systems, 52 component specs, 25 skills, a11y quality gates |
 
 ## Components
 
