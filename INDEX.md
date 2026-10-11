@@ -25,6 +25,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [generativecharts](references/generativecharts) | Kasturi Khanke | React | MIT | — | Accessible charts: 18 families, 3 themes, light/dark, live gallery |
 | [shadcn-ui](references/shadcn-ui) | shadcn | React | MIT | — | The canonical shadcn component collection (Radix + Tailwind) |
 | [magicui](references/magicui) | Dillion Verma | React | MIT | — | Landing-page motion components: beams, marquee, bento, shine |
+| [heroui](references/heroui) | HeroUI | React | Apache-2.0 | — | Pro component library (ex-NextUI): themeable, accessible |
 
 ## Patterns
 
