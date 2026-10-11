@@ -1,0 +1,38 @@
+name: New reference suggestion
+description: Suggest a public repository to mirror in the library
+title: "[reference] "
+labels: ["new-reference"]
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Repository URL
+      placeholder: https://github.com/author/repo
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - Design skill
+        - Components
+        - Patterns
+        - Motion
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is it worth adding?
+      description: What does it give agents that current references don't?
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License
+      description: As stated in the source repo (e.g. MIT, Apache-2.0)
+      placeholder: MIT
+    validations:
+      required: true

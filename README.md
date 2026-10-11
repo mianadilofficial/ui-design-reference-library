@@ -1,27 +1,72 @@
 # UI Design Reference Library
 
-Curated UI/UX design reference library — components, patterns, landing pages and interaction examples for clean modern web design. Built as a grounded reference for AI-assisted development.
+[![GitHub stars](https://img.shields.io/github/stars/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/stargazers)
+[![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
+[![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
+[![References](https://img.shields.io/badge/references-3-blue?style=flat-square)](INDEX.md)
 
-> 🚧 **Status: Work in progress.** The library is being built — reference repositories are being reviewed and added one by one.
+![UI Design Reference Library](assets/banner.png)
 
-## What this will contain
+A curated, agent-ready library of real-world UI/UX references — design skills, component libraries, patterns and interaction examples — organized so any AI agent (or human) can study the right reference and build clean, non-generic interfaces grounded in proven work.
 
-- **Curated reference repos** — hand-picked public repositories, each in its own folder, organized by category (landing pages, dashboards, portfolios, e-commerce, components, animations...)
-- **Attribution for every source** — original repo name, author, license and link preserved in each folder
-- **Agent guidance** (`AGENTS.md`) — how to pick the right references for a project and build clean, non-generic UI from them
+> **Status:** Growing — new references are reviewed and added regularly. See [INDEX.md](INDEX.md) for the full catalog.
 
-## How it will be used
+## Why this exists
 
-An agent receives this repo link, studies the references relevant to the task, and builds UI grounded in real examples — no generic AI-looking templates.
+AI-generated UI too often looks the same: generic gradients, predictable layouts, template energy. This library fixes that at the source — instead of designing from nothing, agents pick relevant real-world references first and build from them. Every entry is a real public repository with its original author, license and link preserved.
 
-## Roadmap
+## What's inside
 
-- [x] Repository created
-- [ ] Root `AGENTS.md` with reference-selection rules
-- [ ] First batch of curated reference repos added
-- [ ] Category index (`INDEX.md`)
-- [ ] License + attribution policy finalized
+| Reference | Category | Stack | License | What it gives you |
+|---|---|---|---|---|
+| [ui-ux-pro-max-skill](references/ui-ux-pro-max-skill) | Design skill | Agnostic | MIT | 79 UI styles, 192 palettes, 74 font pairings, anti-patterns |
+| [inspira-ui](references/inspira-ui) | Components | Vue / Nuxt | MIT | Animated copy-paste components: backgrounds, text effects, grids |
+| [animate-ui](references/animate-ui) | Components | React / Tailwind | MIT + Commons Clause | Hand-crafted animated components and micro-interactions |
 
-## License
+Full details in **[INDEX.md](INDEX.md)**.
 
-The curation, index and documentation in this repo are planned under MIT. All mirrored third-party code in subfolders retains its original license and attribution.
+## How to use
+
+**For AI agents** — read [AGENTS.md](AGENTS.md) first. It defines how to select the right reference for a task, which design decisions to ground in it, and the quality bar every build must pass.
+
+**For humans** — browse `references/`, open any folder's `ATTRIBUTION.md` for the original source, and explore the live demos linked from each project's own README.
+
+```
+Give an agent this repo link + your task.
+The agent studies the relevant references, then builds —
+no generic AI-looking output, no template cloning.
+```
+
+## Categories
+
+References are organized by what they're useful for:
+
+- **Design skills** — reasoning systems, style taxonomies, palettes, typography
+- **Components** — copy-paste UI components (buttons, cards, backgrounds, effects)
+- **Patterns** — landing pages, dashboards, portfolios *(coming)*
+- **Motion** — animation and interaction examples *(coming)*
+
+## Contributing
+
+Found a reference worth adding? See [CONTRIBUTING.md](CONTRIBUTING.md). Every addition needs a compatible license, full attribution and a clean secret scan — the checklist is in the guide.
+
+## License & attribution
+
+- This repository's own curation (README, guides, index, attribution files) is under the [MIT License](LICENSE).
+- Every mirrored project in `references/` keeps its **original license and author** — check each folder's `ATTRIBUTION.md` before reusing code.
+
+## Acknowledgments
+
+All design work referenced here belongs to its original authors. This library exists to point at great work, not to claim it — if you build something from these references, credit the source.
+
+---
+
+### Built & curated by Mian Adil
+
+I'm Mian Adil, an Applied AI Engineer building web platforms, SEO systems and AI automation for international clients.
+
+- Portfolio: [mianadil.site](https://mianadil.site)
+- GitHub: [@mianadilofficial](https://github.com/mianadilofficial)
+
+*If this library helped you, a ⭐ is the best thanks.*
