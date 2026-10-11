@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![References](https://img.shields.io/badge/references-8-blue?style=flat-square)](INDEX.md)
+[![References](https://img.shields.io/badge/references-11-blue?style=flat-square)](INDEX.md)
 
 ![UI Design Reference Library](assets/banner.png)
 
@@ -25,6 +25,9 @@ AI-generated UI too often looks the same: generic gradients, predictable layouts
 | [emilkowalski-skills](references/emilkowalski-skills) | Design skill | Agnostic | MIT | 15 elite UI/animation skills (ex-Vercel/Linear) |
 | [inspira-ui](references/inspira-ui) | Components | Vue / Nuxt | MIT | Animated copy-paste components: backgrounds, text effects, grids |
 | [animate-ui](references/animate-ui) | Components | React / Tailwind | MIT + Commons Clause | Hand-crafted animated components and micro-interactions |
+| [audiocn-ui](references/audiocn-ui) | Components | React | MIT | Audio UI: meters, visualizers, faders, knobs, mixer |
+| [arc-library](references/arc-library) | Components | React | MIT | Calm-motion components + blocks (shadcn CLI) |
+| [generativecharts](references/generativecharts) | Components | React | MIT | Accessible charts, 18 families, themed |
 | [lenis](references/lenis) | Motion | Agnostic (JS) | MIT | Buttery-smooth scroll — premium scroll-driven experiences |
 
 Full details in **[INDEX.md](INDEX.md)**.

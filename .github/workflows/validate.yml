@@ -26,7 +26,7 @@ jobs:
             for field in "Original repository" "Author" "Original URL" "License"; do
               grep -q "$field" "$file" || { echo "MISSING FIELD '$field' in $file"; fail=1; }
             done
-            [ -f "${dir}LICENSE" ] || [ -f "${dir}LICENSE.md" ] || { echo "MISSING LICENSE in $dir"; fail=1; }
+            [ -f "${dir}LICENSE" ] || [ -f "${dir}LICENSE.md" ] || [ -f "${dir}license.md" ] || { echo "MISSING LICENSE in $dir"; fail=1; }
           done
           exit $fail
 
