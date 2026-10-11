@@ -1,1 +1,87 @@
-{"_note":"Source-of-truth for the weekly auto-sync workflow. Do not edit by hand — sync-references.yml updates it.","animate-ui":{"branch":"main","commit":"efeb96ffd7a3b7a4868667e4ac3c346620fb3044","date":"2025-12-31","repo":"imskyleen/animate-ui"},"arc-library":{"branch":"main","commit":"86330cc9270c4acc55b7204c9583fcbaa378192c","date":"2026-10-09","repo":"kuratlielia/arc-library"},"audiocn-ui":{"branch":"main","commit":"4234aa114b8696e2704db7825c1289cf74d1e4f2","date":"2026-10-07","repo":"audiocn/ui"},"diagram-design":{"branch":"main","commit":"7a2e22170ee838e859d8142ba825d83f8b6375e6","date":"2026-10-10","repo":"cathrynlavery/diagram-design"},"emilkowalski-skills":{"branch":"main","commit":"e8a175de22ae1e49370fc144c1f3bb9aeedf988d","date":"2026-10-02","repo":"emilkowalski/skills"},"generativecharts":{"branch":"main","commit":"b92c540033452a596a5bcb2826187e21de8322ab","date":"2026-09-28","repo":"kasturibuilds/generativecharts"},"impeccable":{"branch":"main","commit":"d631a8827f99414d2b6daba4ef08b7f8701751d7","date":"2026-10-08","repo":"pbakaus/impeccable"},"inspira-ui":{"branch":"main","commit":"04c57ab62b9713872ebbf68988dff1836ed3d764","date":"2026-09-18","repo":"unovue/inspira-ui"},"lenis":{"branch":"main","commit":"bc152f90d7c9b04ef372718350e2f616f3c706b2","date":"2026-10-01","repo":"darkroomengineering/lenis"},"taste-skill":{"branch":"main","commit":"717446e07a78d4e6d7918b1fde1a263378eebac9","date":"2026-10-09","repo":"Leonxlnx/taste-skill"},"ui-ux-pro-max-skill":{"branch":"main","commit":"67803eac81607188194aea9842a723b89326d90d","date":"2026-10-11","repo":"nextlevelbuilder/ui-ux-pro-max-skill"},"ux-ui-agent-skills":{"branch":"main","commit":"62092bd83bc3df0bcb9a2b3b643305ab11c547da","date":"2026-10-10","repo":"plugin87/ux-ui-agent-skills"}}
+{
+  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand — sync-references.yml updates it.",
+  "animate-ui": {
+    "branch": "main",
+    "commit": "efeb96ffd7a3b7a4868667e4ac3c346620fb3044",
+    "date": "2025-12-31",
+    "repo": "imskyleen/animate-ui"
+  },
+  "arc-library": {
+    "branch": "main",
+    "commit": "86330cc9270c4acc55b7204c9583fcbaa378192c",
+    "date": "2026-10-09",
+    "repo": "kuratlielia/arc-library"
+  },
+  "audiocn-ui": {
+    "branch": "main",
+    "commit": "4234aa114b8696e2704db7825c1289cf74d1e4f2",
+    "date": "2026-10-07",
+    "repo": "audiocn/ui"
+  },
+  "diagram-design": {
+    "branch": "main",
+    "commit": "7a2e22170ee838e859d8142ba825d83f8b6375e6",
+    "date": "2026-10-10",
+    "repo": "cathrynlavery/diagram-design"
+  },
+  "emilkowalski-skills": {
+    "branch": "main",
+    "commit": "e8a175de22ae1e49370fc144c1f3bb9aeedf988d",
+    "date": "2026-10-02",
+    "repo": "emilkowalski/skills"
+  },
+  "generativecharts": {
+    "branch": "main",
+    "commit": "b92c540033452a596a5bcb2826187e21de8322ab",
+    "date": "2026-09-28",
+    "repo": "kasturibuilds/generativecharts"
+  },
+  "impeccable": {
+    "branch": "main",
+    "commit": "d631a8827f99414d2b6daba4ef08b7f8701751d7",
+    "date": "2026-10-08",
+    "repo": "pbakaus/impeccable"
+  },
+  "inspira-ui": {
+    "branch": "main",
+    "commit": "04c57ab62b9713872ebbf68988dff1836ed3d764",
+    "date": "2026-09-18",
+    "repo": "unovue/inspira-ui"
+  },
+  "lenis": {
+    "branch": "main",
+    "commit": "bc152f90d7c9b04ef372718350e2f616f3c706b2",
+    "date": "2026-10-01",
+    "repo": "darkroomengineering/lenis"
+  },
+  "taste-skill": {
+    "branch": "main",
+    "commit": "717446e07a78d4e6d7918b1fde1a263378eebac9",
+    "date": "2026-10-09",
+    "repo": "Leonxlnx/taste-skill"
+  },
+  "ui-ux-pro-max-skill": {
+    "branch": "main",
+    "commit": "67803eac81607188194aea9842a723b89326d90d",
+    "date": "2026-10-11",
+    "repo": "nextlevelbuilder/ui-ux-pro-max-skill"
+  },
+  "ux-ui-agent-skills": {
+    "branch": "main",
+    "commit": "62092bd83bc3df0bcb9a2b3b643305ab11c547da",
+    "date": "2026-10-10",
+    "repo": "plugin87/ux-ui-agent-skills"
+  },
+  "shadcn-ui": {
+    "repo": "shadcn-ui/ui",
+    "branch": "main",
+    "commit": "c2a67849be260701852b0977ba15eb5f3a0ce2a4",
+    "date": "2026-10-10"
+  },
+  "magicui": {
+    "repo": "dillionverma/magicui",
+    "branch": "main",
+    "commit": "cdb348cb4c72a9b54b554d8617801e479fbc8714",
+    "date": "2026-10-05"
+  }
+}

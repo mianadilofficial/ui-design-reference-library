@@ -27,6 +27,24 @@ Good: "Hero uses the split-layout pattern from X; palette #7 / soft-ui
 direction from ui-ux-pro-max-skill's style taxonomy."
 Bad: "I made a modern hero section with a gradient."
 
+## 2b. Structure the project like the references
+
+When the task includes scaffolding (frontend and/or backend), study the
+**Project structure** references before writing a single file:
+
+- **Folder-wise organization.** Group by feature or domain (`features/`,
+  `modules/`, `routes/`, `services/`...) — never a flat pile of random files
+  in one directory.
+- **Separation of concerns.** UI components, business logic, data access and
+  configuration live in their own places. A component file does not contain
+  database queries; a route handler does not contain styling.
+- **Backend structure.** API routes/controllers, services, models/schemas,
+  middleware, config and tests each get their home. No logic hiding in
+  random utility files.
+- **Naming that explains itself.** A new developer (or agent) opening the
+  repo should understand the architecture from the folder tree alone.
+- Name the structure reference you followed, same as design decisions.
+
 ## 3. The quality bar (non-negotiable)
 
 - **No generic AI look.** No purple/blue gradients on everything, no identical
