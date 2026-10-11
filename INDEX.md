@@ -22,7 +22,9 @@ Every entry lives in `references/<name>/` with its original files plus an
 
 ## Motion
 
-*No entries yet — dedicated animation/interaction references go here.*
+| Reference | Author | Stack | License | Stars* | What it gives you |
+|---|---|---|---|---|---|
+| [lenis](references/lenis) | darkroom.engineering | Agnostic (JS) | MIT | 30k | Buttery-smooth scroll library — the standard for premium scroll-driven experiences |
 
 ---
 
