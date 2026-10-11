@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django SaaS Boilerplate{% endblock %}</title>
+
+    <!-- Tailwind CSS -->
+    <script nonce="{{ csp_nonce }}" src="https://cdn.tailwindcss.com"></script>
+    <script nonce="{{ csp_nonce }}">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#121212',
+                        'dark-gray': '#292929',
+                        gray: '#4a4a4a',
+                        'light-gray': '#e0e0e0',
+                        white: '#ffffff'
+                    },
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- Space Grotesk Font -->
+    <link nonce="{{ csp_nonce }}" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap">
+
+    <!-- Font Awesome Icons -->
+    <link nonce="{{ csp_nonce }}" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Alpine.js -->
+    <script nonce="{{ csp_nonce }}" defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-white font-sans text-black min-h-screen flex flex-col">
+
+    <!-- Mobile menu overlay (CSS :target, no JS) -->
+    <div id="main-menu" class="fixed inset-0 z-50 md:hidden [&:not(:target)]:hidden">
+        <a href="#_" class="fixed inset-0 bg-black/40 cursor-pointer"></a>
+        <div class="fixed inset-y-0 right-0 w-64 bg-white flex flex-col shadow-xl">
+            <div class="h-14 flex items-center justify-between px-5 border-b border-light-gray">
+                <span class="text-sm font-medium">Menu</span>
+                <a href="#_" class="text-gray hover:text-black p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </a>
+            </div>
+            <nav class="flex-1 py-4 px-4 space-y-1 overflow-y-auto">
+                <a href="{% url 'landing:features' %}" class="block py-2.5 text-sm text-gray hover:text-black">Features</a>
+                <a href="{% url 'landing:pricing' %}" class="block py-2.5 text-sm text-gray hover:text-black">Pricing</a>
+                <div class="border-t border-light-gray my-3"></div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'dashboard:home' %}" class="block py-2.5 text-sm text-gray hover:text-black">Dashboard</a>
+                    <a href="{% url 'dashboard:profile' %}" class="block py-2.5 text-sm text-gray hover:text-black">Profile</a>
+                    <a href="{% url 'dashboard:settings' %}" class="block py-2.5 text-sm text-gray hover:text-black">Settings</a>
+                    <div class="border-t border-light-gray my-3"></div>
+                    <a href="{% url 'account_logout' %}" class="block py-2.5 text-sm text-gray hover:text-black">Log out</a>
+                {% else %}
+                    <a href="{% url 'account_login' %}" class="block py-2.5 text-sm text-gray hover:text-black">Log in</a>
+                    <a href="{% url 'account_signup' %}" class="block py-2.5 text-sm text-black font-medium">Sign up</a>
+                {% endif %}
+            </nav>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="border-b border-light-gray sticky top-0 z-40 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-14">
+                <!-- Logo + Links -->
+                <div class="flex items-center gap-10">
+                    <a href="{% url 'landing:home' %}" class="flex items-center gap-2">
+                        <div class="w-6 h-6 bg-black flex items-center justify-center">
+                            <span class="text-white text-[10px] font-bold">S</span>
+                        </div>
+                        <span class="text-sm font-medium">SaaS Boilerplate</span>
+                    </a>
+                    <div class="hidden md:flex items-center gap-6">
+                        <a href="{% url 'landing:features' %}" class="text-sm {% if request.resolver_match.url_name == 'features' %}text-black{% else %}text-gray hover:text-black{% endif %} transition-colors">Features</a>
+                        <a href="{% url 'landing:pricing' %}" class="text-sm {% if request.resolver_match.url_name == 'pricing' %}text-black{% else %}text-gray hover:text-black{% endif %} transition-colors">Pricing</a>
+                    </div>
+                </div>
+
+                <!-- Right side - Desktop -->
+                <div class="hidden md:flex items-center gap-4">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'dashboard:home' %}" class="text-sm text-gray hover:text-black transition-colors">Dashboard</a>
+                        <a href="{% url 'dashboard:profile' %}" class="text-sm text-gray hover:text-black transition-colors">Profile</a>
+                        <a href="{% url 'account_logout' %}" class="text-sm text-gray hover:text-black transition-colors">Log out</a>
+                        <a href="{% url 'dashboard:home' %}" class="ml-2 w-7 h-7 bg-black flex items-center justify-center text-white text-xs font-medium rounded">
+                            {{ user.email|first|upper }}
+                        </a>
+                    {% else %}
+                        <a href="{% url 'account_login' %}" class="text-sm text-gray hover:text-black transition-colors">Log in</a>
+                        <a href="{% url 'account_signup' %}" class="text-sm px-4 py-1.5 bg-black text-white hover:bg-dark-gray transition-colors">Sign up</a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile hamburger -->
+                <a href="#main-menu" class="flex items-center md:hidden text-gray hover:text-black">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6">
+            {% for message in messages %}
+                <div x-data="{ show: true }" x-show="show" class="border border-light-gray p-4 flex mb-3" role="alert">
+                    <div class="mr-3">
+                        {% if message.tags == 'error' %}
+                            <i class="fa-solid fa-circle-exclamation text-black"></i>
+                        {% elif message.tags == 'warning' %}
+                            <i class="fa-solid fa-triangle-exclamation text-black"></i>
+                        {% elif message.tags == 'success' %}
+                            <i class="fa-solid fa-check text-black"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info text-black"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-1">
+                        <p class="text-sm">{{ message }}</p>
+                    </div>
+                    <button class="ml-auto pl-3 text-gray hover:text-black"
+                        @click="show = false">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main content -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-light-gray">
+        <div class="max-w-7xl mx-auto py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10">
+                <div class="col-span-2">
+                    <a href="{% url 'landing:home' %}" class="flex items-center gap-2">
+                        <div class="w-6 h-6 bg-black flex items-center justify-center">
+                            <span class="text-white text-[10px] font-bold">S</span>
+                        </div>
+                        <span class="text-sm font-medium">SaaS Boilerplate</span>
+                    </a>
+                    <p class="mt-4 text-sm text-gray max-w-sm leading-relaxed">
+                        Open-source Django SaaS boilerplate. Authentication, payments, dashboard, and deployment — all wired up.
+                    </p>
+                    <div class="mt-6 flex space-x-5">
+                        <a href="https://github.com/eriktaveras" class="text-gray hover:text-black transition-colors" target="_blank" rel="noopener">
+                            <i class="fa-brands fa-github text-lg"></i>
+                        </a>
+                        <a href="https://www.eriktaveras.com" class="text-gray hover:text-black transition-colors" target="_blank" rel="noopener">
+                            <i class="fa-solid fa-globe text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium uppercase tracking-wider">Product</h3>
+                    <ul class="mt-4 space-y-3">
+                        <li><a href="{% url 'landing:features' %}" class="text-sm text-gray hover:text-black transition-colors">Features</a></li>
+                        <li><a href="{% url 'landing:pricing' %}" class="text-sm text-gray hover:text-black transition-colors">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-medium uppercase tracking-wider">Legal</h3>
+                    <ul class="mt-4 space-y-3">
+                        <li><a href="#" class="text-sm text-gray hover:text-black transition-colors">Terms</a></li>
+                        <li><a href="#" class="text-sm text-gray hover:text-black transition-colors">Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-10 sm:mt-12 pt-8 border-t border-light-gray flex flex-col sm:flex-row justify-between items-center gap-4">
+                <p class="text-sm text-gray">&copy; 2025 Django SaaS Boilerplate. All rights reserved.</p>
+                <p class="text-sm text-gray">
+                    Built by <a href="https://www.eriktaveras.com" class="text-black hover:underline" target="_blank" rel="noopener">Erik Taveras</a>
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

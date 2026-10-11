@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Features | Django SaaS Boilerplate{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<div class="py-24 lg:py-32 border-b border-light-gray">
+    <div class="max-w-4xl mx-auto text-center px-4">
+        <p class="text-xs font-medium uppercase tracking-widest text-gray">Features</p>
+        <h1 class="mt-4 text-4xl lg:text-5xl font-medium tracking-tight text-black leading-tight">
+            Everything you need.<br>Nothing you don't.
+        </h1>
+        <p class="mt-6 text-lg text-gray max-w-2xl mx-auto leading-relaxed">
+            No half-built features, no "coming soon" placeholders. Every feature listed here works out of the box.
+        </p>
+    </div>
+</div>
+
+<!-- Features -->
+<div class="py-24">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Row 1 -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-24">
+
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-shield-halved text-white text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-black uppercase tracking-wider">Authentication</h3>
+                </div>
+                <p class="mt-4 text-sm text-gray leading-relaxed">
+                    Custom user model with email-only login. No usernames. Powered by django-allauth with all flows built and styled.
+                </p>
+                <ul class="mt-6 space-y-2.5">
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Custom user model (email as username)</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Signup with email verification</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Password reset and change</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Login code (passwordless)</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>20+ styled auth templates</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-credit-card text-white text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-black uppercase tracking-wider">Stripe Payments</h3>
+                </div>
+                <p class="mt-4 text-sm text-gray leading-relaxed">
+                    Subscription billing with Stripe's Payment Methods API. Customer creation, webhooks, and status tracking handled.
+                </p>
+                <ul class="mt-6 space-y-2.5">
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Payment Methods API integration</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Webhook event handling</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Subscription plans (admin-managed)</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>14-day free trial support</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Status tracking (active, cancelled, trial)</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-gauge-high text-white text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-black uppercase tracking-wider">User Dashboard</h3>
+                </div>
+                <p class="mt-4 text-sm text-gray leading-relaxed">
+                    Sidebar layout with profile, settings, and subscription management. Responsive for mobile and desktop.
+                </p>
+                <ul class="mt-6 space-y-2.5">
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Profile editing (name, email)</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Notification preferences</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>API key generation</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Subscription status and plan switching</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Mobile-responsive sidebar</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-bolt text-white text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-black uppercase tracking-wider">Django 6.0 Native</h3>
+                </div>
+                <p class="mt-4 text-sm text-gray leading-relaxed">
+                    Uses the latest Django features. No legacy patterns, no deprecated APIs.
+                </p>
+                <ul class="mt-6 space-y-2.5">
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Background tasks via @task decorator</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Content Security Policy middleware</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Template partials for reusable UI</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>CSP nonces on all scripts and styles</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-palette text-white text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-black uppercase tracking-wider">Frontend Stack</h3>
+                </div>
+                <p class="mt-4 text-sm text-gray leading-relaxed">
+                    No build step required. Tailwind via CDN, Alpine.js for interactivity, HTMX for dynamic pages.
+                </p>
+                <ul class="mt-6 space-y-2.5">
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Tailwind CSS (CDN, zero build)</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Alpine.js for UI behavior</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>HTMX for partial page updates</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Space Grotesk typography</li>
+                </ul>
+            </div>
+
+            <div>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 bg-black flex items-center justify-center">
+                        <i class="fa-solid fa-rocket text-white text-xs"></i>
+                    </div>
+                    <h3 class="text-base font-medium text-black uppercase tracking-wider">Production Ready</h3>
+                </div>
+                <p class="mt-4 text-sm text-gray leading-relaxed">
+                    Security headers, database flexibility, static files, and deploy configs included.
+                </p>
+                <ul class="mt-6 space-y-2.5">
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>HSTS, SSL redirect, secure cookies</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>PostgreSQL via DATABASE_URL</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>WhiteNoise for static files</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Gunicorn + Procfile</li>
+                    <li class="flex items-center text-sm text-gray"><i class="fa-solid fa-check text-black mr-3 text-[10px]"></i>Ruff linting and formatting</li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- CTA -->
+<div class="bg-black py-24">
+    <div class="max-w-3xl mx-auto text-center px-4">
+        <h2 class="text-3xl lg:text-4xl font-medium tracking-tight text-white">
+            Ready to build?
+        </h2>
+        <p class="mt-4 text-gray text-lg">
+            Clone the repo. Run <code class="text-light-gray">make install</code>. Start shipping.
+        </p>
+        <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'account_signup' %}" class="px-10 py-4 bg-white text-black hover:bg-light-gray text-sm font-medium uppercase tracking-wider transition-colors">
+                Get started free
+            </a>
+            <a href="{% url 'landing:pricing' %}" class="px-10 py-4 border border-white text-white hover:bg-dark-gray text-sm font-medium uppercase tracking-wider transition-colors">
+                See pricing
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

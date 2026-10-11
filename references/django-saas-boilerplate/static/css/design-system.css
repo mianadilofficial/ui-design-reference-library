@@ -1,0 +1,203 @@
+/* Monochromatic Minimalist Design System */
+
+/* Import Space Grotesk font */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500&display=swap');
+
+/* Root Variables */
+:root {
+    /* Color Palette */
+    --color-black: #121212;
+    --color-dark-gray: #292929;
+    --color-gray: #4a4a4a;
+    --color-light-gray: #e0e0e0;
+    --color-white: #ffffff;
+    --color-error: #d32f2f;
+
+    /* Typography */
+    --font-primary: 'Space Grotesk', sans-serif;
+    --font-size-base: 1rem;
+    --font-size-h1: 1.875rem;
+    --font-size-h2: 1.5rem;
+    --font-size-small: 0.875rem;
+
+    /* Spacing */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+
+    /* Transitions */
+    --transition-base: all 0.3s ease;
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+    color: var(--color-black);
+    background-color: var(--color-white);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-md);
+}
+
+h1 {
+    font-size: var(--font-size-h1);
+}
+
+h2 {
+    font-size: var(--font-size-h2);
+}
+
+/* Cards and Containers */
+.card {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-light-gray);
+    border-radius: 0;
+    transition: var(--transition-base);
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    border-radius: 0;
+    transition: var(--transition-base);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+}
+
+.btn-primary {
+    background-color: var(--color-black);
+    color: var(--color-white);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-dark-gray);
+}
+
+/* Forms */
+input, textarea, select {
+    display: block;
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-black);
+    background-color: var(--color-white);
+    font-family: var(--font-primary);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--spacing-md);
+}
+
+.input-with-icon {
+    padding-left: 3rem;
+    position: relative;
+}
+
+input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--color-dark-gray);
+    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Labels */
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: var(--font-size-small);
+}
+
+/* Form Icons */
+.form-icon {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: var(--color-black);
+}
+
+/* Error States */
+.error {
+    color: var(--color-error);
+    font-size: var(--font-size-small);
+    margin-top: var(--spacing-xs);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    :root {
+        --font-size-h1: 1.5rem;
+        --font-size-h2: 1.25rem;
+    }
+
+    .card {
+        padding: var(--spacing-md);
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.mt-1 { margin-top: var(--spacing-xs); }
+.mt-2 { margin-top: var(--spacing-sm); }
+.mt-3 { margin-top: var(--spacing-md); }
+.mt-4 { margin-top: var(--spacing-lg); }
+.mt-5 { margin-top: var(--spacing-xl); }
+
+.mb-1 { margin-bottom: var(--spacing-xs); }
+.mb-2 { margin-bottom: var(--spacing-sm); }
+.mb-3 { margin-bottom: var(--spacing-md); }
+.mb-4 { margin-bottom: var(--spacing-lg); }
+.mb-5 { margin-bottom: var(--spacing-xl); }
+
+/* Grid System */
+.grid {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 768px) {
+    .grid-2, .grid-3, .grid-4 {
+        grid-template-columns: 1fr;
+    }
+} 

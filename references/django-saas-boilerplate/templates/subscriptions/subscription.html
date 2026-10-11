@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="max-w-4xl mx-auto py-16 px-4">
+  <h1 class="text-2xl font-medium text-black uppercase tracking-wide mb-12">SUBSCRIPTION</h1>
+  
+  {% if subscription %}
+  <div class="border border-light-gray p-8 mb-16">
+    <h2 class="text-lg font-medium text-black uppercase tracking-wide mb-8">SUBSCRIPTION STATUS</h2>
+    <p class="mb-4 text-gray">Status: <span class="font-medium text-black">{{ subscription.status }}</span></p>
+    <p class="mb-8 text-gray">Next billing date: {{ current_period_end|date:"F j, Y"|default:"--" }}</p>
+    
+    {% if subscription.status == 'active' %}
+    <button id="cancelSubscription" class="px-8 py-3 border border-black text-sm font-medium uppercase tracking-wider text-black hover:bg-light-gray">
+      CANCEL SUBSCRIPTION
+    </button>
+    {% endif %}
+  </div>
+  {% else %}
+  <div class="border border-light-gray p-8">
+    <h2 class="text-lg font-medium text-black uppercase tracking-wide mb-8">PREMIUM PLAN</h2>
+    <p class="mb-12 text-gray">Access all premium features for only $9.99/month</p>
+    
+    <form id="payment-form" class="space-y-8">
+      <div id="card-element" class="p-4 border border-light-gray"></div>
+      <div id="card-errors" class="text-black" role="alert"></div>
+      <button type="submit" class="w-full px-8 py-3 bg-black text-white text-sm font-medium uppercase tracking-wider hover:bg-dark-gray">
+        SUBSCRIBE NOW
+      </button>
+    </form>
+  </div>
+  {% endif %}
+</div>
+
+{% if not subscription %}
+{% block extra_js %}
+<script nonce="{{ csp_nonce }}" src="https://js.stripe.com/v3/"></script>
+<script nonce="{{ csp_nonce }}">
+  const stripe = Stripe('{{ STRIPE_PUBLIC_KEY }}');
+  const elements = stripe.elements();
+  
+  // Custom styling for the card element to match our minimalist design
+  const style = {
+    base: {
+      fontFamily: '"Space Grotesk", sans-serif',
+      fontSize: '16px',
+      color: '#121212',
+      '::placeholder': {
+        color: '#4a4a4a',
+      },
+    },
+    invalid: {
+      color: '#121212',
+    },
+  };
+  
+  const card = elements.create('card', {style});
+  card.mount('#card-element');
+  
+  const form = document.getElementById('payment-form');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    
+    const {error, paymentMethod} = await stripe.createPaymentMethod({
+      type: 'card',
+      card: card,
+    });
+    
+    if (error) {
+      const errorElement = document.getElementById('card-errors');
+      errorElement.textContent = error.message;
+    } else {
+      const response = await fetch('{% url "subscriptions:create_subscription" %}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': '{{ csrf_token }}',
+        },
+        body: JSON.stringify({
+          payment_method_id: paymentMethod.id,
+        })
+      });
+      
+      const data = await response.json();
+      const errorElement = document.getElementById('card-errors');
+
+      if (data.error) {
+        errorElement.textContent = data.error;
+        return;
+      }
+
+      // A trial or a full-discount coupon leaves nothing to pay, so there is
+      // no client secret to confirm against.
+      if (!data.requires_confirmation) {
+        window.location.reload();
+        return;
+      }
+
+      const {error: confirmError} = await stripe.confirmPayment({
+        clientSecret: data.client_secret,
+        confirmParams: {return_url: window.location.href},
+        redirect: 'if_required',
+      });
+
+      if (confirmError) {
+        errorElement.textContent = confirmError.message;
+      } else {
+        window.location.reload();
+      }
+    }
+  });
+</script>
+{% endblock %}
+{% endif %}
+{% endblock %}

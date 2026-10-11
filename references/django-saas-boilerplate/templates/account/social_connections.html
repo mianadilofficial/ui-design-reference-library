@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Social Connections - Django SaaS{% endblock %}
+
+{% block content %}
+<div class="min-h-[60vh] flex items-center justify-center py-16 px-8">
+  <div class="w-full max-w-md space-y-8">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-medium tracking-tighter text-black">
+        SOCIAL CONNECTIONS
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray">
+        Connect your social accounts for easier login
+      </p>
+    </div>
+
+    <div class="mt-8 space-y-6">
+      {% if socialaccount_set %}
+      <div class="border border-light-gray p-8">
+        <h3 class="text-sm font-medium uppercase tracking-widest text-black mb-6">
+          Connected accounts
+        </h3>
+        <ul class="space-y-4">
+          {% for account in socialaccount_set %}
+          <li class="flex items-center justify-between">
+            <div class="flex items-center">
+              <i class="fa-brands fa-{{ account.provider }} text-black text-xl w-8"></i>
+              <span class="ml-3 text-sm text-black">{{ account.provider|title }}</span>
+            </div>
+            <form method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="account" value="{{ account.id }}">
+              <button type="submit" name="action_remove"
+                      class="py-1 px-3 border border-black text-xs font-medium uppercase tracking-wider text-black hover:bg-light-gray transition-all duration-300">
+                DISCONNECT
+              </button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div class="border border-light-gray p-8">
+        <h3 class="text-sm font-medium uppercase tracking-widest text-black mb-6">
+          Available providers
+        </h3>
+        <p class="text-sm text-gray">
+          No social providers are configured. Add providers in your Django settings to enable social login.
+        </p>
+      </div>
+    </div>
+
+    <div class="text-sm text-center mt-4">
+      <a href="{% url 'dashboard:profile' %}" class="font-medium text-black hover:text-dark-gray transition-all duration-300 uppercase tracking-wider">
+        BACK TO PROFILE
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}
