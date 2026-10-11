@@ -125,5 +125,17 @@
     "branch": "main",
     "commit": "49604f9942761fdb1e63dc60bbd6ef92d505a596",
     "date": "2026-10-03"
+  },
+  "volt-laravel-dashboard": {
+    "repo": "themesberg/volt-laravel-dashboard",
+    "branch": "master",
+    "commit": "b550991a3a97a77c832f967f1c77c4a965bb1dcc",
+    "date": "2023-10-12"
+  },
+  "django-saas-boilerplate": {
+    "repo": "eriktaveras/django-saas-boilerplate",
+    "branch": "main",
+    "commit": "4cac15bd4991a013e03d826b197ffaee3ea8a92c",
+    "date": "2026-09-01"
   }
 }
