@@ -1,0 +1,97 @@
+import { ArrowRightIcon } from "@phosphor-icons/react/ssr";
+import type { Metadata } from "next";
+import Link from "next/link";
+
+import { InstallCommand } from "@/components/docs/install-command";
+import { HeroThreads } from "@/components/home/hero-threads";
+import { ShowcaseGrid } from "@/components/home/showcase-grid";
+import { ThemeSwatches } from "@/components/home/theme-swatches";
+import { buttonVariants } from "@/components/ui/button";
+import { siteConfig } from "@/lib/site";
+import { getPageMetadata } from "@/lib/social-metadata";
+import { source } from "@/lib/source";
+
+export const metadata: Metadata = getPageMetadata({
+  pathname: "/",
+  title: siteConfig.name,
+});
+
+const componentCount = source
+  .getPages()
+  .filter((page) => page.url.startsWith("/docs/components/")).length;
+
+const Page = () => (
+  <main className="w-full">
+    {/* The threads sit on the hero's bottom edge, so they cross the install
+        command however the text above it wraps, and never reach the grid. */}
+    <section className="relative isolate overflow-hidden px-4 pt-16 pb-24 sm:px-6 lg:pt-24 lg:pb-32">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 bottom-0 -z-10 h-150 mask-b-from-60% lg:bottom-4"
+      >
+        <HeroThreads />
+      </div>
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-6 text-center">
+        <Link
+          className="text-muted-foreground hover:text-foreground hover:bg-muted/60 focus-visible:ring-ring/50 group/pill flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors outline-none focus-visible:ring-3"
+          href="/docs/components"
+        >
+          Audio components for shadcn/ui
+          <ArrowRightIcon
+            aria-hidden
+            className="size-3 transition-transform group-hover/pill:translate-x-0.5"
+          />
+        </Link>
+        <h1 className="font-heading max-w-4xl text-4xl font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
+          Audio UI, mixed and mastered.
+        </h1>
+        <p className="text-muted-foreground max-w-2xl text-base text-balance sm:text-lg">
+          Meters, faders, knobs, visualizers and a complete mixer for React.
+          Built the shadcn way, so you own every line.
+        </p>
+        <div className="flex flex-wrap justify-center gap-3">
+          <Link
+            className={buttonVariants({ size: "lg" })}
+            data-slot="button"
+            href="/docs"
+          >
+            Get started
+          </Link>
+          <Link
+            className={buttonVariants({ size: "lg", variant: "outline" })}
+            data-slot="button"
+            href="/docs/components"
+          >
+            Browse components
+          </Link>
+        </div>
+        <div className="w-full max-w-md text-left">
+          <InstallCommand
+            command={`npx shadcn@latest add ${siteConfig.registryNamespace}/mixer`}
+          />
+        </div>
+      </div>
+    </section>
+    <div className="mx-auto flex w-full max-w-7xl flex-col px-4 pb-24 sm:px-6">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-muted-foreground text-sm">
+          Everything here is live. Drag a fader, turn a knob, hit a pad.
+        </p>
+        <ThemeSwatches />
+      </div>
+      <ShowcaseGrid />
+      <div className="mt-12 flex justify-center">
+        <Link
+          className={buttonVariants({ size: "lg", variant: "outline" })}
+          data-slot="button"
+          href="/docs/components"
+        >
+          Browse all {componentCount} components
+          <ArrowRightIcon data-icon="inline-end" />
+        </Link>
+      </div>
+    </div>
+  </main>
+);
+
+export default Page;

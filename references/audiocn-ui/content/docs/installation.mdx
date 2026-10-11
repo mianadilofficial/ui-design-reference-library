@@ -1,0 +1,110 @@
+---
+title: Installation
+description: Add the audiocn registry to a shadcn/ui project and install components with the shadcn CLI.
+---
+
+audiocn is a [shadcn registry](https://ui.shadcn.com/docs/registry). You add components with the same `shadcn` CLI you already use, and the code lands in your project.
+
+## Requirements
+
+- React 19.2 or later, and Tailwind CSS v4. The hooks use `useEffectEvent`, which arrived in React 19.2.
+- A project set up with shadcn/ui. audiocn components use the standard shadcn tokens (`background`, `muted`, `primary`, `ring`…) and the `cn` helper from `@/lib/utils`.
+- Components are built on [Base UI](https://base-ui.com). The CLI installs `@base-ui/react` for you, so they also work in projects whose other shadcn components use Radix.
+
+<Steps>
+
+<Step>
+
+### Set up shadcn/ui
+
+Skip this if your project already has a `components.json`.
+
+```npm
+npx shadcn@latest init
+```
+
+</Step>
+
+<Step>
+
+### Add the registry
+
+Add the `@audiocn` namespace to `components.json`:
+
+```json title="components.json"
+{
+  "registries": {
+    "@audiocn": "https://audiocn.dev/r/{name}.json"
+  }
+}
+```
+
+</Step>
+
+<Step>
+
+### Add a component
+
+```npm
+npx shadcn@latest add @audiocn/level-meter
+```
+
+The CLI copies the component and everything it depends on: the audio core (`lib/audio`), the audio theme tokens, and any hooks it uses.
+
+</Step>
+
+<Step>
+
+### Use it
+
+```tsx
+import { LevelMeter } from "@/components/ui/level-meter";
+
+export const MicLevel = ({ peakDb }: { peakDb: number }) => (
+  <LevelMeter aria-label="Microphone level" peakDb={peakDb} />
+);
+```
+
+</Step>
+
+</Steps>
+
+## What gets installed
+
+| Path | What it is |
+| --- | --- |
+| `components/ui/*` | The components, one file each |
+| `hooks/use-*.ts` | Hooks: frame sources, Web Audio, mixer state |
+| `lib/audio/*.ts` | The audio core: decibels, ballistics, tapers, types |
+| `app/globals.css` | Six audio tokens: `--meter-ok`, `--meter-warn`, `--meter-clip`, `--channel-mute`, `--channel-solo`, `--channel-monitor` |
+
+The paths follow the aliases in your `components.json`, so they adapt to projects with a `src` folder or custom aliases.
+
+## For AI agents
+
+Every component, hook and block page has a **Copy prompt for AI** button. It copies a single document with the install steps, the usage, every example and the full API, written for an agent to follow.
+
+The same document is served at the page URL with `.md` appended, so an agent can fetch it directly:
+
+```bash
+curl https://audiocn.dev/docs/components/bar-visualizer.md
+```
+
+[llms.txt](/llms.txt) indexes every page, and [llms-full.txt](/llms-full.txt) is the whole documentation in one file.
+
+## Radix projects
+
+The components are built on Base UI, and the CLI installs `@base-ui/react` next to Radix. Your own components keep Radix; only the audiocn files import Base UI. A few things to know:
+
+- `channel-strip` uses the shadcn `badge`. If you have customised yours, answer **No** when the CLI asks to overwrite `badge.tsx`. The current shadcn badge also adds the `cn` package; remove it from `package.json` if you keep your own badge.
+- `audio-device-select` and the blocks compose shadcn components through Base UI APIs (`render`, the Select `items` prop), so they need a Base UI project. Every other item works in both.
+- The six audio tokens land in your global CSS. If your theme already has status colours, point the tokens at them instead (see [Theming](/docs/concepts/theming)).
+- The code compiles against an ES2022 `lib`.
+
+## Install everything
+
+Every block pulls in the components it uses. The full mixer installs most of the library in one step:
+
+```npm
+npx shadcn@latest add @audiocn/system-audio-mixer
+```
