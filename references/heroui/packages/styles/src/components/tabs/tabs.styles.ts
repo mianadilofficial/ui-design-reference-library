@@ -1,0 +1,44 @@
+import type {VariantProps} from "tailwind-variants";
+
+import {tv} from "tailwind-variants";
+
+export const tabsVariants = tv({
+  defaultVariants: {
+    align: "center",
+    variant: "primary",
+  },
+  slots: {
+    base: "tabs",
+    scrollNext: "tabs__list-container__scroll-next",
+    scrollPrev: "tabs__list-container__scroll-prev",
+    scroller: "tabs__list-container__scroller",
+    separator: "tabs__separator",
+    tab: "tabs__tab",
+    tabIndicator: "tabs__indicator",
+    tabList: "tabs__list",
+    tabListContainer: "tabs__list-container",
+    tabPanel: "tabs__panel",
+  },
+  variants: {
+    align: {
+      center: {}, // No class as the base already centers tab content
+      end: {
+        base: "tabs--align-end",
+      },
+      start: {
+        base: "tabs--align-start",
+      },
+    },
+    variant: {
+      primary: {},
+      secondary: {
+        base: "tabs--secondary",
+      },
+    },
+  },
+});
+
+// Render props that should be excluded from TabsVariants (framework-specific)
+type TabsRenderPropsKeys = "selectedKey";
+
+export type TabsVariants = Omit<VariantProps<typeof tabsVariants>, TabsRenderPropsKeys>;

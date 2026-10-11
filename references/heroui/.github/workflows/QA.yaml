@@ -1,0 +1,95 @@
+name: QA
+
+on:
+  pull_request:
+    branches:
+      - canary
+      - v3*
+      - "beta-*"
+      - "rc-*"
+
+concurrency:
+  group: qa-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Install
+        uses: ./.github/common-actions/install
+
+      - name: Build packages
+        run: pnpm build
+
+  static:
+    name: Lint & Typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Install
+        uses: ./.github/common-actions/install
+
+      - name: Run ESLint
+        run: pnpm lint
+
+      - name: Run typecheck
+        run: pnpm typecheck
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Install
+        uses: ./.github/common-actions/install
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @heroui/testing exec playwright install --with-deps chromium
+
+      - name: Browser tests
+        run: pnpm test:browser
+
+      - name: Jsdom tests with coverage
+        run: pnpm test:coverage
+
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: react-coverage
+          path: packages/react/coverage
+          if-no-files-found: ignore
+
+  continuous-release:
+    name: Continuous Release
+    if: github.repository == 'heroui-inc/heroui'
+    needs: [build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Install
+        uses: ./.github/common-actions/install
+
+      # Turbo cache from the Build job should make this a near no-op when the
+      # inputs haven't changed; we still need dist/ in this job's workspace.
+      - name: Build packages
+        run: pnpm build
+
+      - name: Release
+        run: pnpx pkg-pr-new publish --pnpm './packages/styles' './packages/react'

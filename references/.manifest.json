@@ -137,5 +137,11 @@
     "branch": "main",
     "commit": "4cac15bd4991a013e03d826b197ffaee3ea8a92c",
     "date": "2026-09-01"
+  },
+  "heroui": {
+    "repo": "heroui-inc/heroui",
+    "branch": "v3",
+    "commit": "ece1e4e15ea5d21e86cc4dcd11dd21647f96c678",
+    "date": "2026-10-09"
   }
 }
