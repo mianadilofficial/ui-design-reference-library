@@ -46,6 +46,8 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [laravel-realworld-example-app](references/laravel-realworld-example-app) | Alexey Mezenin | Laravel | MIT | RealWorld API spec in idiomatic Laravel |
 | [full-stack-fastapi-template](references/full-stack-fastapi-template) | Sebastián Ramírez | FastAPI + React | MIT | Official full-stack template: backend, auth, DB, Docker |
 | [laradashboard](references/laradashboard) | LaraDashboard | Laravel | MIT | Admin panel + CMS: RBAC, modules, REST API, CRUD generator |
+| [volt-laravel-dashboard](references/volt-laravel-dashboard) | Themesberg | Laravel | MIT | Lighter admin panel: Livewire + Alpine, auth, 100+ components |
+| [django-saas-boilerplate](references/django-saas-boilerplate) | Erik Taveras | Django | MIT | SaaS boilerplate: HTMX + Tailwind, best-practice layout |
 
 ## Motion
 
