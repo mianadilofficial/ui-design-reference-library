@@ -1,0 +1,169 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'Türkçe',
+  code: 'tr',
+  messages: {
+    alert: {
+      close: 'Kapat'
+    },
+    authForm: {
+      hidePassword: 'Şifreyi gizle',
+      showPassword: 'Şifreyi göster',
+      submit: 'Devam et'
+    },
+    banner: {
+      close: 'Kapat'
+    },
+    calendar: {
+      nextMonth: 'Sonraki ay',
+      nextYear: 'Sonraki yıl',
+      prevMonth: 'Önceki ay',
+      prevYear: 'Önceki yıl'
+    },
+    carousel: {
+      dots: 'Görüntülenecek slaydı seçin',
+      goto: '{slide}. slayda git',
+      next: 'Sonraki',
+      prev: 'Önceki'
+    },
+    chatMessages: {
+      autoScroll: 'Aşağı kaydır'
+    },
+    chatPrompt: {
+      placeholder: 'Buraya mesajınızı yazın…'
+    },
+    chatPromptSubmit: {
+      label: 'Gönder',
+      reload: 'Tekrar dene',
+      stop: 'Oluşturmayı durdur'
+    },
+    chatReasoning: {
+      thinking: 'Düşünüyor…',
+      thought: 'Düşündü',
+      thoughtFor: '{duration} düşündü'
+    },
+    colorMode: {
+      dark: 'Koyu',
+      light: 'Açık',
+      switchToDark: 'Koyu moda geç',
+      switchToLight: 'Açık moda geç',
+      system: 'Sistem'
+    },
+    commandPalette: {
+      back: 'Geri',
+      close: 'Kapat',
+      noData: 'Veri yok',
+      noMatch: 'Eşleşen veri yok',
+      placeholder: 'Bir komut yazın veya arama yapın…'
+    },
+    contentSearch: {
+      links: 'Bağlantılar',
+      search: 'Sonuçlar',
+      theme: 'Tema'
+    },
+    contentSearchButton: {
+      label: 'Ara…'
+    },
+    contentToc: {
+      title: 'Bu sayfada'
+    },
+    dropdownMenu: {
+      noMatch: 'Eşleşen veri yok',
+      search: 'Ara…'
+    },
+    dashboardSearch: {
+      theme: 'Tema'
+    },
+    dashboardSearchButton: {
+      label: 'Ara…'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'Kenar çubuğunu daralt',
+      expand: 'Kenar çubuğunu genişlet'
+    },
+    dashboardSidebarToggle: {
+      close: 'Kenar çubuğunu kapat',
+      open: 'Kenar çubuğunu aç'
+    },
+    drawer: {
+      close: 'Kapat'
+    },
+    error: {
+      clear: 'Ana sayfaya dön'
+    },
+    fileUpload: {
+      removeFile: '{filename} kaldır'
+    },
+    header: {
+      close: 'Menüyü kapat',
+      open: 'Menüyü aç'
+    },
+    inputMenu: {
+      create: '"{label}" oluştur',
+      noData: 'Veri yok',
+      noMatch: 'Eşleşen veri yok'
+    },
+    inputNumber: {
+      decrement: 'Azalt',
+      increment: 'Arttır'
+    },
+    listbox: {
+      noData: 'Veri yok',
+      noMatch: 'Eşleşen veri yok',
+      search: 'Ara…'
+    },
+    modal: {
+      close: 'Kapat'
+    },
+    pagination: {
+      first: 'İlk sayfa',
+      last: 'Son sayfa',
+      next: 'Sonraki sayfa',
+      page: 'Sayfa {page}',
+      prev: 'Önceki sayfa'
+    },
+    pricingTable: {
+      caption: 'Fiyat planlarını karşılaştır'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'Daralt',
+        name: 'kod',
+        openText: 'Genişlet'
+      },
+      collapsible: {
+        closeText: 'Gizle',
+        name: 'özellikler',
+        openText: 'Göster'
+      },
+      pre: {
+        copy: 'Kodu panoya kopyala'
+      },
+      prompt: {
+        copy: 'İstemi kopyala',
+        openIn: '{name} içinde aç'
+      }
+    },
+    sidebar: {
+      close: 'Kapat',
+      toggle: 'Değiştir'
+    },
+    selectMenu: {
+      create: '"{label}" oluştur',
+      noData: 'Veri yok',
+      noMatch: 'Eşleşen veri yok',
+      search: 'Ara…'
+    },
+    slideover: {
+      close: 'Kapat'
+    },
+    table: {
+      noData: 'Veri yok'
+    },
+    toast: {
+      close: 'Kapat'
+    }
+  }
+})

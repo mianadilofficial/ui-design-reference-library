@@ -1,0 +1,169 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'Eesti',
+  code: 'et',
+  messages: {
+    alert: {
+      close: 'Sulge'
+    },
+    authForm: {
+      hidePassword: 'Peida parool',
+      showPassword: 'Näita parooli',
+      submit: 'Jätka'
+    },
+    banner: {
+      close: 'Sulge'
+    },
+    calendar: {
+      nextMonth: 'Järgmine kuu',
+      nextYear: 'Järgmine aasta',
+      prevMonth: 'Eelmine kuu',
+      prevYear: 'Eelmine aasta'
+    },
+    carousel: {
+      dots: 'Valige kuvatav slaid',
+      goto: 'Mine slaidile {slide}',
+      next: 'Järg',
+      prev: 'Eel'
+    },
+    chatMessages: {
+      autoScroll: 'Keri alla'
+    },
+    chatPrompt: {
+      placeholder: 'Siia kirjutage oma sõnum…'
+    },
+    chatPromptSubmit: {
+      label: 'Saada',
+      reload: 'Proovi uuesti',
+      stop: 'Peata genereerimine'
+    },
+    chatReasoning: {
+      thinking: 'Mõtleb…',
+      thought: 'Mõtles',
+      thoughtFor: 'Mõtles {duration}'
+    },
+    colorMode: {
+      dark: 'Tume',
+      light: 'Hele',
+      switchToDark: 'Lülitu tumedasse režiimi',
+      switchToLight: 'Lülitu heledasse režiimi',
+      system: 'Süsteem'
+    },
+    commandPalette: {
+      back: 'Tagasi',
+      close: 'Sulge',
+      noData: 'Pole andmeid',
+      noMatch: 'Pole vastavaid andmeid',
+      placeholder: 'Sisesta käsk või otsi…'
+    },
+    contentSearch: {
+      links: 'Lingid',
+      search: 'Tulemused',
+      theme: 'Teema'
+    },
+    contentSearchButton: {
+      label: 'Otsi…'
+    },
+    contentToc: {
+      title: 'Sellel lehel'
+    },
+    dropdownMenu: {
+      noMatch: 'Pole vastavaid andmeid',
+      search: 'Otsi…'
+    },
+    dashboardSearch: {
+      theme: 'Teema'
+    },
+    dashboardSearchButton: {
+      label: 'Otsi…'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'Ahenda külgriba',
+      expand: 'Laienda külgriba'
+    },
+    dashboardSidebarToggle: {
+      close: 'Sulge külgriba',
+      open: 'Ava külgriba'
+    },
+    drawer: {
+      close: 'Sulge'
+    },
+    error: {
+      clear: 'Tagasi avalehele'
+    },
+    fileUpload: {
+      removeFile: 'Eemalda {filename}'
+    },
+    header: {
+      close: 'Sulge menüü',
+      open: 'Ava menüü'
+    },
+    inputMenu: {
+      create: 'Loo "{label}"',
+      noData: 'Pole andmeid',
+      noMatch: 'Pole vastavaid andmeid'
+    },
+    inputNumber: {
+      decrement: 'Vähenda',
+      increment: 'Suurenda'
+    },
+    listbox: {
+      noData: 'Pole andmeid',
+      noMatch: 'Pole vastavaid andmeid',
+      search: 'Otsi…'
+    },
+    modal: {
+      close: 'Sulge'
+    },
+    pagination: {
+      first: 'Esimene lehekülg',
+      last: 'Viimane lehekülg',
+      next: 'Järgmine lehekülg',
+      page: 'Lehekülg {page}',
+      prev: 'Eelmine lehekülg'
+    },
+    pricingTable: {
+      caption: 'Hinna plaanide võrdlus'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'Ahenda',
+        name: 'kood',
+        openText: 'Laienda'
+      },
+      collapsible: {
+        closeText: 'Peida',
+        name: 'omadused',
+        openText: 'Näita'
+      },
+      pre: {
+        copy: 'Kopeeri kood lõikelauale'
+      },
+      prompt: {
+        copy: 'Kopeeri viip',
+        openIn: 'Ava rakenduses {name}'
+      }
+    },
+    sidebar: {
+      close: 'Sulge',
+      toggle: 'Lülita'
+    },
+    selectMenu: {
+      create: 'Loo "{label}"',
+      noData: 'Pole andmeid',
+      noMatch: 'Pole vastavaid andmeid',
+      search: 'Otsi…'
+    },
+    slideover: {
+      close: 'Sulge'
+    },
+    table: {
+      noData: 'Pole andmeid'
+    },
+    toast: {
+      close: 'Sulge'
+    }
+  }
+})

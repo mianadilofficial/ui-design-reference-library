@@ -1,0 +1,756 @@
+@keyframes accordion-up {
+  from {
+    height: var(--reka-accordion-content-height);
+    overflow: hidden;
+  }
+
+  to {
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+    overflow: hidden;
+  }
+
+  to {
+    height: var(--reka-accordion-content-height);
+    overflow: hidden;
+  }
+}
+
+@keyframes collapsible-up {
+  from {
+    height: var(--reka-collapsible-content-height);
+    overflow: hidden;
+  }
+
+  to {
+    height: 0;
+    overflow: hidden;
+  }
+}
+
+@keyframes collapsible-down {
+  from {
+    height: 0;
+    overflow: hidden;
+  }
+
+  to {
+    height: var(--reka-collapsible-content-height);
+    overflow: hidden;
+  }
+}
+
+@keyframes toast-slide-in-from-top {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: var(--transform);
+  }
+}
+
+@keyframes toast-slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: var(--transform);
+  }
+}
+
+@keyframes toast-slide-up {
+  from {
+    transform: translateX(0) translateY(var(--translate));
+  }
+
+  to {
+    transform: translateX(0) translateY(calc(var(--translate) - 100%));
+  }
+}
+
+@keyframes toast-slide-down {
+  from {
+    transform: translateX(0) translateY(var(--translate));
+  }
+
+  to {
+    transform: translateX(0) translateY(calc(var(--translate) + 100%));
+  }
+}
+
+@keyframes toast-pulse-a {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.04;
+  }
+}
+
+@keyframes toast-pulse-b {
+  0%,
+  100% {
+    scale: 1;
+  }
+
+  50% {
+    scale: 1.04;
+  }
+}
+
+@keyframes toast-collapsed-closed {
+  from {
+    transform: var(--transform);
+  }
+
+  to {
+    transform: translateY(calc((var(--before) - var(--height)) * var(--gap))) scale(var(--scale));
+  }
+}
+
+@keyframes toast-closed {
+  from {
+    transform: var(--transform);
+  }
+
+  to {
+    transform: translateY(calc((var(--offset) - var(--height)) * var(--translate-factor)));
+  }
+}
+
+@keyframes toast-slide-left {
+  from {
+    transform: translateX(0) translateY(var(--translate));
+  }
+
+  to {
+    transform: translateX(-100%) translateY(var(--translate));
+  }
+}
+
+@keyframes toast-slide-right {
+  from {
+    transform: translateX(0) translateY(var(--translate));
+  }
+
+  to {
+    transform: translateX(100%) translateY(var(--translate));
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+@keyframes slide-in-from-top {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-top {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-right {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes slide-in-from-bottom {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes slide-in-from-left {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-in-from-top-and-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-top-and-fade {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes slide-in-from-right-and-fade {
+  from {
+    opacity: 0;
+    transform: translateX(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-right-and-fade {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(4px);
+  }
+}
+
+@keyframes slide-in-from-bottom-and-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-to-bottom-and-fade {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+@keyframes slide-in-from-left-and-fade {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-out-to-left-and-fade {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+}
+
+@keyframes enter-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes enter-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes exit-to-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(200px);
+  }
+}
+
+@keyframes exit-to-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-200px);
+  }
+}
+
+@keyframes carousel {
+  0%,
+  100% {
+    width: 50%;
+  }
+
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+@keyframes carousel-rtl {
+  0%,
+  100% {
+    width: 50%;
+  }
+
+  0% {
+    transform: translateX(100%);
+  }
+
+  100% {
+    transform: translateX(-200%);
+  }
+}
+
+@keyframes carousel-vertical {
+  0%,
+  100% {
+    height: 50%;
+  }
+
+  0% {
+    transform: translateY(-100%);
+  }
+
+  100% {
+    transform: translateY(200%);
+  }
+}
+
+@keyframes carousel-inverse {
+  0%,
+  100% {
+    width: 50%;
+  }
+
+  0% {
+    transform: translateX(200%);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes carousel-inverse-rtl {
+  0%,
+  100% {
+    width: 50%;
+  }
+
+  0% {
+    transform: translateX(-200%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes carousel-inverse-vertical {
+  0%,
+  100% {
+    height: 50%;
+  }
+
+  0% {
+    transform: translateY(200%);
+  }
+
+  100% {
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes swing {
+  0%,
+  100% {
+    width: 50%;
+  }
+
+  0%,
+  100% {
+    transform: translateX(-25%);
+  }
+
+  50% {
+    transform: translateX(125%);
+  }
+}
+
+@keyframes swing-vertical {
+  0%,
+  100% {
+    height: 50%;
+  }
+
+  0%,
+  100% {
+    transform: translateY(-25%);
+  }
+
+  50% {
+    transform: translateY(125%);
+  }
+}
+
+@keyframes elastic {
+  0%,
+  100% {
+    width: 50%;
+    left: 25%;
+  }
+
+  50% {
+    width: 100%;
+    left: 0;
+  }
+}
+
+@keyframes elastic-vertical {
+  0%,
+  100% {
+    height: 50%;
+    top: 25%;
+  }
+
+  50% {
+    height: 100%;
+    top: 0;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(-100% - var(--gap)), 0, 0);
+  }
+}
+
+@keyframes marquee-rtl {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(calc(100% + var(--gap)), 0, 0);
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(0, calc(-100% - var(--gap)), 0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% center;
+  }
+
+  to {
+    background-position: 0% center;
+  }
+}
+
+@keyframes shimmer-rtl {
+  from {
+    background-position: 0% center;
+  }
+
+  to {
+    background-position: 100% center;
+  }
+}
+
+/*
+ * Reduced motion: keep the fade for comprehension, drop scale/slide movement
+ * on enter/exit presence animations. Redefining the keyframes here covers every
+ * component that references them, in one place. Toast keyframes never set
+ * `transform` here so the element keeps its stacking `var(--transform)` while it
+ * fades. Height reveals (accordion, collapsible), swipe dismissals (they follow
+ * the pointer) and decorative loops (already `motion-safe:` gated at the usage
+ * site) are intentionally left untouched.
+ */
+@media (prefers-reduced-motion: reduce) {
+  @keyframes scale-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes scale-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-top {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-top {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-right {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-right {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-bottom {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-bottom {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-left {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-left {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-top-and-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-top-and-fade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-right-and-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-right-and-fade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-bottom-and-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-bottom-and-fade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes slide-in-from-left-and-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slide-out-to-left-and-fade {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes enter-from-right {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes enter-from-left {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes exit-to-right {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes exit-to-left {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes toast-slide-in-from-top {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes toast-slide-in-from-bottom {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes toast-closed {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes toast-collapsed-closed {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+}

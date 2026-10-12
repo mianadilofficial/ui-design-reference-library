@@ -1,0 +1,13 @@
+{
+  "name": "@nuxt/ui-cli",
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs"
+  },
+  "dependencies": {
+    "citty": "catalog:",
+    "consola": "catalog:",
+    "pathe": "catalog:",
+    "scule": "catalog:"
+  }
+}

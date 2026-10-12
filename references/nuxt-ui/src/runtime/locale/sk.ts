@@ -1,0 +1,169 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'Slovenčina',
+  code: 'sk',
+  messages: {
+    alert: {
+      close: 'Zatvoriť'
+    },
+    authForm: {
+      hidePassword: 'Skryť heslo',
+      showPassword: 'Zobraziť heslo',
+      submit: 'Pokračovať'
+    },
+    banner: {
+      close: 'Zatvoriť'
+    },
+    calendar: {
+      nextMonth: 'Nasledujúci mesiac',
+      nextYear: 'Nasledujúci rok',
+      prevMonth: 'Predchádzajúci mesiac',
+      prevYear: 'Predchádzajúci rok'
+    },
+    carousel: {
+      dots: 'Vyberte snímku na zobrazenie',
+      goto: 'Prejsť na {slide}',
+      next: 'Nasledujúci',
+      prev: 'Predchádzajúci'
+    },
+    chatMessages: {
+      autoScroll: 'Posunúť nadol'
+    },
+    chatPrompt: {
+      placeholder: 'Tu napíšte svoje správu…'
+    },
+    chatPromptSubmit: {
+      label: 'Odoslať',
+      reload: 'Skúsiť znova',
+      stop: 'Zastaviť generovanie'
+    },
+    chatReasoning: {
+      thinking: 'Premýšľa…',
+      thought: 'Premýšľal',
+      thoughtFor: 'Premýšľal {duration}'
+    },
+    colorMode: {
+      dark: 'Tmavý',
+      light: 'Svetlý',
+      switchToDark: 'Prepnúť na tmavý režim',
+      switchToLight: 'Prepnúť na svetlý režim',
+      system: 'Systém'
+    },
+    commandPalette: {
+      back: 'Späť',
+      close: 'Zavrieť',
+      noData: 'Žiadne dáta',
+      noMatch: 'Žiadna zhoda',
+      placeholder: 'Zadajte príkaz alebo vyhľadajte…'
+    },
+    contentSearch: {
+      links: 'Odkazy',
+      search: 'Výsledky',
+      theme: 'Farebný režim'
+    },
+    contentSearchButton: {
+      label: 'Hľadať…'
+    },
+    contentToc: {
+      title: 'Na tejto stránke'
+    },
+    dropdownMenu: {
+      noMatch: 'Žiadna zhoda',
+      search: 'Hľadať…'
+    },
+    dashboardSearch: {
+      theme: 'Farebný režim'
+    },
+    dashboardSearchButton: {
+      label: 'Hľadať…'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'Zbaliť bočný panel',
+      expand: 'Rozbaliť bočný panel'
+    },
+    dashboardSidebarToggle: {
+      close: 'Zatvoriť bočný panel',
+      open: 'Otvoriť bočný panel'
+    },
+    drawer: {
+      close: 'Zatvoriť'
+    },
+    error: {
+      clear: 'Späť na domovskú stránku'
+    },
+    fileUpload: {
+      removeFile: 'Odobrať {filename}'
+    },
+    header: {
+      close: 'Zatvoriť menu',
+      open: 'Otvoriť menu'
+    },
+    inputMenu: {
+      create: 'Vytvoriť "{label}"',
+      noData: 'Žiadne dáta',
+      noMatch: 'Žiadna zhoda'
+    },
+    inputNumber: {
+      decrement: 'Znížiť',
+      increment: 'Zvýšiť'
+    },
+    listbox: {
+      noData: 'Žiadne dáta',
+      noMatch: 'Žiadna zhoda',
+      search: 'Hľadať…'
+    },
+    modal: {
+      close: 'Zatvoriť'
+    },
+    pagination: {
+      first: 'Prvá stránka',
+      last: 'Posledná stránka',
+      next: 'Ďalšia stránka',
+      page: 'Stránka {page}',
+      prev: 'Predchádzajúca stránka'
+    },
+    pricingTable: {
+      caption: 'Porovnanie cien'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'Zbaliť',
+        name: 'kód',
+        openText: 'Rozbaliť'
+      },
+      collapsible: {
+        closeText: 'Skryť',
+        name: 'vlastnosti',
+        openText: 'Zobraziť'
+      },
+      pre: {
+        copy: 'Kopírovať kód do schránky'
+      },
+      prompt: {
+        copy: 'Kopírovať výzvu',
+        openIn: 'Otvoriť v {name}'
+      }
+    },
+    sidebar: {
+      close: 'Zatvoriť',
+      toggle: 'Prepnúť'
+    },
+    selectMenu: {
+      create: 'Vytvoriť "{label}"',
+      noData: 'Žiadne dáta',
+      noMatch: 'Žiadna zhoda',
+      search: 'Hľadať…'
+    },
+    slideover: {
+      close: 'Zatvoriť'
+    },
+    table: {
+      noData: 'Žiadne dáta'
+    },
+    toast: {
+      close: 'Zatvoriť'
+    }
+  }
+})

@@ -1,0 +1,118 @@
+---
+title: ProsePrompt
+description: 'Display pre-built AI prompts with one-click copy and IDE integration.'
+category: components
+navigation.title: Prompt
+links:
+  - label: GitHub
+    icon: i-simple-icons-github
+    to: https://github.com/nuxt/ui/blob/v4/src/runtime/components/prose/Prompt.vue
+---
+
+## Usage
+
+Use the `prompt` component to display a pre-built AI prompt that users can copy to their clipboard or open directly in their IDE.
+
+### Prompt :badge{label="Soon" class="align-text-top"}
+
+Use the `prompt` prop to set the text that gets copied. The `description` prop is shown as the visible label.
+
+::component-code{slug="prompt" prose}
+---
+ignore:
+  - prompt
+hide:
+  - class
+props:
+  description: Build a dashboard layout with Nuxt UI.
+  class: 'w-full my-0'
+  prompt: |
+    You are a Nuxt UI expert. Help me build a dashboard layout with a collapsible sidebar and a sticky top navbar.
+
+    Requirements:
+    - Use `UDashboardPanel`, `UDashboardSidebar`, and `UDashboardNavbar`
+    - Use semantic color tokens like `bg-elevated` and `text-muted` for theming
+    - The sidebar should include navigation links with icons using `UNavigationMenu`
+    - The navbar should display a breadcrumb, a search button, and a user dropdown menu
+    - The layout must be fully responsive and collapse the sidebar on mobile
+---
+::
+
+::note
+The prompt can also be written in the default slot. It is then copied as plain text, without its line breaks, list markers and inline code.
+::
+
+### Icon
+
+Use the `icon` prop to display an icon next to the description.
+
+::component-code{slug="prompt" prose}
+---
+ignore:
+  - description
+  - prompt
+hide:
+  - class
+props:
+  description: Create a form with validation.
+  icon: i-lucide-file-pen-line
+  class: 'w-full my-0'
+  prompt: |
+    Create a registration form using Nuxt UI with Zod schema validation.
+
+    Requirements:
+    - Use `UForm` with a Zod schema for validation
+    - Add `UFormField` wrapping each input: name (`UInput`), email (`UInput` type email), role (`USelect` with options Admin, Editor, Viewer)
+    - Include a submit `UButton` with loading state
+    - Display inline error messages below each field
+    - On successful submit, show a `UToast` notification
+---
+::
+
+### Actions
+
+Use the `actions` prop to display additional buttons. The `copy` button is always displayed. The available actions are `cursor`, `windsurf` and `claude`.
+
+::component-code{slug="prompt" prose}
+---
+ignore:
+  - description
+  - icon
+  - prompt
+hide:
+  - class
+props:
+  description: Add a color mode toggle.
+  icon: i-lucide-sun-moon
+  actions:
+    - cursor
+    - claude
+  class: 'w-full my-0'
+  prompt: |
+    Add a color mode toggle to my Nuxt app.
+
+    Requirements:
+    - Use `useColorMode` from `@nuxtjs/color-mode` to manage the current mode
+    - Render a `UButton` with `variant="ghost"` that cycles between `light`, `dark`, and `system` on click
+    - Update the button icon dynamically: `i-lucide-sun` for light, `i-lucide-moon` for dark, `i-lucide-monitor` for system
+    - Add a tooltip using `UTooltip` that shows the current active mode
+---
+::
+
+## API
+
+### Props
+
+:component-props{prose}
+
+### Slots
+
+:component-slots{prose}
+
+## Theme
+
+:component-theme{prose}
+
+## Changelog
+
+:component-changelog{prefix="prose"}

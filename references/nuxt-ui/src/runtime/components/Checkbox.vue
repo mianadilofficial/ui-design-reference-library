@@ -1,0 +1,183 @@
+<script lang="ts">
+import type { CheckboxRootProps, CheckboxRootEmits } from 'reka-ui'
+import type { VNode } from 'vue'
+import type { AppConfig } from '@nuxt/schema'
+import theme from '#build/ui/checkbox'
+import type { IconProps } from './Icon.vue'
+import type { ButtonHTMLAttributes } from '../types/html'
+import type { ComponentConfig } from '../types/tv'
+
+type Checkbox = ComponentConfig<typeof theme, AppConfig, 'checkbox'>
+
+export interface CheckboxProps<T = boolean> extends Pick<CheckboxRootProps<T>, 'disabled' | 'required' | 'name' | 'value' | 'id' | 'defaultValue' | 'modelValue' | 'trueValue' | 'falseValue'>, /** @vue-ignore */ Omit<ButtonHTMLAttributes, 'type' | 'disabled' | 'name'> {
+  /**
+   * The element or component this component should render as.
+   * @defaultValue 'div'
+   */
+  as?: any
+  label?: string
+  description?: string
+  /**
+   * @defaultValue 'primary'
+   */
+  color?: Checkbox['variants']['color']
+  /**
+   * @defaultValue 'list'
+   */
+  variant?: Checkbox['variants']['variant']
+  /**
+   * @defaultValue 'md'
+   */
+  size?: Checkbox['variants']['size']
+  /**
+   * Position of the indicator.
+   * @defaultValue 'start'
+   */
+  indicator?: Checkbox['variants']['indicator']
+  /** Highlight the ring color like a focus state. */
+  highlight?: boolean
+  /**
+   * The icon displayed when checked, or above the label when `indicator` is `hidden`.
+   * @defaultValue appConfig.ui.icons.check
+   * @IconifyIcon
+   */
+  icon?: IconProps['name']
+  /**
+   * The icon displayed when the checkbox is indeterminate.
+   * @defaultValue appConfig.ui.icons.minus
+   * @IconifyIcon
+   */
+  indeterminateIcon?: IconProps['name']
+  class?: any
+  ui?: Checkbox['slots']
+}
+
+export interface CheckboxEmits<T = boolean> extends CheckboxRootEmits<T> {
+  change: [event: Event]
+}
+
+export interface CheckboxSlots {
+  label?(props: { label: string | undefined }): VNode[]
+  description?(props: { description: string | undefined }): VNode[]
+}
+</script>
+
+<script setup lang="ts" generic="T = boolean">
+import { computed, useAttrs, useId } from 'vue'
+import { Primitive, CheckboxRoot, CheckboxIndicator, Label, injectCheckboxGroupRootContext } from 'reka-ui'
+import { reactivePick } from '@vueuse/core'
+import { isEqual } from 'ohash/utils'
+import { useAppConfig } from '#imports'
+import { useComponentProps } from '../composables/useComponentProps'
+import { useForwardProps } from '../composables/useForwardProps'
+import { useFormField } from '../composables/useFormField'
+import { tv } from '../utils/tv'
+import UIcon from './Icon.vue'
+
+defineOptions({ inheritAttrs: false })
+
+const _props = defineProps<CheckboxProps<T>>()
+const slots = defineSlots<CheckboxSlots>()
+const emits = defineEmits<CheckboxEmits<T>>()
+
+const props = useComponentProps<CheckboxProps<T>>('checkbox', _props)
+
+const appConfig = useAppConfig() as Checkbox['AppConfig']
+
+const rootProps = useForwardProps(reactivePick(props, 'required', 'value', 'defaultValue', 'modelValue', 'trueValue', 'falseValue'), emits)
+
+const { id: _id, emitFormChange, emitFormInput, size: formFieldSize, color: formFieldColor, highlight: formFieldHighlight, name, disabled: formFieldDisabled, ariaAttrs } = useFormField<CheckboxProps<T>>(_props)
+const id = _id.value ?? useId()
+
+// eslint-disable-next-line vue/no-dupe-keys
+const color = computed(() => formFieldColor.value ?? props.color)
+// eslint-disable-next-line vue/no-dupe-keys
+const highlight = computed(() => formFieldHighlight.value ?? props.highlight)
+// eslint-disable-next-line vue/no-dupe-keys
+const size = computed(() => formFieldSize.value ?? props.size)
+
+const disabled = computed(() => formFieldDisabled.value ?? props.disabled)
+
+// Once a CheckboxGroup reaches its `max`, the unchecked checkboxes stay focusable but can't be checked.
+const checkboxGroupContext = injectCheckboxGroupRootContext(null)
+const maxReached = computed(() => {
+  const max = checkboxGroupContext?.max.value
+  if (!checkboxGroupContext || max === null || max === undefined) {
+    return false
+  }
+
+  // Same check as Reka UI, whose `value` prop defaults to `on`.
+  const values = checkboxGroupContext.modelValue.value ?? []
+  const checkboxValue = props.value === undefined ? 'on' : props.value
+  return values.length >= max && !values.some(value => isEqual(value, checkboxValue))
+})
+
+// When the indicator is hidden the checked icon is never visible, so `icon` renders above the
+// label instead. No `appConfig` fallback here, an unset `icon` must render nothing.
+const labelIcon = computed(() => props.indicator === 'hidden' ? props.icon : undefined)
+
+const attrs = useAttrs()
+
+// Omit `data-state` to prevent conflicts with parent components (e.g. TooltipTrigger)
+const forwardedAttrs = computed(() => {
+  const { 'data-state': _, ...rest } = attrs
+  return rest
+})
+
+// eslint-disable-next-line vue/no-dupe-keys
+const ui = computed(() => tv({ extend: theme, ...(appConfig.ui?.checkbox || {}) })({
+  size: size.value,
+  color: color.value,
+  variant: props.variant,
+  indicator: props.indicator,
+  highlight: highlight.value,
+  required: props.required,
+  disabled: disabled.value || maxReached.value
+}))
+
+function onUpdate(value: any) {
+  // @ts-expect-error - 'target' does not exist in type 'EventInit'
+  const event = new Event('change', { target: { value } })
+  emits('change', event)
+  emitFormChange()
+  emitFormInput()
+}
+</script>
+
+<!-- eslint-disable vue/no-template-shadow -->
+<template>
+  <Primitive :as="(!props.variant || props.variant === 'list') ? props.as : Label" :data-slot="($attrs['data-slot'] as string | undefined) ?? 'root'" :class="ui.root({ class: [props.ui?.root, props.class] })">
+    <div data-slot="container" :class="ui.container({ class: props.ui?.container })">
+      <CheckboxRoot
+        :id="id"
+        v-bind="{ ...rootProps, ...forwardedAttrs, ...ariaAttrs }"
+        :name="name"
+        :disabled="disabled"
+        data-slot="base"
+        :class="ui.base({ class: props.ui?.base })"
+        @update:model-value="onUpdate"
+      >
+        <template #default="{ state }">
+          <CheckboxIndicator v-if="props.indicator !== 'hidden'" data-slot="indicator" :class="ui.indicator({ class: props.ui?.indicator })">
+            <UIcon v-if="state === 'indeterminate'" :name="props.indeterminateIcon || appConfig.ui.icons.minus" data-slot="icon" :class="ui.icon({ class: props.ui?.icon })" />
+            <UIcon v-else :name="props.icon || appConfig.ui.icons.check" data-slot="icon" :class="ui.icon({ class: props.ui?.icon })" />
+          </CheckboxIndicator>
+        </template>
+      </CheckboxRoot>
+    </div>
+
+    <div v-if="labelIcon || (props.label || !!slots.label) || (props.description || !!slots.description)" data-slot="wrapper" :class="ui.wrapper({ class: props.ui?.wrapper })">
+      <UIcon v-if="labelIcon" :name="labelIcon" data-slot="icon" :class="ui.icon({ class: props.ui?.icon })" />
+      <component :is="(!props.variant || props.variant === 'list') ? Label : 'p'" v-if="props.label || !!slots.label" :for="id" data-slot="label" :class="ui.label({ class: props.ui?.label })">
+        <slot name="label" :label="props.label">
+          {{ props.label }}
+        </slot>
+      </component>
+      <p v-if="props.description || !!slots.description" data-slot="description" :class="ui.description({ class: props.ui?.description })">
+        <slot name="description" :description="props.description">
+          {{ props.description }}
+        </slot>
+      </p>
+    </div>
+  </Primitive>
+</template>

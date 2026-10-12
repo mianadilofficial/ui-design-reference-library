@@ -1,0 +1,402 @@
+---
+title: FileUpload
+description: 'An input element to upload files.'
+category: form
+keywords:
+  - dropzone
+  - drag and drop
+  - file input
+links:
+  - label: GitHub
+    icon: i-simple-icons-github
+    to: https://github.com/nuxt/ui/blob/v4/src/runtime/components/FileUpload.vue
+---
+
+## Usage
+
+Use the `v-model` directive to control the value of the FileUpload.
+
+The model accepts native [`File`](https://developer.mozilla.org/en-US/docs/Web/API/File) objects or custom [`FileUploadItem`](#with-custom-file-items) objects with the following properties:
+
+- `name: string`{lang="ts-type"}
+- `size?: number`{lang="ts-type"}
+- `type?: string`{lang="ts-type"}
+- `avatar?: AvatarProps`{lang="ts-type"}
+
+The item type defaults to `File` and is inferred from your model when using custom items. You can extend `FileUploadItem` with custom properties for your application.
+
+::component-code
+---
+ignore:
+  - modelValue
+  - class
+external:
+  - modelValue
+props:
+  modelValue: null
+  class: 'w-96 min-h-48'
+---
+::
+
+### Multiple
+
+Use the `multiple` prop to allow multiple files to be selected.
+
+::component-code
+---
+ignore:
+  - class
+props:
+  multiple: true
+  class: 'w-96 min-h-48'
+---
+::
+
+### Dropzone
+
+Use the `dropzone` prop to enable/disable the droppable area. Defaults to `true`.
+
+::component-code
+---
+ignore:
+  - class
+props:
+  dropzone: false
+  class: 'w-96 min-h-48'
+---
+::
+
+### Interactive
+
+Use the `interactive` prop to enable/disable the clickable area. Defaults to `true`.
+
+::tip{to="#with-files-bottom-slot"}
+This can be useful when adding a `Button` component in the `#actions` slot.
+::
+
+::component-code
+---
+ignore:
+  - class
+props:
+  interactive: false
+  class: 'w-96 min-h-48'
+---
+::
+
+### Accept
+
+Use the `accept` prop to specify the allowed file types for the input. Provide a comma-separated list of [MIME types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/MIME_types) or file extensions (e.g. `image/png,application/pdf,.jpg`). Defaults to `*` (all file types).
+
+::component-code
+---
+ignore:
+  - accept
+  - class
+props:
+  accept: 'image/*'
+  class: 'w-96 min-h-48'
+---
+::
+
+### Label
+
+Use the `label` prop to set the label of the FileUpload.
+
+::component-code
+---
+prettier: true
+ignore:
+  - class
+props:
+  label: 'Drop your image here'
+  class: 'w-96 min-h-48'
+---
+::
+
+### Description
+
+Use the `description` prop to set the description of the FileUpload.
+
+::component-code
+---
+prettier: true
+ignore:
+  - label
+  - class
+props:
+  label: 'Drop your image here'
+  description: 'SVG, PNG, JPG or GIF (max. 2MB)'
+  class: 'w-96 min-h-48'
+---
+::
+
+### Icon
+
+Use the `icon` prop to set the icon of the FileUpload. Defaults to `i-lucide-upload`.
+
+::component-code
+---
+prettier: true
+ignore:
+  - label
+  - description
+  - class
+props:
+  icon: 'i-lucide-image'
+  label: 'Drop your image here'
+  description: 'SVG, PNG, JPG or GIF (max. 2MB)'
+  class: 'w-96 min-h-48'
+---
+::
+
+::framework-only
+#nuxt
+:::tip{to="/docs/getting-started/integrations/icons/nuxt#theme"}
+You can customize this icon globally in your `app.config.ts` under `ui.icons.upload` key.
+:::
+
+#vue
+:::tip{to="/docs/getting-started/integrations/icons/vue#theme"}
+You can customize this icon globally in your `vite.config.ts` under `ui.icons.upload` key.
+:::
+::
+
+### Color
+
+Use the `color` prop to change the color of the FileUpload.
+
+::component-code
+---
+prettier: true
+ignore:
+  - label
+  - description
+  - class
+props:
+  color: neutral
+  highlight: true
+  label: 'Drop your image here'
+  description: 'SVG, PNG, JPG or GIF (max. 2MB)'
+  class: 'w-96 min-h-48'
+---
+::
+
+::note
+The `highlight` prop is used here to show the focus state. It's used internally when a validation error occurs.
+::
+
+### Variant
+
+Use the `variant` prop to change the variant of the FileUpload.
+
+::component-code
+---
+ignore:
+  - class
+props:
+  variant: button
+---
+::
+
+### Size
+
+Use the `size` prop to change the size of the FileUpload.
+
+::component-code
+---
+prettier: true
+ignore:
+  - label
+  - description
+  - class
+props:
+  size: xl
+  variant: area
+  label: 'Drop your image here'
+  description: 'SVG, PNG, JPG or GIF (max. 2MB)'
+---
+::
+
+### Layout
+
+Use the `layout` prop to change how the files are displayed in the FileUpload. Defaults to `grid`.
+
+::warning
+This prop only works when `variant` is `area`.
+::
+
+::component-code
+---
+prettier: true
+ignore:
+  - label
+  - description
+  - multiple
+  - class
+  - ui.base
+props:
+  layout: list
+  multiple: true
+  label: 'Drop your images here'
+  description: 'SVG, PNG, JPG or GIF (max. 2MB)'
+  class: 'w-96'
+  ui:
+    base: 'min-h-48'
+---
+::
+
+### Position
+
+Use the `position` prop to change the position of the files in the FileUpload. Defaults to `outside`.
+
+::warning
+This prop only works when `variant` is `area` and when `layout` is `list`.
+::
+
+::component-code
+---
+prettier: true
+ignore:
+  - label
+  - description
+  - multiple
+  - layout
+  - class
+  - ui.base
+props:
+  position: inside
+  layout: list
+  multiple: true
+  label: 'Drop your images here'
+  description: 'SVG, PNG, JPG or GIF (max. 2MB)'
+  class: 'w-96'
+  ui:
+    base: 'min-h-48'
+---
+::
+
+## Examples
+
+### With custom file items :badge{label="Soon" class="align-text-top"}
+
+Use an object with a `name`, optional file metadata and an [Avatar](/docs/components/avatar) to display an existing file. Native files selected by the user are added to the same model. Models and file slots include `File` alongside your custom item type, so narrow the item before accessing custom properties.
+
+::component-example
+---
+name: 'file-upload-items-example'
+prettier: true
+collapse: true
+---
+::
+
+### With upload status :badge{label="Soon" class="align-text-top"}
+
+Extend `FileUploadItem` with custom fields and use the file slots to display upload progress or other asynchronous states. This example converts selected files into custom items, simulates upload progress, and displays their image previews when complete.
+
+::component-example
+---
+prettier: true
+collapse: true
+name: 'file-upload-status-example'
+---
+::
+
+### With Form validation
+
+You can use the FileUpload within a [Form](/docs/components/form) and [FormField](/docs/components/form-field) components to handle validation and error handling.
+
+::component-example
+---
+prettier: true
+collapse: true
+name: 'file-upload-form-validation-example'
+---
+::
+
+### With rejected files :badge{label="Soon" class="align-text-top"}
+
+Dropped files that do not match the `accept` prop are ignored. Listen to the `reject` event to display an error message.
+
+::component-example
+---
+prettier: true
+collapse: true
+name: 'file-upload-reject-example'
+---
+::
+
+### With default slot
+
+You can use the default slot to make your own FileUpload component.
+
+::component-example
+---
+prettier: true
+collapse: true
+name: 'file-upload-default-slot-example'
+---
+::
+
+### With files-bottom slot
+
+You can use the `files-bottom` slot to add a [Button](/docs/components/button) under the files list to remove all files for example.
+
+::component-example
+---
+prettier: true
+collapse: true
+name: 'file-upload-files-bottom-slot-example'
+---
+::
+
+::note{to="#interactive"}
+The `interactive` prop is set to `false` in this example to prevent the default clickable area.
+::
+
+### With files-top slot
+
+You can use the `files-top` slot to add a [Button](/docs/components/button) above the files list to add new files for example.
+
+::component-example
+---
+prettier: true
+collapse: true
+name: 'file-upload-files-top-slot-example'
+---
+::
+
+## API
+
+### Props
+
+:component-props
+
+::callout{icon="i-simple-icons-mdnwebdocs" to="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attributes" target="_blank"}
+This component also supports all native `<input>` HTML attributes.
+::
+
+### Slots
+
+:component-slots
+
+### Emits
+
+:component-emits
+
+### Expose
+
+When accessing the component via a template ref, you can use the following:
+
+| Name | Type |
+| ---- | ---- |
+| `inputRef`{lang="ts-type"} | `Ref<HTMLInputElement \| null>`{lang="ts-type"} |
+| `dropzoneRef`{lang="ts-type"} | `Ref<HTMLDivElement \| null>`{lang="ts-type"} |
+
+## Theme
+
+:component-theme
+
+## Changelog
+
+:component-changelog

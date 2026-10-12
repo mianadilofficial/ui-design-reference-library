@@ -1,0 +1,169 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'Galego',
+  code: 'gl',
+  messages: {
+    alert: {
+      close: 'Pechar'
+    },
+    authForm: {
+      hidePassword: 'Ocultar contrasinal',
+      showPassword: 'Amosar contrasinal',
+      submit: 'Continuar'
+    },
+    banner: {
+      close: 'Pechar'
+    },
+    calendar: {
+      nextMonth: 'Mes seguinte',
+      nextYear: 'Ano seguinte',
+      prevMonth: 'Mes anterior',
+      prevYear: 'Ano anterior'
+    },
+    carousel: {
+      dots: 'Escoller diapositiva a amostrar',
+      goto: 'Ir á diapositiva {slide}',
+      next: 'Seguinte',
+      prev: 'Anterior'
+    },
+    chatMessages: {
+      autoScroll: 'Desprazar cara abaixo'
+    },
+    chatPrompt: {
+      placeholder: 'Escribe a túa mensaxe aquí…'
+    },
+    chatPromptSubmit: {
+      label: 'Enviar',
+      reload: 'Tentar de novo',
+      stop: 'Deter a xeración'
+    },
+    chatReasoning: {
+      thinking: 'Pensando…',
+      thought: 'Pensou',
+      thoughtFor: 'Pensou durante {duration}'
+    },
+    colorMode: {
+      dark: 'Oscuro',
+      light: 'Claro',
+      switchToDark: 'Cambiar a modo oscuro',
+      switchToLight: 'Cambiar a modo claro',
+      system: 'Sistema'
+    },
+    commandPalette: {
+      back: 'Atrás',
+      close: 'Pechar',
+      noData: 'Sen datos',
+      noMatch: 'Non hai datos coincidentes',
+      placeholder: 'Escribe un comando ou busca…'
+    },
+    contentSearch: {
+      links: 'Ligazóns',
+      search: 'Resultados',
+      theme: 'Tema'
+    },
+    contentSearchButton: {
+      label: 'Buscar…'
+    },
+    contentToc: {
+      title: 'Nesta páxina'
+    },
+    dropdownMenu: {
+      noMatch: 'Non hai datos coincidentes',
+      search: 'Buscar…'
+    },
+    dashboardSearch: {
+      theme: 'Tema'
+    },
+    dashboardSearchButton: {
+      label: 'Buscar…'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'Contraer barra lateral',
+      expand: 'Despregar barra lateral'
+    },
+    dashboardSidebarToggle: {
+      close: 'Pechar barra lateral',
+      open: 'Abrir barra lateral'
+    },
+    drawer: {
+      close: 'Pechar'
+    },
+    error: {
+      clear: 'Volver ao inicio'
+    },
+    fileUpload: {
+      removeFile: 'Eliminar {filename}'
+    },
+    header: {
+      close: 'Pechar menú',
+      open: 'Abrir menú'
+    },
+    inputMenu: {
+      create: 'Crear "{label}"',
+      noData: 'Sen datos',
+      noMatch: 'Non hai datos coincidentes'
+    },
+    inputNumber: {
+      decrement: 'Diminuír',
+      increment: 'Aumentar'
+    },
+    listbox: {
+      noData: 'Sen datos',
+      noMatch: 'Non hai datos coincidentes',
+      search: 'Buscar…'
+    },
+    modal: {
+      close: 'Pechar'
+    },
+    pagination: {
+      first: 'Primeira páxina',
+      last: 'Última páxina',
+      next: 'Páxina seguinte',
+      page: 'Páxina {page}',
+      prev: 'Páxina anterior'
+    },
+    pricingTable: {
+      caption: 'Comparación de plans de prezos'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'Contraer',
+        name: 'código',
+        openText: 'Despregar'
+      },
+      collapsible: {
+        closeText: 'Ocultar',
+        name: 'propiedades',
+        openText: 'Amosar'
+      },
+      pre: {
+        copy: 'Copiar código ao portapapeis'
+      },
+      prompt: {
+        copy: 'Copiar instrución',
+        openIn: 'Abrir en {name}'
+      }
+    },
+    sidebar: {
+      close: 'Pechar',
+      toggle: 'Alternar'
+    },
+    selectMenu: {
+      create: 'Crear "{label}"',
+      noData: 'Sen datos',
+      noMatch: 'Non hai datos coincidentes',
+      search: 'Buscar…'
+    },
+    slideover: {
+      close: 'Pechar'
+    },
+    table: {
+      noData: 'Sen datos'
+    },
+    toast: {
+      close: 'Pechar'
+    }
+  }
+})

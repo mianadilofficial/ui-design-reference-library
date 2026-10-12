@@ -1,0 +1,67 @@
+import { defineMcpPrompt } from '@nuxtjs/mcp-toolkit/server'
+import { useEvent } from 'nitropack/runtime'
+import { z } from 'zod'
+import { kebabCase } from 'scule'
+import { queryCollection } from '@nuxt/content/server'
+import { normalizeComponentName } from '~~/server/utils/normalizeComponentName'
+import { SITE_URL } from '../../utils/site'
+import { fetchComponentMetadata } from '../../utils/componentMeta'
+
+export default defineMcpPrompt({
+  description: 'Generate complete component implementation with proper props and styling',
+  inputSchema: {
+    componentName: z.string().describe('The Nuxt UI component name (PascalCase)'),
+    requirements: z.string().optional().describe('Specific requirements or customizations needed')
+  },
+  async handler({ componentName, requirements }) {
+    const event = useEvent()
+
+    // Normalize component name by removing "U" or "u-" prefix if present
+    const normalizedName = normalizeComponentName(componentName)
+
+    // Convert to kebab-case for path lookup
+    const kebabName = kebabCase(normalizedName)
+
+    // Get component documentation
+    const page = await queryCollection(event, 'docs')
+      .where('path', 'LIKE', `%/components/${kebabName}`)
+      .where('extension', '=', 'md')
+      .select('id', 'title', 'description', 'path', 'category', 'links')
+      .first()
+
+    if (!page) {
+      return {
+        messages: [
+          {
+            role: 'user' as const,
+            content: {
+              type: 'text' as const,
+              text: `Component '${componentName}' not found in documentation. Please use a valid Nuxt UI component name.`
+            }
+          }
+        ]
+      }
+    }
+
+    const component = {
+      name: normalizedName,
+      title: page.title,
+      description: page.description,
+      category: page.category,
+      documentation_url: `${SITE_URL}${page.path}`,
+      metadata: await fetchComponentMetadata(normalizedName)
+    }
+
+    return {
+      messages: [
+        {
+          role: 'user' as const,
+          content: {
+            type: 'text' as const,
+            text: `Generate a complete implementation of the ${componentName} component with proper props and styling. ${requirements ? `Requirements: ${requirements}` : ''}\n\nComponent details: ${JSON.stringify(component, null, 2)}`
+          }
+        }
+      ]
+    }
+  }
+})

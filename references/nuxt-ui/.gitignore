@@ -1,0 +1,43 @@
+.component-meta/
+component-meta.*
+
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
+.cursor
+.fleet
+.idea
+.claude
+
+# Local env files
+.env
+.env.*
+!.env.example
+
+playgrounds/vue/auto-imports.d.ts
+playgrounds/vue/components.d.ts
+playgrounds/vue/tsconfig.app.tsbuildinfo
+playgrounds/vue/tsconfig.node.tsbuildinfo
+
+# REPL playground
+playgrounds/repl/auto-imports.d.ts
+playgrounds/repl/components.d.ts
+playgrounds/repl/public/nuxt-ui.*
+playgrounds/repl/dist/
+
+# VSC
+.history

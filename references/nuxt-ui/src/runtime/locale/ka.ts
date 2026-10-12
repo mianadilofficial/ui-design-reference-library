@@ -1,0 +1,171 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'ქართული',
+  code: 'ka',
+  messages: {
+    alert: {
+      close: 'დახურვა'
+    },
+    authForm: {
+      hidePassword: 'პაროლის დამალვა',
+      showPassword: 'პაროლის ჩვენება',
+      submit: 'გაგრძელება'
+    },
+    banner: {
+      close: 'დახურვა'
+    },
+    calendar: {
+      nextMonth: 'შემდეგი თვე',
+      nextYear: 'შემდეგი წელი',
+      prevMonth: 'წინა თვე',
+      prevYear: 'წინა წელი'
+    },
+    carousel: {
+      dots: 'აირჩიეთ სლაიდი საჩვენებლად',
+      goto: 'გადასვლა სლაიდ {slide}-ზე',
+      next: 'შემდეგი',
+      prev: 'წინა'
+    },
+    chatMessages: {
+      autoScroll: 'ქვემოთ გადახვევა'
+    },
+    chatPrompt: {
+      placeholder: 'დაწერეთ თქვენი მესიჯი აქ…'
+    },
+    chatPromptSubmit: {
+      label: 'შეტყობინების გაგზავნა',
+      reload: 'ხელახლა ცდა',
+      stop: 'გენერირების შეჩერება'
+    },
+    chatReasoning: {
+      thinking: 'ფიქრობს…',
+      thought: 'იფიქრა',
+      thoughtFor: '{duration} ფიქრობდა'
+    },
+    colorMode: {
+      dark: 'ბნელი',
+      light: 'ნათელი',
+      switchToDark: 'ბნელ რეჯიმზე გადასვლა',
+      switchToLight: 'ნათელ რეჯიმზე გადასვლა',
+      system: 'სისტემური'
+    },
+    commandPalette: {
+      back: 'უკან',
+      close: 'დახურვა',
+      noData: 'მონაცემები არ არის',
+      noMatch: 'შესატყვისი მონაცემები არ არის',
+      placeholder: 'ჩაწერეთ ბრძანება ან ძიება…'
+    },
+    contentSearch: {
+      links: 'ბმულები',
+      search: 'შედეგები',
+      theme: 'თემა'
+    },
+    contentSearchButton: {
+      label: 'ძიება…'
+    },
+    contentToc: {
+      title: 'ამ გვერდზე'
+    },
+    dropdownMenu: {
+      noMatch: 'შესატყვისი მონაცემები არ არის',
+      search: 'ძიება…'
+    },
+    dashboardSearch: {
+      theme: 'თემა'
+    },
+    dashboardSearchButton: {
+      label: 'ძიება…'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'გვერდითი ზოლის ჩაკეცვა',
+      expand: 'გვერდითი ზოლის გაშლა'
+    },
+    dashboardSidebarToggle: {
+      close: 'გვერდითი ზოლის დახურვა',
+      open: 'გვერდითი ზოლის გახსნა'
+    },
+    drawer: {
+      close: 'დახურვა'
+    },
+    error: {
+      // While "home" translates as "სახლი", I chose to use "მთავარი" (meaning "main") as contextually this sounds better.
+      // If any Georgian prefers literal translation, please submit patch.
+      clear: 'მთავარზე დაბრუნება'
+    },
+    fileUpload: {
+      removeFile: 'მოაშორე {filename}'
+    },
+    header: {
+      close: 'მენიუს დახურვა',
+      open: 'მენიუს გახსნა'
+    },
+    inputMenu: {
+      create: 'შექმენი "{label}"',
+      noData: 'მონაცემები არ არის',
+      noMatch: 'შესატყვისი მონაცემები არ არის'
+    },
+    inputNumber: {
+      decrement: 'დაკლება',
+      increment: 'დამატება'
+    },
+    listbox: {
+      noData: 'მონაცემები არ არის',
+      noMatch: 'შესატყვისი მონაცემები არ არის',
+      search: 'ძიება…'
+    },
+    modal: {
+      close: 'დახურვა'
+    },
+    pagination: {
+      first: 'პირველი გვერდი',
+      last: 'ბოლო გვერდი',
+      next: 'შემდეგი გვერდი',
+      page: 'გვერდი {page}',
+      prev: 'წინა გვერდი'
+    },
+    pricingTable: {
+      caption: 'ფასის გეგმების შედარება'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'ჩაკეცვა',
+        name: 'კოდი',
+        openText: 'გაშლა'
+      },
+      collapsible: {
+        closeText: 'დახურვა',
+        name: 'თვისებები',
+        openText: 'ჩვენება'
+      },
+      pre: {
+        copy: 'კოდის კოპირება ბუფერში'
+      },
+      prompt: {
+        copy: 'მოთხოვნის კოპირება',
+        openIn: 'გახსნა {name}-ში'
+      }
+    },
+    sidebar: {
+      close: 'დახურვა',
+      toggle: 'გადართვა'
+    },
+    selectMenu: {
+      create: 'დაამატე "{label}"', // "Create" translates as "შექმნა", but since we are simply adding new choice, creating sounds wrong, thus I chose to use "დაამატე", meaning "add".
+      noData: 'მონაცემები არ არის',
+      noMatch: 'შესატყვისი მონაცემები არ არის',
+      search: 'ძიება…'
+    },
+    slideover: {
+      close: 'დახურვა'
+    },
+    table: {
+      noData: 'მონაცემები არ არის'
+    },
+    toast: {
+      close: 'დახურვა'
+    }
+  }
+})

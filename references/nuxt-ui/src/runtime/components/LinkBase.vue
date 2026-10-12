@@ -1,0 +1,71 @@
+<script lang="ts">
+import type { LinkProps } from './Link.vue'
+
+export interface LinkBaseProps {
+  as?: string
+  type?: string
+  disabled?: boolean
+  onClick?: ((e: MouseEvent) => void) | Array<((e: MouseEvent) => void)>
+  href?: string | null
+  navigate?: (e: MouseEvent) => void
+  target?: LinkProps['target']
+  rel?: LinkProps['rel']
+  active?: boolean
+  isExternal?: boolean
+}
+</script>
+
+<script setup lang="ts">
+import { Primitive } from 'reka-ui'
+
+const props = withDefaults(defineProps<LinkBaseProps>(), {
+  as: 'button',
+  type: 'button'
+})
+
+function onClickWrapper(e: MouseEvent) {
+  if (props.disabled) {
+    e.stopPropagation()
+    e.preventDefault()
+    return
+  }
+
+  const results: unknown[] = []
+
+  if (props.onClick) {
+    for (const onClick of Array.isArray(props.onClick) ? props.onClick : [props.onClick]) {
+      results.push(onClick(e))
+    }
+  }
+
+  if (props.href && props.navigate && !props.isExternal) {
+    props.navigate(e)
+  }
+
+  // Returned so Vue routes async handler errors to `onErrorCaptured`
+  return Promise.all(results)
+}
+</script>
+
+<template>
+  <Primitive
+    v-bind="href ? {
+      'as': 'a',
+      'href': disabled ? undefined : href,
+      'aria-disabled': disabled ? 'true' : undefined,
+      'role': disabled ? 'link' : undefined,
+      'tabindex': disabled ? -1 : undefined
+    } : as === 'button' ? {
+      as,
+      type,
+      disabled
+    } : {
+      as
+    }"
+    :rel="rel"
+    :target="target"
+    @click="onClickWrapper"
+  >
+    <slot />
+  </Primitive>
+</template>

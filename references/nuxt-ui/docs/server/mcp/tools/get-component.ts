@@ -1,0 +1,69 @@
+import { defineMcpTool } from '@nuxtjs/mcp-toolkit/server'
+import { useEvent } from 'nitropack/runtime'
+import { createError } from 'h3'
+import { z } from 'zod'
+import { kebabCase } from 'scule'
+import { queryCollection } from '@nuxt/content/server'
+import { getAgentDocument } from '#agent-discovery'
+import { normalizeComponentName } from '../../utils/normalizeComponentName'
+import { SITE_URL } from '../../utils/site'
+
+const sectionEnum = z.enum(['usage', 'examples', 'api', 'theme', 'changelog'])
+
+export default defineMcpTool({
+  description: 'Retrieves Nuxt UI component documentation and details. Use the `sections` parameter to fetch only specific parts of the documentation to reduce response size. Use `get-component-metadata` instead when you only need structured props, slots and events.',
+  annotations: {
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: true,
+    openWorldHint: false
+  },
+  inputSchema: {
+    componentName: z.string().describe('Component name. Accepts `Button`, `UButton`, `button` or `u-button`.'),
+    sections: z.array(sectionEnum).optional().describe('Specific sections to return: usage, examples, api, theme, changelog. If omitted, returns full documentation.')
+  },
+  inputExamples: [
+    { componentName: 'Button', sections: ['usage', 'api'] },
+    { componentName: 'UModal' },
+    { componentName: 'Table', sections: ['examples'] }
+  ],
+  cache: '30m',
+  async handler({ componentName, sections }) {
+    const event = useEvent()
+
+    // Normalize component name by removing "U" or "u-" prefix if present
+    const normalizedName = normalizeComponentName(componentName)
+
+    // Convert to kebab-case for path lookup
+    const kebabName = kebabCase(normalizedName)
+
+    // Get component documentation using queryCollection
+    const page = await queryCollection(event, 'docs')
+      .where('path', 'LIKE', `%/components/${kebabName}`)
+      .where('extension', '=', 'md')
+      .select('id', 'title', 'description', 'path', 'category', 'links')
+      .first()
+
+    if (!page) {
+      throw createError({ statusCode: 404, message: `Component '${componentName}' not found in documentation` })
+    }
+
+    // Same document `/raw/**.md` serves, resolved in-process rather than
+    // fetched back out of the function, and narrowed to the requested `##`
+    // sections by the module.
+    const document = await getAgentDocument(event, page.path, { sections })
+    if (!document || 'redirect' in document) {
+      throw createError({ statusCode: 404, message: `Component '${componentName}' has no documentation page` })
+    }
+
+    return {
+      name: normalizedName,
+      title: page.title,
+      description: page.description,
+      category: page.category,
+      documentation: document.markdown,
+      documentation_url: `${SITE_URL}${page.path}`,
+      sections_returned: sections || ['full']
+    }
+  }
+})
