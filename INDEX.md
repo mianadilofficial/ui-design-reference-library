@@ -33,8 +33,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 |---|---|---|---|---|
 | [nextjs-landing-template](references/nextjs-landing-template) | CreativeDesignsGuru | Next.js / Tailwind | MIT | Production landing-page implementation: Navbar, Hero, Features, CTA, Footer + SEO/JSON-LD setup |
 | [tabler-dashboard](references/tabler-dashboard) | Tabler team | Bootstrap 5 / HTML | MIT | Dashboard UI kit: 120+ demo pages (dashboards, tables, forms, auth), dark mode, RTL |
-
-*Portfolios still open — suggest via CONTRIBUTING.md.*
+| [portfolio-brittany](references/portfolio-brittany) | Brittany Chiang | Gatsby / React | MIT | The iconic developer portfolio: animated hero, tabbed experience, projects, contact — dark navy theme |
 
 ## Project structure
 
