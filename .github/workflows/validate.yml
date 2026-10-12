@@ -23,10 +23,14 @@ jobs:
             if [ ! -f "$file" ]; then
               echo "MISSING: $file"; fail=1; continue
             fi
-            for field in "Original repository" "Author" "Original URL" "License"; do
+            for field in "Original repository" "Author" "License"; do
               grep -q "$field" "$file" || { echo "MISSING FIELD '$field' in $file"; fail=1; }
             done
-            [ -f "${dir}LICENSE" ] || [ -f "${dir}LICENSE.md" ] || [ -f "${dir}license.md" ] || { echo "MISSING LICENSE in $dir"; fail=1; }
+            # URL field: accept either "Original URL" (old template) or
+            # "Original repository" (new template) — both carry the source URL.
+            grep -q "Original URL" "$file" || grep -q "Original repository" "$file" || { echo "MISSING URL FIELD in $file"; fail=1; }
+            # License file: accept common upstream spellings (incl. .txt).
+            [ -f "${dir}LICENSE" ] || [ -f "${dir}LICENSE.md" ] || [ -f "${dir}license.md" ] || [ -f "${dir}LICENSE.txt" ] || [ -f "${dir}license.txt" ] || { echo "MISSING LICENSE in $dir"; fail=1; }
           done
           exit $fail
 
