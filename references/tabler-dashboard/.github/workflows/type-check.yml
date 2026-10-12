@@ -1,0 +1,35 @@
+name: Type Check
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.changeset/**'
+      - '.github/release-notes/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '*.md'
+      - 'LICENSE'
+  push:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: read
+
+jobs:
+  type-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: Set up the workspace
+        uses: ./.github/actions/setup
+
+      - name: Run type-check
+        run: pnpm run type-check
+
+      - name: Type-check the build scripts
+        run: pnpm run type-check:build
+

@@ -1,0 +1,1313 @@
+{
+  "active-users-3": {
+    "type": "radialBar",
+    "height": 10,
+    "sparkline": true,
+    "series": [
+      {
+        "color": "primary",
+        "data": 78
+      }
+    ]
+  },
+  "visitors": {
+    "type": "line",
+    "height": 10,
+    "sparkline": true,
+    "datetime": true,
+    "stroke-width": [2, 1],
+    "stroke-dash": [0, 3],
+    "series": [
+      {
+        "name": "Visitors",
+        "color": "primary",
+        "data": [7687, 7543, 7545, 7543, 7635, 8140, 7810, 8315, 8379, 8441, 8485, 8227, 8906, 8561, 8333, 8551, 9305, 9647, 9359, 9840, 9805, 8612, 8970, 8097, 8070, 9829, 10545, 10754, 10270, 9282]
+      },
+      {
+        "name": "Visitors last month",
+        "color": "gray-400",
+        "data": [8630, 9389, 8427, 9669, 8736, 8261, 8037, 8922, 9758, 8592, 8976, 9459, 8125, 8528, 8027, 8256, 8670, 9384, 9813, 8425, 8162, 8024, 8897, 9284, 8972, 8776, 8121, 9476, 8281, 9065]
+      }
+    ]
+  },
+  "active-users-2": {
+    "type": "line",
+    "height": 18,
+    "datetime": true,
+    "stroke-curve": "straight",
+    "y-formatter": "thousands",
+    "series": [
+      {
+        "name": "Mobile",
+        "color": "primary",
+        "data": [10113, 9996, 9273, 9891, 9497, 9420, 10154, 10168, 10183, 9879, 10079, 10354, 10583, 10611, 10819, 10774, 10680, 12059, 11914, 10686, 10486, 11667, 10919, 10421, 10592, 11153, 10723, 11524, 11583, 11830]
+      },
+      {
+        "name": "Desktop",
+        "color": "azure",
+        "data": [3813, 3597, 6934, 6985, 7484, 7383, 6554, 3857, 3570, 6991, 7402, 7379, 7493, 6487, 3767, 3798, 7319, 9043, 8040, 7468, 6584, 3834, 3614, 7252, 7660, 7374, 7268, 6658, 3974, 3675]
+      },
+      {
+        "name": "Tablet",
+        "color": "green",
+        "data": [2696, 2696, 1941, 1834, 1967, 2077, 2003, 2480, 2570, 2031, 1918, 1910, 2090, 2063, 2758, 2742, 1872, 1950, 1900, 1992, 2296, 2644, 2937, 2018, 1908, 2023, 2207, 2321, 2899, 3061]
+      }
+    ]
+  },
+  "demo-pie": {
+    "type": "donut",
+    "sparkline": true,
+    "legend": true,
+    "series": [
+      { "name": "Organic search", "color": "primary", "data": 46 },
+      { "name": "Direct", "color": "primary", "color-opacity": "80%", "data": 38 },
+      { "name": "Referral", "color": "primary", "color-opacity": "60%", "data": 19 },
+      { "name": "Social", "color": "gray-300", "data": 11 }
+    ],
+    "name": "Traffic sources"
+  },
+  "demo-bar": {
+    "type": "bar",
+    "legend": true,
+    "horizontal": true,
+    "stacked": true,
+    "categories": [2019, 2020, 2021, 2022, 2023, 2024, 2025],
+    "x-formatter": "suffix-k",
+    "series": [
+      {
+        "name": "North America",
+        "color": "purple",
+        "data": [128, 142, 151, 168, 182, 205, 224]
+      },
+      {
+        "name": "Europe",
+        "color": "green",
+        "data": [96, 104, 118, 127, 141, 158, 172]
+      },
+      {
+        "name": "Asia Pacific",
+        "color": "yellow",
+        "data": [42, 51, 63, 78, 94, 112, 131]
+      },
+      {
+        "name": "Latin America",
+        "color": "red",
+        "data": [18, 21, 25, 29, 34, 38, 44]
+      },
+      {
+        "name": "Middle East",
+        "color": "primary",
+        "data": [9, 11, 14, 16, 19, 23, 27]
+      }
+    ]
+  },
+  "demo-area": {
+    "type": "area",
+    "legend": true,
+    "datetime": true,
+    "series": [
+      {
+        "name": "New users",
+        "color": "primary",
+        "data": [312, 287, 341, 368, 355, 402, 421]
+      },
+      {
+        "name": "Returning users",
+        "color": "purple",
+        "data": [180, 176, 195, 210, 204, 231, 244]
+      }
+    ]
+  },
+  "legend-demo": {
+    "type": "line",
+    "datetime": true,
+    "stroke-curve": "straight",
+    "y-formatter": "thousands",
+    "series": [
+      {
+        "name": "Total visits",
+        "color": "yellow",
+        "data": [1329, 1228, 1995, 2217, 2276, 2166, 2047, 1373, 1314, 2286, 2401, 2327, 2405, 2171, 1568, 1453, 2399, 3181, 2856, 2539, 2359, 1624, 1574, 2515, 2681, 2654, 2505, 2304, 1631, 1662]
+      },
+      {
+        "name": "Unique visitors",
+        "color": "green",
+        "data": [887, 843, 1367, 1471, 1596, 1498, 1392, 965, 875, 1529, 1629, 1543, 1639, 1482, 1090, 997, 1618, 2166, 1955, 1773, 1594, 1119, 1113, 1668, 1903, 1803, 1711, 1527, 1097, 1104]
+      },
+      {
+        "name": "New users",
+        "color": "primary",
+        "data": [291, 255, 374, 409, 449, 532, 498, 286, 261, 493, 520, 445, 489, 440, 318, 348, 580, 732, 535, 570, 530, 348, 348, 556, 655, 595, 488, 518, 335, 343]
+      }
+    ]
+  },
+  "legend-requests": {
+    "type": "bar",
+    "stacked": true,
+    "datetime": true,
+    "series": [
+      { "name": "Allowed", "color": "blue", "data": [42, 48, 45, 52, 56, 50, 58, 62, 57, 64, 68, 72] },
+      { "name": "Challenged", "color": "azure", "data": [14, 18, 16, 22, 19, 25, 21, 28, 24, 31, 27, 34] },
+      { "name": "Logged", "color": "green", "data": [20, 24, 22, 28, 31, 27, 34, 37, 33, 41, 44, 48] }
+    ]
+  },
+  "legend-latency": {
+    "type": "line",
+    "categories": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"],
+    "series": [
+      { "name": "P99", "color": "primary", "data": [96, 88, 102, 131, 148, 139, 127, 124] },
+      { "name": "P95", "color": "azure", "data": [61, 57, 66, 82, 91, 85, 79, 76] },
+      { "name": "P75", "color": "green", "data": [27, 25, 29, 35, 38, 36, 33, 32] },
+      { "name": "P50", "color": "yellow", "data": [9, 8, 9, 11, 12, 11, 10, 10] }
+    ]
+  },
+  "legend-donut": {
+    "extend": "traffic-sources-donut",
+    "legend": false,
+    "sparkline": true
+  },
+  "demo-line": {
+    "type": "line",
+    "datetime": true,
+    "stroke-curve": "straight",
+    "legend": true,
+    "series": [
+      {
+        "name": "Total visits",
+        "color": "yellow",
+        "data": [462, 505, 488, 531, 549, 512, 578, 601, 566, 623, 645, 672]
+      },
+      {
+        "name": "Unique visitors",
+        "color": "green",
+        "data": [318, 342, 331, 366, 379, 351, 402, 419, 394, 438, 452, 471]
+      },
+      {
+        "name": "New users",
+        "color": "primary",
+        "data": [96, 118, 104, 127, 133, 112, 145, 158, 141, 167, 172, 189]
+      }
+    ]
+  },
+  "social-referrals": {
+    "type": "line",
+    "datetime": true,
+    "height": 18,
+    "legend": true,
+    "show-x": true,
+    "name": "Social referrals",
+    "series": [
+      {
+        "name": "Facebook",
+        "color": "facebook",
+        "data": [
+          13281, 8521, 15038, 9983, 15417, 8888, 7052, 14270, 5214, 9587, 5950, 16852, 17836, 12217, 17406, 12262, 9147, 14961, 18292, 15230, 13435, 10649, 5140, 13680, 4508, 13271, 13413, 5543, 18727, 18238, 18175, 6246, 5864, 17847, 9170, 6445, 12945, 8142, 8980, 10422, 15535, 11569, 10114, 17621, 16138, 13046, 6652,
+          9906, 14100, 16495, 6749
+        ]
+      },
+      {
+        "name": "Twitter",
+        "color": "twitter",
+        "data": [
+          3680, 1862, 3070, 2252, 5348, 3091, 3000, 3984, 5176, 5325, 2420, 5474, 3098, 1893, 3748, 2879, 4197, 5186, 4213, 4334, 2807, 1594, 4863, 2030, 3752, 4856, 5341, 3954, 3461, 3097, 3404, 4949, 2283, 3227, 3630, 2360, 3477, 4675, 1901, 2252, 3347, 2954, 5029, 2079, 2830, 3292, 4578, 3401, 4104, 3749, 4457, 3734
+        ]
+      },
+      {
+        "name": "Dribbble",
+        "color": "dribbble",
+        "data": [722, 1866, 961, 1108, 1110, 561, 1753, 1815, 1985, 776, 859, 547, 1488, 766, 702, 621, 1599, 1372, 1620, 963, 759, 764, 739, 789, 1696, 1454, 1842, 734, 551, 1689, 1924, 1875, 908, 1675, 1541, 1953, 534, 502, 1524, 1867, 719, 1472, 1608, 1025, 889, 1150, 654, 1695, 1662, 1285, 1787]
+      }
+    ]
+  },
+  "mentions": {
+    "stacked": true,
+    "datetime": true,
+    "show-x": true,
+    "series": [
+      {
+        "name": "Web",
+        "data": [1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 2, 12, 5, 8, 22, 6, 8, 6, 4, 1, 8, 24, 29, 51, 40, 47, 23, 26, 50, 26, 41, 22, 46, 47, 81, 46, 6],
+        "color": "primary"
+      },
+      {
+        "name": "Social",
+        "data": [2, 5, 4, 3, 3, 1, 4, 7, 5, 1, 2, 5, 3, 2, 6, 7, 7, 1, 5, 5, 2, 12, 4, 6, 18, 3, 5, 2, 13, 15, 20, 47, 18, 15, 11, 10, 0],
+        "color": "primary",
+        "color-opacity": "80%"
+      },
+      {
+        "name": "Other",
+        "data": [2, 9, 1, 7, 8, 3, 6, 5, 5, 4, 6, 4, 1, 9, 3, 6, 7, 5, 2, 8, 4, 9, 1, 2, 6, 7, 5, 1, 8, 3, 2, 3, 4, 9, 7, 1, 6],
+        "color": "green",
+        "color-opacity": "80%"
+      }
+    ]
+  },
+  "completion-tasks": {
+    "categories": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "series": [
+      {
+        "name": "Tickets solved",
+        "data": [38, 44, 41, 52, 47, 21, 17]
+      }
+    ],
+    "name": "Bar chart"
+  },
+  "completion-tasks-2": { "extend": "completion-tasks", "type": "line", "name": "Line chart" },
+  "completion-tasks-3": { "extend": "completion-tasks", "type": "area", "name": "Area chart" },
+  "completion-tasks-4": {
+    "extend": "completion-tasks",
+    "stroke-curve": "straight",
+    "type": "line",
+    "name": "Straight line"
+  },
+  "completion-tasks-5": {
+    "extend": "completion-tasks",
+    "stroke-curve": "stepline",
+    "type": "line",
+    "name": "Stepped line"
+  },
+  "completion-tasks-6": {
+    "extend": "completion-tasks",
+    "type": "bar",
+    "horizontal": true,
+    "name": "Horizontal bars"
+  },
+  "completion-tasks-7": {
+    "extend": "completion-tasks",
+    "type": "line",
+    "datalabels": true,
+    "name": "Data labels"
+  },
+  "completion-tasks-8": {
+    "legend": true,
+    "type": "bar",
+    "categories": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "series": [
+      {
+        "name": "Solved",
+        "data": [38, 44, 41, 52, 47, 21, 17]
+      },
+      {
+        "name": "Reopened",
+        "color": "red",
+        "data": [5, 7, 4, 9, 6, 3, 2]
+      }
+    ],
+    "name": "Grouped bars"
+  },
+  "completion-tasks-9": { "extend": "completion-tasks-8", "stacked": true, "name": "Stacked bars" },
+  "cache-status": {
+    "type": "bar",
+    "stacked": true,
+    "legend": true,
+    "name": "Semantic colors",
+    "y-formatter": "thousands",
+    "categories": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "series": [
+      { "name": "Hit", "color": "success", "data": [18000, 19200, 21000, 20300, 22000, 16600, 15000] },
+      { "name": "Error", "color": "danger", "data": [4300, 4700, 5000, 5000, 5300, 4000, 3700] },
+      { "name": "Revalidated", "color": "info", "color-opacity": "40%", "data": [2700, 3000, 3200, 3100, 3400, 2500, 2300] },
+      { "name": "Expired", "color": "warning", "data": [1300, 1500, 1600, 1600, 1700, 1200, 1100] },
+      { "name": "Bypass", "color": "gray-300", "data": [700, 800, 900, 800, 900, 700, 600] }
+    ]
+  },
+  "completion-tasks-10": { "extend": "completion-tasks-8", "type": "area", "name": "Two areas" },
+  "completion-tasks-11": {
+    "extend": "completion-tasks-8",
+    "type": "area",
+    "stacked": true,
+    "name": "Stacked areas"
+  },
+  "tasks-overview": {
+    "type": "bar",
+    "categories": [
+      "Sprint 1",
+      "Sprint 2",
+      "Sprint 3",
+      "Sprint 4",
+      "Sprint 5",
+      "Sprint 6",
+      "Sprint 7",
+      "Sprint 8",
+      "Sprint 9",
+      "Sprint 10",
+      "Sprint 11",
+      "Sprint 12",
+      "Sprint 13",
+      "Sprint 14",
+      "Sprint 15",
+      "Sprint 16",
+      "Sprint 17",
+      "Sprint 18",
+      "Sprint 19",
+      "Sprint 20",
+      "Sprint 21",
+      "Sprint 22",
+      "Sprint 23",
+      "Sprint 24"
+    ],
+    "series": [
+      {
+        "name": "Story points",
+        "data": [44, 32, 48, 72, 60, 16, 44, 32, 78, 50, 68, 34, 26, 48, 72, 60, 84, 64, 74, 52, 62, 50, 32, 22]
+      }
+    ]
+  },
+  "campaigns": {
+    "legend": true,
+    "type": "radialBar",
+    "sparkline": true,
+    "series": [
+      { "name": "Delivered", "color": "primary", "data": 96 },
+      { "name": "Opened", "color": "primary", "color-opacity": "80%", "data": 48 },
+      { "name": "Clicked", "color": "primary", "color-opacity": "60%", "data": 14 }
+    ],
+    "name": "Email campaign"
+  },
+  "tasks": {
+    "legend": true,
+    "type": "line",
+    "categories": ["M", "T", "W", "T", "F", "S", "S", "M", "T", "W", "T", "F", "S", "S", "M", "T", "W"],
+    "hide-points": true,
+    "hide-tooltip": true,
+    "series": [
+      {
+        "name": "Opened",
+        "color": "primary",
+        "data": [12, 15, 9, 18, 24, 6, 4, 14, 31, 22, 17, 19, 8, 5, 16, 21, 13]
+      },
+      {
+        "name": "Closed",
+        "color": "lime",
+        "data": [8, 11, 12, 14, 19, 4, 3, 9, 26, 18, 21, 15, 6, 4, 12, 17, 15]
+      },
+      {
+        "name": "Reopened",
+        "color": "orange",
+        "data": [1, 2, 0, 3, 2, 0, 0, 1, 4, 2, 1, 3, 0, 1, 2, 1, 0]
+      }
+    ],
+    "name": "Issue activity"
+  },
+  "development-activity": {
+    "type": "area",
+    "hide-points": true,
+    "sparkline": true,
+    "datetime": true,
+    "series": [
+      {
+        "name": "Purchases",
+        "color": "primary",
+        "data": [3, 5, 4, 6, 7, 5, 6, 8, 24, 7, 12, 5, 6, 3, 8, 4, 14, 30, 17, 19, 15, 14, 25, 32, 40, 55, 60, 48, 52, 70]
+      }
+    ]
+  },
+  "uptime": {
+    "type": "area",
+    "datetime": true,
+    "series": [
+      {
+        "name": "Uptime",
+        "color": "primary",
+        "data": [
+          150, 160, 170, 161, 167, 162, 161, 152, 141, 144, 154, 166, 176, 187, 198, 210, 196, 207, 200, 187, 192, 204, 193, 204, 208, 196, 193, 178, 191, 204, 218, 211, 218, 216, 201, 197, 190, 179, 172, 158, 159, 147, 152, 152, 144, 137, 136, 123, 112, 99, 100, 95, 105, 116, 125, 124, 133, 129, 116, 119, 109, 114,
+          115, 111, 96, 104, 104, 102, 116, 126, 117, 130, 124, 126, 131, 143, 130, 116, 118, 122, 132, 126, 136, 123, 112, 116, 113, 113, 109, 99, 100, 95, 83, 79, 64, 79, 81, 94, 99, 97, 83, 71, 75, 69, 71, 75, 84, 90, 100, 96, 108, 102, 116, 112, 112, 102, 115, 120, 118, 118
+        ]
+      }
+    ]
+  },
+  "uptime-incidents": {
+    "type": "bar",
+    "y-max": 20,
+    "datetime": true,
+    "series": [
+      {
+        "name": "Uptime incidents",
+        "color": "red",
+        "data": [1, 2, 6, 3, 1, 1, 2, 5, 2, 5, 6, 2, 4, 3, 4, 5, 4, 3, 2, 1, 2, 0, 2, 1, 1]
+      }
+    ]
+  },
+  "line": {
+    "legend": true,
+    "type": "line",
+    "stroke-curve": "straight",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "series": [
+      {
+        "name": "Starter",
+        "color": "orange",
+        "data": [12, 14, 15, 17, 18, 21]
+      },
+      {
+        "name": "Pro",
+        "color": "primary",
+        "data": [31, 34, 38, 41, 45, 52]
+      },
+      {
+        "name": "Enterprise",
+        "color": "green",
+        "data": [48, 52, 51, 58, 64, 71]
+      }
+    ],
+    "name": "Revenue by plan"
+  },
+  "line-stroke": {
+    "legend": true,
+    "type": "line",
+    "stroke-curve": "straight",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+    "series": [
+      {
+        "name": "Organic",
+        "color": "primary",
+        "data": [120, 138, 152, 149, 167, 181, 192]
+      },
+      {
+        "name": "Paid",
+        "color": "orange",
+        "data": [80, 92, 88, 101, 96, 110, 118]
+      },
+      {
+        "name": "Referral",
+        "color": "green",
+        "data": [35, 41, 38, 47, 52, 49, 58]
+      }
+    ],
+    "name": "Signups by channel",
+    "stroke-dash": [0, 4, 4]
+  },
+  "stepline": {
+    "type": "line",
+    "stroke-curve": "stepline",
+    "series": [
+      {
+        "name": "Instances",
+        "color": "orange",
+        "data": [2, 2, 3, 5, 5, 4, 6, 8, 8, 6, 5]
+      }
+    ],
+    "name": "Running instances",
+    "categories": ["00:00", "02:00", "04:00", "06:00", "08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00"]
+  },
+  "temperature": {
+    "legend": true,
+    "type": "line",
+    "show-data-labels": true,
+    "show-markers": true,
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "series": [
+      {
+        "name": "Tokyo",
+        "color": "primary",
+        "data": [5.8, 6.5, 9.7, 14.8, 19.2, 22.4, 26.1, 27.6, 24.3, 18.7, 13.4, 8.6]
+      },
+      {
+        "name": "London",
+        "color": "green",
+        "data": [5.2, 5.4, 7.3, 9.8, 13.1, 16.2, 18.7, 18.4, 15.9, 12.3, 8.4, 5.9]
+      }
+    ],
+    "name": "Average temperature"
+  },
+  "area": {
+    "legend": true,
+    "type": "area",
+    "stroke-curve": "straight",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "series": [
+      {
+        "name": "Mobile",
+        "color": "primary",
+        "data": [5100, 5400, 5900, 6300, 6800, 7200]
+      },
+      {
+        "name": "Desktop",
+        "color": "pink",
+        "data": [4200, 4100, 3900, 4000, 3800, 3700]
+      }
+    ],
+    "name": "Sessions by device"
+  },
+  "area-spline": {
+    "legend": true,
+    "type": "area",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "series": [
+      {
+        "name": "Egress",
+        "color": "primary",
+        "data": [12, 15, 14, 18, 21, 24]
+      },
+      {
+        "name": "Ingress",
+        "color": "pink",
+        "data": [7, 8, 9, 9, 11, 13]
+      }
+    ],
+    "name": "Bandwidth usage"
+  },
+  "area-spline-stacked": {
+    "legend": true,
+    "type": "area",
+    "stacked": true,
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "series": [
+      {
+        "name": "Media",
+        "color": "primary",
+        "data": [140, 152, 161, 170, 182, 195]
+      },
+      {
+        "name": "Backups",
+        "color": "pink",
+        "data": [90, 95, 101, 110, 118, 126]
+      }
+    ],
+    "name": "Storage by bucket"
+  },
+  "spline": {
+    "legend": true,
+    "type": "line",
+    "categories": ["00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00"],
+    "series": [
+      {
+        "name": "Web servers",
+        "color": "primary",
+        "data": [18, 14, 21, 46, 62, 58, 41, 27]
+      },
+      {
+        "name": "Workers",
+        "color": "green",
+        "data": [34, 29, 26, 38, 51, 47, 39, 36]
+      }
+    ],
+    "name": "CPU load"
+  },
+  "pie": {
+    "type": "pie",
+    "show-data-labels": true,
+    "sparkline": true,
+    "series": [
+      {
+        "name": "A",
+        "color": "primary",
+        "data": 63
+      },
+      {
+        "name": "B",
+        "color": "primary",
+        "color-opacity": "80%",
+        "data": 44
+      },
+      {
+        "name": "C",
+        "color": "primary",
+        "color-opacity": "60%",
+        "data": 12
+      },
+      {
+        "name": "D",
+        "color": "primary",
+        "color-opacity": "40%",
+        "data": 14
+      }
+    ]
+  },
+  "donut": {
+    "type": "donut",
+    "sparkline": true,
+    "series": [
+      {
+        "name": "Maximum",
+        "color": "green",
+        "data": 63
+      },
+      {
+        "name": "Minimum",
+        "color": "green",
+        "color-opacity": "80%",
+        "data": 37
+      }
+    ]
+  },
+  "traffic-sources-donut": {
+    "type": "donut",
+    "legend": true,
+    "series": [
+      { "name": "Organic search", "color": "azure", "data": 38 },
+      { "name": "Direct", "color": "primary", "data": 27 },
+      { "name": "Social media", "color": "purple", "data": 18 },
+      { "name": "Referral", "color": "orange", "data": 12 },
+      { "name": "Email", "color": "green", "data": 5 }
+    ]
+  },
+  "activity-heatmap": {
+    "type": "heatmap",
+    "color": "green",
+    "hide-tooltip": false,
+    "series": [
+      {
+        "name": "Mon",
+        "heatmap-data": [
+          { "x": "W1", "y": 2 },
+          { "x": "W2", "y": 4 },
+          { "x": "W3", "y": 0 },
+          { "x": "W4", "y": 6 },
+          { "x": "W5", "y": 3 },
+          { "x": "W6", "y": 8 },
+          { "x": "W7", "y": 1 },
+          { "x": "W8", "y": 5 },
+          { "x": "W9", "y": 7 },
+          { "x": "W10", "y": 2 }
+        ]
+      },
+      {
+        "name": "Tue",
+        "heatmap-data": [
+          { "x": "W1", "y": 5 },
+          { "x": "W2", "y": 1 },
+          { "x": "W3", "y": 7 },
+          { "x": "W4", "y": 3 },
+          { "x": "W5", "y": 9 },
+          { "x": "W6", "y": 2 },
+          { "x": "W7", "y": 6 },
+          { "x": "W8", "y": 0 },
+          { "x": "W9", "y": 4 },
+          { "x": "W10", "y": 8 }
+        ]
+      },
+      {
+        "name": "Wed",
+        "heatmap-data": [
+          { "x": "W1", "y": 8 },
+          { "x": "W2", "y": 6 },
+          { "x": "W3", "y": 2 },
+          { "x": "W4", "y": 9 },
+          { "x": "W5", "y": 4 },
+          { "x": "W6", "y": 1 },
+          { "x": "W7", "y": 7 },
+          { "x": "W8", "y": 3 },
+          { "x": "W9", "y": 5 },
+          { "x": "W10", "y": 0 }
+        ]
+      },
+      {
+        "name": "Thu",
+        "heatmap-data": [
+          { "x": "W1", "y": 1 },
+          { "x": "W2", "y": 9 },
+          { "x": "W3", "y": 4 },
+          { "x": "W4", "y": 2 },
+          { "x": "W5", "y": 7 },
+          { "x": "W6", "y": 5 },
+          { "x": "W7", "y": 0 },
+          { "x": "W8", "y": 8 },
+          { "x": "W9", "y": 3 },
+          { "x": "W10", "y": 6 }
+        ]
+      },
+      {
+        "name": "Fri",
+        "heatmap-data": [
+          { "x": "W1", "y": 6 },
+          { "x": "W2", "y": 3 },
+          { "x": "W3", "y": 9 },
+          { "x": "W4", "y": 1 },
+          { "x": "W5", "y": 5 },
+          { "x": "W6", "y": 7 },
+          { "x": "W7", "y": 4 },
+          { "x": "W8", "y": 2 },
+          { "x": "W9", "y": 8 },
+          { "x": "W10", "y": 1 }
+        ]
+      },
+      {
+        "name": "Sat",
+        "heatmap-data": [
+          { "x": "W1", "y": 0 },
+          { "x": "W2", "y": 2 },
+          { "x": "W3", "y": 1 },
+          { "x": "W4", "y": 3 },
+          { "x": "W5", "y": 0 },
+          { "x": "W6", "y": 2 },
+          { "x": "W7", "y": 1 },
+          { "x": "W8", "y": 0 },
+          { "x": "W9", "y": 2 },
+          { "x": "W10", "y": 1 }
+        ]
+      },
+      {
+        "name": "Sun",
+        "heatmap-data": [
+          { "x": "W1", "y": 1 },
+          { "x": "W2", "y": 0 },
+          { "x": "W3", "y": 2 },
+          { "x": "W4", "y": 0 },
+          { "x": "W5", "y": 1 },
+          { "x": "W6", "y": 3 },
+          { "x": "W7", "y": 0 },
+          { "x": "W8", "y": 1 },
+          { "x": "W9", "y": 0 },
+          { "x": "W10", "y": 2 }
+        ]
+      }
+    ]
+  },
+  "scatter": {
+    "legend": true,
+    "type": "scatter",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "series": [
+      {
+        "name": "Desktop",
+        "color": "primary",
+        "data": [1.8, 1.9, 1.6, 1.5, 1.4, 1.3]
+      },
+      {
+        "name": "Mobile",
+        "color": "pink",
+        "data": [3.4, 3.2, 3.3, 2.9, 2.8, 2.6]
+      }
+    ],
+    "name": "Page load time"
+  },
+  "combination": {
+    "type": "line",
+    "legend": true,
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+    "stroke-width": [0, 0, 2, 2],
+    "series": [
+      {
+        "name": "Paid spend",
+        "type": "column",
+        "color": "primary",
+        "data": [120, 140, 130, 160, 175, 190]
+      },
+      {
+        "name": "Content spend",
+        "type": "column",
+        "color": "azure",
+        "data": [60, 70, 65, 80, 90, 100]
+      },
+      {
+        "name": "Leads",
+        "type": "line",
+        "color": "green",
+        "data": [200, 230, 215, 260, 290, 310]
+      },
+      {
+        "name": "Trials",
+        "type": "line",
+        "color": "pink",
+        "data": [90, 105, 98, 120, 135, 150]
+      }
+    ],
+    "name": "Spend and leads"
+  },
+  "radar": {
+    "type": "radar",
+    "legend": true,
+    "categories": ["Support", "Security", "Speed", "Storage", "Integrations", "Price"],
+    "series": [
+      {
+        "name": "Pro",
+        "color": "primary",
+        "data": [70, 60, 80, 50, 65, 90]
+      },
+      {
+        "name": "Enterprise",
+        "color": "green",
+        "data": [95, 90, 85, 100, 90, 40]
+      }
+    ],
+    "name": "Plan comparison"
+  },
+  "radar-large": {
+    "extend": "radar",
+    "legend": false,
+    "radar-size": 115
+  },
+  "polar-area": {
+    "type": "polarArea",
+    "legend": true,
+    "series": [
+      { "name": "North America", "color": "primary", "data": 42 },
+      { "name": "Europe", "color": "primary", "color-opacity": "80%", "data": 33 },
+      { "name": "Asia", "color": "primary", "color-opacity": "60%", "data": 21 },
+      { "name": "South America", "color": "primary", "color-opacity": "40%", "data": 14 },
+      { "name": "Africa", "color": "primary", "color-opacity": "20%", "data": 9 }
+    ],
+    "name": "Sales by region"
+  },
+  "treemap": {
+    "type": "treemap",
+    "series": [
+      {
+        "name": "Storage",
+        "color": "primary",
+        "treemap-data": [
+          { "x": "Documents", "y": 218 },
+          { "x": "Photos", "y": 149 },
+          { "x": "Videos", "y": 184 },
+          { "x": "Backups", "y": 55 },
+          { "x": "Music", "y": 84 },
+          { "x": "Archives", "y": 31 },
+          { "x": "Other", "y": 70 }
+        ]
+      }
+    ],
+    "name": "Storage by folder"
+  },
+  "timeline": {
+    "type": "rangeBar",
+    "horizontal": true,
+    "datetime": true,
+    "series": [
+      {
+        "name": "Roadmap",
+        "color": "primary",
+        "range-data": [
+          {
+            "x": "Research",
+            "y": [1767571200000, 1770681600000]
+          },
+          {
+            "x": "Design",
+            "y": [1769904000000, 1773532800000]
+          },
+          {
+            "x": "Development",
+            "y": [1772323200000, 1779235200000]
+          },
+          {
+            "x": "Testing",
+            "y": [1777593600000, 1781049600000]
+          },
+          {
+            "x": "Launch",
+            "y": [1780272000000, 1782345600000]
+          }
+        ]
+      }
+    ],
+    "name": "Release roadmap"
+  },
+  "box-plot": {
+    "type": "boxPlot",
+    "series": [
+      {
+        "name": "Response time",
+        "color": "primary",
+        "box-data": [
+          {
+            "x": "Jan",
+            "y": [54, 66, 69, 75, 88]
+          },
+          {
+            "x": "Feb",
+            "y": [43, 65, 69, 76, 81]
+          },
+          {
+            "x": "Mar",
+            "y": [31, 39, 45, 51, 59]
+          },
+          {
+            "x": "Apr",
+            "y": [39, 46, 55, 65, 71]
+          },
+          {
+            "x": "May",
+            "y": [29, 31, 35, 39, 44]
+          },
+          {
+            "x": "Jun",
+            "y": [41, 49, 58, 61, 67]
+          }
+        ]
+      }
+    ],
+    "name": "API response times"
+  },
+  "bubble": {
+    "type": "bubble",
+    "legend": true,
+    "series": [
+      {
+        "name": "Search",
+        "color": "primary",
+        "bubble-data": [
+          { "x": 12, "y": 86, "z": 24 },
+          { "x": 28, "y": 132, "z": 38 },
+          { "x": 45, "y": 118, "z": 19 },
+          { "x": 63, "y": 174, "z": 31 }
+        ]
+      },
+      {
+        "name": "Social",
+        "color": "green",
+        "bubble-data": [
+          { "x": 9, "y": 54, "z": 29 },
+          { "x": 21, "y": 71, "z": 14 },
+          { "x": 38, "y": 96, "z": 41 },
+          { "x": 52, "y": 83, "z": 22 }
+        ]
+      }
+    ],
+    "name": "Campaign performance"
+  },
+  "funnel": {
+    "type": "bar",
+    "funnel": true,
+    "datalabels": true,
+    "legend": true,
+    "categories": ["Visitors", "Sign-ups", "Trials", "Demos", "Customers"],
+    "colors": ["var(--tblr-primary)", "var(--tblr-azure)", "var(--tblr-cyan)", "var(--tblr-teal)", "var(--tblr-green)"],
+    "series": [
+      {
+        "name": "Pipeline",
+        "data": [1380, 920, 610, 380, 190]
+      }
+    ],
+    "name": "Signup funnel"
+  },
+  "revenue-vs-orders": {
+    "type": "line",
+    "legend": true,
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "stroke-width": [0, 2],
+    "y-axes": [
+      { "series-name": "Revenue", "title": "Revenue ($)" },
+      { "series-name": "Orders", "title": "Orders", "opposite": true }
+    ],
+    "series": [
+      {
+        "name": "Revenue",
+        "type": "column",
+        "color": "primary",
+        "data": [12400, 14100, 13200, 16800, 18300, 17600, 19400, 21200, 20100, 23400, 25100, 27800]
+      },
+      {
+        "name": "Orders",
+        "type": "line",
+        "color": "green",
+        "data": [186, 204, 197, 242, 261, 253, 274, 298, 286, 321, 340, 372]
+      }
+    ]
+  },
+  "revenue-vs-orders-plain": {
+    "extend": "revenue-vs-orders",
+    "y-axes": [{ "series-name": "Revenue" }, { "series-name": "Orders", "opposite": true }]
+  },
+  "uptime-sla": {
+    "type": "line",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "stroke-curve": "straight",
+    "show-markers": true,
+    "y-axes": [{ "title": "Uptime (%)", "min": 99, "max": 100 }],
+    "annotations-y": [{ "value": 99.9, "label": "SLA 99.9%", "color": "red" }],
+    "series": [
+      {
+        "name": "Uptime",
+        "color": "primary",
+        "data": [99.98, 99.95, 99.87, 99.99, 100, 99.92, 99.76, 99.94, 99.97, 99.99, 99.91, 99.96]
+      }
+    ]
+  },
+  "sales-with-markers": {
+    "type": "area",
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "annotations-x": [
+      { "value": "Apr", "label": "Spring campaign", "color": "azure" },
+      { "value": "Sep", "label": "Relaunch", "color": "purple" }
+    ],
+    "series": [
+      {
+        "name": "Sales",
+        "color": "primary",
+        "data": [128, 141, 137, 189, 232, 214, 198, 205, 264, 301, 288, 312]
+      }
+    ]
+  },
+  "traffic-zoom": {
+    "type": "area",
+    "datetime": true,
+    "start-date": "2026-01-01",
+    "toolbar": true,
+    "series": [
+      {
+        "name": "Sessions",
+        "color": "primary",
+        "data": [
+          1847, 1768, 1792, 2003, 2081, 2099, 2261, 2441, 2268, 2483, 2367, 2245, 2458, 2278, 2236, 2044, 1871, 1950, 2134, 2270, 2377, 2200, 2255, 2260, 2141, 2312, 2137, 2270, 2128, 1935, 2032, 2138, 2297, 2436, 2583, 2691, 2502, 2441, 2300, 2373, 2329, 2251, 2379, 2307, 2470, 2500, 2380, 2370, 2408, 2378, 2299,
+          2448, 2496, 2441, 2538, 2581, 2544, 2581, 2477, 2309, 2354, 2370, 2357, 2277, 2263, 2092, 2212, 2093, 1940, 2093, 2143, 2198, 2385, 2286, 2284, 2245, 2306, 2388, 2281, 2158, 2213, 2009, 1924, 2047, 2164, 2142, 2092, 2102, 2005, 1923
+        ]
+      }
+    ]
+  },
+  "traffic-brush": {
+    "type": "line",
+    "datetime": true,
+    "start-date": "2026-01-01",
+    "brush-target": "traffic-zoom",
+    "selection-from": 1770681600000,
+    "selection-to": 1773273600000,
+    "series": [
+      {
+        "name": "Sessions",
+        "color": "primary",
+        "data": [
+          1847, 1768, 1792, 2003, 2081, 2099, 2261, 2441, 2268, 2483, 2367, 2245, 2458, 2278, 2236, 2044, 1871, 1950, 2134, 2270, 2377, 2200, 2255, 2260, 2141, 2312, 2137, 2270, 2128, 1935, 2032, 2138, 2297, 2436, 2583, 2691, 2502, 2441, 2300, 2373, 2329, 2251, 2379, 2307, 2470, 2500, 2380, 2370, 2408, 2378, 2299,
+          2448, 2496, 2441, 2538, 2581, 2544, 2581, 2477, 2309, 2354, 2370, 2357, 2277, 2263, 2092, 2212, 2093, 1940, 2093, 2143, 2198, 2385, 2286, 2284, 2245, 2306, 2388, 2281, 2158, 2213, 2009, 1924, 2047, 2164, 2142, 2092, 2102, 2005, 1923
+        ]
+      }
+    ]
+  },
+  "synced-visits": {
+    "type": "area",
+    "datetime": true,
+    "start-date": "2026-06-01",
+    "group": "traffic",
+    "series": [
+      {
+        "name": "Visits",
+        "color": "primary",
+        "data": [4255, 4019, 4307, 4606, 4506, 4306, 4249, 4435, 4453, 4262, 4336, 4765, 4977, 4764, 4718, 4468, 4395, 4584, 4689, 4792, 4565, 4863, 4547, 4930, 5310, 4890, 5352, 5716, 5599, 5718]
+      }
+    ]
+  },
+  "synced-signups": {
+    "type": "line",
+    "datetime": true,
+    "start-date": "2026-06-01",
+    "group": "traffic",
+    "series": [
+      {
+        "name": "Sign-ups",
+        "color": "green",
+        "data": [191, 185, 207, 197, 192, 204, 224, 238, 214, 223, 243, 235, 255, 232, 249, 258, 231, 259, 257, 283, 302, 308, 297, 303, 312, 316, 319, 308, 292, 309]
+      }
+    ]
+  },
+  "synced-revenue": {
+    "type": "bar",
+    "datetime": true,
+    "start-date": "2026-06-01",
+    "group": "traffic",
+    "series": [
+      {
+        "name": "Revenue",
+        "color": "azure",
+        "data": [991, 1032, 951, 841, 834, 957, 1027, 990, 944, 1016, 1023, 956, 864, 765, 686, 807, 791, 715, 720, 793, 778, 759, 827, 889, 783, 883, 915, 1028, 1164, 1090]
+      }
+    ]
+  },
+  "revenue-bg": {
+    "type": "area",
+    "datetime": true,
+    "sparkline": true,
+    "series": [
+      {
+        "name": "Profits",
+        "data": [37, 35, 44, 28, 36, 24, 65, 31, 37, 39, 62, 51, 35, 41, 35, 27, 93, 53, 61, 27, 54, 43, 19, 46, 39, 62, 51, 35, 41, 67]
+      }
+    ]
+  },
+  "crm-mrr-overview": {
+    "type": "line",
+    "stroke-width": [3, 2],
+    "stroke-dash": [0, 6],
+    "series": [
+      {
+        "name": "This year",
+        "color": "primary",
+        "data": [62, 65, 64, 71, 75, 73, 79, 84, 82, 90, 94, 101]
+      },
+      {
+        "name": "Last year",
+        "color": "secondary",
+        "data": [56, 58, 57, 63, 66, 65, 68, 72, 73, 77, 79, 83]
+      }
+    ],
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "y-max": 110
+  },
+  "sales-overview": {
+    "type": "line",
+    "stroke-width": [3, 2],
+    "stroke-dash": [0, 6],
+    "series": [
+      {
+        "name": "This year",
+        "color": "primary",
+        "data": [180, 195, 210, 205, 225, 240, 235, 260, 255, 270, 285, 300]
+      },
+      {
+        "name": "Last year",
+        "color": "secondary",
+        "data": [150, 160, 168, 172, 180, 188, 190, 200, 205, 210, 215, 225]
+      }
+    ],
+    "categories": ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    "y-max": 320
+  },
+  "new-clients": {
+    "type": "line",
+    "datetime": true,
+    "sparkline": true,
+    "stroke-width": [2, 1],
+    "stroke-dash": [0, 3],
+    "series": [
+      {
+        "name": "May",
+        "color": "primary",
+        "data": [37, 35, 44, 28, 36, 24, 65, 31, 37, 39, 62, 51, 35, 41, 35, 27, 93, 53, 61, 27, 54, 43, 4, 46, 39, 62, 51, 35, 41, 67]
+      },
+      {
+        "name": "April",
+        "color": "gray-600",
+        "data": [93, 54, 51, 24, 35, 35, 31, 67, 19, 43, 28, 36, 62, 61, 27, 39, 35, 41, 27, 35, 51, 46, 62, 37, 44, 53, 41, 65, 39, 37]
+      }
+    ]
+  },
+  "active-users": {
+    "type": "bar",
+    "datetime": true,
+    "sparkline": true,
+    "series": [
+      {
+        "name": "Profits",
+        "data": [37, 35, 44, 28, 36, 24, 65, 31, 37, 39, 62, 51, 35, 41, 35, 27, 93, 53, 61, 27, 54, 43, 19, 46, 39, 62, 51, 35, 41, 67]
+      }
+    ]
+  },
+  "traffic-in": {
+    "type": "bar",
+    "sparkline": true,
+    "color": "green",
+    "series": [
+      {
+        "name": "Inbound",
+        "data": [14, -3, 14, 9, 4, 6, -2, 7, 7, 14, 10, 9, 5, -1]
+      }
+    ]
+  },
+  "traffic-out": {
+    "type": "bar",
+    "sparkline": true,
+    "color": "red",
+    "series": [
+      {
+        "name": "Outbound",
+        "data": [-3, 7, 9, 14, 4, 5, 3, -1, 7, 10, 14, 14, -2, 6]
+      }
+    ]
+  },
+  "dashboard-crypto-candlestick": {
+    "type": "candlestick",
+    "height": 29,
+    "toolbar": true,
+    "datetime": true,
+    "y-tooltip": true,
+    "series": [
+      {
+        "name": "LTC/BTC",
+        "candlestick-data": [
+          {
+            "x": 1735686000000,
+            "y": [98803.1, 102306.14, 88978.24, 94328.03]
+          },
+          {
+            "x": 1738278000000,
+            "y": [95236.1, 97032.03, 87375.16, 96251.77]
+          },
+          {
+            "x": 1740870000000,
+            "y": [96487.56, 103797.77, 90697.28, 90697.28]
+          },
+          {
+            "x": 1743458400000,
+            "y": [91806.76, 94895.54, 87431.18, 87431.18]
+          },
+          {
+            "x": 1746050400000,
+            "y": [87011.25, 93211.62, 84356.3, 87282.02]
+          },
+          {
+            "x": 1748642400000,
+            "y": [88933.8, 94105.65, 87086.95, 89538.17]
+          },
+          {
+            "x": 1751234400000,
+            "y": [90270.85, 95138.57, 88785.87, 92076.59]
+          },
+          {
+            "x": 1753826400000,
+            "y": [91635.08, 95329.73, 88139.43, 93398.3]
+          },
+          {
+            "x": 1756418400000,
+            "y": [94084.03, 96110.64, 90758.23, 92847.27]
+          },
+          {
+            "x": 1759010400000,
+            "y": [94427.13, 104031.87, 91181.21, 91387.19]
+          },
+          {
+            "x": 1761606000000,
+            "y": [89676.79, 96432.19, 86003.07, 91270.33]
+          },
+          {
+            "x": 1764198000000,
+            "y": [90221.19, 92256.21, 87250.08, 90572.57]
+          },
+          {
+            "x": 1766790000000,
+            "y": [91467.48, 99939.37, 84023.53, 91412.42]
+          },
+          {
+            "x": 1769382000000,
+            "y": [92347.68, 102495.71, 84694.68, 86861.46]
+          },
+          {
+            "x": 1771974000000,
+            "y": [86450.15, 97703.82, 73654.73, 89304.96]
+          },
+          {
+            "x": 1774566000000,
+            "y": [89954.07, 93720.75, 83099.84, 86765.37]
+          },
+          {
+            "x": 1777154400000,
+            "y": [85041.33, 93162.71, 79493.01, 80950.82]
+          },
+          {
+            "x": 1779746400000,
+            "y": [81356.55, 89872.84, 75889.88, 84397.86]
+          },
+          {
+            "x": 1782338400000,
+            "y": [84500.33, 86553.16, 81499.11, 86553.16]
+          },
+          {
+            "x": 1784930400000,
+            "y": [87615.26, 93796.77, 81616.41, 87524.49]
+          },
+          {
+            "x": 1787522400000,
+            "y": [86016.31, 91621.26, 80661.81, 83468.77]
+          },
+          {
+            "x": 1790114400000,
+            "y": [84712.23, 90825.8, 81702.56, 86377.51]
+          },
+          {
+            "x": 1792706400000,
+            "y": [86028.52, 91660.63, 77064.28, 83253.51]
+          }
+        ]
+      }
+    ]
+  }
+}

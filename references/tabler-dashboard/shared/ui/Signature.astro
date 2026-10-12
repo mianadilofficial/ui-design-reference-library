@@ -1,0 +1,86 @@
+---
+import Icon from './Icon.astro'
+import CaptureScript from '../components/CaptureScript.astro'
+
+interface Props {
+  id: string
+  class?: string
+  clear?: boolean
+  width?: number
+  height?: number
+  event?: string
+}
+
+const { id, class: className, clear = false, width = 400, height = 400, event = 'DOMContentLoaded' } = Astro.props
+
+const signatureClass = ['signature position-relative', className]
+const signatureKey = id
+const canvasId = `signature-${id}`
+const clearId = `signature-${id}-clear`
+---
+
+<div class:list={signatureClass}>
+  {
+    clear && (
+      <div class="position-absolute top-0 end-0 p-2">
+        <button type="button" class="btn btn-icon" id={clearId} title="Clear signature" aria-label="Clear signature" data-bs-toggle="tooltip">
+          <Icon name="trash" />{' '}
+        </button>
+      </div>
+    )
+  }
+  <canvas id={canvasId} width={width} height={height} class="signature-canvas"></canvas>
+</div>
+<CaptureScript>
+  <!-- BEGIN SIGNATURE PAD -->
+  <script is:inline define:vars={{ signatureKey, canvasId, clearId, clear, event }}>
+    window.tabler_signature ??= {}
+
+    function resizeCanvas(canvas, signaturePad) {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1)
+
+      canvas.width = canvas.offsetWidth * ratio
+      canvas.height = canvas.offsetHeight * ratio
+      canvas.getContext('2d').scale(ratio, ratio)
+      signaturePad.fromData(signaturePad.toData())
+    }
+
+    function initSignature() {
+      const canvas = document.getElementById(canvasId)
+
+      if (!canvas) {
+        return
+      }
+
+      let signaturePad = window.tabler_signature[signatureKey]
+
+      if (!signaturePad) {
+        signaturePad = new SignaturePad(canvas, {
+          backgroundColor: 'transparent',
+          penColor: getComputedStyle(canvas).color,
+        })
+
+        window.tabler_signature[signatureKey] = signaturePad
+
+        if (clear) {
+          document.getElementById(clearId)?.addEventListener('click', function () {
+            signaturePad.clear()
+          })
+        }
+
+        window.addEventListener('resize', function () {
+          resizeCanvas(canvas, signaturePad)
+        })
+      }
+
+      resizeCanvas(canvas, signaturePad)
+    }
+
+    if (event === 'DOMContentLoaded') {
+      document.readyState !== 'loading' ? initSignature() : document.addEventListener('DOMContentLoaded', initSignature, { once: true })
+    } else {
+      document.addEventListener(event, initSignature)
+    }
+  </script>
+  <!-- END SIGNATURE PAD -->
+</CaptureScript>

@@ -1,0 +1,96 @@
+// Next batch — self-contained helper functions from scss/mixins/_functions.scss
+// that need no project config (arguments passed inline). Covers colour channel
+// extraction, alpha flattening, percentage coercion, the transparent/SVG string
+// builders and the higher-order `map-loop`.
+//
+// Some functions return a `calculation`, an unquoted `color-mix(...)` string, or
+// a `url(...)` token; those are asserted through `meta.inspect(...)` so the
+// comparison is against the exact rendered output.
+
+@use 'sass:meta';
+@use '../mixins/functions' as *;
+
+@include describe('to-rgb') {
+  @include it('returns the comma-separated rgb channels') {
+    @include assert-equal(to-rgb(#ff0000), (255, 0, 0));
+    @include assert-equal(to-rgb(#123456), (18, 52, 86));
+  }
+}
+
+@include describe('opaque') {
+  @include it('flattens a translucent foreground over the background') {
+    @include assert-equal(opaque(#fff, rgba(#000, 0.5)), rgb(127.5, 127.5, 127.5));
+  }
+
+  @include it('returns the foreground unchanged when it is fully opaque') {
+    @include assert-equal(opaque(#fff, #000), black);
+  }
+}
+
+@include describe('to-percentage') {
+  @include it('converts a unitless number to a percentage') {
+    @include assert-equal(to-percentage(0.5), 50%);
+  }
+
+  @include it('passes a value that already has a unit straight through') {
+    @include assert-equal(to-percentage(10px), 10px);
+  }
+
+  @include it('passes a calc() expression straight through') {
+    @include assert-equal(meta.inspect(to-percentage(calc(var(--x) * 100%))), 'calc(var(--x) * 100%)');
+  }
+}
+
+@include describe('color-transparent') {
+  @include it('returns the colour untouched when alpha is 1') {
+    @include assert-equal(color-transparent(#f00, 1), #f00);
+  }
+
+  @include it('returns the colour untouched when alpha is 100%') {
+    @include assert-equal(color-transparent(#f00, 100%), #f00);
+  }
+
+  @include it('builds a color-mix() with the alpha as a percentage otherwise') {
+    @include assert-equal(meta.inspect(color-transparent(#f00, 0.5)), 'color-mix(in oklab, #f00 50%, transparent)');
+  }
+
+  @include it('accepts a percentage alpha and a custom property colour') {
+    @include assert-equal(meta.inspect(color-transparent(var(--primary), 40%)), 'color-mix(in oklab, var(--primary) 40%, transparent)');
+  }
+
+  @include it('passes a calc() alpha through so opacity can come from a custom property') {
+    @include assert-equal(meta.inspect(color-transparent(var(--primary), calc(var(--bg-opacity) * 100%))), 'color-mix(in oklab, var(--primary) calc(var(--bg-opacity) * 100%), transparent)');
+  }
+
+  @include it('mixes against a custom background instead of transparent') {
+    @include assert-equal(meta.inspect(color-transparent(var(--primary), 0.16, var(--bg-surface))), 'color-mix(in oklab, var(--primary) 16%, var(--bg-surface))');
+  }
+}
+
+@include describe('focus-ring-color') {
+  @include it('mixes with the page background, stronger in dark mode') {
+    @include assert-equal(meta.inspect(focus-ring-color(var(--primary))), 'light-dark(color-mix(in oklab, var(--primary) calc(var(--focus-ring-opacity) * 100%), var(--body-bg)), color-mix(in oklab, var(--primary) calc(var(--focus-ring-opacity-dark) * 100%), var(--body-bg)))');
+  }
+}
+
+@include describe('map-loop') {
+  // Applies a module-level function (resolved by name via meta.get-function) to
+  // every value in the map. `to-percentage` lives in the same module, so it
+  // resolves correctly.
+  @include it('maps every value through the named function') {
+    @include assert-equal(
+      map-loop(
+        (
+          a: 0.5,
+          b: 0.25,
+        ),
+        'to-percentage',
+        '$value'
+      ),
+      (
+        a: 50%,
+        b: 25%,
+      )
+    );
+  }
+}

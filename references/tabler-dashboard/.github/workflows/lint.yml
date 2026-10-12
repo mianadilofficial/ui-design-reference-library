@@ -1,0 +1,30 @@
+name: Lint
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.changeset/**'
+      - '.github/release-notes/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '*.md'
+      - 'LICENSE'
+  push:
+    branches:
+      - dev
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: Set up the workspace
+        uses: ./.github/actions/setup
+
+      - name: Lint
+        run: pnpm run lint

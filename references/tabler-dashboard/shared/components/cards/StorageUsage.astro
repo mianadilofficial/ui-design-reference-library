@@ -1,0 +1,21 @@
+---
+import LegendList from '../../ui/LegendList.astro'
+import Legend from '../../ui/Legend.astro'
+---
+
+<div class="card">
+  <div class="card-body">
+    <p class="mb-3">Using Storage <strong>5760 MB </strong>of 8 GB</p>
+    <div class="progress progress-separated mb-3">
+      <div class="progress-bar bg-primary" role="progressbar" style="width: 44%" aria-label="Regular"></div>
+      <div class="progress-bar bg-info" role="progressbar" style="width: 19%" aria-label="System"></div>
+      <div class="progress-bar bg-success" role="progressbar" style="width: 9%" aria-label="Shared"></div>
+    </div>
+    <LegendList>
+      <Legend color="primary" text="Regular" value="3520MB" />
+      <Legend color="info" text="System" value="1520MB" />
+      <Legend color="success" text="Shared" value="720MB" />
+      <Legend text="Free" value="2240MB" />
+    </LegendList>
+  </div>
+</div>

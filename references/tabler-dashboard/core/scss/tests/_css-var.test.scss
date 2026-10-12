@@ -1,0 +1,16 @@
+// Tests for `rgba-css-var()` in scss/mixins/_functions.scss. A plain `@use` of
+// the functions module is enough — no fixtures. It emits unprefixed names: the
+// `--tblr-` prefix is added later, by the css pipeline (.build/css-var-prefix.ts).
+
+@use 'sass:meta';
+@use '../mixins/functions' as *;
+
+@include describe('rgba-css-var') {
+  @include it('builds a color-mix() from the identifier and target opacity') {
+    @include assert-equal(meta.inspect(rgba-css-var('primary', 'bg')), 'color-mix(in oklab, var(--primary) calc(var(--bg-opacity) * 100%), transparent)');
+  }
+
+  @include it('special-cases the body background') {
+    @include assert-equal(meta.inspect(rgba-css-var('body', 'bg')), 'color-mix(in oklab, var(--body-bg) calc(var(--bg-opacity) * 100%), transparent)');
+  }
+}

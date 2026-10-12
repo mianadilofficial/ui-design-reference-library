@@ -1,0 +1,38 @@
+name: Bundlewatch
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.changeset/**'
+      - '.github/release-notes/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '*.md'
+      - 'LICENSE'
+  push:
+    branches:
+      - main
+      - dev
+
+permissions:
+  contents: read
+
+env:
+  FORCE_COLOR: 2
+
+jobs:
+  bundlewatch:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: Set up the workspace
+        uses: ./.github/actions/setup
+
+      - name: Run bundlewatch
+        run: pnpm run bundlewatch
+        env:
+          BUNDLEWATCH_GITHUB_TOKEN: "${{ secrets.BUNDLEWATCH_GITHUB_TOKEN }}"
+          CI_BRANCH_BASE: dev

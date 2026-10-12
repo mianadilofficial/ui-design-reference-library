@@ -1,0 +1,52 @@
+---
+import site from '@data/site.json'
+import CaptureScript from '../components/CaptureScript.astro'
+
+interface Props {
+  value?: string
+  id: string
+  /** Coloris output format; false leaves the library default */
+  format?: 'hex' | 'rgb' | 'hsl' | 'auto' | 'mixed' | false
+  class?: string
+  /** Accessible name for the input; falls back to a generic label when the caller doesn't wrap this in a labelled FormGroup */
+  ariaLabel?: string
+}
+
+const { value, id, format = false, class: className, ariaLabel } = Astro.props
+const alpha = false
+
+// Coloris parses hex, rgb and hsl only, and the CSS tokens are `oklch()`, so the
+// swatches use the hex values from site.json.
+const colors = site.colors as Record<string, { hex: string }>
+const swatches = Object.values(colors).map((color) => color.hex)
+
+const colorpickerId = `colorpicker-${id}`
+const colorpickerSelector = `#colorpicker-${id}`
+---
+
+<input type="text" class={`form-control d-block${className ? ` ${className}` : ''}`} id={colorpickerId} value={value} aria-label={ariaLabel ?? 'Color value'} />
+<CaptureScript>
+  <!-- BEGIN COLORPICKER -->
+  <script is:inline define:vars={{ colorpickerId, colorpickerSelector, alpha, format, swatches }}>
+    function initColorpicker() {
+      window.tabler_colorpicker ??= {}
+
+      if (window.Coloris) {
+        // `el` can only be configured globally, but Coloris.setInstance() scopes the rest
+        // (alpha, format, swatches, ...) to this selector so multiple pickers with
+        // different options don't clobber each other's settings.
+        Coloris({ el: colorpickerSelector })
+        Coloris.setInstance(colorpickerSelector, {
+          selectInput: false,
+          alpha,
+          ...(format ? { format } : {}),
+          swatches,
+        })
+        window.tabler_colorpicker[colorpickerId] = colorpickerSelector
+      }
+    }
+
+    document.readyState !== 'loading' ? initColorpicker() : document.addEventListener('DOMContentLoaded', initColorpicker, { once: true })
+  </script>
+  <!-- END COLORPICKER -->
+</CaptureScript>

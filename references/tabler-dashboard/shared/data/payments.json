@@ -1,0 +1,678 @@
+[
+  {
+    "name": "2c2p",
+    "logo": "2c2p"
+  },
+  {
+    "name": "2checkout",
+    "logo": "2checkout"
+  },
+  {
+    "name": "ACH Transfer",
+    "logo": "ach-transfer"
+  },
+  {
+    "name": "Adyen",
+    "logo": "adyen"
+  },
+  {
+    "name": "Affirm",
+    "logo": "affirm"
+  },
+  {
+    "name": "Afterpay",
+    "logo": "afterpay"
+  },
+  {
+    "name": "Airtm",
+    "logo": "airtm"
+  },
+  {
+    "name": "Airwallex",
+    "logo": "airwallex"
+  },
+  {
+    "name": "Alipay Plus",
+    "logo": "alipay-plus"
+  },
+  {
+    "name": "Alipay",
+    "logo": "alipay"
+  },
+  {
+    "name": "Allegro Pay",
+    "logo": "allegro-pay"
+  },
+  {
+    "name": "Amazon Pay",
+    "logo": "amazon-pay"
+  },
+  {
+    "name": "Amazon",
+    "logo": "amazon"
+  },
+  {
+    "name": "American Express",
+    "logo": "americanexpress"
+  },
+  {
+    "name": "Ant Group",
+    "logo": "ant-group"
+  },
+  {
+    "name": "Apple Pay",
+    "logo": "applepay"
+  },
+  {
+    "name": "Authorize",
+    "logo": "authorize"
+  },
+  {
+    "name": "Autopay",
+    "logo": "autopay"
+  },
+  {
+    "name": "Bancontact",
+    "logo": "bancontact"
+  },
+  {
+    "name": "Bank of America",
+    "logo": "bank-of-america"
+  },
+  {
+    "name": "Barclays",
+    "logo": "barclays"
+  },
+  {
+    "name": "BBVA",
+    "logo": "bbva"
+  },
+  {
+    "name": "Binance USD",
+    "logo": "binance-usd"
+  },
+  {
+    "name": "Binance",
+    "logo": "binance"
+  },
+  {
+    "name": "Bitcoin",
+    "logo": "bitcoin"
+  },
+  {
+    "name": "BitPay",
+    "logo": "bitpay"
+  },
+  {
+    "name": "Bkash",
+    "logo": "bkash"
+  },
+  {
+    "name": "Blik",
+    "logo": "blik"
+  },
+  {
+    "name": "BNB Chain",
+    "logo": "bnb-chain"
+  },
+  {
+    "name": "BNP Paribas",
+    "logo": "bnp-paribas"
+  },
+  {
+    "name": "Braintree",
+    "logo": "braintree"
+  },
+  {
+    "name": "Brex",
+    "logo": "brex"
+  },
+  {
+    "name": "Capital One",
+    "logo": "capital-one"
+  },
+  {
+    "name": "Cash App",
+    "logo": "cash-app"
+  },
+  {
+    "name": "Chase",
+    "logo": "chase"
+  },
+  {
+    "name": "Checkout.com",
+    "logo": "checkout-com"
+  },
+  {
+    "name": "Chime",
+    "logo": "chime"
+  },
+  {
+    "name": "China Construction Bank",
+    "logo": "china-construction-bank"
+  },
+  {
+    "name": "Cirrus",
+    "logo": "cirrus"
+  },
+  {
+    "name": "Citi",
+    "logo": "citi"
+  },
+  {
+    "name": "Coinbase",
+    "logo": "coinbase"
+  },
+  {
+    "name": "Coinkite",
+    "logo": "coinkite"
+  },
+  {
+    "name": "Crypto.com",
+    "logo": "crypto-com"
+  },
+  {
+    "name": "Deutsche Bank",
+    "logo": "deutsche-bank"
+  },
+  {
+    "name": "Diners Club",
+    "logo": "dinersclub"
+  },
+  {
+    "name": "Direct Debit",
+    "logo": "directdebit"
+  },
+  {
+    "name": "Discover",
+    "logo": "discover"
+  },
+  {
+    "name": "Dwolla",
+    "logo": "dwolla"
+  },
+  {
+    "name": "EasyPaisa",
+    "logo": "easypaisa"
+  },
+  {
+    "name": "eBay",
+    "logo": "ebay"
+  },
+  {
+    "name": "Elo",
+    "logo": "elo"
+  },
+  {
+    "name": "ePayco",
+    "logo": "epayco"
+  },
+  {
+    "name": "eSewa",
+    "logo": "esewa"
+  },
+  {
+    "name": "Ethereum",
+    "logo": "ethereum"
+  },
+  {
+    "name": "eWay",
+    "logo": "eway"
+  },
+  {
+    "name": "Fifth Third Bank",
+    "logo": "fifth-third-bank"
+  },
+  {
+    "name": "Fiserv",
+    "logo": "fiserv"
+  },
+  {
+    "name": "Flutterwave",
+    "logo": "flutterwave"
+  },
+  {
+    "name": "FonePay",
+    "logo": "fonepay"
+  },
+  {
+    "name": "GCash",
+    "logo": "gcash"
+  },
+  {
+    "name": "Giropay",
+    "logo": "giropay"
+  },
+  {
+    "name": "Goldman Sachs",
+    "logo": "goldman-sachs"
+  },
+  {
+    "name": "Google Pay",
+    "logo": "google-pay"
+  },
+  {
+    "name": "Google Wallet",
+    "logo": "googlewallet"
+  },
+  {
+    "name": "GrabPay",
+    "logo": "grabpay"
+  },
+  {
+    "name": "HSBC",
+    "logo": "hsbc"
+  },
+  {
+    "name": "HubSpot",
+    "logo": "hubspot"
+  },
+  {
+    "name": "Huntington Bank",
+    "logo": "huntington-bank"
+  },
+  {
+    "name": "ICBC",
+    "logo": "icbc"
+  },
+  {
+    "name": "iDeal",
+    "logo": "ideal"
+  },
+  {
+    "name": "IMEPay",
+    "logo": "imepay"
+  },
+  {
+    "name": "imoje (ING Pay)",
+    "logo": "imoje"
+  },
+  {
+    "name": "ING",
+    "logo": "ing"
+  },
+  {
+    "name": "Ingenico",
+    "logo": "ingenico"
+  },
+  {
+    "name": "Interac",
+    "logo": "interac"
+  },
+  {
+    "name": "JazzCash",
+    "logo": "jazzcash"
+  },
+  {
+    "name": "JCB",
+    "logo": "jcb"
+  },
+  {
+    "name": "Khalti",
+    "logo": "khalti"
+  },
+  {
+    "name": "Klarna",
+    "logo": "klarna"
+  },
+  {
+    "name": "Kraken",
+    "logo": "kraken"
+  },
+  {
+    "name": "LINE Pay",
+    "logo": "linepay"
+  },
+  {
+    "name": "Litecoin",
+    "logo": "litecoin"
+  },
+  {
+    "name": "Mada",
+    "logo": "mada"
+  },
+  {
+    "name": "Maestro",
+    "logo": "maestro"
+  },
+  {
+    "name": "Mastercard",
+    "logo": "mastercard"
+  },
+  {
+    "name": "Mercado Pago",
+    "logo": "mercado-pago"
+  },
+  {
+    "name": "Mercury",
+    "logo": "mercury"
+  },
+  {
+    "name": "Meta Pay",
+    "logo": "meta-pay"
+  },
+  {
+    "name": "MetaMask",
+    "logo": "metamask"
+  },
+  {
+    "name": "MIR",
+    "logo": "mir"
+  },
+  {
+    "name": "Mitsubishi UFJ",
+    "logo": "mitsubishi-ufj"
+  },
+  {
+    "name": "MobilePay",
+    "logo": "mobilepay"
+  },
+  {
+    "name": "Mollie",
+    "logo": "mollie"
+  },
+  {
+    "name": "Monero",
+    "logo": "monero"
+  },
+  {
+    "name": "MoneyGram",
+    "logo": "moneygram"
+  },
+  {
+    "name": "M-Pesa",
+    "logo": "mpesa"
+  },
+  {
+    "name": "NCR",
+    "logo": "ncr"
+  },
+  {
+    "name": "Neteller",
+    "logo": "neteller"
+  },
+  {
+    "name": "NorthOne",
+    "logo": "northone"
+  },
+  {
+    "name": "Nubank",
+    "logo": "nu"
+  },
+  {
+    "name": "Nuvei",
+    "logo": "nuvei"
+  },
+  {
+    "name": "OpenSea",
+    "logo": "opensea"
+  },
+  {
+    "name": "OXXO",
+    "logo": "oxxo"
+  },
+  {
+    "name": "Paybox",
+    "logo": "paybox"
+  },
+  {
+    "name": "Payconiq",
+    "logo": "payconiq"
+  },
+  {
+    "name": "Payka",
+    "logo": "payka"
+  },
+  {
+    "name": "Payline",
+    "logo": "payline"
+  },
+  {
+    "name": "Paynow",
+    "logo": "paynow"
+  },
+  {
+    "name": "Payone",
+    "logo": "payone"
+  },
+  {
+    "name": "Payoneer",
+    "logo": "payoneer"
+  },
+  {
+    "name": "PayPal",
+    "logo": "paypal"
+  },
+  {
+    "name": "PayPay",
+    "logo": "paypay"
+  },
+  {
+    "name": "PayPo",
+    "logo": "paypo"
+  },
+  {
+    "name": "Paysafe",
+    "logo": "paysafe"
+  },
+  {
+    "name": "Paysafecard",
+    "logo": "paysafecard"
+  },
+  {
+    "name": "Paystack",
+    "logo": "paystack"
+  },
+  {
+    "name": "Paytm",
+    "logo": "paytm"
+  },
+  {
+    "name": "PayU",
+    "logo": "payu"
+  },
+  {
+    "name": "PhonePe",
+    "logo": "phonepe"
+  },
+  {
+    "name": "Pix",
+    "logo": "pix"
+  },
+  {
+    "name": "PNC Bank",
+    "logo": "pnc-bank"
+  },
+  {
+    "name": "Poli",
+    "logo": "poli"
+  },
+  {
+    "name": "Przelewy24",
+    "logo": "przelewy24"
+  },
+  {
+    "name": "Rapyd",
+    "logo": "rapyd"
+  },
+  {
+    "name": "Razorpay",
+    "logo": "razorpay"
+  },
+  {
+    "name": "Revolut Pay",
+    "logo": "revolut-pay"
+  },
+  {
+    "name": "Ripple",
+    "logo": "ripple"
+  },
+  {
+    "name": "RuPay",
+    "logo": "rupay"
+  },
+  {
+    "name": "Samsung Pay",
+    "logo": "samsung-pay"
+  },
+  {
+    "name": "Santander",
+    "logo": "santander"
+  },
+  {
+    "name": "SEPA",
+    "logo": "sepa"
+  },
+  {
+    "name": "Shop Pay",
+    "logo": "shop-pay"
+  },
+  {
+    "name": "Shopify",
+    "logo": "shopify"
+  },
+  {
+    "name": "Skrill",
+    "logo": "skrill"
+  },
+  {
+    "name": "SkyCash",
+    "logo": "skycash"
+  },
+  {
+    "name": "Sofort",
+    "logo": "sofort"
+  },
+  {
+    "name": "Solana",
+    "logo": "solana"
+  },
+  {
+    "name": "Spingo",
+    "logo": "spingo"
+  },
+  {
+    "name": "Square",
+    "logo": "square"
+  },
+  {
+    "name": "Stax",
+    "logo": "stax"
+  },
+  {
+    "name": "STC Pay",
+    "logo": "stcpay"
+  },
+  {
+    "name": "Stripe",
+    "logo": "stripe"
+  },
+  {
+    "name": "Sumitomo Mitsui",
+    "logo": "sumitomo-mitsui"
+  },
+  {
+    "name": "SWIFT",
+    "logo": "swift"
+  },
+  {
+    "name": "Swish",
+    "logo": "swish"
+  },
+  {
+    "name": "Synchrony",
+    "logo": "synchrony"
+  },
+  {
+    "name": "Tether",
+    "logo": "tether"
+  },
+  {
+    "name": "Tpay",
+    "logo": "tpay"
+  },
+  {
+    "name": "Troy",
+    "logo": "troy"
+  },
+  {
+    "name": "True USD",
+    "logo": "true-usd"
+  },
+  {
+    "name": "Trustly",
+    "logo": "trustly"
+  },
+  {
+    "name": "Twint",
+    "logo": "twint"
+  },
+  {
+    "name": "UBS",
+    "logo": "ubs"
+  },
+  {
+    "name": "UnionPay",
+    "logo": "unionpay"
+  },
+  {
+    "name": "UPI",
+    "logo": "upi"
+  },
+  {
+    "name": "U.S. Bank",
+    "logo": "us-bank"
+  },
+  {
+    "name": "USDC",
+    "logo": "usdc"
+  },
+  {
+    "name": "Venmo",
+    "logo": "venmo"
+  },
+  {
+    "name": "Verifone",
+    "logo": "verifone"
+  },
+  {
+    "name": "Vipps",
+    "logo": "vipps"
+  },
+  {
+    "name": "Visa",
+    "logo": "visa"
+  },
+  {
+    "name": "WeChat Pay",
+    "logo": "we-chat-pay"
+  },
+  {
+    "name": "WebMoney",
+    "logo": "webmoney"
+  },
+  {
+    "name": "Wells Fargo",
+    "logo": "wells-fargo"
+  },
+  {
+    "name": "Western Union",
+    "logo": "westernunion"
+  },
+  {
+    "name": "Wire Transfer",
+    "logo": "wire-transfer"
+  },
+  {
+    "name": "Wise",
+    "logo": "wise"
+  },
+  {
+    "name": "Worldpay",
+    "logo": "worldpay"
+  },
+  {
+    "name": "Zelle",
+    "logo": "zelle"
+  }
+]

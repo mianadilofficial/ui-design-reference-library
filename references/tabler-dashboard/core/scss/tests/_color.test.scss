@@ -1,0 +1,75 @@
+// Priority 2 — unit tests for the colour/contrast helpers in
+// scss/mixins/_functions.scss. These are deterministic and, unlike
+// `color-contrast`, do not read any global config, so they can be exercised in
+// isolation. A regression here silently degrades accessibility, which is why
+// they rank high.
+
+@use 'sass:color';
+@use 'sass:math';
+@use 'sass:meta';
+@use '../mixins/functions' as *;
+
+@include describe('luminance') {
+  @include it('is 0 for black and 1 for white') {
+    @include assert-equal(luminance(#000), 0);
+    @include assert-equal(luminance(#fff), 1);
+  }
+}
+
+@include describe('contrast-ratio') {
+  @include it('is 21 for the black/white extreme') {
+    @include assert-equal(contrast-ratio(#000, #fff), 21);
+  }
+
+  @include it('is 1 for a colour against itself') {
+    @include assert-equal(contrast-ratio(#fff, #fff), 1);
+  }
+}
+
+@include describe('shade-color / tint-color') {
+  @include it('shade mixes the colour toward black in oklab') {
+    @include assert-equal(shade-color(#ffffff, 10%), color.mix(black, #ffffff, 10%, $method: oklab));
+    @include assert-equal(math.round(color.channel(shade-color(#ffffff, 10%), 'red')), 222);
+  }
+
+  @include it('tint mixes the colour toward white in oklab') {
+    @include assert-equal(tint-color(#000000, 10%), color.mix(white, #000000, 10%, $method: oklab));
+    @include assert-equal(math.round(color.channel(tint-color(#000000, 10%), 'red')), 3);
+  }
+
+  @include it('returns a legacy rgb colour inside the sRGB gamut') {
+    @include assert-true(color.is-legacy(tint-color(#f59f00, 40%)));
+    @include assert-true(color.is-in-gamut(shade-color(#f59f00, 20%), $space: rgb));
+  }
+}
+
+@include describe('adjust-lightness') {
+  @include it('shifts the oklch lightness channel by the given amount') {
+    @include assert-equal(math.round(color.channel(adjust-lightness(#1f2937, 8%), 'lightness', $space: oklch)), math.round(color.channel(#1f2937, 'lightness', $space: oklch)) + 8);
+  }
+
+  @include it('keeps the hue and returns a legacy rgb colour') {
+    @include assert-equal(math.round(color.channel(adjust-lightness(#066fd1, 5%), 'hue', $space: oklch)), math.round(color.channel(#066fd1, 'hue', $space: oklch)));
+    @include assert-true(color.is-legacy(adjust-lightness(#066fd1, 5%)));
+  }
+}
+
+@include describe('adjust-lightness-css') {
+  @include it('builds a relative oklch colour that adds to the lightness channel') {
+    @include assert-equal(meta.inspect(adjust-lightness-css(var(--dark), 8%)), 'oklch(from var(--dark) calc(l + 0.08) c h)');
+  }
+
+  @include it('subtracts when the amount is negative') {
+    @include assert-equal(meta.inspect(adjust-lightness-css(var(--dark), -2%)), 'oklch(from var(--dark) calc(l - 0.02) c h)');
+  }
+}
+
+@include describe('shift-color') {
+  @include it('shades when the weight is positive') {
+    @include assert-equal(shift-color(#808080, 20%), shade-color(#808080, 20%));
+  }
+
+  @include it('tints when the weight is negative') {
+    @include assert-equal(shift-color(#808080, -20%), tint-color(#808080, 20%));
+  }
+}

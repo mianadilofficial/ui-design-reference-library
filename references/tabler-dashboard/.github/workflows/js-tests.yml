@@ -1,0 +1,37 @@
+name: JS Tests
+
+on:
+  pull_request:
+    paths-ignore:
+      - '.changeset/**'
+      - '.github/release-notes/**'
+      - '.github/*.md'
+      - '.github/ISSUE_TEMPLATE/**'
+      - '*.md'
+      - 'LICENSE'
+  push:
+    branches:
+      - dev
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v7
+
+      - name: Set up the workspace
+        uses: ./.github/actions/setup
+
+      - name: Install Playwright Chromium
+        uses: ./.github/actions/playwright
+
+      - name: Run JS tests
+        run: pnpm --filter @tabler/core test:js
+
+      - name: Run shared lib tests
+        run: pnpm --filter @tabler/shared test

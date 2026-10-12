@@ -1,0 +1,11 @@
+demo/
+.git/
+.github/
+node_modules/
+**/node_modules/
+**/dist/
+**/.astro/
+packages-zip/
+.env
+.env.*
+.vercel/

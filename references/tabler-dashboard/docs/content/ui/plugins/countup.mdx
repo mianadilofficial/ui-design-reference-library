@@ -1,0 +1,183 @@
+---
+title: Countup
+summary: A countup animates a number from zero to its final value when it scrolls into view.
+description: Animate numbers with the countup component, for statistics on dashboards and landing pages.
+related: [/ui/plugins/chart]
+---
+import Example from '@components/Example.astro';
+import CodeDocs from '@components/CodeDocs.astro';
+
+## Overview
+
+A countup animates a number from a starting value up to its final value. Use it for statistics on a dashboard or a landing page, where the number is the point of the block.
+
+Write the final number as the text of the element and add `data-countup`. Tabler finds every such element and animates it when it scrolls into view, so no JavaScript of your own is needed.
+
+<Example centered>
+<h1 data-countup>30000</h1>
+</Example>
+
+## Installation
+
+Countup is part of `tabler.js` and has no dependency, so there is nothing extra to install or load.
+
+## Usage
+
+Add `data-countup` to any text element and write the target number inside it. The animation starts as soon as the number enters the viewport. `data-tblr-countup` works the same way.
+
+```html
+<h1 data-countup>30000</h1>
+```
+
+Pass options as JSON in the same attribute. Every option below works this way.
+
+```html
+<h1 data-countup='{"duration":4,"suffix":"%"}'>300</h1>
+```
+
+### Duration
+
+`duration` sets how long the animation takes, in seconds. The default is 2.
+
+<Example vertical separated>
+<h1 data-countup>30000</h1> <h1 data-countup='{"duration":4}'>30000</h1> <h1 data-countup='{"duration":6}'>30000</h1>
+</Example>
+
+### Starting value
+
+`startVal` sets the starting value; the default is zero. A start value above the final one makes the number count down instead of up.
+
+<Example vertical separated>
+<h1 data-countup='{"startVal":12345}'>30000</h1> <h1 data-countup='{"startVal":47655}'>30000</h1>
+</Example>
+
+### Decimal places
+
+`decimalPlaces` sets how many decimals are shown. The default is 0.
+
+<Example vertical separated>
+<h1 data-countup>3.123</h1> <h1 data-countup='{"decimalPlaces":1}'>3.123</h1> <h1 data-countup='{"decimalPlaces":2}'>3.123</h1> <h1 data-countup='{"decimalPlaces":3}'>3.123</h1>
+</Example>
+
+### Easing
+
+Easing is on by default, so the animation slows down towards the end. Set `"useEasing": false` for a linear animation.
+
+<Example vertical separated>
+<h1 data-countup>30000</h1> <h1 data-countup='{"useEasing": false}'>30000</h1>
+</Example>
+
+### Use grouping
+
+Grouping is on by default, so thousands get a separator. Set `"useGrouping": false` to turn it off.
+
+<Example vertical separated>
+<h1 data-countup>30000</h1> <h1 data-countup='{"useGrouping": false}'>30000</h1>
+</Example>
+
+### Separator
+
+`separator` sets the thousands separator.
+
+<Example vertical separated>
+<h1 data-countup>3000000</h1> <h1 data-countup='{"separator":" "}'>3000000</h1>
+</Example>
+
+### Decimal separator
+
+`decimal` sets the decimal separator.
+
+<Example vertical separated>
+<h1 data-countup='{"decimalPlaces":2}'>3.12</h1> <h1 data-countup='{"decimalPlaces":2,"decimal":","}'>3.12</h1>
+</Example>
+
+### Prefix
+
+`prefix` adds text before the number, for example a currency symbol.
+
+<Example vertical separated>
+<h1 data-countup='{"prefix":"$"}'>30000</h1> <h1 data-countup='{"prefix":"€"}'>30000</h1>
+</Example>
+
+### Suffix
+
+`suffix` adds text after the number, for example a percent sign.
+
+<Example vertical separated>
+<h1 data-countup='{"suffix":"%"}'>300</h1> <h1 data-countup='{"suffix":"‰"}'>300</h1>
+</Example>
+
+### Time
+
+Set `"format": "time"` for a value written as hours and minutes. The number counts in minutes and is printed as `h:mm`.
+
+<Example vertical separated>
+<h1 data-countup='{"format":"time"}'>3:28</h1> <h1 data-countup='{"format":"time","suffix":" hrs"}'>12:05</h1>
+</Example>
+
+## JavaScript
+
+Tabler ships a `CountUp` component that works like the Bootstrap components: it is created once per element and stored on it. On page load Tabler creates one for every element with `data-countup`. This is the code that runs:
+
+<CodeDocs name="countup-init" file="core/js/src/countup.ts" />
+
+Create the component yourself for an element added later. Options go in the `data-countup` attribute, in the config object, or both; the object wins.
+
+```js
+const countup = new tabler.CountUp(document.getElementById('total'), { duration: 4 });
+```
+
+For any format the options cannot express, pass a `formatter` function. It gets the current number on every frame and returns the text to show:
+
+```js
+new tabler.CountUp(document.getElementById('size'), {
+  formatter: (value) => `${(value / 1024).toFixed(1)} GB`,
+});
+```
+
+By default the animation starts when the element scrolls into view. Set `autoAnimate` to `false` to start it right away, or to control it yourself:
+
+```js
+const countup = tabler.CountUp.getOrCreateInstance(element, { autoAnimate: false });
+countup.reset();
+countup.start();
+```
+
+| Method | Description |
+| --- | --- |
+| `start()` | Starts the animation. |
+| `reset()` | Sets the number back to the starting value, so the animation can run again. |
+| `update(value)` | Animates to a new final value. |
+| `pauseResume()` | Pauses a running animation, or resumes a paused one. |
+| `dispose()` | Stops the animation and removes the component from the element. |
+| `getInstance(element)` | Static. Returns the component for the element, or `null`. |
+| `getOrCreateInstance(element, config)` | Static. Returns the component for the element and creates it when needed. |
+
+`start.bs.countup` fires on the element when an animation begins, and `complete.bs.countup` when the number reaches its final value:
+
+```js
+document.getElementById('total').addEventListener('complete.bs.countup', () => {
+  console.log('done counting');
+});
+```
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `autoAnimate` | `true` | Start when the element scrolls into view. `false` starts at once. |
+| `startVal` | `0` | The number to count from. |
+| `duration` | `2` | Length of the animation, in seconds. |
+| `decimalPlaces` | `0` | Decimals shown. |
+| `useEasing` | `true` | Slow down towards the end. `false` counts at a steady pace. |
+| `useGrouping` | `true` | Put a separator between thousands. |
+| `separator` | `,` | The thousands separator. |
+| `decimal` | `.` | The decimal separator. |
+| `prefix`, `suffix` | none | Text before and after the number. |
+| `format` | `number` | `time` reads and prints the value as `h:mm`, counting in minutes. |
+| `formatter` | none | A function that turns the current number into the text to show. Config object only. |
+
+## Accessibility
+
+- Write the final number in the HTML, as the examples do. That is what a search engine indexes, what shows without JavaScript, and what a screen reader reads if it reaches the element before the animation starts.
+- Never put a countup inside an `aria-live` region. The text changes on every frame, so a live region would announce dozens of intermediate numbers.
+- The number on its own says nothing. Give it a visible label next to it, or an `aria-label` on the block that holds both.
+- Users who asked for reduced motion get the final number at once: the countup checks `prefers-reduced-motion` and skips the animation for them.
