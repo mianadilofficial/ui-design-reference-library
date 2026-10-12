@@ -43,6 +43,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [realworld](references/realworld) | Thinkster | 100+ stacks | MIT | Same Medium-clone spec in every stack — compare idiomatic layouts |
 | [bulletproof-react](references/bulletproof-react) | Alan Alickovic | React | MIT | Feature-folder architecture for scalable React apps |
 | [django-styleguide](references/django-styleguide) | HackSoft | Django / Python | MIT | Opinionated Django structure: services/selectors pattern, API conventions, testing, Celery (~6.3k stars) |
+| [angular-ngrx-starter](references/angular-ngrx-starter) | Tomas Trajan | Angular | MIT | Production Angular starter: feature modules + lazy loading, NgRx state, Material theming, testing (~2.9k stars) |
 
 ## Backend
 
