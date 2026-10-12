@@ -1,0 +1,135 @@
+import type { ModuleOptions } from '../module'
+// `table` is defined here rather than in checkbox.ts, so its focus ring is too
+import { focusCard, hover } from './checkbox'
+
+export default (options: Required<ModuleOptions>) => ({
+  slots: {
+    root: 'relative',
+    fieldset: 'flex gap-x-2',
+    legend: 'mb-1 block font-medium text-default',
+    item: ''
+  },
+  variants: {
+    orientation: {
+      horizontal: {
+        fieldset: 'flex-row'
+      },
+      vertical: {
+        fieldset: 'flex-col'
+      }
+    },
+    color: {
+      ...Object.fromEntries((options.theme.colors || []).map((color: string) => [color, {}])),
+      neutral: {}
+    },
+    variant: {
+      list: {
+        fieldset: 'flex-wrap'
+      },
+      card: {
+        fieldset: 'flex-wrap'
+      },
+      table: {
+        item: [`border border-default has-aria-disabled:cursor-not-allowed ${hover}bg-elevated/50`, options.theme.transitions && 'transition-colors']
+      }
+    },
+    size: {
+      xs: {
+        fieldset: 'gap-y-0.5',
+        legend: 'text-xs'
+      },
+      sm: {
+        fieldset: 'gap-y-0.5',
+        legend: 'text-xs'
+      },
+      md: {
+        fieldset: 'gap-y-1',
+        legend: 'text-sm'
+      },
+      lg: {
+        fieldset: 'gap-y-1',
+        legend: 'text-sm'
+      },
+      xl: {
+        fieldset: 'gap-y-1.5',
+        legend: 'text-base'
+      }
+    },
+    required: {
+      true: {
+        legend: 'after:content-[\'*\'] after:ms-0.5 after:text-error'
+      }
+    },
+    highlight: {
+      true: {},
+      false: {}
+    },
+    disabled: {
+      true: {}
+    }
+  },
+  compoundVariants: [
+    ...[...(options.theme.colors || []).map((color: string) => [color, color]), ['neutral', 'inverted']].map(([color, token]: string[]) => ({
+      color,
+      variant: 'table',
+      class: {
+        item: focusCard(token!)
+      }
+    })),
+    {
+      variant: 'table',
+      highlight: false,
+      class: {
+        item: `${hover}border-accented ${hover}z-[1]`
+      }
+    },
+    { size: 'xs', variant: 'table', class: { item: 'p-2.5' } },
+    { size: 'sm', variant: 'table', class: { item: 'p-3' } },
+    { size: 'md', variant: 'table', class: { item: 'p-3.5' } },
+    { size: 'lg', variant: 'table', class: { item: 'p-4' } },
+    { size: 'xl', variant: 'table', class: { item: 'p-4.5' } },
+    {
+      orientation: 'horizontal',
+      variant: 'table',
+      class: {
+        item: 'first-of-type:rounded-s-lg last-of-type:rounded-e-lg',
+        fieldset: 'gap-0 -space-x-px'
+      }
+    },
+    {
+      orientation: 'vertical',
+      variant: 'table',
+      class: {
+        item: 'first-of-type:rounded-t-lg last-of-type:rounded-b-lg',
+        fieldset: 'gap-0 -space-y-px'
+      }
+    },
+    ...(options.theme.colors || []).map((color: string) => ({
+      color,
+      variant: 'table',
+      class: {
+        item: `has-data-[state=checked]:bg-${color}/10 has-data-[state=checked]:border-${color}/50 has-data-[state=checked]:z-[2]`
+      }
+    })),
+    {
+      color: 'neutral',
+      variant: 'table',
+      class: {
+        item: 'has-data-[state=checked]:bg-elevated has-data-[state=checked]:border-inverted/50 has-data-[state=checked]:z-[2]'
+      }
+    },
+    {
+      variant: 'table',
+      disabled: true,
+      class: {
+        item: 'cursor-not-allowed'
+      }
+    }
+  ],
+  defaultVariants: {
+    highlight: false,
+    size: 'md',
+    variant: 'list',
+    color: 'primary'
+  }
+})

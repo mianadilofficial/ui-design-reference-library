@@ -1,0 +1,42 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "github>nuxt/renovate-config-nuxt"
+  ],
+  "baseBranchPatterns": [
+    "v4"
+  ],
+  "packageRules": [
+    {
+      "groupName": "reka-ui",
+      "matchPackageNames": [
+        "reka-ui",
+        "vaul-vue"
+      ]
+    },
+    {
+      "groupName": "tiptap",
+      "matchPackageNames": [
+        "@tiptap/*"
+      ]
+    },
+    {
+      "matchPackageNames": [
+        "tailwind-variants"
+      ],
+      "allowedVersions": "<3.3.0"
+    },
+    {
+      "matchPackageNames": [
+        "@nuxt/image"
+      ],
+      "allowedVersions": "<2.1.0"
+    },
+    {
+      "matchDepTypes": [
+        "peerDependencies"
+      ],
+      "enabled": false
+    }
+  ]
+}

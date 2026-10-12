@@ -1,0 +1,169 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'Монгол',
+  code: 'mn',
+  messages: {
+    alert: {
+      close: 'Хаах'
+    },
+    authForm: {
+      hidePassword: 'Нууц үгийг нуух',
+      showPassword: 'Нууц үгийг харуулах',
+      submit: 'Үргэлжлүүлэх'
+    },
+    banner: {
+      close: 'Хаах'
+    },
+    calendar: {
+      nextMonth: 'Дараа сар',
+      nextYear: 'Дараа жил',
+      prevMonth: 'Өмнөх сар',
+      prevYear: 'Өмнөх жил'
+    },
+    carousel: {
+      dots: 'Харуулах слайдыг сонгоно уу',
+      goto: '{slide}-р хуудсанд шилжих',
+      next: 'Дараах',
+      prev: 'Өмнөх'
+    },
+    chatMessages: {
+      autoScroll: 'Доош гүйлгэх'
+    },
+    chatPrompt: {
+      placeholder: 'Энд мессежээ бичнэ үү…'
+    },
+    chatPromptSubmit: {
+      label: 'Мессеж илгээх',
+      reload: 'Дахин оролдох',
+      stop: 'Үүсгэхийг зогсоох'
+    },
+    chatReasoning: {
+      thinking: 'Бодож байна…',
+      thought: 'Бодсон',
+      thoughtFor: '{duration} бодсон'
+    },
+    colorMode: {
+      dark: 'Хар',
+      light: 'Цагаан',
+      switchToDark: 'Хар горимд шилжих',
+      switchToLight: 'Цагаан горимд шилжих',
+      system: 'Систем'
+    },
+    commandPalette: {
+      back: 'Буцах',
+      close: 'Хаах',
+      noData: 'Мэдээлэл байхгүй',
+      noMatch: 'Тохирох мэдээлэл олдсонгүй',
+      placeholder: 'Комманд бичих эсвэл хайлт хийх…'
+    },
+    contentSearch: {
+      links: 'Холбоосууд',
+      search: 'Үр дүн',
+      theme: 'Загвар'
+    },
+    contentSearchButton: {
+      label: 'Хайх…'
+    },
+    contentToc: {
+      title: 'Энэ хуудсанд'
+    },
+    dropdownMenu: {
+      noMatch: 'Тохирох мэдээлэл олдсонгүй',
+      search: 'Хайх…'
+    },
+    dashboardSearch: {
+      theme: 'Загвар'
+    },
+    dashboardSearchButton: {
+      label: 'Хайх…'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'Хажуугийн самбарыг хураах',
+      expand: 'Хажуугийн самбарыг дэлгэх'
+    },
+    dashboardSidebarToggle: {
+      close: 'Хажуугийн самбарыг хаах',
+      open: 'Хажуугийн самбарыг нээх'
+    },
+    drawer: {
+      close: 'Хаах'
+    },
+    error: {
+      clear: 'Нүүр хуудас руу буцах'
+    },
+    fileUpload: {
+      removeFile: '{filename} устгах'
+    },
+    header: {
+      close: 'Цэсийг хаах',
+      open: 'Цэсийг нээх'
+    },
+    inputMenu: {
+      create: '"{label}" үүсгэх',
+      noData: 'Мэдээлэл байхгүй',
+      noMatch: 'Тохирох мэдээлэл олдсонгүй'
+    },
+    inputNumber: {
+      decrement: 'Хасах',
+      increment: 'Нэмэх'
+    },
+    listbox: {
+      noData: 'Мэдээлэл байхгүй',
+      noMatch: 'Тохирох мэдээлэл олдсонгүй',
+      search: 'Хайх…'
+    },
+    modal: {
+      close: 'Хаах'
+    },
+    pagination: {
+      first: 'Эхний хуудас',
+      last: 'Сүүлийн хуудас',
+      next: 'Дараах хуудас',
+      page: 'Хуудас {page}',
+      prev: 'Өмнөх хуудас'
+    },
+    pricingTable: {
+      caption: 'Үнийн төлөвлөгөөний харьцуулалт'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'Хураах',
+        name: 'код',
+        openText: 'Дэлгэх'
+      },
+      collapsible: {
+        closeText: 'Нуух',
+        name: 'шинж чанарууд',
+        openText: 'Харуулах'
+      },
+      pre: {
+        copy: 'Кодыг санах ойд хуулах'
+      },
+      prompt: {
+        copy: 'Хүсэлтийг хуулах',
+        openIn: '{name} дотор нээх'
+      }
+    },
+    sidebar: {
+      close: 'Хаах',
+      toggle: 'Сэлгэх'
+    },
+    selectMenu: {
+      create: '"{label}" үүсгэх',
+      noData: 'Мэдээлэл байхгүй',
+      noMatch: 'Тохирох мэдээлэл олдсонгүй',
+      search: 'Хайх…'
+    },
+    slideover: {
+      close: 'Хаах'
+    },
+    table: {
+      noData: 'Мэдээлэл байхгүй'
+    },
+    toast: {
+      close: 'Хаах'
+    }
+  }
+})

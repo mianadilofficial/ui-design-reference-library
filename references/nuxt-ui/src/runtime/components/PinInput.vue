@@ -1,0 +1,214 @@
+<!-- eslint-disable vue/block-tag-newline -->
+<script lang="ts">
+import type { ComponentPublicInstance, VNode } from 'vue'
+import type { PinInputRootEmits, PinInputRootProps } from 'reka-ui'
+import type { AppConfig } from '@nuxt/schema'
+import theme from '#build/ui/pin-input'
+import type { ComponentConfig } from '../types/tv'
+
+type PinInput = ComponentConfig<typeof theme, AppConfig, 'pinInput'>
+
+type PinInputType = 'text' | 'number'
+type PinInputValue<Type extends PinInputType> = [Type] extends ['number'] ? number[] : string[]
+
+export interface PinInputProps<T extends PinInputType = 'text'> extends Pick<PinInputRootProps<T>, 'defaultValue' | 'disabled' | 'id' | 'mask' | 'modelValue' | 'name' | 'otp' | 'placeholder' | 'required' | 'type'> {
+  /**
+   * The element or component this component should render as.
+   * @defaultValue 'div'
+   */
+  as?: any
+  /**
+   * @defaultValue 'primary'
+   */
+  color?: PinInput['variants']['color']
+  /**
+   * @defaultValue 'outline'
+   */
+  variant?: PinInput['variants']['variant']
+  /**
+   * @defaultValue 'md'
+   */
+  size?: PinInput['variants']['size']
+  /**
+   * The number of input fields.
+   * @defaultValue 5
+   */
+  length?: number | string
+  autofocus?: boolean
+  autofocusDelay?: number
+  highlight?: boolean
+  /** Keep the mobile text size on all breakpoints. */
+  fixed?: boolean
+  /**
+   * Group inputs by inserting a separator between them.
+   * Pass a number to insert one after every Nth input, or an array of positions to insert after specific inputs.
+   * @example 3 // after every 3rd input → [X][X][X] • [X][X][X]
+   * @example [3, 4] // after the 3rd and 4th inputs → [X][X][X] • [X] • [X][X][X]
+   */
+  separator?: number | number[]
+  class?: any
+  ui?: PinInput['slots']
+}
+
+export type PinInputEmits<T extends PinInputType = 'text'> = PinInputRootEmits<T> & {
+  change: [event: Event]
+  blur: [event: Event]
+  focus: [event: Event]
+}
+
+export interface PinInputSlots {
+  separator?(props: { index: number }): VNode[]
+}
+</script>
+
+<script setup lang="ts" generic="T extends PinInputType">
+import { ref, computed, onMounted, onScopeDispose } from 'vue'
+import { PinInputInput, PinInputRoot } from 'reka-ui'
+import { useForwardProps } from '../composables/useForwardProps'
+import { reactivePick } from '@vueuse/core'
+import { useAppConfig } from '#imports'
+import { useComponentProps } from '../composables/useComponentProps'
+import { useFormField } from '../composables/useFormField'
+import { looseToNumber } from '../utils'
+import { tv } from '../utils/tv'
+
+const _props = withDefaults(defineProps<PinInputProps<T>>(), {
+  type: 'text' as never,
+  length: 5,
+  autofocusDelay: 0
+})
+const emits = defineEmits<PinInputEmits<T>>()
+defineSlots<PinInputSlots>()
+
+const props = useComponentProps<PinInputProps<T>>('pinInput', _props)
+
+const appConfig = useAppConfig() as PinInput['AppConfig']
+
+const rootProps = useForwardProps(reactivePick(props, 'disabled', 'id', 'mask', 'name', 'otp', 'required', 'type'), emits)
+
+const { emitFormInput, emitFormFocus, emitFormChange, emitFormBlur, size: formFieldSize, color: formFieldColor, id, name, highlight: formFieldHighlight, disabled: formFieldDisabled, ariaAttrs } = useFormField<PinInputProps>(_props)
+
+// eslint-disable-next-line vue/no-dupe-keys
+const color = computed(() => formFieldColor.value ?? props.color)
+// eslint-disable-next-line vue/no-dupe-keys
+const highlight = computed(() => formFieldHighlight.value ?? props.highlight)
+// eslint-disable-next-line vue/no-dupe-keys
+const size = computed(() => formFieldSize.value ?? props.size)
+
+const disabled = computed(() => formFieldDisabled.value ?? props.disabled)
+
+// eslint-disable-next-line vue/no-dupe-keys
+const ui = computed(() => tv({ extend: theme, ...(appConfig.ui?.pinInput || {}) })({
+  color: color.value,
+  variant: props.variant,
+  size: size.value,
+  highlight: highlight.value,
+  fixed: props.fixed
+}))
+
+const inputsRef = ref<ComponentPublicInstance[]>([])
+
+function setInputRef(index: number, el: Element | ComponentPublicInstance | null) {
+  // @ts-expect-error - ComponentPublicInstance type mismatch in Nuxt module augmentation
+  inputsRef.value[index] = el
+}
+
+function onComplete(value: string[] | number[]) {
+  // @ts-expect-error - 'target' does not exist in type 'EventInit'
+  const event = new Event('change', { target: { value } })
+  emits('change', event)
+  emitFormChange()
+}
+
+function onFocusOut(event: FocusEvent) {
+  if (event.relatedTarget && (event.currentTarget as HTMLElement).contains(event.relatedTarget as Node)) {
+    return
+  }
+
+  emits('blur', event)
+  emitFormBlur()
+}
+
+function onFocusIn(event: FocusEvent) {
+  if (event.relatedTarget && (event.currentTarget as HTMLElement).contains(event.relatedTarget as Node)) {
+    return
+  }
+
+  emits('focus', event)
+  emitFormFocus()
+}
+
+function autoFocus() {
+  if (props.autofocus) {
+    inputsRef.value[0]?.$el?.focus()
+  }
+}
+
+function shouldInsertSeparator(index: number) {
+  if (props.separator === undefined) {
+    return false
+  }
+
+  const position = index + 1
+  if (position >= looseToNumber(props.length)) {
+    return false
+  }
+
+  if (Array.isArray(props.separator)) {
+    return props.separator.includes(position)
+  }
+
+  const separator = looseToNumber(props.separator)
+  return Number.isInteger(separator) && separator > 0 && position % separator === 0
+}
+
+let autofocusTimeoutId: ReturnType<typeof setTimeout> | undefined
+
+onMounted(() => {
+  autofocusTimeoutId = setTimeout(() => {
+    autoFocus()
+  }, props.autofocusDelay)
+})
+
+onScopeDispose(() => clearTimeout(autofocusTimeoutId))
+
+defineExpose({
+  inputsRef
+})
+</script>
+
+<template>
+  <PinInputRoot
+    v-bind="({ ...rootProps, ...ariaAttrs } as any)"
+    :id="id"
+    :name="name"
+    :placeholder="props.placeholder"
+    :model-value="(props.modelValue as PinInputValue<T>)"
+    :default-value="(props.defaultValue as PinInputValue<T>)"
+    data-slot="root"
+    :class="ui.root({ class: [props.ui?.root, props.class] })"
+    @update:model-value="emitFormInput()"
+    @complete="onComplete"
+    @focusout="onFocusOut"
+    @focusin="onFocusIn"
+  >
+    <template v-for="(ids, index) in looseToNumber(props.length)" :key="ids">
+      <PinInputInput
+        :ref="el => setInputRef(index as number, el)"
+        :index="(index as number)"
+        data-slot="base"
+        :class="ui.base({ class: props.ui?.base })"
+        :disabled="disabled"
+      />
+      <span
+        v-if="shouldInsertSeparator(index as number)"
+        data-slot="separator"
+        role="presentation"
+        aria-hidden="true"
+        :class="ui.separator({ class: props.ui?.separator })"
+      >
+        <slot name="separator" :index="(index as number)">•</slot>
+      </span>
+    </template>
+  </PinInputRoot>
+</template>

@@ -1,0 +1,169 @@
+import { describe, it, expect, test } from 'vitest'
+import { axe } from 'vitest-axe'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { renderEach } from '../component-render'
+import RadioGroup from '../../src/runtime/components/RadioGroup.vue'
+import theme from '#build/ui/radio-group'
+import { flushPromises, mount } from '@vue/test-utils'
+import { renderForm } from '../utils/form'
+import type { FormInputEvents } from '../../src/module'
+
+describe('RadioGroup', () => {
+  const sizes = Object.keys(theme.variants.size) as any
+  const variants = Object.keys(theme.variants.variant) as any
+  const indicators = Object.keys(theme.variants.indicator) as any
+
+  const items = [
+    { value: '1', label: 'Option 1' },
+    { value: '2', label: 'Option 2' },
+    { value: '3', label: 'Option 3' }
+  ]
+
+  const props = { items }
+
+  renderEach(RadioGroup, [
+    ['with items', { props }],
+    ['with modelValue', { props: { ...props, modelValue: '1' } }],
+    ['with defaultValue', { props: { ...props, defaultValue: '1' } }],
+    ['with valueKey', { props: { ...props, valueKey: 'label', defaultValue: 'Option 1' } }],
+    ['with labelKey', { props: { ...props, labelKey: 'value' } }],
+    ['with descriptionKey', { props: { ...props, descriptionKey: 'value' } }],
+    ['with disabled', { props: { ...props, disabled: true } }],
+    ['with description', { props: { items: items.map((opt, count) => ({ ...opt, description: `Description ${count}` })) } }],
+    ['with icon', { props: { items: items.map(opt => ({ ...opt, icon: 'i-lucide-rocket' })), indicator: 'hidden' } }],
+    ['with icon card', { props: { items: items.map(opt => ({ ...opt, icon: 'i-lucide-rocket' })), indicator: 'hidden', variant: 'card', defaultValue: '1' } }],
+    ['with icon table', { props: { items: items.map(opt => ({ ...opt, icon: 'i-lucide-rocket' })), indicator: 'hidden', variant: 'table', defaultValue: '1' } }],
+    ['with highlight indicator hidden', { props: { ...props, indicator: 'hidden', variant: 'card', highlight: true, defaultValue: '1' } }],
+    ['with required', { props: { ...props, legend: 'Legend', required: true } }],
+    ...sizes.map((size: string) => [`with size ${size}`, { props: { ...props, size, defaultValue: '1' } }]),
+    ...variants.map((variant: string) => [`with primary variant ${variant}`, { props: { ...props, variant, defaultValue: '1' } }]),
+    ...variants.map((variant: string) => [`with primary variant ${variant} highlight`, { props: { ...props, variant, highlight: true, defaultValue: '1' } }]),
+    ...variants.map((variant: string) => [`with neutral variant ${variant}`, { props: { ...props, variant, color: 'neutral', defaultValue: '1' } }]),
+    ...variants.map((variant: string) => [`with neutral variant ${variant} highlight`, { props: { ...props, variant, color: 'neutral', highlight: true, defaultValue: '1' } }]),
+    ...variants.map((variant: string) => [`with horizontal variant ${variant}`, { props: { ...props, variant, orientation: 'horizontal', defaultValue: '1' } }]),
+    ...indicators.map((indicator: string) => [`with indicator ${indicator}`, { props: { ...props, indicator, defaultValue: '1' } }]),
+    ['with ariaLabel', { props, attrs: { 'aria-label': 'Aria label' } }],
+    ['with as', { props: { ...props, as: 'section' } }],
+    ['with class', { props: { ...props, class: 'absolute' } }],
+    ['with ui', { props: { ...props, ui: { wrapper: 'ms-4' } } }],
+    // Slots
+    ['with legend slot', { props, slots: { label: () => 'Legend slot' } }],
+    ['with label slot', { props, slots: { label: () => 'Label slot' } }],
+    ['with description slot', { props, slots: { label: () => 'Description slot' } }]
+  ])
+
+  it('passes accessibility tests', async () => {
+    const wrapper = await mountSuspended(RadioGroup, {
+      props
+    })
+    expect(await axe(wrapper.element)).toHaveNoViolations()
+  })
+
+  it('renders an item icon next to the label only when the indicator is hidden', async () => {
+    const items = [{ value: '1', label: 'Option 1', icon: 'i-lucide-rocket' }]
+
+    const wrapper = await mountSuspended(RadioGroup, { props: { items } })
+    expect(wrapper.find('[data-slot="wrapper"] [data-slot="icon"]').exists()).toBe(false)
+
+    const hidden = await mountSuspended(RadioGroup, { props: { items, indicator: 'hidden' } })
+    expect(hidden.find('[data-slot="wrapper"] [data-slot="icon"]').exists()).toBe(true)
+  })
+
+  it('renders an item icon without a label', async () => {
+    const wrapper = await mountSuspended(RadioGroup, {
+      props: { items: [{ value: 'table', icon: 'i-lucide-table' }], indicator: 'hidden' }
+    })
+    expect(wrapper.find('[data-slot="wrapper"] [data-slot="icon"]').exists()).toBe(true)
+  })
+
+  it('passes accessibility tests with icon items', async () => {
+    const wrapper = await mountSuspended(RadioGroup, {
+      props: {
+        items: [{ value: 'system', label: 'System', icon: 'i-lucide-monitor' }, { value: 'light', label: 'Light', icon: 'i-lucide-sun' }],
+        variant: 'table',
+        indicator: 'hidden',
+        orientation: 'horizontal',
+        defaultValue: 'system'
+      }
+    })
+    expect(await axe(wrapper.element)).toHaveNoViolations()
+  })
+
+  describe('emits', () => {
+    test('update:modelValue event', async () => {
+      const wrapper = mount(RadioGroup, { props: { items: ['Option 1', 'Option 2'] } })
+      const input = wrapper.findComponent({ name: 'RadioGroupRoot' })
+      await input.setValue('Option 1')
+
+      expect(wrapper.emitted()).toMatchObject({ 'update:modelValue': [['Option 1']] })
+    })
+
+    test('change event', async () => {
+      const wrapper = mount(RadioGroup, { props: { items: ['Option 1', 'Option 2'] } })
+
+      const input = wrapper.findComponent({ name: 'RadioGroupRoot' })
+      await input.setValue('Option 1')
+
+      expect(wrapper.emitted()).toMatchObject({ change: [[{ type: 'change' }]] })
+    })
+  })
+
+  describe('form integration', async () => {
+    async function createForm(validateOn?: FormInputEvents[]) {
+      const wrapper = await renderForm({
+        props: {
+          validateOn,
+          validateOnInputDelay: 0,
+          async validate(state: any) {
+            if (state.value !== 'Option 2')
+              return [{ name: 'value', message: 'Error message' }]
+            return []
+          }
+        },
+        slotVars: {
+          items: ['Option 1', 'Option 2']
+        },
+        slotTemplate: `
+        <UFormField name="value" label="Radio group">
+          <URadioGroup id="input" v-model="state.value" :items="items" />
+        </UFormField>
+        `
+      })
+      const input = wrapper.findComponent({ name: 'RadioGroupRoot' })
+      return {
+        wrapper,
+        input
+      }
+    }
+
+    test('validate on change works', async () => {
+      const { input, wrapper } = await createForm(['change'])
+
+      input.setValue('Option 1')
+      await flushPromises()
+      expect(wrapper.text()).toContain('Error message')
+
+      input.setValue('Option 2')
+      await flushPromises()
+      expect(wrapper.text()).not.toContain('Error message')
+    })
+
+    test('validate on input works', async () => {
+      const { input, wrapper } = await createForm(['input'])
+
+      input.setValue('Option 1')
+      await flushPromises()
+      expect(wrapper.text()).toContain('Error message')
+
+      input.setValue('Option 2')
+      await flushPromises()
+      expect(wrapper.text()).not.toContain('Error message')
+    })
+
+    test('no label for=... on FormField', async () => {
+      const { wrapper } = await createForm()
+      const formFieldLabel = wrapper.findAll('label').map(label => label.attributes()).filter(label => !label.for?.includes('Option'))[0]
+      expect(formFieldLabel?.for).toBeUndefined()
+    })
+  })
+})

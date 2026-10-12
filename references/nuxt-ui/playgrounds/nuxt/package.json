@@ -1,0 +1,38 @@
+{
+  "private": true,
+  "name": "@nuxt/ui-playground",
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "catalog:",
+    "@ai-sdk/vue": "catalog:",
+    "@comark/vue": "catalog:",
+    "@iconify-json/lucide": "catalog:",
+    "@iconify-json/simple-icons": "catalog:",
+    "@internationalized/date": "catalog:",
+    "@nuxt/content": "catalog:",
+    "@nuxt/ui": "catalog:",
+    "@tanstack/vue-table": "catalog:",
+    "@tiptap/core": "catalog:",
+    "@tiptap/extension-emoji": "catalog:",
+    "@tiptap/extension-text-align": "catalog:",
+    "@tiptap/pm": "catalog:",
+    "@tiptap/vue-3": "catalog:",
+    "@vueuse/core": "catalog:",
+    "ai": "catalog:",
+    "nuxt": "catalog:",
+    "scule": "catalog:",
+    "tailwindcss": "catalog:",
+    "vue": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "vue-tsc": "catalog:"
+  }
+}

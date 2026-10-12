@@ -1,0 +1,145 @@
+export function useSearch() {
+  const route = useRoute()
+  const { frameworks } = useFrameworks()
+  const { track } = useAnalytics()
+  const { open, ask } = useChat()
+  // the ⌘K link glyphs follow the applied icon pack
+  const studioIcons = useStudioIcons()
+
+  const searchTerm = ref('')
+
+  function onSelect() {
+    track('AI Chat Opened', { source: 'search', hasSearchTerm: !!searchTerm.value })
+
+    if (searchTerm.value) {
+      ask(searchTerm.value)
+    } else {
+      open.value = true
+    }
+  }
+
+  const links = computed(() => [{
+    label: 'Ask',
+    icon: 'i-custom-nuxi',
+    kbds: ['meta', 'i'],
+    ui: {
+      itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-primary'
+    },
+    onSelect
+  }, {
+    label: 'Get Started',
+    description: 'Learn how to install and configure the library.',
+    icon: studioIcons.squarePlay,
+    to: '/docs/getting-started',
+    active: route.path.startsWith('/docs/getting-started')
+  }, {
+    label: 'Components',
+    description: 'Explore all available components.',
+    icon: studioIcons.squareCode,
+    to: '/docs/components',
+    active: route.path.startsWith('/docs/components')
+  }, {
+    label: 'Composables',
+    description: 'Learn how to use the available composables.',
+    icon: studioIcons.squareFunction,
+    to: '/docs/composables',
+    active: route.path.startsWith('/docs/composables')
+  }, {
+    label: 'Typography',
+    description: 'Discover typography features and customization options.',
+    icon: studioIcons.squarePilcrow,
+    to: '/docs/typography',
+    active: route.path.startsWith('/docs/typography')
+  }, {
+    label: 'Releases',
+    description: 'Stay up to date with the latest changes.',
+    icon: studioIcons.rocket,
+    to: '/docs/releases',
+    active: route.path.startsWith('/docs/releases')
+  }, {
+    label: 'Theme',
+    description: 'Customize the theme and preview it live.',
+    icon: studioIcons.palette,
+    to: '/theme'
+  }, {
+    label: 'Templates',
+    description: 'Explore official starter templates.',
+    icon: studioIcons.templates,
+    to: '/templates'
+  }, {
+    label: 'Showcase',
+    description: 'Discover websites built with the library.',
+    icon: studioIcons.presentation,
+    to: '/showcase'
+  }, {
+    label: 'Community',
+    description: 'Explore community projects and resources.',
+    icon: studioIcons.globe,
+    to: '/community'
+  }, {
+    label: 'Blog',
+    description: 'Read articles and tutorials.',
+    icon: studioIcons.newspaper,
+    to: '/blog',
+    active: route.path.startsWith('/blog')
+  }, {
+    label: 'Contribution',
+    description: 'Learn how to contribute to the project.',
+    icon: studioIcons.heart,
+    to: '/docs/getting-started/contribution'
+  }, {
+    label: 'Team',
+    description: 'Meet the team behind the project.',
+    icon: studioIcons.users,
+    to: '/team'
+  }, {
+    label: 'Playground',
+    description: 'Try components live in your browser.',
+    icon: studioIcons.terminal,
+    to: 'https://play.ui.nuxt.com',
+    target: '_blank'
+  }, {
+    label: 'Figma',
+    description: 'Access the official Figma design kit.',
+    icon: 'i-simple-icons-figma',
+    to: 'https://go.nuxt.com/figma-ui',
+    target: '_blank'
+  }, {
+    label: 'GitHub',
+    description: 'Check out the repository on GitHub.',
+    icon: 'i-simple-icons-github',
+    to: 'https://github.com/nuxt/ui',
+    target: '_blank'
+  }])
+
+  const groups = computed(() => [{
+    id: 'framework',
+    label: 'Framework',
+    items: frameworks.value
+  }, {
+    id: 'ai',
+    label: 'AI',
+    ignoreFilter: true,
+    postFilter: (searchTerm: string, items: any[]) => {
+      if (!searchTerm) {
+        return []
+      }
+
+      return items
+    },
+    items: [{
+      label: 'Ask',
+      icon: 'i-custom-nuxi',
+      ui: {
+        itemLeadingIcon: 'group-data-highlighted:not-group-data-disabled:text-primary'
+      },
+      onSelect
+    }]
+  }])
+
+  return {
+    links,
+    groups,
+    searchTerm
+  }
+}

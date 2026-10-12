@@ -1,0 +1,121 @@
+<script lang="ts">
+import type { TooltipRootProps, TooltipRootEmits, TooltipContentProps, TooltipContentEmits, TooltipArrowProps, TooltipTriggerProps } from 'reka-ui'
+import type { VNode } from 'vue'
+import type { AppConfig } from '@nuxt/schema'
+import theme from '#build/ui/tooltip'
+import type { KbdProps } from './Kbd.vue'
+import type { EmitsToProps } from '../types/utils'
+import type { ComponentConfig } from '../types/tv'
+
+type Tooltip = ComponentConfig<typeof theme, AppConfig, 'tooltip'>
+
+export interface TooltipProps extends TooltipRootProps {
+  /** The text content of the tooltip. */
+  text?: string
+  /** The keyboard keys to display in the tooltip. */
+  kbds?: KbdProps['value'][] | KbdProps[]
+  /**
+   * The content of the tooltip.
+   *
+   * Inherits from the `tooltip.content` of the {@link AppProps} component when not provided.
+   * @defaultValue { side: 'bottom', sideOffset: 8, collisionPadding: 8 }
+   */
+  content?: Omit<TooltipContentProps, 'as' | 'asChild'> & Partial<EmitsToProps<TooltipContentEmits>>
+  /**
+   * Display an arrow alongside the tooltip.
+   * `{ rounded: true }`{lang="ts-type"}
+   * @defaultValue false
+   */
+  arrow?: boolean | Omit<TooltipArrowProps, 'as' | 'asChild'>
+  /**
+   * Render the tooltip in a portal.
+   * @defaultValue true
+   */
+  portal?: boolean | string | HTMLElement
+  /**
+   * The reference (or anchor) element that is being referred to for positioning.
+   *
+   * If not provided will use the current component as anchor.
+   */
+  reference?: TooltipTriggerProps['reference']
+  class?: any
+  ui?: Tooltip['slots']
+}
+
+export interface TooltipEmits extends TooltipRootEmits {}
+
+export interface TooltipSlots {
+  default?(props: { open: boolean }): VNode[]
+  content?(props: { ui: Tooltip['ui'] }): VNode[]
+}
+</script>
+
+<script setup lang="ts">
+import { computed, toRef } from 'vue'
+import { defu } from 'defu'
+import { TooltipRoot, TooltipTrigger, TooltipPortal, TooltipContent, TooltipArrow, injectTooltipProviderContext } from 'reka-ui'
+import { reactivePick } from '@vueuse/core'
+import { useAppConfig } from '#imports'
+import { useKbd } from '../composables/useKbd'
+import { useComponentProps } from '../composables/useComponentProps'
+import { useForwardProps } from '../composables/useForwardProps'
+import { FieldGroupReset } from '../composables/useFieldGroup'
+import { usePortal } from '../composables/usePortal'
+import { tv } from '../utils/tv'
+import UKbd from './Kbd.vue'
+
+const _props = withDefaults(defineProps<TooltipProps>(), {
+  portal: true
+})
+const emits = defineEmits<TooltipEmits>()
+const slots = defineSlots<TooltipSlots>()
+
+const props = useComponentProps('tooltip', _props)
+
+const appConfig = useAppConfig() as Tooltip['AppConfig']
+
+const providerContext = injectTooltipProviderContext()
+
+const rootProps = useForwardProps(reactivePick(props, 'defaultOpen', 'open', 'delayDuration', 'disableHoverableContent', 'disableClosingTrigger', 'ignoreNonKeyboardFocus'), emits)
+const portalProps = usePortal(toRef(() => props.portal))
+const contentProps = toRef(() => defu(props.content, providerContext.content.value, { side: 'bottom', sideOffset: 8, collisionPadding: 8 }) as TooltipContentProps)
+const arrowProps = toRef(() => defu(props.arrow, { rounded: true }) as TooltipArrowProps)
+
+const { getKbdKey } = useKbd()
+const ariaLabel = computed(() => {
+  if (contentProps.value.ariaLabel || slots.content) {
+    return contentProps.value.ariaLabel
+  }
+
+  return [props.text, ...(props.kbds || []).map(kbd => getKbdKey(typeof kbd === 'object' ? kbd.value : kbd))].filter(Boolean).join(' ')
+})
+
+// eslint-disable-next-line vue/no-dupe-keys
+const ui = computed(() => tv({ extend: theme, ...(appConfig.ui?.tooltip || {}) })({
+  side: contentProps.value.side
+}))
+</script>
+
+<template>
+  <TooltipRoot v-slot="{ open }" v-bind="rootProps" :disabled="!(props.text || props.kbds?.length || !!slots.content) || props.disabled">
+    <TooltipTrigger v-if="!!slots.default || !!props.reference" v-bind="$attrs" as-child :reference="props.reference" :class="props.class">
+      <slot :open="open" />
+    </TooltipTrigger>
+
+    <TooltipPortal v-bind="portalProps">
+      <FieldGroupReset>
+        <TooltipContent v-bind="contentProps" :aria-label="ariaLabel" data-slot="content" :class="ui.content({ class: [!slots.default && props.class, props.ui?.content] })">
+          <slot name="content" :ui="ui">
+            <span v-if="props.text" data-slot="text" :class="ui.text({ class: props.ui?.text })">{{ props.text }}</span>
+
+            <span v-if="props.kbds?.length" data-slot="kbds" :class="ui.kbds({ class: props.ui?.kbds })">
+              <UKbd v-for="(kbd, index) in props.kbds" :key="index" :size="((props.ui?.kbdsSize || ui.kbdsSize()) as KbdProps['size'])" v-bind="typeof kbd === 'string' ? { value: kbd } : kbd" />
+            </span>
+          </slot>
+
+          <TooltipArrow v-if="!!props.arrow" v-bind="arrowProps" data-slot="arrow" :class="ui.arrow({ class: props.ui?.arrow })" />
+        </TooltipContent>
+      </FieldGroupReset>
+    </TooltipPortal>
+  </TooltipRoot>
+</template>

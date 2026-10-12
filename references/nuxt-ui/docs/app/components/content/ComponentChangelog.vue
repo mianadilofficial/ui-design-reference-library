@@ -1,0 +1,136 @@
+<script setup lang="ts">
+import { camelCase, kebabCase, upperFirst } from 'scule'
+
+interface Commit {
+  sha: string
+  date: string
+  message: string
+}
+
+interface Release {
+  tag: string
+  date: string
+  url: string
+}
+
+interface ReleaseGroup {
+  tag: string
+  url?: string
+  icon?: string
+  title: string
+  commits: Commit[]
+  published_at?: string
+}
+
+const props = defineProps<{
+  prefix?: string
+}>()
+
+const route = useRoute()
+const studioIcons = useStudioIcons()
+const name = route.path.split('/').pop() ?? ''
+const camelName = upperFirst(camelCase(name))
+const kebabName = kebabCase(name)
+
+const { data: releases } = useLazyFetch<Release[]>('/api/github/releases.json', {
+  server: false,
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
+})
+
+const { data: commits } = useLazyFetch('/api/github/commits.json', {
+  key: `component-changelog-${name}`,
+  query: {
+    path: [
+      `src/runtime/components/${props.prefix ? `${props.prefix}/` : ''}${camelName}.vue`,
+      `src/theme/${props.prefix ? `${props.prefix}/` : ''}${kebabName}.ts`
+    ]
+  },
+  server: false,
+  getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key]
+})
+
+const groupedByRelease = computed<ReleaseGroup[]>(() => {
+  if (!commits.value?.length) return []
+
+  const sortedReleases = (releases.value ?? [])
+    .filter(r => r.date)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+  const releasesOldestFirst = [...sortedReleases].reverse()
+  const groups: ReleaseGroup[] = []
+  const unreleased: Commit[] = []
+
+  for (const commit of commits.value) {
+    const commitDate = new Date(commit.date).getTime()
+    const release = releasesOldestFirst.find(r => new Date(r.date).getTime() >= commitDate)
+
+    if (release) {
+      const majorTag = release.tag.replace(/-(alpha|beta|rc)\.\d+$/, '')
+      let group = groups.find(g => g.tag === majorTag)
+      if (!group) {
+        group = { tag: majorTag, title: majorTag, icon: studioIcons.tag, published_at: release.date, url: release.url, commits: [] }
+        groups.push(group)
+      }
+      if (new Date(release.date) > new Date(group.published_at!)) {
+        group.published_at = release.date
+        group.url = release.url
+      }
+      group.commits.push(commit)
+    } else {
+      unreleased.push(commit)
+    }
+  }
+
+  const result: ReleaseGroup[] = []
+  if (unreleased.length) {
+    result.push({ tag: 'unreleased', title: 'Soon', icon: studioIcons.tag, commits: unreleased })
+  }
+
+  const uniqueTags = [...new Set(sortedReleases.map(r => r.tag.replace(/-(alpha|beta|rc)\.\d+$/, '')))]
+  groups.sort((a, b) => uniqueTags.indexOf(a.tag) - uniqueTags.indexOf(b.tag))
+  result.push(...groups)
+
+  return result
+})
+
+function normalizeCommitMessage(commit: Commit) {
+  const prefix = `[\`${commit.sha.slice(0, 5)}\`](https://github.com/nuxt/ui/commit/${commit.sha})`
+  const content = commit.message
+    .replace(/#(\d+)/g, '<a href=\'https://github.com/nuxt/ui/issues/$1\'>#$1</a>')
+    .replace(/`(.*?)`/g, '<code class="text-xs">$1</code>')
+
+  return `${prefix} — ${content}`
+}
+</script>
+
+<template>
+  <div v-if="!commits?.length">
+    No recent changes
+  </div>
+
+  <UTimeline
+    v-else
+    :items="groupedByRelease"
+    size="xs"
+    :ui="{ root: '', wrapper: 'mt-0 pb-0', title: 'mb-1.5 flex items-center justify-between' }"
+  >
+    <template #title="{ item }">
+      <UBadge v-if="item.tag === 'unreleased'" color="neutral" variant="subtle" :label="item.title" class="w-12.5 justify-center" />
+      <ULink v-else :to="item.url" target="_blank">
+        <UBadge variant="subtle" :label="item.tag" />
+      </ULink>
+
+      <time v-if="item.published_at" :datetime="item.published_at" class="text-xs text-dimmed font-normal">
+        {{ useTimeAgo(new Date(item.published_at)) }}
+      </time>
+    </template>
+
+    <template #description="{ item }">
+      <ul class="flex flex-col gap-1.5">
+        <li v-for="commit of item.commits" :key="commit.sha">
+          <DocsMarkdown :value="normalizeCommitMessage(commit)" class="text-sm [&_code]:text-xs" unwrap="p" />
+        </li>
+      </ul>
+    </template>
+  </UTimeline>
+</template>

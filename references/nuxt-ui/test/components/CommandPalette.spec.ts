@@ -1,0 +1,216 @@
+import { describe, it, expect, vi } from 'vitest'
+import { axe } from 'vitest-axe'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { renderEach } from '../component-render'
+import CommandPalette from '../../src/runtime/components/CommandPalette.vue'
+import theme from '#build/ui/command-palette'
+
+describe('CommandPalette', () => {
+  const sizes = Object.keys(theme.variants.size) as any
+
+  const groups = [{
+    id: 'actions',
+    items: [{
+      label: 'Add new file',
+      suffix: 'Create a new file in the current directory or workspace.',
+      icon: 'i-lucide-file-plus',
+      kbds: ['meta', 'N'],
+      active: true
+    }, {
+      label: 'Add new folder',
+      suffix: 'Create a new folder in the current directory or workspace.',
+      icon: 'i-lucide-folder-plus',
+      kbds: ['meta', 'F']
+    }, {
+      label: 'Add hashtag',
+      suffix: 'Add a hashtag to the current item.',
+      icon: 'i-lucide-hash',
+      kbds: ['meta', 'H'],
+      disabled: true
+    }, {
+      label: 'Add label',
+      suffix: 'Add a label to the current item.',
+      icon: 'i-lucide-tag',
+      kbds: ['meta', 'L'],
+      slot: 'custom'
+    }]
+  }, {
+    id: 'labels',
+    label: 'Labels',
+    items: [{
+      label: 'bug',
+      chip: {
+        color: 'error' as const
+      }
+    }, {
+      label: 'feature',
+      chip: {
+        color: 'success' as const
+      }
+    }, {
+      label: 'enhancement',
+      chip: {
+        color: 'info' as const
+      }
+    }]
+  }, {
+    id: 'users',
+    label: 'Users',
+    items: [{
+      label: 'benjamincanac',
+      avatar: {
+        src: 'https://github.com/benjamincanac.png',
+        alt: 'Benjamin Canac'
+      },
+      to: 'https://github.com/benjamincanac',
+      target: '_blank'
+    }]
+  }]
+
+  const groupsWithDescription = [{
+    id: 'actions',
+    items: [{
+      label: 'Create Project',
+      description: 'Start a new project from scratch',
+      icon: 'i-lucide-folder-plus',
+      kbds: ['meta', 'N']
+    }, {
+      label: 'Open File',
+      description: 'Browse and open an existing file',
+      icon: 'i-lucide-file',
+      kbds: ['meta', 'O']
+    }, {
+      label: 'Settings',
+      description: 'Configure your preferences',
+      icon: 'i-lucide-settings',
+      kbds: ['meta', ',']
+    }]
+  }, {
+    id: 'recent',
+    label: 'Recent Files',
+    items: [{
+      label: 'index.vue',
+      description: '/src/pages/index.vue',
+      icon: 'i-lucide-file-code'
+    }, {
+      label: 'app.vue',
+      description: '/app.vue',
+      icon: 'i-lucide-file-code'
+    }]
+  }]
+
+  const groupsWithSlot = groups.map(g => g.id === 'users' ? { ...g, slot: 'users' } : g)
+
+  const props = { groups }
+
+  renderEach(CommandPalette, [
+    // Props
+    ['with groups', { props }],
+    ['with groups with description', { props: { groups: groupsWithDescription } }],
+    ['without groups', {}],
+    ...sizes.map((size: string) => [`with size ${size}`, { props: { ...props, size } }]),
+    ['with modelValue', { props: { ...props, modelValue: groups[2]?.items[0] } }],
+    ['with defaultValue', { props: { ...props, defaultValue: groups[2]?.items[0] } }],
+    ['with searchTerm', { props: { ...props, searchTerm: 'f' } }],
+    ['with searchTerm and preserveGroupOrder', { props: { ...props, searchTerm: 'f', preserveGroupOrder: true } }],
+    ['with valueKey', { props: { ...props, valueKey: 'label', defaultValue: 'Add new file' } }],
+    ['with by', { props: { ...props, by: 'label', defaultValue: groups[0]?.items[0] } }],
+    ['with labelKey', { props: { ...props, labelKey: 'icon' } }],
+    ['with descriptionKey', { props: { groups: groupsWithDescription, descriptionKey: 'label' } }],
+    ['with placeholder', { props: { ...props, placeholder: 'Search...' } }],
+    ['with disabled', { props: { ...props, disabled: true } }],
+    ['with icon', { props: { ...props, icon: 'i-lucide-terminal' } }],
+    ['with trailingIcon', { props: { ...props, trailingIcon: 'i-lucide-settings' } }],
+    ['with childrenIcon', { props: { ...props, childrenIcon: 'i-lucide-arrow-right' } }],
+    ['with loading', { props: { ...props, loading: true } }],
+    ['with loadingIcon', { props: { ...props, loading: true, loadingIcon: 'i-lucide-loader' } }],
+    ['with selectedIcon', { props: { ...props, selectedIcon: 'i-lucide-badge-check', modelValue: groups[2]?.items[0] } }],
+    ['with close', { props: { ...props, close: true } }],
+    ['with closeIcon', { props: { ...props, close: true, closeIcon: 'i-lucide-trash' } }],
+    ['with virtualize', { props: { ...props, virtualize: true } }],
+    ['without input', { props: { ...props, input: false } }],
+    ['with as', { props: { ...props, as: 'section' } }],
+    ['with class', { props: { ...props, class: 'divide-accented' } }],
+    ['with ui', { props: { ...props, ui: { input: '[&>input]:h-10' } } }],
+    // Slots
+    ['with empty slot', { props, slots: { empty: () => 'Empty slot' } }],
+    ['with item slot', { props, slots: { item: () => 'Item slot' } }],
+    ['with item-leading slot', { props, slots: { 'item-leading': () => 'Item leading slot' } }],
+    ['with item-label slot', { props, slots: { 'item-label': () => 'Item label slot' } }],
+    ['with item-description slot', { props: { groups: groupsWithDescription }, slots: { 'item-description': () => 'Item description slot' } }],
+    ['with item-trailing slot', { props, slots: { 'item-trailing': () => 'Item trailing slot' } }],
+    ['with custom slot', { props, slots: { custom: () => 'Custom slot' } }],
+    ['with group-label slot', { props, slots: { 'group-label': () => 'Group label slot' } }],
+    ['with users-group-label slot', { props: { groups: groupsWithSlot }, slots: { 'users-group-label': () => 'Users group label slot' } }],
+    ['with close slot', { props: { ...props, close: true }, slots: { close: () => 'Close slot' } }],
+    ['with footer slot', { props, slots: { footer: () => 'Footer slot' } }]
+  ])
+
+  it('hides the input icon when icon is false', async () => {
+    const withIcon = await mountSuspended(CommandPalette, { props })
+    expect(withIcon.find('[data-slot="leadingIcon"]').exists()).toBe(true)
+
+    const withoutIcon = await mountSuspended(CommandPalette, { props: { ...props, icon: false } })
+    expect(withoutIcon.find('[data-slot="leadingIcon"]').exists()).toBe(false)
+  })
+
+  it('passes accessibility tests', async () => {
+    const wrapper = await mountSuspended(CommandPalette, {
+      props: {
+        groups,
+        close: true,
+        modelValue: [groups[2]?.items[0], groups[1]?.items[0]],
+        multiple: true
+      }
+    })
+
+    expect(await axe(wrapper.element, {
+      rules: {
+        // ARIA input fields must have an accessible name (aria-input-field-name)"
+        // Fix any of the following:
+        //   aria-label attribute does not exist or is empty
+        //   aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+        //   Element has no title attribute
+        'aria-input-field-name': { enabled: false }
+      }
+    })).toHaveNoViolations()
+  })
+
+  // Results arriving after mount (e.g. `useLazyFetch({ server: false })`) must
+  // re-highlight the first item without scrolling the whole page to a palette
+  // that is below the fold and was never interacted with.
+  it('re-highlights without scrolling the page when results arrive without focus', async () => {
+    const scrollSpy = vi.fn()
+    const original = window.HTMLElement.prototype.scrollIntoView
+    window.HTMLElement.prototype.scrollIntoView = scrollSpy
+
+    try {
+      const wrapper = await mountSuspended(CommandPalette, {
+        props: { groups: [{ id: 'users', items: [] }], autofocus: false } as any,
+        attachTo: document.body
+      })
+      await new Promise(resolve => setTimeout(resolve, 60))
+
+      // Items arrive asynchronously while the palette is not focused
+      await wrapper.setProps({
+        groups: [{ id: 'users', items: Array.from({ length: 10 }, (_, i) => ({ label: `User ${i}` })) }]
+      } as any)
+      await new Promise(resolve => setTimeout(resolve, 60))
+
+      // First item is highlighted for keyboard entry, but the page was not scrolled to it.
+      expect(wrapper.find('[data-highlighted]').exists()).toBe(true)
+      expect(scrollSpy).not.toHaveBeenCalled()
+
+      // Once the palette has focus, a results change scrolls the highlight into view.
+      ;(wrapper.find('input').element as HTMLInputElement).focus()
+      await wrapper.setProps({
+        groups: [{ id: 'users', items: Array.from({ length: 8 }, (_, i) => ({ label: `Person ${i}` })) }]
+      } as any)
+      await new Promise(resolve => setTimeout(resolve, 60))
+
+      expect(scrollSpy).toHaveBeenCalled()
+    } finally {
+      window.HTMLElement.prototype.scrollIntoView = original
+    }
+  })
+})

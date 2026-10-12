@@ -1,0 +1,169 @@
+import type { Messages } from '../types/locale'
+import { defineLocale } from '../composables/defineLocale'
+
+export default defineLocale<Messages>({
+  name: 'Қазақша',
+  code: 'kk',
+  messages: {
+    alert: {
+      close: 'Жабу'
+    },
+    authForm: {
+      hidePassword: 'Құпия сөзді жасыру',
+      showPassword: 'Құпия сөзді көрсету',
+      submit: 'Жалғастыру'
+    },
+    banner: {
+      close: 'Жабу'
+    },
+    calendar: {
+      nextMonth: 'Келесі ай',
+      nextYear: 'Келесі жыл',
+      prevMonth: 'Алдыңғы ай',
+      prevYear: 'Алдыңғы жыл'
+    },
+    carousel: {
+      dots: 'Көрсету үшін слайдты таңдаңыз',
+      goto: '{slide} слайдқа өту',
+      next: 'Келесі',
+      prev: 'Алдыңғы'
+    },
+    chatMessages: {
+      autoScroll: 'Төмен айналдыру'
+    },
+    chatPrompt: {
+      placeholder: 'Хабар енгізіңіз…'
+    },
+    chatPromptSubmit: {
+      label: 'Жіберу',
+      reload: 'Қайталау',
+      stop: 'Генерацияны тоқтату'
+    },
+    chatReasoning: {
+      thinking: 'Ойлануда…',
+      thought: 'Ойланды',
+      thoughtFor: '{duration} ойланды'
+    },
+    colorMode: {
+      dark: 'Қараңғы',
+      light: 'Ашық',
+      switchToDark: 'Қараңғы режимге ауысу',
+      switchToLight: 'Ашық режимге ауысу',
+      system: 'Жүйе'
+    },
+    commandPalette: {
+      back: 'Артқа',
+      close: 'Жабу',
+      noData: 'Деректер жоқ',
+      noMatch: 'Сәйкес келетін деректер жоқ',
+      placeholder: 'Команда енгізіңіз немесе іздеңіз…'
+    },
+    contentSearch: {
+      links: 'Сілтемелер',
+      search: 'Нәтижелер',
+      theme: 'Тақырып'
+    },
+    contentSearchButton: {
+      label: 'Іздеу'
+    },
+    contentToc: {
+      title: 'Мазмұны'
+    },
+    dropdownMenu: {
+      noMatch: 'Сәйкес келетін деректер жоқ',
+      search: 'Іздеу…'
+    },
+    dashboardSearch: {
+      theme: 'Тақырып'
+    },
+    dashboardSearchButton: {
+      label: 'Іздеу'
+    },
+    dashboardSidebarCollapse: {
+      collapse: 'Жию',
+      expand: 'Кеңейту'
+    },
+    dashboardSidebarToggle: {
+      close: 'Жабу',
+      open: 'Ашу'
+    },
+    drawer: {
+      close: 'Жабу'
+    },
+    error: {
+      clear: 'Тазалау'
+    },
+    fileUpload: {
+      removeFile: '{filename} жою'
+    },
+    header: {
+      close: 'Жабу',
+      open: 'Ашу'
+    },
+    inputMenu: {
+      create: '"{label}" жасау',
+      noData: 'Деректер жоқ',
+      noMatch: 'Сәйкес келетін деректер жоқ'
+    },
+    inputNumber: {
+      decrement: 'Азайту',
+      increment: 'Арттыру'
+    },
+    listbox: {
+      noData: 'Деректер жоқ',
+      noMatch: 'Сәйкес келетін деректер жоқ',
+      search: 'Іздеу…'
+    },
+    modal: {
+      close: 'Жабу'
+    },
+    pagination: {
+      first: 'Бірінші бет',
+      last: 'Соңғы бет',
+      next: 'Келесі бет',
+      page: '{page}-бет',
+      prev: 'Алдыңғы бет'
+    },
+    pricingTable: {
+      caption: 'Баға кестесі'
+    },
+    prose: {
+      codeCollapse: {
+        closeText: 'Жиыру',
+        name: 'код',
+        openText: 'Кеңейту'
+      },
+      collapsible: {
+        closeText: 'Жасыру',
+        name: 'қасиеттер',
+        openText: 'Көрсету'
+      },
+      pre: {
+        copy: 'Кодты алмасу буферіне көшіру'
+      },
+      prompt: {
+        copy: 'Сұранысты көшіру',
+        openIn: '{name} ішінде ашу'
+      }
+    },
+    sidebar: {
+      close: 'Жабу',
+      toggle: 'Ауыстыру'
+    },
+    selectMenu: {
+      create: '"{label}" жасау',
+      noData: 'Деректер жоқ',
+      noMatch: 'Сәйкес келетін деректер жоқ',
+      search: 'Іздеу…'
+    },
+    slideover: {
+      close: 'Жабу'
+    },
+    table: {
+      noData: 'Деректер жоқ'
+    },
+    toast: {
+      close: 'Жабу'
+    }
+  }
+})
