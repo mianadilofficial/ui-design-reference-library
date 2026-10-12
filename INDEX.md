@@ -19,6 +19,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | Reference | Author | Stack | License | Stars* | What it gives you |
 |---|---|---|---|---|---|
 | [inspira-ui](references/inspira-ui) | rahulv.dev | Vue / Nuxt | MIT | 2.4k | Animated copy-paste components: backgrounds, text effects, grids, cards |
+| [nuxt-ui](references/nuxt-ui) | Nuxt team | Vue / Nuxt | MIT | 7k | Official Vue UI library: accessible themeable components (Reka UI + Tailwind) |
 | [animate-ui](references/animate-ui) | Elliot Sutton | React / Tailwind | MIT + Commons Clause | 9k | Hand-crafted animated components: buttons, tabs, tooltips, micro-interactions |
 | [audiocn-ui](references/audiocn-ui) | OrcDev | React | MIT | — | Audio UI components (shadcn-style): meters, visualizers, faders, knobs, mixer |
 | [arc-library](references/arc-library) | Elia Kuratli | React | MIT | — | Components + blocks with calm, crafted motion (shadcn CLI install) |
