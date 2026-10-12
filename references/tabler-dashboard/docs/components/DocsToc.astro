@@ -1,0 +1,74 @@
+---
+// TOC comes in as a prop from the consuming page (h2/h3 headings from the
+// markdown content, excluding <!--EXAMPLE-->...<!--/EXAMPLE--> blocks).
+import Subheader from '@ui/Subheader.astro'
+import Icon from '@ui/Icon.astro'
+
+export interface TocItem {
+  /** 2 or 3 (h2/h3); h3 gets the ms-3 indent */
+  level: number
+  text: string
+  /** anchor without '#', e.g. "default-markup" */
+  id: string
+}
+
+interface Props {
+  toc?: TocItem[]
+  /** "Edit this page" URL on GitHub; omitted for pages without a source file */
+  editUrl?: string | undefined
+  /** URL of the file implementing the component, from the page's `source` front matter */
+  sourceUrl?: string | undefined
+}
+
+const { toc = [], editUrl, sourceUrl } = Astro.props
+
+const allPackageUrl = 'https://tabler.io/pricing?ref=tabler-docs-toc#bundle'
+---
+
+<!-- BEGIN DOCS TOC -->{
+  toc.length > 0 && (
+    <Fragment>
+      <Subheader as="h3" id="toc-heading" class="mb-2">
+        On this page
+      </Subheader>
+      <nav class="nav nav-vertical mb-6" id="toc" aria-labelledby="toc-heading">
+        {toc.map((item) => (
+          <a href={`#${item.id}`} class={`nav-link${item.level === 3 ? ' docs-toc-sub' : ''}`}>
+            {item.text}
+          </a>
+        ))}
+      </nav>
+    </Fragment>
+  )
+}
+
+<a href={allPackageUrl} class="card card-sm shadow-none card-gradient card-gradient-rainbow docs-promo-card" target="_blank" rel="noopener noreferrer">
+  <div class="card-body">
+    <img src="/img/banner-all-package.png" class="mb-3 hide-theme-dark" alt="" width="296" height="160" loading="lazy" />
+    <img src="/img/banner-all-package-dark.png" class="mb-3 hide-theme-light" alt="" width="296" height="160" loading="lazy" />
+
+    <h4>Get Admin Template, Icons, Illustrations and Emails in one bundle.</h4>
+    <div class="text-secondary">Tabler All Package — one purchase, every premium product.</div>
+  </div>
+</a>
+
+{
+  (sourceUrl || editUrl) && (
+    <nav class="docs-page-links mt-6" aria-label="Page tools">
+      {sourceUrl && (
+        <a href={sourceUrl} class="docs-page-link" target="_blank" rel="noopener noreferrer">
+          <Icon name="code" />
+          Source code
+        </a>
+      )}
+
+      {editUrl && (
+        <a href={editUrl} class="docs-page-link" target="_blank" rel="noopener noreferrer">
+          <Icon name="edit" />
+          Edit this page on GitHub
+        </a>
+      )}
+    </nav>
+  )
+}
+<!-- END DOCS TOC -->

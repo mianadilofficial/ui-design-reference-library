@@ -1,0 +1,35 @@
+---
+import FormFooter from '@ui/FormFooter.astro'
+import Button from '@ui/Button.astro'
+import ButtonList from '@ui/ButtonList.astro'
+import CardTitle from '@ui/CardTitle.astro'
+import OtpInput from '@ui/OtpInput.astro'
+---
+
+<form class="card card-md" action="#" method="get" autocomplete="off" novalidate>
+  <div class="card-body">
+    <CardTitle class="text-center mb-4">Authenticate Your Account</CardTitle>
+
+    <p class="my-4 text-center">
+      Please confirm your account by entering the authorization code sent to <strong>+1 856-672-8552</strong>.
+    </p>
+
+    <div class="my-5 d-flex justify-content-center">
+      <OtpInput length={6} groups={[3, 3]} size="lg" ariaLabel="Verification code" />
+    </div>
+
+    <div class="my-4">
+      <label class="form-check">
+        <input type="checkbox" class="form-check-input" />
+        Don't ask for codes again on this device
+      </label>
+    </div>
+
+    <FormFooter>
+      <ButtonList class="flex-nowrap">
+        <Button text="Cancel" block href="#" />
+        <Button type="submit" text="Verify" block color="primary" />
+      </ButtonList>
+    </FormFooter>
+  </div>
+</form>

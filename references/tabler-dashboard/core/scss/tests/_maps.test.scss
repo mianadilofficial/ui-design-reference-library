@@ -1,0 +1,35 @@
+// Priority 3 — unit tests for the map utilities in scss/mixins/_functions.scss.
+// The test maps are built inline, so no project config is required.
+
+@use '../mixins/functions' as *;
+
+@include describe('negativify-map') {
+  @include it('prefixes keys with `n` and negates the values') {
+    @include assert-equal(
+      negativify-map(
+        (
+          1: 10px,
+          2: 20px,
+        )
+      ),
+      (
+        'n1': -10px,
+        'n2': -20px,
+      )
+    );
+  }
+
+  @include it('leaves a 0 key untouched') {
+    @include assert-equal(
+      negativify-map(
+        (
+          0: 0,
+          1: 5px,
+        )
+      ),
+      (
+        'n1': -5px,
+      )
+    );
+  }
+}

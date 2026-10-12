@@ -1,0 +1,95 @@
+---
+title: Input mask
+order: 11
+summary: An input mask formats what the user types to a pattern, such as a phone number or a date, which makes the expected format clear and cuts validation errors.
+description: Format user input automatically with input masks for dates, phone numbers, and other patterns to reduce validation errors.
+docs-libs: [imask]
+related: [/ui/forms/elements]
+---
+
+import Example from '@components/Example.astro'
+import TabsPackage from '@components/TabsPackage.astro'
+import CodeDocs from '@components/CodeDocs.astro';
+
+## Installation
+
+Install the imask library:
+
+<TabsPackage name="imask" />
+
+And import or require:
+
+```javascript
+import IMask from 'imask'
+```
+
+Or include it from a CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/imask"></script>
+```
+
+The [IMask documentation](https://imask.js.org/guide.html#installation) covers other ways to install it.
+
+## Default markup
+
+Use an input mask where the value has a fixed format, such as a phone number, a date or a card number.
+
+To create an input mask, add the `data-mask` attribute to the input element:
+
+```html
+<input
+  type="text"
+  name="input-mask"
+  class="form-control"
+  data-mask="(00) 0000-0000"
+  placeholder="(00) 0000-0000"
+  autocomplete="off"
+/>
+```
+
+<Example column>
+<label class="form-label">Telephone mask</label>
+<label class="form-label" for="mask-phone">Phone number</label>
+<input type="text" id="mask-phone" name="input-mask" class="form-control" data-mask="(00) 0000-0000" data-mask-visible="true" placeholder="(00) 0000-0000" autocomplete="off" />
+</Example>
+
+## More examples
+
+If you need more examples of input masks, you can find them in the [IMask documentation](https://imask.js.org/guide.html#masked-input).
+
+## JavaScript
+
+Tabler wraps the plugin in an `InputMask` component that works like the Bootstrap components: it is created once per element and stored on it. On page load Tabler creates one for every element with `data-mask`. This is the code that runs:
+
+<CodeDocs name="input-mask-init" file="core/js/src/input-mask.ts" />
+
+Create the component yourself for a field added later. The pattern comes from `data-mask`, or from the config object, which wins:
+
+```js
+const phone = new tabler.InputMask(document.getElementById('phone'), { mask: '(00) 0000-0000' });
+```
+
+`data-mask-visible="true"` shows the pattern before the user types. In the config object that is `lazy: false`.
+
+The `mask` getter returns the IMask instance, so everything from the [IMask API](https://imask.js.org/guide.html#api) is available:
+
+```js
+const phone = tabler.InputMask.getOrCreateInstance(document.getElementById('phone'));
+console.log(phone.mask.unmaskedValue);
+```
+
+| Method | Description |
+| --- | --- |
+| `update()` | Re-applies the mask after the value was changed from code. |
+| `mask` | Getter. The IMask instance, or `null` when the library is not loaded. |
+| `dispose()` | Removes the mask and the component from the element. |
+| `getInstance(element)` | Static. Returns the component for the element, or `null`. |
+| `getOrCreateInstance(element, config)` | Static. Returns the component for the element and creates it when needed. |
+
+## Accessibility
+
+- A mask changes what the field accepts as the user types, which is easy to lose track of without sight. Say the expected format in a hint tied to the field with `aria-describedby`.
+- Keep a real `label`. The placeholder shows the pattern, and it disappears as soon as typing starts.
+- Do not block paste. A masked field that rejects a pasted phone number is a dead end for anyone using a password manager or a switch device.
+- Use the right `type` and `autocomplete`, so the browser can still fill the field and the phone keyboard matches.

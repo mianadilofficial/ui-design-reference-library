@@ -1,0 +1,31 @@
+---
+import Subheader from '@ui/Subheader.astro'
+import Avatar from '@ui/Avatar.astro'
+import { countupOptions } from '@shared/lib/countup'
+
+interface Props {
+  title?: string
+  value?: string
+  icon?: string
+  /** data-countup: animate the value from zero when it scrolls into view */
+  countup?: boolean
+}
+
+const { title = 'Title', value = '', icon = 'user', countup = false } = Astro.props
+
+const countupAttr = countup ? countupOptions(value) : null
+---
+
+<div class="card">
+  <div class="card-body">
+    <div class="row align-items-center">
+      <div class="col">
+        <Subheader as="h4" class="mb-1">{title}</Subheader>
+        <div class="h3 m-0" data-countup={countupAttr ? JSON.stringify(countupAttr) : undefined}>{value}</div>
+      </div>
+      <div class="col-auto">
+        <Avatar icon={icon} size="lg" />
+      </div>
+    </div>
+  </div>
+</div>

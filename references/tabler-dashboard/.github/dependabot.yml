@@ -1,0 +1,11 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directories:
+      - "/"
+      - "/.github/actions/setup"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github actions"

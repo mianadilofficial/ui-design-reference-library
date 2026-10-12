@@ -1,0 +1,38 @@
+import './src/autosize'
+import './src/clipboard'
+import './src/confetti'
+import './src/countup'
+import './src/datepicker'
+import './src/input-mask'
+import './src/dropdown'
+import './src/sidebar'
+import './src/tooltip'
+import './src/popover'
+import './src/switch-icon'
+import './src/tab'
+import './src/toast'
+import './src/sortable'
+import './src/otp-input'
+import './src/sparkline'
+import './src/strength'
+import './src/stepper'
+
+// Re-export everything from bootstrap.ts (single source of truth)
+export * from './src/bootstrap'
+
+// Tabler's own components
+export { default as Autosize } from './src/autosize'
+export { default as Clipboard } from './src/clipboard'
+export { default as Confetti } from './src/confetti'
+export { default as CountUp } from './src/countup'
+export { default as Datepicker } from './src/datepicker'
+export { default as InputMask } from './src/input-mask'
+export { default as OtpInput } from './src/otp-input'
+export { default as Sortable } from './src/sortable'
+export { default as Sparkline } from './src/sparkline'
+export { default as Stepper } from './src/stepper'
+export { default as Strength } from './src/strength'
+export { default as SwitchIcon } from './src/switch-icon'
+
+// deprecated(2.0): the `tabler` namespace with `getColor()`, `hexToRgba()` and `prefix`
+export * as tabler from './src/deprecated'

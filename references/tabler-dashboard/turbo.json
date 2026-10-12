@@ -1,0 +1,84 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "globalEnv": ["NODE_ENV", "VERCEL_ENV", "POSTHOG_KEY", "DOCSEARCH_API_KEY", "DOCSEARCH_APP_ID", "DOCSEARCH_INDEX_NAME", "GOOGLE_MAPS_KEY", "MAPBOX_KEY"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.build/**", "$TURBO_ROOT$/.browserslistrc", "$TURBO_ROOT$/shared/banner/**"],
+      "outputs": ["dist/**"],
+      "cache": true
+    },
+    "@tabler/preview#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.build/**", "$TURBO_ROOT$/.browserslistrc", "$TURBO_ROOT$/shared/**", "!$TURBO_ROOT$/shared/.turbo/**", "!$TURBO_ROOT$/shared/.astro/**", "!$TURBO_ROOT$/shared/**/node_modules/**"],
+      "outputs": ["dist/**", "tmp-assets/**"],
+      "cache": true
+    },
+    "@tabler/docs#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.build/**", "$TURBO_ROOT$/.browserslistrc", "$TURBO_ROOT$/shared/**", "!$TURBO_ROOT$/shared/.turbo/**", "!$TURBO_ROOT$/shared/.astro/**", "!$TURBO_ROOT$/shared/**/node_modules/**"],
+      "outputs": ["dist/**", "tmp-assets/**", ".vercel/output/**"],
+      "cache": true
+    },
+    "@tabler/screenshots#build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/.build/**", "$TURBO_ROOT$/.browserslistrc", "$TURBO_ROOT$/shared/**", "!$TURBO_ROOT$/shared/.turbo/**", "!$TURBO_ROOT$/shared/.astro/**", "!$TURBO_ROOT$/shared/**/node_modules/**"],
+      "outputs": ["dist/**"],
+      "cache": true
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "@tabler/core#dev:prepare": {
+      "cache": false
+    },
+    "@tabler/preview#dev:prepare": {
+      "dependsOn": ["@tabler/core#dev:prepare"],
+      "cache": false
+    },
+    "@tabler/core#dev": {
+      "dependsOn": ["@tabler/core#dev:prepare"],
+      "cache": false,
+      "persistent": true
+    },
+    "@tabler/preview#dev": {
+      "dependsOn": ["@tabler/preview#dev:prepare"],
+      "cache": false,
+      "persistent": true
+    },
+    "@tabler/screenshots#dev": {
+      "dependsOn": ["@tabler/core#dev:prepare"],
+      "cache": false,
+      "persistent": true
+    },
+    "@tabler/docs#dev": {
+      "dependsOn": ["@tabler/core#dev:prepare", "@tabler/preview#dev:prepare"],
+      "cache": false,
+      "persistent": true
+    },
+    "clean": {
+      "dependsOn": ["^clean"],
+      "cache": false
+    },
+    "bundlewatch": {
+      "dependsOn": ["build"],
+      "cache": true
+    },
+    "type-check": {
+      "dependsOn": ["^type-check"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/shared/**", "!$TURBO_ROOT$/shared/.turbo/**", "!$TURBO_ROOT$/shared/.astro/**", "!$TURBO_ROOT$/shared/**/node_modules/**"],
+      "cache": true
+    },
+    "test": {
+      "cache": false
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:coverage": {
+      "cache": false
+    }
+  }
+}

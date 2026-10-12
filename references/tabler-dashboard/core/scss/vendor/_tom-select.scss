@@ -1,0 +1,175 @@
+@use 'sass:map';
+@use '../config' as *;
+
+:root {
+  --ts-pr-clear-button: 0rem;
+  --ts-pr-caret: 0rem;
+}
+
+.focus .ts-control {
+  @include focus-ring-transition(border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out);
+  --focus-ring-offset: -1px;
+  box-shadow: $input-box-shadow;
+  @include border-radius(var(--border-radius));
+  @include focus-ring(true);
+}
+
+.ts-control {
+  color: inherit;
+
+  .dropdown-menu {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.ts-wrapper {
+  .form-control,
+  .form-select,
+  &.form-control,
+  &.form-select {
+    box-shadow: $input-box-shadow;
+  }
+
+  &.is-invalid,
+  &.is-valid {
+    .ts-control {
+      --ts-pr-clear-button: 1.5rem;
+    }
+  }
+
+  // Tom Select's Bootstrap 5 stylesheet hardcodes Bootstrap's own caret and
+  // valid/invalid icons on `.ts-wrapper.is-valid` / `.is-invalid`, and those
+  // selectors outrank `.form-select`. Hand the backgrounds back to the
+  // `.form-select` custom properties so a validated select shows the same
+  // icons as a validated `.form-control`. `:not(.single)` matches the
+  // specificity of the vendor rule for multi selects.
+  &.form-select.is-invalid,
+  &.form-select.is-valid {
+    &,
+    &:not(.single) {
+      background-image: var(--form-select-bg-img), var(--form-select-bg-icon, none);
+    }
+  }
+
+  // The same preset also colours the wrapper border and the focused
+  // `.ts-control` with `var(--bs-form-valid-color)` / `--bs-form-invalid-color`.
+  // Those variables do not exist in Tabler, so the border falls back to
+  // `currentColor` and the focus ring disappears. Repeat Tabler's own
+  // validation colours; `!important` for the same reason as `.ts-dropdown`
+  // below.
+  @each $state, $data in $form-validation-states {
+    &.is-#{$state} {
+      border-color: map.get($data, 'border-color') !important;
+
+      &.focus .ts-control {
+        border-color: map.get($data, 'border-color') !important;
+        outline-color: map.get($data, 'focus-ring-color');
+      }
+    }
+  }
+}
+
+// The bootstrap5 preset hardcodes Bootstrap's own input metrics on
+// `.ts-control` (0.375rem 0.75rem padding, 1.5 line-height), so a Tom Select
+// came out 5px shorter than a `.form-control` next to it (#2567). The wrapper
+// carries the `.form-control` / `.form-select` class, so it holds the
+// `--control-*` tokens: read them and every size follows on its own. The
+// multi-value control follows the preset's formula: take the item's 1px
+// padding, 1px border and 3px bottom margin out of the control's padding so
+// the chips fill the same height. The font size is `!important` because the
+// preset sets its own on `.form-select-sm.has-items .ts-control`, which
+// outranks this selector.
+.ts-wrapper.form-control,
+.ts-wrapper.form-select {
+  .ts-control {
+    padding: var(--control-padding-y) var(--control-padding-x);
+    font-size: var(--control-font-size) !important;
+    line-height: var(--control-line-height);
+  }
+
+  &.multi.has-items .ts-control {
+    padding-top: calc(var(--control-padding-y) - 2px) !important;
+    padding-bottom: calc(var(--control-padding-y) - 5px);
+  }
+}
+
+// Every declaration below is `!important`: the bootstrap5 preset CSS targets
+// these same selectors at equal specificity, and whichever stylesheet is
+// included last otherwise wins outright (not just for z-index — the preset's
+// `--bs-*` vars are undefined outside Bootstrap, so once it wins a property it
+// renders as transparent/unstyled rather than merely off-theme) (#2600).
+.ts-dropdown {
+  // Tabler inits Tom Select with dropdownParent: 'body', so the dropdown is a
+  // direct child of <body> rather than of whatever contains the <select>. A
+  // select inside a modal therefore needs a z-index above the modal's, not
+  // just above other in-flow content.
+  z-index: $zindex-popover !important;
+  color: var(--body-color) !important;
+  background: var(--bg-surface) !important;
+  box-shadow: var(--shadow-dropdown) !important;
+
+  .option {
+    padding: $dropdown-item-padding-y $dropdown-item-padding-x;
+  }
+
+  // Tom Select marks the highlighted row with .active; match the row only, so an
+  // .active element inside an option (a lit .signal-bar) keeps its own background
+  [data-selectable].active {
+    color: var(--body-color) !important;
+    background-color: var(--active-bg) !important;
+  }
+
+  // The library's own `.ts-dropdown .active` also hits a lit bar and clears its background
+  .signal-bar.active {
+    background-color: var(--signal-color);
+  }
+
+  .active.create {
+    color: var(--body-color) !important;
+  }
+
+  .optgroup-header {
+    color: var(--body-color) !important;
+    background: var(--bg-surface) !important;
+  }
+}
+
+.ts-control,
+.ts-control input {
+  color: var(--body-color);
+}
+
+// An item rendered with an indicator reuses `.dropdown-item`, whose `width: 100%` fills the
+// control and pushes the search input to a second line on focus
+.ts-control > .dropdown-item {
+  width: auto;
+}
+
+.ts-control input {
+  &::placeholder {
+    color: var(--control-placeholder-color, #{$input-placeholder-color});
+  }
+}
+
+.ts-wrapper.multi,
+.ts-wrapper.multi.disabled {
+  .ts-control > div {
+    color: var(--body-color);
+    background: var(--bg-surface-secondary);
+    border: 1px solid var(--border-color);
+  }
+}
+
+.ts-wrapper.disabled .ts-control {
+  background-color: var(--secondary-bg);
+  opacity: 1;
+
+  & > div.item {
+    color: var(--gray-500);
+  }
+}
+
+.ts-wrapper.full .ts-control {
+  background-color: var(--body-bg);
+}
