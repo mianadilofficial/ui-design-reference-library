@@ -29,7 +29,11 @@ Every entry lives in `references/<name>/` with its original files plus an
 
 ## Patterns
 
-*No entries yet — landing pages, dashboards and portfolios go here.*
+| Reference | Author | Stack | License | What it gives you |
+|---|---|---|---|---|
+| [nextjs-landing-template](references/nextjs-landing-template) | CreativeDesignsGuru | Next.js / Tailwind | MIT | Production landing-page implementation: Navbar, Hero, Features, CTA, Footer + SEO/JSON-LD setup |
+
+*Dashboards and portfolios still open — suggest via CONTRIBUTING.md.*
 
 ## Project structure
 
