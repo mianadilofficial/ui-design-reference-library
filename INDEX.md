@@ -60,6 +60,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | Reference | Author | Stack | License | Stars* | What it gives you |
 |---|---|---|---|---|---|
 | [lenis](references/lenis) | darkroom.engineering | Agnostic (JS) | MIT | 30k | Buttery-smooth scroll library — the standard for premium scroll-driven experiences |
+| [animejs](references/animejs) | Julian Garnier | Agnostic (JS) | MIT | 73k | Lightweight animation engine: CSS, SVG, DOM, JS objects — framework-agnostic |
 
 ---
 
