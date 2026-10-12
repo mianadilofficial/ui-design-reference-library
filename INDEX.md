@@ -32,8 +32,9 @@ Every entry lives in `references/<name>/` with its original files plus an
 | Reference | Author | Stack | License | What it gives you |
 |---|---|---|---|---|
 | [nextjs-landing-template](references/nextjs-landing-template) | CreativeDesignsGuru | Next.js / Tailwind | MIT | Production landing-page implementation: Navbar, Hero, Features, CTA, Footer + SEO/JSON-LD setup |
+| [tabler-dashboard](references/tabler-dashboard) | Tabler team | Bootstrap 5 / HTML | MIT | Dashboard UI kit: 120+ demo pages (dashboards, tables, forms, auth), dark mode, RTL |
 
-*Dashboards and portfolios still open — suggest via CONTRIBUTING.md.*
+*Portfolios still open — suggest via CONTRIBUTING.md.*
 
 ## Project structure
 
