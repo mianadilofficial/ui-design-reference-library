@@ -149,5 +149,11 @@
     "branch": "master",
     "commit": "e06c6d0cb37069b0ef56e3df67f80ca130a1ab82",
     "date": "2024-03-08"
+  },
+  "shadcn-admin": {
+    "repo": "satnaing/shadcn-admin",
+    "branch": "main",
+    "commit": "e16c87f213a5ba5e45964e9b67c792105ec74d26",
+    "date": "2026-06-11"
   }
 }

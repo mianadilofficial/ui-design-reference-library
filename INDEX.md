@@ -34,6 +34,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 |---|---|---|---|---|
 | [nextjs-landing-template](references/nextjs-landing-template) | CreativeDesignsGuru | Next.js / Tailwind | MIT | Production landing-page implementation: Navbar, Hero, Features, CTA, Footer + SEO/JSON-LD setup |
 | [tabler-dashboard](references/tabler-dashboard) | Tabler team | Bootstrap 5 / HTML | MIT | Dashboard UI kit: 120+ demo pages (dashboards, tables, forms, auth), dark mode, RTL |
+| [shadcn-admin](references/shadcn-admin) | Sat Naing | React / Vite / Tailwind | MIT | Modern shadcn admin dashboard: sidebar layouts, data tables, forms, auth + settings screens, dark mode |
 | [portfolio-brittany](references/portfolio-brittany) | Brittany Chiang | Gatsby / React | MIT | The iconic developer portfolio: animated hero, tabbed experience, projects, contact — dark navy theme |
 | [nextjs-blog-template](references/nextjs-blog-template) | Timothy Lin | Next.js / Tailwind | MIT | Blog/content-site pattern: MDX posts, tags, search, comments, newsletter hooks, RSS, multi-theme |
 
