@@ -34,7 +34,11 @@ AI-generated UI too often looks the same: generic gradients, predictable layouts
 | [shadcn-ui](references/shadcn-ui) | Components | React | MIT | The canonical shadcn collection (Radix + Tailwind) |
 | [magicui](references/magicui) | Components | React | MIT | Landing-page motion: beams, marquee, bento, shine |
 | [heroui](references/heroui) | Components | React | Apache-2.0 | Pro library (ex-NextUI): themeable, accessible |
+| [daisyui](references/daisyui) | Components | Tailwind CSS | MIT | Most popular Tailwind component library: themeable CSS components, 30+ themes |
+| [react-bits](references/react-bits) | Components | React | MIT + Commons Clause | Largest animated React collection: text animations, animated backgrounds |
+| [mantine](references/mantine) | Components | React | MIT | Full-featured library: 100+ components, hooks, forms, theming |
 | [lenis](references/lenis) | Motion | Agnostic (JS) | MIT | Buttery-smooth scroll — premium scroll-driven experiences |
+| [motion](references/motion) | Motion | React / JS | MIT | Modern animation library (ex-Framer Motion): springs, gestures, layout animations |
 | [realworld](references/realworld) | Structure | 100+ stacks | MIT | Same app in every stack — idiomatic project layouts |
 | [bulletproof-react](references/bulletproof-react) | Structure | React | MIT | Feature-folder architecture for scalable apps |
 | [node-express-boilerplate](references/node-express-boilerplate) | Backend | Node / Express | MIT | Production API: routes, services, JWT auth |

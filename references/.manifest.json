@@ -155,5 +155,29 @@
     "branch": "main",
     "commit": "e16c87f213a5ba5e45964e9b67c792105ec74d26",
     "date": "2026-06-11"
+  },
+  "daisyui": {
+    "branch": "master",
+    "commit": "d17c01a072d00b30f99ed035762878c6cd9ed7e0",
+    "date": "2026-08-02",
+    "repo": "daisyui/daisyui"
+  },
+  "motion": {
+    "branch": "main",
+    "commit": "2b68ca99c8cc12fb95554c293253dc154267f728",
+    "date": "2026-10-14",
+    "repo": "motiondivision/motion"
+  },
+  "react-bits": {
+    "branch": "main",
+    "commit": "496968c4117e21278f13917201b7d615bc5e7450",
+    "date": "2026-10-12",
+    "repo": "DavidHDev/react-bits"
+  },
+  "mantine": {
+    "branch": "master",
+    "commit": "e243f7f999b3250c0babe6c6aa6dba9bcb4aa836",
+    "date": "2026-10-11",
+    "repo": "mantinedev/mantine"
   }
 }

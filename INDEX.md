@@ -27,6 +27,9 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [shadcn-ui](references/shadcn-ui) | shadcn | React | MIT | — | The canonical shadcn component collection (Radix + Tailwind) |
 | [magicui](references/magicui) | Dillion Verma | React | MIT | — | Landing-page motion components: beams, marquee, bento, shine |
 | [heroui](references/heroui) | HeroUI | React | Apache-2.0 | — | Pro component library (ex-NextUI): themeable, accessible |
+| [daisyui](references/daisyui) | Pouya Saadeghi | Tailwind CSS | MIT | — | Most popular Tailwind component library: themeable pure-CSS components, 30+ themes |
+| [react-bits](references/react-bits) | David Haz | React | MIT + Commons Clause | 49k | Largest animated React component collection: text animations, animated backgrounds, interactive cards |
+| [mantine](references/mantine) | Vitaly Rtishchev | React | MIT | 32k | Full-featured library: 100+ components, hooks, forms, theming with dark mode |
 
 ## Patterns
 
@@ -66,6 +69,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 |---|---|---|---|---|---|
 | [lenis](references/lenis) | darkroom.engineering | Agnostic (JS) | MIT | 30k | Buttery-smooth scroll library — the standard for premium scroll-driven experiences |
 | [animejs](references/animejs) | Julian Garnier | Agnostic (JS) | MIT | 73k | Lightweight animation engine: CSS, SVG, DOM, JS objects — framework-agnostic |
+| [motion](references/motion) | Motion B.V. | React / JS | MIT | 34k | Modern animation library (ex-Framer Motion): springs, gestures, layout + scroll animations |
 
 ---
 
