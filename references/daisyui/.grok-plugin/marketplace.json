@@ -1,0 +1,33 @@
+{
+  "name": "daisyui",
+  "description": "Official daisyUI plugins for Grok Build",
+  "owner": {
+    "name": "daisyUI"
+  },
+  "plugins": [
+    {
+      "name": "daisyui",
+      "description": "Official daisyUI component library skill.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./skills"
+      },
+      "homepage": "https://daisyui.com",
+      "keywords": ["daisyui", "tailwind css", "ui components"],
+      "domains": ["daisyui.com"]
+    },
+    {
+      "name": "daisyui-blueprint",
+      "description": "Official daisyUI Blueprint MCP server. Requires a paid license.",
+      "category": "development",
+      "source": {
+        "type": "local",
+        "path": "./packages/blueprint"
+      },
+      "homepage": "https://daisyui.com/blueprint",
+      "keywords": ["daisyui", "blueprint", "mcp", "figma"],
+      "domains": ["daisyui.com"]
+    }
+  ]
+}
