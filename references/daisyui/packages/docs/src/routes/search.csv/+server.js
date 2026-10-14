@@ -1,0 +1,510 @@
+// Helper to extract values from markdown tables by column header name
+function extractTableColumn(content, headerName) {
+  // Find all markdown tables
+  const tables = content.match(/\|(.+\|)+\n\|[-| ]+\n([\s\S]+?)(?=\n\n|$)/g)
+  if (!tables) return []
+  let values = []
+  for (const table of tables) {
+    // Find header row
+    const headerRow = table.split("\n")[0]
+    const headers = headerRow
+      .split("|")
+      .map((h) => h.trim())
+      .filter(Boolean)
+    const colIdx = headers.findIndex(
+      (h) => h.replace(/`/g, "").toLowerCase() === headerName.toLowerCase(),
+    )
+    if (colIdx === -1) continue
+    // Find all rows
+    const rows = table.split("\n").slice(2)
+    for (const row of rows) {
+      const cells = row
+        .split("|")
+        .map((c) => c.trim())
+        .filter(Boolean)
+      if (cells[colIdx]) {
+        let val = cells[colIdx].trim()
+        // Only include if value is a code (backtick) or CSS variable (starts with -- or var(--))
+        if (/^`[^`]+`$/.test(cells[colIdx])) {
+          val = val.replace(/`/g, "")
+          values.push(val)
+        } else if (/^(var\(--[^)]+\)|--[a-zA-Z0-9-]+)/.test(val)) {
+          values.push(val)
+        }
+      }
+    }
+  }
+  return values
+}
+export const prerender = true
+
+import { readFileSync, readdirSync, statSync } from "node:fs"
+import { join, dirname } from "node:path"
+import { fileURLToPath } from "url"
+import { serializeSearchCsv } from "$lib/searchCsv.js"
+import { getStoreProducts } from "$lib/server/content/store.js"
+import { createHeadingSlugger } from "$lib/mdsvex/headingIds.js"
+import { extractMarkdownHeadings } from "$lib/mdsvex/markdown-text.js"
+import { load as loadYaml } from "js-yaml"
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+// Use import.meta.glob for build time (production) - this gets resolved at build time
+const markdownModules = import.meta.glob("../(routes)/**/*.md", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+})
+
+const initialSearchEntries = [
+  { title: "daisyUI Components", url: "/components/", classnames: "" },
+  { title: "daisyUI Store", url: "/store/", classnames: "" },
+  {
+    title: "Official daisyUI Figma Library",
+    url: "/store/daisyui-figma-library/",
+    classnames: "",
+  },
+  { title: "Theme Generator", url: "/theme-generator/", classnames: "" },
+  {
+    title: "daisyUI on Tailwind CSS Playground",
+    url: "/tailwindplay/",
+    classnames: "",
+  },
+  { title: "daisyUI Blog", url: "/blog/", classnames: "" },
+  { title: "daisyUI Discord", url: "/discord/", classnames: "" },
+  { title: "daisyUI Swag Store", url: "https://swag.daisyui.com/", classnames: "" },
+  { title: "daisyUI GitHub", url: "https://github.com/saadeghi/daisyui", classnames: "" },
+  { title: "daisyUI Changelog", url: "/docs/changelog/", classnames: "" },
+  { title: "Blueprint MCP server", url: "/blueprint/", classnames: "" },
+  { title: "daisyUI llms.txt", url: "/llms.txt", classnames: "" },
+]
+
+// List of paths to ignore (relative to routes directory)
+const IGNORED_PATHS = [
+  "(marketing)/",
+  "blog/(posts)/",
+  "docs/v5/",
+  "pages/",
+  "docs/upgrade/",
+  "components/button/design/",
+  "components/button/accessibility/",
+]
+
+// Function to check if a file path should be ignored
+function shouldIgnoreFile(filePath) {
+  if (filePath.split("/").some((segment) => /^\[[^\]]+\]$/.test(segment))) {
+    return true
+  }
+
+  return IGNORED_PATHS.some((ignoredPath) => {
+    // Check if the file is in an ignored directory or subdirectory
+    return filePath.includes(ignoredPath)
+  })
+}
+
+// Function to get markdown files using import.meta.glob (for production builds)
+function getMarkdownFilesFromModules() {
+  const files = []
+
+  for (const [path, content] of Object.entries(markdownModules)) {
+    // Convert the import path to a more readable path
+    const relativePath = path.replace("../(routes)/", "")
+
+    if (!shouldIgnoreFile(relativePath)) {
+      files.push({
+        path: relativePath,
+        content: content,
+      })
+    }
+  }
+
+  return files
+}
+
+// Function to recursively find all .md files (for development)
+function findMarkdownFiles(dir, fileList = []) {
+  try {
+    if (!readdirSync || !statSync) {
+      console.error("File system operations not available")
+      return []
+    }
+
+    const files = readdirSync(dir)
+
+    files.forEach((file) => {
+      const filePath = join(dir, file)
+      const stat = statSync(filePath)
+
+      if (stat.isDirectory()) {
+        findMarkdownFiles(filePath, fileList)
+      } else if (file.endsWith(".md")) {
+        fileList.push(filePath)
+      }
+    })
+
+    return fileList
+  } catch (error) {
+    console.error("Error reading directory:", dir, error)
+    return []
+  }
+}
+
+// Function to get markdown files using file system (for development)
+function getMarkdownFilesFromFileSystem(routesDir) {
+  const markdownFiles = findMarkdownFiles(routesDir)
+  const files = []
+
+  for (const filePath of markdownFiles) {
+    try {
+      const relativePath = filePath.replace(routesDir + "/", "")
+
+      if (!shouldIgnoreFile(relativePath)) {
+        const content = readFileSync(filePath, "utf-8")
+        files.push({
+          path: relativePath,
+          content: content,
+        })
+      }
+    } catch (error) {
+      console.error(`Error reading file ${filePath}:`, error)
+    }
+  }
+
+  return files
+}
+
+// Main function to get all markdown files (hybrid approach)
+function getAllMarkdownFiles() {
+  // Always try import.meta.glob first, since it should work in both dev and production
+  const moduleKeys = Object.keys(markdownModules)
+
+  if (moduleKeys.length > 0) {
+    return getMarkdownFilesFromModules()
+  }
+
+  // Fallback to file system operations if import.meta.glob didn't work
+
+  // Try different possible paths for the routes directory
+  const possiblePaths = [
+    // During development, __dirname points to source
+    join(__dirname, "../(routes)"),
+    // During build, use process.cwd() to get project root
+    join(process.cwd(), "src/routes/(routes)"),
+    // Additional fallbacks
+    join(process.cwd(), "packages/docs/src/routes/(routes)"),
+    join(process.cwd(), "./src/routes/(routes)"),
+  ]
+
+  for (const routesDir of possiblePaths) {
+    try {
+      if (readdirSync && statSync) {
+        statSync(routesDir)
+        // Check if this directory actually contains markdown files
+        const files = getMarkdownFilesFromFileSystem(routesDir)
+        if (files.length > 0) {
+          return files
+        }
+      }
+    } catch (e) {
+      // Continue to next path
+      console.warn(`Directory not found: ${routesDir}`, e)
+    }
+  }
+
+  console.error("Could not find routes directory")
+  return []
+}
+
+// Function to parse frontmatter from markdown content
+function parseFrontmatter(content) {
+  const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---/
+  const match = content.match(frontmatterRegex)
+
+  if (!match) return {}
+
+  const frontmatterText = match[1]
+  // Use js-yaml to parse frontmatter for nested arrays/objects
+  try {
+    return loadYaml(frontmatterText) || {}
+  } catch (e) {
+    console.error("YAML parse error in frontmatter", e)
+    return {}
+  }
+}
+
+function cleanTitleCandidate(title) {
+  return removeHtmlTags(title).replace(/\s+/g, " ").trim()
+}
+
+function extractSeoTitle(content) {
+  const seoMatch = content.match(/<SEO\b[\s\S]*?\btitle=(["'])(.*?)\1/i)
+  if (!seoMatch) return ""
+
+  return cleanTitleCandidate(seoMatch[2])
+}
+
+function extractH1Title(content) {
+  const h1Match = content.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i)
+  if (!h1Match) return ""
+
+  return cleanTitleCandidate(h1Match[1])
+}
+
+function getPageTitle(content, frontmatter) {
+  return (
+    frontmatter.title ||
+    frontmatter.desc ||
+    extractSeoTitle(content) ||
+    extractH1Title(content) ||
+    "Untitled"
+  )
+}
+
+// Filter function to remove tilde (~) prefix
+function removeTildePrefix(text) {
+  return text.replace(/^~\s*/, "")
+}
+
+// Filter function to remove HTML tags
+function removeHtmlTags(text) {
+  // Special handling for Translate component
+  const translateMatch = text.match(/<Translate\s+text="([^"]+)"\s*\/?>/)
+  if (translateMatch) {
+    return translateMatch[1]
+  }
+
+  // Remove HTML tags but preserve the text content
+  return text.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ")
+}
+
+// Filter function to remove bold markdown (**text**)
+function removeBoldMarkdown(text) {
+  return text.replace(/\*\*(.*?)\*\*/g, "$1")
+}
+
+// Filter function to remove numbered list prefixes (e.g., "4. ")
+function removeNumberedListPrefix(text) {
+  return text.replace(/^\d+\.\s+/, "")
+}
+
+// Function to clean heading text by applying all filters
+function cleanHeadingText(text) {
+  let cleaned = text
+
+  // Apply filters step by step with debugging
+  const original = cleaned
+
+  cleaned = removeTildePrefix(cleaned)
+  cleaned = removeHtmlTags(cleaned)
+  cleaned = removeBoldMarkdown(cleaned)
+  cleaned = removeNumberedListPrefix(cleaned)
+
+  const final = cleaned.trim()
+
+  // Debug empty results
+  if (!final && original) {
+    console.warn(`Title became empty after cleaning: "${original}" -> "${final}"`)
+  }
+
+  return final
+}
+
+function shouldIndexHeading(title) {
+  return !/^Step \d+:/i.test(title)
+}
+
+// Function to extract headings from markdown content
+function extractHeadings(content) {
+  // Remove frontmatter
+  const contentWithoutFrontmatter = content.replace(/^---\s*\n[\s\S]*?\n---\n/, "")
+  const headings = []
+  const slugHeading = createHeadingSlugger()
+
+  for (const node of extractMarkdownHeadings(contentWithoutFrontmatter)) {
+    if (node.depth < 2) continue
+
+    const originalTitle = node.text
+    const anchor = slugHeading(originalTitle)
+    if (node.depth > 3) continue
+
+    // Clean the title first
+    const cleanedTitle = cleanHeadingText(originalTitle)
+
+    // Skip if cleaned title is empty
+    if (!cleanedTitle) {
+      console.warn(`Warning: Empty title after cleaning: "${originalTitle}"`)
+      continue
+    }
+
+    if (!shouldIndexHeading(cleanedTitle)) {
+      continue
+    }
+
+    // Skip if anchor is empty
+    if (!anchor) {
+      console.warn(`Warning: Empty anchor after processing: "${cleanedTitle}"`)
+      continue
+    }
+
+    headings.push({
+      title: cleanedTitle,
+      level: node.depth,
+      anchor,
+    })
+  }
+
+  return headings
+}
+
+// Function to convert file path to URL
+function filePathToUrl(filePath) {
+  // Remove +page.md and convert to URL format
+  let url = filePath.replace(/\/?\+page\.md$/, "/")
+
+  // Handle root +page.md files
+  if (url === "+page.md" || url === "") {
+    url = "/"
+  }
+
+  // Remove parentheses from route groups
+  url = url.replace(/\([^)]*\)\//g, "")
+
+  // Clean up multiple slashes
+  url = url.replace(/\/+/g, "/")
+
+  // Ensure leading slash
+  if (!url.startsWith("/")) {
+    url = "/" + url
+  }
+
+  return url
+}
+
+// Function to generate store page CSV entries
+async function generateStoreEntries() {
+  const products = await getStoreProducts()
+
+  return [
+    { title: "Store", url: "/store/", classnames: "" },
+    ...products
+      .filter((product) => product.title)
+      .map((product) => ({
+        title: product.title,
+        url: `/store/${product._key}/`,
+        classnames: "",
+      })),
+  ]
+}
+
+export async function GET() {
+  try {
+    // Get all markdown files using the hybrid approach
+    const markdownFilesList = getAllMarkdownFiles()
+
+    const pageEntries = []
+    const headingEntries = []
+
+    // Add store entries first
+    const storeEntries = await generateStoreEntries()
+
+    // First pass: collect all page entries
+    for (const file of markdownFilesList) {
+      try {
+        const content = file.content
+        const frontmatter = parseFrontmatter(content)
+
+        // Get page title from frontmatter, SEO component, or visible h1
+        const title = getPageTitle(content, frontmatter)
+
+        // Convert file path to URL
+        const url = filePathToUrl(file.path)
+
+        let classnamesArr = []
+
+        // Special handling for /docs/utilities/: extract class names and CSS variables from tables
+        if (url === "/docs/utilities/") {
+          classnamesArr.push(...extractTableColumn(content, "Class Name"))
+          classnamesArr.push(...extractTableColumn(content, "CSS Variable"))
+          classnamesArr.push(...extractTableColumn(content, "Component")) // for component-specific CSS variables
+        }
+        // /docs/colors/: extract color names and CSS variables from tables
+        else if (url === "/docs/colors/") {
+          classnamesArr.push(...extractTableColumn(content, "Color name"))
+          classnamesArr.push(...extractTableColumn(content, "CSS variable"))
+        }
+        // /docs/base/: only include code (backtick) values from Name column
+        else if (url === "/docs/base/") {
+          classnamesArr.push(
+            ...extractTableColumn(content, "Name").filter((val) =>
+              /^`[^`]+`$/.test("`" + val + "`"),
+            ),
+          )
+        }
+        // Default: use frontmatter classnames
+        else if (frontmatter.classnames) {
+          for (const key in frontmatter.classnames) {
+            const arr = frontmatter.classnames[key]
+            if (Array.isArray(arr)) {
+              for (const entry of arr) {
+                if (entry.class) {
+                  classnamesArr.push(entry.class)
+                }
+              }
+            }
+          }
+        }
+
+        // Flatten and join all classnames
+        const classnamesStr = classnamesArr.join(" ").replace(/\s+/g, " ").trim()
+
+        // Add page entry
+        pageEntries.push({ title, url, classnames: classnamesStr })
+      } catch (fileError) {
+        console.error(`Error processing file ${file.path}:`, fileError)
+        // Continue processing other files
+      }
+    }
+
+    // Second pass: collect all heading entries
+    for (const file of markdownFilesList) {
+      try {
+        const content = file.content
+        const headings = extractHeadings(content)
+        const url = filePathToUrl(file.path)
+
+        // Add heading entries (no classnames)
+        headings.forEach((heading) => {
+          headingEntries.push({
+            title: heading.title,
+            url: `${url}#${heading.anchor}`,
+            classnames: "",
+          })
+        })
+      } catch (fileError) {
+        console.error(`Error processing file ${file.path}:`, fileError)
+        // Continue processing other files
+      }
+    }
+
+    const csvContent = serializeSearchCsv([
+      ...initialSearchEntries,
+      ...storeEntries,
+      ...pageEntries,
+      ...headingEntries,
+    ])
+
+    return new Response(csvContent, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    })
+  } catch (error) {
+    console.error("Error generating CSV search data:", error)
+    return new Response("Error generating CSV search data", {
+      status: 500,
+      headers: {
+        "Content-Type": "text/plain",
+      },
+    })
+  }
+}

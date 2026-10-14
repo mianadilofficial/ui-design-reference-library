@@ -1,0 +1,69 @@
+.label {
+  @layer daisyui.l1.l2.l3 {
+    @apply inline-flex items-center gap-1.5 whitespace-nowrap text-current/60;
+    &:has(input) {
+      @apply cursor-pointer;
+    }
+    &:is(.input > *, .select > *) {
+      @apply flex h-[calc(100%-0.5rem)] items-center px-3 whitespace-nowrap;
+      font-size: inherit;
+      &:first-child {
+        @apply -ms-3 me-3;
+        border-inline-end: var(--border) solid color-mix(in oklab, currentColor 10%, #0000);
+      }
+      &:last-child {
+        @apply ms-3 -me-3;
+        border-inline-start: var(--border) solid color-mix(in oklab, currentColor 10%, #0000);
+      }
+    }
+  }
+}
+.floating-label {
+  @layer daisyui.l1.l2.l3 {
+    @apply relative flex;
+    ::placeholder {
+      transition:
+        top 0.1s ease-out,
+        translate 0.1s ease-out,
+        scale 0.1s ease-out,
+        opacity 0.1s ease-out;
+    }
+    > span {
+      @apply bg-base-100 absolute start-3 z-1 px-1 opacity-0;
+      font-size: var(--font-size, 0.875rem);
+      top: calc(var(--size-field, 0.25rem) * var(--top-mul, 5));
+      line-height: 1;
+      border-radius: 2px;
+      pointer-events: none;
+      translate: 0 -50%;
+      transition:
+        top 0.1s ease-out,
+        translate 0.1s ease-out,
+        scale 0.1s ease-out,
+        opacity 0.1s ease-out;
+    }
+    &:focus-within,
+    &:not(:has(input:placeholder-shown, textarea:placeholder-shown)) {
+      ::placeholder {
+        @apply opacity-0;
+        top: 0;
+        translate: -12.5% calc(-50% - 0.125em);
+        scale: 0.75;
+        pointer-events: auto;
+      }
+      > span {
+        @apply opacity-100;
+        top: 0;
+        translate: -12.5% calc(-50% - 0.125em);
+        scale: 0.75;
+        pointer-events: auto;
+        z-index: 2;
+      }
+    }
+    &:has(:disabled, [disabled]) {
+      > span {
+        @apply opacity-0;
+      }
+    }
+  }
+}
