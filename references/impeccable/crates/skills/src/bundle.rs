@@ -304,7 +304,7 @@ fn download_remote_bundle(
     keys: Result<TrustedKeys, String>,
 ) -> Result<String, String> {
     keys.and_then(|keys| download_and_extract_signed_bundle(sys, fetch, &keys))
-        .map_err(|e| format!("{}{e}. Nothing was installed; retry or update the CLI. If this persists, report it at https://github.com/pbakaus/impeccable/issues/479", bundle_signature::ERROR_PREFIX))
+        .map_err(|e| format!("{}{e}. Nothing was installed; retry or update the CLI. If this persists, report it at https://github.com/pbakaus/impeccable/issues/new", bundle_signature::ERROR_PREFIX))
 }
 
 fn download_and_extract_signed_bundle(

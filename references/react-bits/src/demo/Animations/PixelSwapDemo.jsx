@@ -1,212 +1,206 @@
-import { useMemo } from 'react';
-import { Box } from '@chakra-ui/react';
+import { Box, Flex } from '@chakra-ui/react';
+
 import { CodeTab, PreviewTab, TabsLayout } from '../../components/common/TabsLayout';
 import CodeExample from '../../components/code/CodeExample';
 import PropTable from '../../components/common/Preview/PropTable';
-import Dependencies from '../../components/code/Dependencies';
 import Customize from '../../components/common/Preview/Customize';
 import PreviewSlider from '../../components/common/Preview/PreviewSlider';
 import PreviewSelect from '../../components/common/Preview/PreviewSelect';
 import PreviewSwitch from '../../components/common/Preview/PreviewSwitch';
+import RefreshButton from '../../components/common/Preview/RefreshButton';
 import useComponentProps from '../../hooks/useComponentProps';
+import useForceRerender from '../../hooks/useForceRerender';
 import { ComponentPropsProvider } from '../../components/context/ComponentPropsContext';
 
 import PixelSwap from '../../content/Animations/PixelSwap/PixelSwap';
 import { pixelSwap } from '../../constants/code/Animations/pixelSwapCode';
-import './PixelSwapDemo.css';
 
-const DEFAULT_PROPS = {
-  pattern: 'random',
-  trigger: 'hover',
-  pixelSize: 64,
+const LOOK = {
+  pattern: 'pointer',
+  pixelSize: 48,
   gap: 0,
   pixelRadius: 0,
+  pixelScale: 0,
   pixelSpin: 0,
-  pixelScale: 0.35,
-  duration: 1400,
-  pixelDuration: 450,
-  randomness: 0,
-  fade: true
+  duration: 400,
+  pixelDuration: 350,
+  randomness: 0.2,
+  bounce: 0.3
 };
 
+const DEFAULT_PROPS = {
+  preset: 'pixels',
+  ...LOOK,
+  trigger: 'hover',
+  intro: true
+};
+
+const PRESETS = {
+  pixels: {},
+  dots: { pixelSize: 32, gap: 4, pixelRadius: 50, randomness: 0.3 },
+  spin: { pixelSize: 64, pixelSpin: 90 },
+  scatter: { pattern: 'random', pixelSize: 40, pixelScale: 0.35, duration: 600, randomness: 0 },
+  blocks: { pixelSize: 96, gap: 8, pixelRadius: 20, bounce: 0.5 }
+};
+
+const PRESET_OPTIONS = [
+  { value: 'pixels', label: 'Pixels' },
+  { value: 'dots', label: 'Dots' },
+  { value: 'spin', label: 'Spin' },
+  { value: 'scatter', label: 'Scatter' },
+  { value: 'blocks', label: 'Blocks' }
+];
+
+const PATTERN_OPTIONS = [
+  { value: 'pointer', label: 'Pointer' },
+  { value: 'random', label: 'Random' },
+  { value: 'center', label: 'Center' },
+  { value: 'edges', label: 'Edges' },
+  { value: 'left-to-right', label: 'Left to Right' },
+  { value: 'right-to-left', label: 'Right to Left' },
+  { value: 'top-to-bottom', label: 'Top to Bottom' },
+  { value: 'bottom-to-top', label: 'Bottom to Top' },
+  { value: 'diagonal', label: 'Diagonal' },
+  { value: 'spiral', label: 'Spiral' }
+];
+
+const TRIGGER_OPTIONS = [
+  { value: 'hover', label: 'Hover' },
+  { value: 'click', label: 'Click' }
+];
+
 const propData = [
-  { name: 'firstContent', type: 'ReactNode', default: '—', description: 'Content shown in the initial state.' },
-  { name: 'secondContent', type: 'ReactNode', default: '—', description: 'Content revealed after the pixel cover.' },
+  { name: 'firstContent', type: 'ReactNode', default: '-', description: 'Content shown at rest.' },
+  { name: 'secondContent', type: 'ReactNode', default: '-', description: 'Content that builds in pixel by pixel.' },
+  {
+    name: 'pattern',
+    type: "'pointer' | 'random' | 'center' | 'edges' | 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top' | 'diagonal' | 'spiral'",
+    default: "'pointer'",
+    description: 'Order the pixels arrive in. Pointer starts the wave where the cursor enters, leaves or clicks.'
+  },
   {
     name: 'pixelSize',
     type: 'number',
-    default: '64',
-    description: 'Square pixel edge length in pixels. Grown automatically when the grid would exceed 320 pixels.'
+    default: '48',
+    description: 'Edge length of each pixel in px. Grows automatically when the grid would pass 600 pixels.'
   },
-  { name: 'gap', type: 'number', default: '0', description: 'Space between pixels in pixels.' },
+  { name: 'gap', type: 'number', default: '0', description: 'Space between pixels in px while they grow.' },
   {
     name: 'pixelRadius',
     type: 'number',
     default: '0',
-    description: 'Corner rounding of each pixel as a percentage (0 = square, 50 = circle).'
+    description: 'Corner rounding of the pixels while they grow, as a percentage. 50 starts them as dots.'
   },
   {
     name: 'pixelScale',
     type: 'number',
-    default: '0.35',
-    description: 'Size each pixel starts at, relative to its final size.'
+    default: '0',
+    description: 'Size each pixel pops in at, from 0 to grow out of nothing to 0.9 for a hard pop.'
   },
-  {
-    name: 'fade',
-    type: 'boolean',
-    default: 'true',
-    description: 'Fade each pixel in as it opens. Disable for a hard pixel pop.'
-  },
-  { name: 'duration', type: 'number', default: '1400', description: 'Total transition duration in milliseconds.' },
-  {
-    name: 'pixelDuration',
-    type: 'number',
-    default: '450',
-    description: 'Time a single pixel takes to open, in milliseconds.'
-  },
-  {
-    name: 'pattern',
-    type: '"random" | "center" | "edges" | "left-to-right" | "right-to-left" | "top-to-bottom" | "bottom-to-top" | "diagonal" | "spiral"',
-    default: 'random',
-    description: 'Order in which pixels animate.'
-  },
+  { name: 'pixelSpin', type: 'number', default: '0', description: 'Degrees each pixel turns as it grows in.' },
+  { name: 'duration', type: 'number', default: '400', description: 'Time in ms the wave takes to cross the content.' },
+  { name: 'pixelDuration', type: 'number', default: '350', description: 'Time in ms a single pixel takes to grow.' },
   {
     name: 'randomness',
     type: 'number',
-    default: '0',
-    description: 'Noise mixed into the pattern order, from 0 (strict) to 1 (fully scattered).'
+    default: '0.2',
+    description: 'Noise mixed into the pattern, from 0 for a clean wave to 1 for a scatter.'
   },
   {
-    name: 'pixelSpin',
+    name: 'bounce',
     type: 'number',
-    default: '0',
-    description: 'Degrees each pixel rotates as it opens.'
-  },
-  {
-    name: 'easing',
-    type: 'string',
-    default: 'cubic-bezier(0.22, 1, 0.36, 1)',
-    description: 'Easing applied to each pixel as it opens.'
+    default: '0.3',
+    description: 'How far each pixel overshoots before it settles, from 0 to 1.'
   },
   {
     name: 'trigger',
-    type: '"hover" | "click" | "manual"',
-    default: 'hover',
-    description: 'Interaction that requests a content swap.'
+    type: "'hover' | 'click' | 'none'",
+    default: "'hover'",
+    description: 'What starts the swap. With none, drive it with active.'
   },
-  {
-    name: 'initialActive',
-    type: 'boolean',
-    default: 'false',
-    description: 'Whether the second content is initially visible.'
-  },
+  { name: 'intro', type: 'boolean', default: 'true', description: 'Builds the first content in from pixels on mount.' },
+  { name: 'initialActive', type: 'boolean', default: 'false', description: 'Starts on the second content.' },
   {
     name: 'active',
     type: 'boolean',
-    default: '—',
-    description: 'Controlled active state. Use with trigger="manual" for external control.'
+    default: '-',
+    description: 'Controls which content shows. Pair it with onActiveChange.'
   },
   {
     name: 'onActiveChange',
     type: '(active: boolean) => void',
-    default: '—',
-    description: 'Called whenever an interaction requests a state change.'
+    default: '-',
+    description: 'Called when the trigger asks to swap.'
   },
-  {
-    name: 'onComplete',
-    type: '(active: boolean) => void',
-    default: '—',
-    description: 'Called once the incoming content is fully revealed.'
-  },
-  { name: 'aspectRatio', type: 'string', default: '16 / 10', description: 'CSS aspect-ratio value for the wrapper.' },
-  { name: 'className', type: 'string', default: '—', description: 'Additional class names for the wrapper.' },
-  { name: 'style', type: 'CSSProperties', default: '—', description: 'Inline styles for the wrapper.' }
+  { name: 'onComplete', type: '(active: boolean) => void', default: '-', description: 'Called when a swap finishes.' },
+  { name: 'aspectRatio', type: 'string', default: "'16 / 10'", description: 'Aspect ratio of the root.' },
+  { name: 'className', type: 'string', default: "''", description: 'Extra class names for the root.' },
+  { name: 'style', type: 'CSSProperties', default: '-', description: 'Inline styles for the root.' }
 ];
 
-const PixelSwapDemo = () => {
-  const { props, updateProp, resetProps, hasChanges } = useComponentProps(DEFAULT_PROPS);
-  const {
-    pattern,
-    trigger,
-    pixelSize,
-    gap,
-    pixelRadius,
-    pixelSpin,
-    pixelScale,
-    duration,
-    pixelDuration,
-    randomness,
-    fade
-  } = props;
+const Photo = ({ src }) => (
+  <img
+    src={src}
+    alt=""
+    draggable={false}
+    style={{ display: 'block', width: '100%', height: '100%', objectFit: 'cover' }}
+  />
+);
 
-  const hint = useMemo(() => (trigger === 'click' ? 'Click the card' : 'Hover the card'), [trigger]);
+const PixelSwapDemo = () => {
+  const [key, forceRerender] = useForceRerender();
+  const { props, defaultProps, updateProp, updateProps, resetProps, hasChanges } = useComponentProps(DEFAULT_PROPS);
+  const { preset, ...settings } = props;
+
+  const applyPreset = value => {
+    const base = Object.fromEntries(Object.keys(LOOK).map(name => [name, defaultProps[name]]));
+    updateProps({ ...base, ...PRESETS[value], preset: value });
+    forceRerender();
+  };
 
   return (
-    <ComponentPropsProvider props={props} defaultProps={DEFAULT_PROPS} resetProps={resetProps} hasChanges={hasChanges}>
+    <ComponentPropsProvider
+      props={props}
+      defaultProps={DEFAULT_PROPS}
+      resetProps={resetProps}
+      hasChanges={hasChanges}
+      demoOnlyProps={['preset']}
+    >
       <TabsLayout>
         <PreviewTab>
-          <Box className="demo-container" minH={500} p={{ base: 4, md: 8 }}>
-            <PixelSwap
-              key={trigger}
-              trigger={trigger}
-              firstContent={
-                <div className="pixel-swap-demo__panel pixel-swap-demo__panel--first">
-                  <span className="pixel-swap-demo__eyebrow">{hint}</span>
-                  <h3 className="pixel-swap-demo__title">Use React Bits</h3>
-                </div>
-              }
-              secondContent={
-                <div className="pixel-swap-demo__panel pixel-swap-demo__panel--second">
-                  <span className="pixel-swap-demo__eyebrow">Now go and</span>
-                  <h3 className="pixel-swap-demo__title">Build anything</h3>
-                </div>
-              }
-              pattern={pattern}
-              pixelSize={pixelSize}
-              gap={gap}
-              pixelRadius={pixelRadius}
-              pixelSpin={pixelSpin}
-              pixelScale={pixelScale}
-              duration={duration}
-              pixelDuration={pixelDuration}
-              randomness={randomness}
-              fade={fade}
-              className="pixel-swap-demo"
-            />
-          </Box>
+          <Flex position="relative" className="demo-container" h={460} p="24px" align="center" justify="center">
+            <Box w="100%" maxW="560px">
+              <PixelSwap
+                key={key}
+                firstContent={<Photo src="/assets/demo/day-sky.webp" />}
+                secondContent={<Photo src="/assets/demo/night-sky.webp" />}
+                style={{ borderRadius: 18, cursor: settings.trigger === 'click' ? 'pointer' : 'default' }}
+                {...settings}
+              />
+            </Box>
+            <RefreshButton onClick={forceRerender} />
+          </Flex>
 
           <Customize>
+            <PreviewSelect title="Preset" options={PRESET_OPTIONS} value={preset} onChange={applyPreset} />
             <PreviewSelect
               title="Pattern"
-              value={pattern}
-              options={[
-                { label: 'Random', value: 'random' },
-                { label: 'Center Out', value: 'center' },
-                { label: 'Edges In', value: 'edges' },
-                { label: 'Left to Right', value: 'left-to-right' },
-                { label: 'Right to Left', value: 'right-to-left' },
-                { label: 'Top to Bottom', value: 'top-to-bottom' },
-                { label: 'Bottom to Top', value: 'bottom-to-top' },
-                { label: 'Diagonal', value: 'diagonal' },
-                { label: 'Spiral', value: 'spiral' }
-              ]}
+              options={PATTERN_OPTIONS}
+              value={settings.pattern}
               onChange={value => updateProp('pattern', value)}
             />
             <PreviewSelect
               title="Trigger"
-              value={trigger}
-              options={[
-                { label: 'Hover', value: 'hover' },
-                { label: 'Click', value: 'click' }
-              ]}
+              options={TRIGGER_OPTIONS}
+              value={settings.trigger}
               onChange={value => updateProp('trigger', value)}
             />
             <PreviewSlider
               title="Pixel Size"
-              min={24}
-              max={120}
-              step={4}
-              value={pixelSize}
+              min={16}
+              max={128}
+              step={2}
+              value={settings.pixelSize}
               valueUnit="px"
               onChange={value => updateProp('pixelSize', value)}
             />
@@ -215,7 +209,7 @@ const PixelSwapDemo = () => {
               min={0}
               max={16}
               step={1}
-              value={gap}
+              value={settings.gap}
               valueUnit="px"
               onChange={value => updateProp('gap', value)}
             />
@@ -224,43 +218,42 @@ const PixelSwapDemo = () => {
               min={0}
               max={50}
               step={1}
-              value={pixelRadius}
+              value={settings.pixelRadius}
               valueUnit="%"
               onChange={value => updateProp('pixelRadius', value)}
             />
             <PreviewSlider
               title="Pixel Scale"
-              min={0.05}
-              max={1}
-              step={0.05}
-              value={pixelScale}
-              displayValue={value => value.toFixed(2)}
+              min={0}
+              max={0.9}
+              step={0.01}
+              value={settings.pixelScale}
               onChange={value => updateProp('pixelScale', value)}
             />
             <PreviewSlider
               title="Pixel Spin"
-              min={0}
+              min={-180}
               max={180}
               step={5}
-              value={pixelSpin}
-              displayValue={value => `${value}°`}
+              value={settings.pixelSpin}
+              valueUnit="°"
               onChange={value => updateProp('pixelSpin', value)}
             />
             <PreviewSlider
               title="Duration"
-              min={400}
-              max={4000}
-              step={100}
-              value={duration}
+              min={0}
+              max={1500}
+              step={10}
+              value={settings.duration}
               valueUnit="ms"
               onChange={value => updateProp('duration', value)}
             />
             <PreviewSlider
               title="Pixel Duration"
-              min={100}
+              min={120}
               max={1200}
-              step={50}
-              value={pixelDuration}
+              step={10}
+              value={settings.pixelDuration}
               valueUnit="ms"
               onChange={value => updateProp('pixelDuration', value)}
             />
@@ -268,17 +261,29 @@ const PixelSwapDemo = () => {
               title="Randomness"
               min={0}
               max={1}
-              step={0.05}
-              value={randomness}
-              displayValue={value => value.toFixed(2)}
-              isDisabled={pattern === 'random'}
+              step={0.01}
+              value={settings.randomness}
               onChange={value => updateProp('randomness', value)}
             />
-            <PreviewSwitch title="Fade" isChecked={fade} onChange={value => updateProp('fade', value)} />
+            <PreviewSlider
+              title="Bounce"
+              min={0}
+              max={0.8}
+              step={0.01}
+              value={settings.bounce}
+              onChange={value => updateProp('bounce', value)}
+            />
+            <PreviewSwitch
+              title="Intro"
+              isChecked={settings.intro}
+              onChange={value => {
+                updateProp('intro', value);
+                forceRerender();
+              }}
+            />
           </Customize>
 
           <PropTable data={propData} />
-          <Dependencies dependencyList={[]} />
         </PreviewTab>
 
         <CodeTab>

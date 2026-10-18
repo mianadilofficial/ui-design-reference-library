@@ -1,4 +1,3 @@
-import { componentMetadata } from './Information.js';
 // Used for main sidebar navigation
 export const CATEGORIES = [
   {
@@ -63,7 +62,6 @@ export const CATEGORIES = [
       'Orbit Images',
       'Pixel Transition',
       'Glare Hover',
-      'Antigravity',
       'Logo Loop',
       'Target Cursor',
       'Laser Flow',
@@ -142,11 +140,12 @@ export const CATEGORIES = [
   },
   {
     name: 'Micro',
-    subcategories: ['Shredder', 'Paper Crumple', 'Tear Ticket', 'Flip Card', 'Branched Menu', 'Folder Float', 'Refine Frame', 'Thought Line', 'Voice Pill', 'Slosh Gauge', 'Prompt Bar', 'Swipe Toast', 'Sling Button', 'Bell Toggle', 'Call Chip', 'Status Mark', 'Glide Select', 'Swipe Row', 'Jelly Radio', 'Comet Dial', 'Wake Slider', 'Code Slots', 'Dodge Field', 'Lattice Loader', 'Scrub Field', 'Fuse Button', 'Warm Tooltip', 'Slide Commit', 'Rubber Segment', 'Pulse Heart', 'Spring Check', 'Peek Rating', 'Hold Button', 'Squish Switch']
+    subcategories: ['Flying Button', 'Shredder', 'Paper Crumple', 'Tear Ticket', 'Flip Card', 'Branched Menu', 'Folder Float', 'Refine Frame', 'Thought Line', 'Voice Pill', 'Slosh Gauge', 'Prompt Bar', 'Swipe Toast', 'Sling Button', 'Bell Toggle', 'Call Chip', 'Status Mark', 'Glide Select', 'Swipe Row', 'Jelly Radio', 'Comet Dial', 'Wake Slider', 'Code Slots', 'Dodge Field', 'Lattice Loader', 'Scrub Field', 'Fuse Button', 'Warm Tooltip', 'Slide Commit', 'Rubber Segment', 'Pulse Heart', 'Spring Check', 'Peek Rating', 'Hold Button', 'Squish Switch']
   },
   {
     name: 'Backgrounds',
     subcategories: [
+      'Gradient ASCII',
       'Flux Lines',
       'Pattern Waves',
       'Micro Slats',
@@ -168,6 +167,7 @@ export const CATEGORIES = [
       'Prism',
       'Dark Veil',
       'Light Pillar',
+      'Antigravity',
       'Silk',
       'Floating Lines',
       'Side Rays',
@@ -220,31 +220,3 @@ export const TOTAL_COMPONENTS = CATEGORIES.filter(category => category.name !== 
   (total, category) => total + category.subcategories.length,
   0
 );
-
-const NEW_FOR_DAYS = 30;
-const UPDATED_FOR_DAYS = 14;
-const DAY_MS = 86400000;
-const now = Date.now();
-const isRecent = (date, days) => Boolean(date) && now - Date.parse(`${date}T00:00:00Z`) < days * DAY_MS;
-const toSlug = value => value.replace(/\s+/g, '-').toLowerCase();
-const latestUpdate = meta => (meta.updates || []).reduce((latest, update) => (update.date > latest ? update.date : latest), '');
-
-const metadataByPath = new Map(
-  Object.entries(componentMetadata).map(([key, meta]) => [new URL(meta.docsUrl).pathname, { key, meta }])
-);
-
-const catalog = CATEGORIES.filter(category => category.name !== 'Get Started').flatMap(category =>
-  category.subcategories
-    .map(name => ({ name, entry: metadataByPath.get(`/${toSlug(category.name)}/${toSlug(name)}`) }))
-    .filter(({ entry }) => entry)
-);
-
-const recentlyAdded = catalog.filter(({ entry }) => isRecent(entry.meta.added, NEW_FOR_DAYS));
-const recentlyUpdated = catalog.filter(
-  ({ entry }) => !isRecent(entry.meta.added, NEW_FOR_DAYS) && isRecent(latestUpdate(entry.meta), UPDATED_FOR_DAYS)
-);
-
-export const NEW = recentlyAdded.map(({ name }) => name);
-export const NEW_KEYS = new Set(recentlyAdded.map(({ entry }) => entry.key));
-export const UPDATED = recentlyUpdated.map(({ name }) => name);
-export const UPDATED_KEYS = new Set(recentlyUpdated.map(({ entry }) => entry.key));

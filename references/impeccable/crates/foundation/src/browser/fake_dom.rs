@@ -59,6 +59,8 @@ pub struct FakeEl {
     pub image_complete: Option<bool>,
     /// [`Dom::image_current_src`].
     pub image_current_src: Option<String>,
+    /// [`Dom::video_ready_state`].
+    pub video_ready_state: Option<u8>,
     /// The shadow host of a shadow tree's top-level node.
     pub shadow_host: Option<ElId>,
     /// `assignedSlot`.
@@ -643,6 +645,9 @@ impl Dom for FakeDom {
     }
     fn image_current_src(&self, el: ElId) -> Option<String> {
         self.els[el as usize].image_current_src.clone()
+    }
+    fn video_ready_state(&self, el: ElId) -> Option<u8> {
+        self.els[el as usize].video_ready_state
     }
     fn direct_text_rect(&self, el: ElId) -> Option<Rect> {
         self.els[el as usize].direct_text_rect

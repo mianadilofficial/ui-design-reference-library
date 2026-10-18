@@ -1,159 +1,135 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-// Every pixel is a window onto its own copy of the incoming content, so the
-// grid stays bounded no matter how small the requested pixel size is.
-const MAX_PIXELS = 220;
-const KEYFRAME_STEPS = 14;
+const MAX_PIXELS = 600;
+const STEP = 1 / 240;
+const PATTERNS = [
+  'pointer',
+  'random',
+  'center',
+  'edges',
+  'left-to-right',
+  'right-to-left',
+  'top-to-bottom',
+  'bottom-to-top',
+  'diagonal',
+  'spiral'
+];
 
-const PATTERNS = {
-  random: () => null,
-  center: (x, y) => Math.hypot(x - 0.5, y - 0.5) / Math.SQRT1_2,
-  edges: (x, y) => Math.min(x, 1 - x, y, 1 - y) * 2,
-  'left-to-right': x => x,
-  'right-to-left': x => 1 - x,
-  'top-to-bottom': (_x, y) => y,
-  'bottom-to-top': (_x, y) => 1 - y,
-  diagonal: (x, y) => (x + y) / 2,
-  spiral: (x, y) => {
-    const angle = (Math.atan2(y - 0.5, x - 0.5) + Math.PI) / (Math.PI * 2);
-    const radius = Math.hypot(x - 0.5, y - 0.5) / Math.SQRT1_2;
-    return (angle + radius) % 1;
-  }
+const ROOT =
+  'relative isolate w-full overflow-hidden outline-none focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-current';
+const LAYER = 'absolute inset-0 h-full w-full data-[visible=false]:invisible';
+
+const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+
+const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+const smoothstep = (edge0, edge1, value) => {
+  const t = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+  return t * t * (3 - 2 * t);
 };
 
-const EASINGS = {
-  linear: [0, 0, 1, 1],
-  ease: [0.25, 0.1, 0.25, 1],
-  'ease-in': [0.42, 0, 1, 1],
-  'ease-out': [0, 0, 0.58, 1],
-  'ease-in-out': [0.42, 0, 0.58, 1]
+const hash = index => {
+  let h = Math.imul(index + 1, 0x27d4eb2d);
+  h = Math.imul(h ^ (h >>> 15), 0x85ebca6b);
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
 };
 
-const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+const round = value => Math.round(value * 10) / 10;
 
-const noise = seed => {
-  const value = Math.sin(seed * 127.1 + 311.7) * 43758.5453;
-  return value - Math.floor(value);
-};
-
-const makeEasing = value => {
-  const match = /cubic-bezier\(([^)]+)\)/.exec(value);
-  const points = match ? match[1].split(',').map(Number) : EASINGS[value];
-  if (!points || points.length !== 4 || points.some(Number.isNaN)) return makeEasing('ease');
-
-  const [x1, y1, x2, y2] = points;
-  if (x1 === y1 && x2 === y2) return progress => progress;
-
-  const cx = 3 * x1;
-  const bx = 3 * (x2 - x1) - cx;
-  const ax = 1 - cx - bx;
-  const cy = 3 * y1;
-  const by = 3 * (y2 - y1) - cy;
-  const ay = 1 - cy - by;
-
-  return progress => {
-    let t = progress;
-    for (let i = 0; i < 5; i += 1) {
-      const slope = (3 * ax * t + 2 * bx) * t + cx;
-      if (!slope) break;
-      t -= (((ax * t + bx) * t + cx) * t - progress) / slope;
-    }
-    t = clamp(t, 0, 1);
-    return ((ay * t + by) * t + cy) * t;
-  };
-};
-
-// Pixels grow slightly past their own box so gaps and rounded corners close
-// completely by the end. Overlap is invisible because every pixel shows the
-// same content locked to the same origin.
-const coverScale = (size, gap, radius) => {
-  const p = clamp(radius, 0, 50) / 100;
-  const corner = Math.SQRT1_2 / (Math.SQRT2 * (0.5 - p) + p);
-  return ((size + gap) / size) * Math.max(1, corner);
-};
-
-const buildGrid = ({ width, height, pixelSize, gap, pattern, randomness }) => {
+const buildGrid = (width, height, pixelSize, gap) => {
   let size = pixelSize;
   let columns = Math.max(1, Math.ceil((width + gap) / (size + gap)));
   let rows = Math.max(1, Math.ceil((height + gap) / (size + gap)));
-
   if (columns * rows > MAX_PIXELS) {
     size = Math.ceil(size * Math.sqrt((columns * rows) / MAX_PIXELS));
     columns = Math.max(1, Math.ceil((width + gap) / (size + gap)));
     rows = Math.max(1, Math.ceil((height + gap) / (size + gap)));
   }
-
-  // Overhang the box so edge pixels stay square instead of being cut short.
   const stride = size + gap;
-  const originX = (width - (columns * stride - gap)) / 2;
-  const originY = (height - (rows * stride - gap)) / 2;
-  const order = PATTERNS[pattern] ?? PATTERNS.random;
-  const mix = clamp(randomness, 0, 1);
-  const pixels = [];
-
-  for (let row = 0; row < rows; row += 1) {
-    for (let column = 0; column < columns; column += 1) {
+  const startX = (width - (columns * stride - gap)) / 2;
+  const startY = (height - (rows * stride - gap)) / 2;
+  const count = columns * rows;
+  const cx = new Float32Array(count);
+  const cy = new Float32Array(count);
+  const gx = new Float32Array(count);
+  const gy = new Float32Array(count);
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
       const index = row * columns + column;
-      const x = columns <= 1 ? 0.5 : column / (columns - 1);
-      const y = rows <= 1 ? 0.5 : row / (rows - 1);
-      const base = order(x, y);
-      const random = noise(index + 1);
-
-      pixels.push({
-        id: index,
-        left: originX + column * stride,
-        top: originY + row * stride,
-        offset: base === null ? random : base * (1 - mix) + random * mix
-      });
+      cx[index] = startX + column * stride + size / 2;
+      cy[index] = startY + row * stride + size / 2;
+      gx[index] = columns > 1 ? column / (columns - 1) : 0.5;
+      gy[index] = rows > 1 ? row / (rows - 1) : 0.5;
     }
   }
-
-  return { pixels, size, gap, width, height };
+  return { count, size, stride, gap, width, height, cx, cy, gx, gy };
 };
 
-// One shared pair of keyframe lists for the whole grid: the window transform
-// and its exact inverse, so revealed content never drifts or scales.
-const buildKeyframes = ({ ease, startScale, endScale, spin, fade }) => {
-  const window = [];
-  const content = [];
-
-  for (let step = 0; step <= KEYFRAME_STEPS; step += 1) {
-    const progress = step / KEYFRAME_STEPS;
-    const eased = ease(progress);
-    const scale = startScale + (endScale - startScale) * eased;
-    const angle = spin * (1 - eased);
-
-    window.push({
-      offset: progress,
-      opacity: fade ? Math.min(1, eased * 1.6) : 1,
-      transform: `rotate(${angle}deg) scale(${scale})`
-    });
-    content.push({
-      offset: progress,
-      transform: `scale(${1 / scale}) rotate(${-angle}deg)`
-    });
+const orderOf = (grid, index, pattern, point) => {
+  const x = grid.gx[index];
+  const y = grid.gy[index];
+  if (pattern === 'random') return hash(index + 11);
+  if (pattern === 'center') return Math.hypot(x - 0.5, y - 0.5) / Math.SQRT1_2;
+  if (pattern === 'edges') return 1 - Math.min(x, 1 - x, y, 1 - y) * 2;
+  if (pattern === 'left-to-right') return x;
+  if (pattern === 'right-to-left') return 1 - x;
+  if (pattern === 'top-to-bottom') return y;
+  if (pattern === 'bottom-to-top') return 1 - y;
+  if (pattern === 'diagonal') return (x + y) / 2;
+  if (pattern === 'spiral') {
+    const angle = (Math.atan2(y - 0.5, x - 0.5) + Math.PI) / (Math.PI * 2);
+    return (angle + Math.hypot(x - 0.5, y - 0.5) / Math.SQRT1_2) / 2;
   }
+  const px = point ? point.x : grid.width / 2;
+  const py = point ? point.y : grid.height / 2;
+  const reach = Math.max(
+    Math.hypot(px, py),
+    Math.hypot(grid.width - px, py),
+    Math.hypot(px, grid.height - py),
+    Math.hypot(grid.width - px, grid.height - py),
+    1
+  );
+  return Math.hypot(grid.cx[index] - px, grid.cy[index] - py) / reach;
+};
 
-  return { window, content };
+const pixelPath = (x, y, half, radius, angle) => {
+  if (!angle) {
+    const x0 = round(x - half);
+    const x1 = round(x + half);
+    const y0 = round(y - half);
+    const y1 = round(y + half);
+    if (radius < 0.2) return `M${x0} ${y0}H${x1}V${y1}H${x0}Z`;
+    const r = round(radius);
+    return `M${round(x0 + r)} ${y0}H${round(x1 - r)}A${r} ${r} 0 0 1 ${x1} ${round(y0 + r)}V${round(y1 - r)}A${r} ${r} 0 0 1 ${round(x1 - r)} ${y1}H${round(x0 + r)}A${r} ${r} 0 0 1 ${x0} ${round(y1 - r)}V${round(y0 + r)}A${r} ${r} 0 0 1 ${round(x0 + r)} ${y0}Z`;
+  }
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const at = (u, v) => `${round(x + u * cos - v * sin)} ${round(y + u * sin + v * cos)}`;
+  const h = half;
+  if (radius < 0.2) return `M${at(-h, -h)}L${at(h, -h)}L${at(h, h)}L${at(-h, h)}Z`;
+  const r = round(radius);
+  const k = h - radius;
+  return `M${at(-k, -h)}L${at(k, -h)}A${r} ${r} 0 0 1 ${at(h, -k)}L${at(h, k)}A${r} ${r} 0 0 1 ${at(k, h)}L${at(-k, h)}A${r} ${r} 0 0 1 ${at(-h, k)}L${at(-h, -k)}A${r} ${r} 0 0 1 ${at(-k, -h)}Z`;
 };
 
 function PixelSwap({
   firstContent,
   secondContent,
-  pixelSize = 64,
+  pattern = 'pointer',
+  pixelSize = 48,
   gap = 0,
   pixelRadius = 0,
+  pixelScale = 0,
   pixelSpin = 0,
-  pixelScale = 0.35,
-  fade = true,
-  duration = 1400,
-  pixelDuration = 450,
-  pattern = 'random',
-  randomness = 0,
-  easing = 'cubic-bezier(0.22, 1, 0.36, 1)',
+  duration = 400,
+  pixelDuration = 350,
+  randomness = 0.2,
+  bounce = 0.3,
   trigger = 'hover',
+  intro = true,
   initialActive = false,
   active,
   onActiveChange,
@@ -162,227 +138,296 @@ function PixelSwap({
   className = '',
   style
 }) {
-  const [internalActive, setInternalActive] = useState(initialActive);
-  const [shownActive, setShownActive] = useState(active ?? initialActive);
-  const [transition, setTransition] = useState(null);
-  const [box, setBox] = useState({ width: 0, height: 0 });
-
-  const containerRef = useRef(null);
+  const controlled = active !== undefined;
+  const [shown, setShown] = useState(controlled ? active : initialActive);
+  const rootRef = useRef(null);
   const layerRefs = useRef([]);
-  const pixelRefs = useRef([]);
-  const animationsRef = useRef([]);
-  const timerRef = useRef(0);
+  const shownRef = useRef(shown);
+  const desiredRef = useRef(shown);
+  const pointRef = useRef(null);
+  const engineRef = useRef(null);
+  const waitingRef = useRef(false);
 
-  const desiredActive = active ?? internalActive;
-  const incomingIndex = transition?.to ? 1 : 0;
+  const settings = {
+    pattern: PATTERNS.includes(pattern) ? pattern : 'pointer',
+    pixelSize: Math.max(8, Math.round(pixelSize)),
+    gap: Math.max(0, gap),
+    pixelRadius: clamp(pixelRadius, 0, 50),
+    pixelScale: clamp(pixelScale, 0, 0.9),
+    pixelSpin: (clamp(pixelSpin, -360, 360) * Math.PI) / 180,
+    duration: Math.max(0, duration),
+    pixelDuration: Math.max(60, pixelDuration),
+    randomness: clamp(randomness, 0, 1),
+    bounce: clamp(bounce, 0, 1),
+    onComplete
+  };
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
 
-  const grid = useMemo(
-    () =>
-      buildGrid({
-        width: box.width,
-        height: box.height,
-        pixelSize: Math.max(8, Math.round(pixelSize)),
-        gap: Math.max(0, Math.round(gap)),
-        pattern,
-        randomness
-      }),
-    [box.width, box.height, pixelSize, gap, pattern, randomness]
-  );
+  const setLayer = (index, visible, clip) => {
+    const layer = layerRefs.current[index];
+    if (!layer) return;
+    layer.setAttribute('data-visible', String(visible));
+    layer.style.clipPath = clip || '';
+  };
 
-  // Snapshot the animation inputs so a transition already in flight is never
-  // rebuilt halfway through by an unrelated prop change.
-  const config = { duration, pixelDuration, pixelSpin, pixelScale, pixelRadius, fade, easing, onComplete };
-  const configRef = useRef(config);
-  const gridRef = useRef(grid);
-  configRef.current = config;
-  gridRef.current = grid;
-
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    // Measure the padding box, which is the coordinate space the absolutely
-    // positioned layers and pixel grid actually live in.
-    const measure = () => {
-      const width = container.clientWidth;
-      const height = container.clientHeight;
-      if (!width || !height) return;
-      setBox(current => (current.width === width && current.height === height ? current : { width, height }));
-    };
-
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(container);
-    return () => observer.disconnect();
-  }, []);
-
-  const stopAnimations = useCallback(() => {
-    animationsRef.current.forEach(animation => animation.cancel());
-    animationsRef.current = [];
-    pixelRefs.current.forEach(pixel => pixel?.replaceChildren());
-    if (timerRef.current) window.clearTimeout(timerRef.current);
-    timerRef.current = 0;
-  }, []);
-
-  useEffect(() => stopAnimations, [stopAnimations]);
-
-  useEffect(() => {
-    if (transition || desiredActive === shownActive) return;
-    setTransition({ to: desiredActive, grid: gridRef.current });
-  }, [desiredActive, shownActive, transition]);
-
-  useEffect(() => {
-    if (!transition) return;
-    const settings = configRef.current;
-    const { grid: frozenGrid, to } = transition;
-
-    const finish = () => {
-      stopAnimations();
-      setShownActive(to);
-      setTransition(null);
-      settings.onComplete?.(to);
-    };
-
-    const source = layerRefs.current[to ? 1 : 0];
-    if (!source || !frozenGrid.pixels.length || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      finish();
+  const finish = () => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    engine.running = false;
+    rootRef.current?.removeAttribute('data-swapping');
+    if (engine.mode === 'intro') {
+      setLayer(0, !shownRef.current, '');
+      engine.mode = 'swap';
+      if (desiredRef.current !== shownRef.current) requestRef.current(desiredRef.current, pointRef.current);
       return;
     }
+    const target = engine.desired === 1;
+    setLayer(1, target, '');
+    setLayer(0, !target, '');
+    shownRef.current = target;
+    setShown(target);
+    settingsRef.current.onComplete?.(target);
+  };
 
-    const total = Math.max(200, settings.duration);
-    const pixelMs = clamp(settings.pixelDuration, 60, total);
-    const spread = Math.max(0, total - pixelMs);
-    const endScale = coverScale(frozenGrid.size, frozenGrid.gap, settings.pixelRadius);
-    const keyframes = buildKeyframes({
-      ease: makeEasing(settings.easing),
-      startScale: clamp(settings.pixelScale, 0.05, 1) * endScale,
-      endScale,
-      spin: settings.pixelSpin,
-      fade: settings.fade
+  const frame = now => {
+    const engine = engineRef.current;
+    if (!engine) return;
+    const s = settingsRef.current;
+    const grid = engine.grid;
+    const { value, velocity, flipAt, target } = engine;
+    const elapsed = clamp((now - engine.last) / 1000, 0, 1 / 20);
+    engine.last = now;
+    const omega = (Math.PI * 2) / (s.pixelDuration / 1000);
+    const zeta = clamp(1 - s.bounce, 0.15, 1);
+    const steps = Math.max(1, Math.ceil(elapsed / STEP));
+    const dt = elapsed / steps;
+    const pop = s.pixelScale;
+    const half = grid.size / 2;
+    const cover = grid.gap / 2 + 0.5;
+    let moving = false;
+    let path = '';
+
+    for (let i = 0; i < grid.count; i++) {
+      if (now >= flipAt[i] && target[i] !== engine.desired) {
+        target[i] = engine.desired;
+        if (target[i] === 1 && value[i] < pop) value[i] = pop;
+      }
+      let x = value[i];
+      let v = velocity[i];
+      const goal = target[i];
+      for (let n = 0; n < steps; n++) {
+        v += (-omega * omega * (x - goal) - 2 * zeta * omega * v) * dt;
+        x += v * dt;
+      }
+      if (goal === 0 && x <= pop) {
+        x = 0;
+        v = 0;
+      }
+      if (Math.abs(x - goal) > 0.001 || Math.abs(v) > 0.01 || now < flipAt[i]) moving = true;
+      else {
+        x = goal;
+        v = 0;
+      }
+      value[i] = x;
+      velocity[i] = v;
+      if (x <= 0.002) continue;
+      const size = Math.min(x * 1.08, 1.25) * (half + cover * smoothstep(0.6, 0.93, x));
+      const radius = Math.min(size, (s.pixelRadius / 50) * size * (1 - smoothstep(0.6, 0.93, x)));
+      path += pixelPath(grid.cx[i], grid.cy[i], size, radius, s.pixelSpin * (1 - x));
+    }
+
+    const layer = engine.mode === 'intro' ? 0 : 1;
+    setLayer(layer, path !== '', path ? `path('${path}')` : '');
+
+    if (moving) engine.raf = requestAnimationFrame(frame);
+    else finish();
+  };
+
+  const launch = (mode, to, point) => {
+    const root = rootRef.current;
+    const s = settingsRef.current;
+    let engine = engineRef.current;
+    const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+    const width = root?.clientWidth ?? 0;
+    const height = root?.clientHeight ?? 0;
+    if (!root || reduce || !width || !height) return false;
+
+    const now = performance.now();
+    if (!engine?.running) {
+      const grid = buildGrid(width, height, s.pixelSize, s.gap);
+      const start = mode === 'intro' ? 0 : shownRef.current ? 1 : 0;
+      engine = {
+        mode,
+        grid,
+        value: new Float32Array(grid.count).fill(start),
+        velocity: new Float32Array(grid.count),
+        flipAt: new Float64Array(grid.count),
+        target: new Uint8Array(grid.count).fill(start),
+        desired: start,
+        last: now,
+        running: true,
+        raf: engineRef.current?.raf ?? 0
+      };
+      engineRef.current = engine;
+    }
+    engine.desired = to ? 1 : 0;
+    const grid = engine.grid;
+    const orders = new Float32Array(grid.count);
+    let first = Infinity;
+    for (let i = 0; i < grid.count; i++) {
+      orders[i] = orderOf(grid, i, s.pattern, point) * (1 - s.randomness) + hash(i) * s.randomness;
+      const settled = engine.target[i] === engine.desired && Math.abs(engine.value[i] - engine.desired) < 0.001;
+      if (!settled) first = Math.min(first, orders[i]);
+    }
+    if (first === Infinity) first = 0;
+    for (let i = 0; i < grid.count; i++) engine.flipAt[i] = now + Math.max(0, orders[i] - first) * s.duration;
+    root.setAttribute('data-swapping', '');
+    if (mode === 'swap') setLayer(0, true, '');
+    cancelAnimationFrame(engine.raf);
+    engine.raf = requestAnimationFrame(frame);
+    return true;
+  };
+
+  const request = (to, point) => {
+    const engine = engineRef.current;
+    if (waitingRef.current || (engine?.running && engine.mode === 'intro')) return;
+    if (!engine?.running && shownRef.current === to) return;
+    if (launch('swap', to, point)) return;
+    setLayer(1, to, '');
+    setLayer(0, !to, '');
+    shownRef.current = to;
+    setShown(to);
+    settingsRef.current.onComplete?.(to);
+  };
+  const requestRef = useRef(request);
+  requestRef.current = request;
+
+  const ask = (next, point) => {
+    desiredRef.current = next;
+    pointRef.current = point;
+    onActiveChange?.(next);
+    if (!controlled) request(next, point);
+  };
+
+  const launchRef = useRef(launch);
+  launchRef.current = launch;
+
+  useIsoLayoutEffect(() => {
+    if (!intro || shownRef.current) return;
+    const images = [...(layerRefs.current[0]?.querySelectorAll('img') ?? [])].filter(image => !image.complete);
+    let started = false;
+    let timer = 0;
+    const begin = () => {
+      if (started) return;
+      started = true;
+      clearTimeout(timer);
+      waitingRef.current = false;
+      if (launchRef.current('intro', true, null)) return;
+      setLayer(0, true, '');
+      if (desiredRef.current !== shownRef.current) requestRef.current(desiredRef.current, pointRef.current);
+    };
+    setLayer(0, false, '');
+    if (!images.length) {
+      begin();
+      return undefined;
+    }
+    waitingRef.current = true;
+    let left = images.length;
+    const settle = () => {
+      left -= 1;
+      if (left <= 0) begin();
+    };
+    images.forEach(image => {
+      image.addEventListener('load', settle, { once: true });
+      image.addEventListener('error', settle, { once: true });
     });
+    timer = setTimeout(begin, 3000);
+    return () => {
+      started = true;
+      clearTimeout(timer);
+      waitingRef.current = false;
+      images.forEach(image => {
+        image.removeEventListener('load', settle);
+        image.removeEventListener('error', settle);
+      });
+    };
+  }, []);
 
-    frozenGrid.pixels.forEach((pixel, index) => {
-      const pixelElement = pixelRefs.current[index];
-      if (!pixelElement) return;
+  useEffect(() => {
+    if (active === undefined) return;
+    desiredRef.current = active;
+    requestRef.current(active, pointRef.current);
+  }, [active]);
 
-      // Clone the rendered layer instead of re-rendering the content through
-      // React once per pixel: same visual result, a fraction of the cost.
-      const content = document.createElement('div');
-      content.className = 'absolute';
-      content.style.left = `${-pixel.left}px`;
-      content.style.top = `${-pixel.top}px`;
-      content.style.width = `${frozenGrid.width}px`;
-      content.style.height = `${frozenGrid.height}px`;
-      // Counter-transform about the pixel's centre, not the content's, so the
-      // two transforms cancel to an exact identity at every frame.
-      const originX = pixel.left + frozenGrid.size / 2;
-      const originY = pixel.top + frozenGrid.size / 2;
-      content.style.transformOrigin = `${originX}px ${originY}px`;
-
-      const clone = source.cloneNode(true);
-      clone.classList.remove('invisible');
-      clone.dataset.visible = 'true';
-      clone.removeAttribute('aria-hidden');
-      content.appendChild(clone);
-      pixelElement.replaceChildren(content);
-
-      const timing = { duration: pixelMs, delay: pixel.offset * spread, easing: 'linear', fill: 'both' };
-      animationsRef.current.push(
-        pixelElement.animate(keyframes.window, timing),
-        content.animate(keyframes.content, timing)
-      );
-    });
-
-    timerRef.current = window.setTimeout(finish, total);
-    return stopAnimations;
-  }, [stopAnimations, transition]);
-
-  const requestActive = useCallback(
-    next => {
-      if (active === undefined) setInternalActive(next);
-      onActiveChange?.(next);
+  useEffect(
+    () => () => {
+      const engine = engineRef.current;
+      if (!engine) return;
+      cancelAnimationFrame(engine.raf);
+      engine.running = false;
     },
-    [active, onActiveChange]
+    []
   );
 
-  const interactionProps = useMemo(() => {
-    if (trigger === 'hover') {
-      return {
-        onMouseEnter: () => requestActive(true),
-        onMouseLeave: () => requestActive(false),
-        onFocus: () => requestActive(true),
-        onBlur: () => requestActive(false),
-        tabIndex: 0
-      };
-    }
-
-    if (trigger === 'click') {
-      return {
-        onClick: () => requestActive(!desiredActive),
-        onKeyDown: event => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            requestActive(!desiredActive);
-          }
-        },
-        role: 'button',
-        tabIndex: 0
-      };
-    }
-
-    return {};
-  }, [desiredActive, requestActive, trigger]);
-
-  const renderLayer = (content, index) => {
-    const isShown = index === (shownActive ? 1 : 0);
-    return (
-      <div
-        key={index}
-        ref={element => {
-          layerRefs.current[index] = element;
-        }}
-        className="absolute inset-0 h-full w-full data-[visible=false]:invisible"
-        data-visible={isShown && !(transition && index === incomingIndex)}
-        style={{ zIndex: isShown ? 2 : 1 }}
-        aria-hidden={!isShown}
-      >
-        {content}
-      </div>
-    );
+  const pointOf = event => {
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (!rect || (event.detail === 0 && event.clientX === 0 && event.clientY === 0)) return null;
+    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
+
+  const handlers = {};
+  if (trigger === 'hover') {
+    handlers.onPointerEnter = event => {
+      if (event.pointerType !== 'touch') ask(true, pointOf(event));
+    };
+    handlers.onPointerLeave = event => {
+      if (event.pointerType !== 'touch') ask(false, pointOf(event));
+    };
+    handlers.onClick = event => {
+      const native = event.nativeEvent;
+      const touch = 'pointerType' in native && native.pointerType === 'touch';
+      if (event.detail === 0 || touch) ask(!desiredRef.current, pointOf(event));
+    };
+    handlers.onFocus = event => {
+      if (event.target === event.currentTarget && event.currentTarget.matches(':focus-visible')) ask(true, null);
+    };
+    handlers.onBlur = () => ask(false, null);
+    handlers.tabIndex = 0;
+  } else if (trigger === 'click') {
+    handlers.onClick = event => ask(!desiredRef.current, pointOf(event));
+    handlers.onKeyDown = event => {
+      if (event.key !== 'Enter' && event.key !== ' ') return;
+      event.preventDefault();
+      ask(!desiredRef.current, null);
+    };
+    handlers.role = 'button';
+    handlers.tabIndex = 0;
+    handlers['aria-pressed'] = shown;
+  }
 
   return (
     <div
-      ref={containerRef}
-      className={`relative isolate w-full overflow-hidden outline-none ${className}`.trim()}
+      ref={rootRef}
+      className={[ROOT, className].filter(Boolean).join(' ')}
       style={{ aspectRatio, ...style }}
-      data-active={shownActive}
-      data-transitioning={!!transition}
-      {...interactionProps}
+      data-active={shown ? '' : undefined}
+      {...handlers}
     >
-      {renderLayer(firstContent, 0)}
-      {renderLayer(secondContent, 1)}
-
-      {transition && (
-        <div className="pointer-events-none absolute inset-0 z-[3]" aria-hidden="true">
-          {transition.grid.pixels.map((pixel, index) => (
-            <div
-              key={pixel.id}
-              ref={element => {
-                pixelRefs.current[index] = element;
-              }}
-              className="absolute overflow-hidden opacity-0 [contain:paint]"
-              style={{
-                left: pixel.left,
-                top: pixel.top,
-                width: transition.grid.size,
-                height: transition.grid.size,
-                borderRadius: `${clamp(pixelRadius, 0, 50)}%`
-              }}
-            />
-          ))}
+      {[firstContent, secondContent].map((content, index) => (
+        <div
+          key={index}
+          ref={element => {
+            layerRefs.current[index] = element;
+          }}
+          className={LAYER}
+          style={{ zIndex: index }}
+          data-visible={String(index === (shown ? 1 : 0))}
+          aria-hidden={index !== (shown ? 1 : 0)}
+        >
+          {content}
         </div>
-      )}
+      ))}
     </div>
   );
 }

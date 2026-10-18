@@ -422,11 +422,11 @@ export function LineChart({ data, series, label, unit = "", height = 220, format
       </div>
     </div>
     <p className={styles.srOnly}>{summary}</p>
-    {!empty && <table className={styles.srOnly}>
+    {!empty && <div className={styles.srOnly}><table>
       <caption>{label}</caption>
       <thead><tr><th scope="col">{categoryLabel}</th>{series.map(line => <th key={line.key} scope="col">{line.label}</th>)}</tr></thead>
       <tbody>{data.map(item => <tr key={item.key}><th scope="row">{item.label}</th>{series.map(line => <td key={line.key}>{format(item.values[line.key] ?? 0, line)}</td>)}</tr>)}</tbody>
-    </table>}
+    </table></div>}
     <p className={styles.srOnly} aria-live="polite" aria-atomic="true">{loading ? "Loading" : ""}</p>
   </figure>;
 }

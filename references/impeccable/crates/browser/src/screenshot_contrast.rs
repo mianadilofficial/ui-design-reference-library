@@ -438,6 +438,13 @@ pub fn clip_beyond_content(clip: &Clip, content: (f64, f64)) -> bool {
     clip.y + clip.height > height + 4.0 || clip.x >= width
 }
 
+/// Whether `clip` lies inside `view` (`x, y, width, height`, capture
+/// coordinates), allowing the rounding a clip carries.
+fn clip_within(clip: &Clip, view: (f64, f64, f64, f64)) -> bool {
+    let (x, y, w, h) = view;
+    clip.x >= x - 1.0 && clip.y >= y - 1.0 && clip.x + clip.width <= x + w + 1.0 && clip.y + clip.height <= y + h + 1.0
+}
+
 /// For a clip past the content box, scroll its element into view and return
 /// the candidate with the clip measured there. `None` leaves the page as it
 /// was: nothing moved, or nothing to move.
@@ -448,9 +455,18 @@ fn bring_into_view(
     viewport_width: f64,
     origin_x: f64,
 ) -> Option<(Value, Clip)> {
-    let content = page.content_size().ok()?;
-    if !clip_beyond_content(clip, content) {
-        return None;
+    // An attached page is read as it is on screen (no beyond-viewport
+    // capture), so a clip outside the visual viewport needs bringing in too.
+    let off_screen = page.is_attached()
+        && page
+            .viewport_metrics()
+            .ok()
+            .is_some_and(|((vx, vy, vw, vh), _)| !clip_within(clip, (vx - origin_x, vy, vw, vh)));
+    if !off_screen {
+        let content = page.content_size().ok()?;
+        if !clip_beyond_content(clip, content) {
+            return None;
+        }
     }
     let selector = candidate
         .get("selector")
@@ -613,7 +629,7 @@ fn measure_candidate(
 /// The pixel pass's snippet. The verdict and the median print against the
 /// threshold ([`impeccable_core::color::ratio_label`]), so a verdict just
 /// under the bar never reads as the bar itself.
-fn pixel_contrast_snippet(
+pub(crate) fn pixel_contrast_snippet(
     measured: f64,
     median: f64,
     threshold: &Value,

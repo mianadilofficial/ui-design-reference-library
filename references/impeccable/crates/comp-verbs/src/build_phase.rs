@@ -107,12 +107,33 @@ fn load_state(io: &Io) -> Option<Value> {
     serde_json::from_str(&raw).ok()
 }
 
+/// The build state records the direction's seed key, the key the roll API
+/// saw, and timestamps, so it is runtime state: its directory keeps a
+/// `.gitignore` naming `state.json` (and only that, the rest of
+/// `.impeccable/build/` being left to the project).
 fn save_state(io: &Io, state: &Value) {
     let p = abs(io, &state_path());
     if let Some(parent) = p.parent() {
         let _ = std::fs::create_dir_all(parent);
+        impeccable_common::git::ensure_dir_ignored(&parent.to_string_lossy(), &["state.json"]);
     }
     let _ = std::fs::write(p, util::json_pretty(state));
+}
+
+/// The seed reference the state records for `--direction`: a reference
+/// (`seed:` + 16 lowercase hex) or `none` as given, a raw seed key as the
+/// reference the shared locator gives it (`impeccable_common::seed::
+/// reference_for_key`, the same answer concept-seed printed for that key),
+/// so the build state never holds the key the roll API saw. With no
+/// reference to give (no salt on this machine) a raw key becomes `none`,
+/// never an unsalted hash. The direction is only ever shown, never
+/// resolved, so nothing is lost.
+fn seed_reference(io: &Io, v: &str) -> String {
+    if v == "none" || impeccable_common::seed::parse_reference(v).is_some() {
+        return v.to_string();
+    }
+    let home = io.home().map(|h| h.to_string_lossy().into_owned()).unwrap_or_default();
+    impeccable_common::seed::reference_for_key(&home, &io.cwd.to_string_lossy(), io.env("IMPECCABLE_SEED_SALT"), v).unwrap_or_else(|| "none".to_string())
 }
 
 fn new_state(comp: Option<&str>, breakpoint: Option<&str>, artifact: Option<&str>, direction: Option<&str>) -> Value {
@@ -1473,7 +1494,7 @@ fn finish_native_capture(io: &Io, out_dir: &str, gate: &mut Gate, native: &Nativ
             // No raster region, so no presence or placement check ran; say so.
             json!({"directory":native.directory,"inputs":inputs,"integrityScope":"assembled-page viewport from frozen inputs; the comp and approved screenshots are never served to the page; no raster presence or placement check (no raster region); existing visual scores unchanged","adequateVisibility":"not-established-by-integrity-checks-alone"})
         } else {
-            json!({"directory":native.directory,"inputs":inputs,"integrityScope":"rendered presence and minimum frame placement; existing visual scores unchanged","framePolicy":"central-half-with-1px-quantization-tolerance","adequateVisibility":"not-established-by-integrity-checks-alone"})
+            json!({"directory":native.directory,"inputs":inputs,"integrityScope":"rendered presence and minimum frame placement; the comp and approved screenshots are never served to the page; existing visual scores unchanged","framePolicy":"central-half-with-1px-quantization-tolerance","adequateVisibility":"not-established-by-integrity-checks-alone"})
         };
         report["gate"]["ok"] = json!(gate.ok);
         report["gate"]["reasons"] = json!(gate.reasons);
@@ -2955,6 +2976,33 @@ mod transparency_guidance_tests {
     use super::*;
 
     #[test]
+    fn saving_the_state_keeps_it_out_of_git() {
+        let dir = std::env::temp_dir().join(format!("build-state-ignored-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let (io, _) = Io::captured("", dir.clone(), Default::default());
+        let (pinned, _) = Io::captured("", dir.clone(), [("IMPECCABLE_SEED_SALT".to_string(), "test-salt".to_string())].into_iter().collect());
+        assert_eq!(seed_reference(&pinned, "seed:0123456789abcdef"), "seed:0123456789abcdef");
+        let r = seed_reference(&pinned, "3f9a1c2e");
+        assert_eq!(r, impeccable_common::seed::reference("test-salt", "3f9a1c2e"), "the reference concept-seed prints");
+        assert_eq!(seed_reference(&pinned, "none"), "none");
+        // No salt on this machine: a raw key is recorded as no seed, never as an unsalted hash.
+        let bad_home = dir.join("bad-home");
+        std::fs::create_dir_all(bad_home.join(".impeccable")).unwrap();
+        std::fs::write(bad_home.join(".impeccable/seed-salt"), "corrupt").unwrap();
+        let (nosalt, _) = Io::captured("", dir.clone(), [("HOME".to_string(), bad_home.to_string_lossy().into_owned()), ("USERPROFILE".to_string(), bad_home.to_string_lossy().into_owned())].into_iter().collect());
+        assert_eq!(seed_reference(&nosalt, "3f9a1c2e"), "none");
+        assert!(r.starts_with("seed:") && r.len() == 21 && !r.contains("3f9a1c2e"), "{r}");
+        save_state(&io, &new_state(None, None, None, Some("seed-1")));
+        let ignore = dir.join(".impeccable/build/.gitignore");
+        let expected = format!("{}\nstate.json\n", impeccable_common::git::RUNTIME_IGNORE_HEADER);
+        assert_eq!(std::fs::read_to_string(&ignore).unwrap(), expected);
+        save_state(&io, &new_state(None, None, None, Some("seed-1")));
+        assert_eq!(std::fs::read_to_string(&ignore).unwrap(), expected);
+        std::fs::remove_dir_all(dir).unwrap();
+    }
+
+    #[test]
     fn candidate_check_never_replaces_selection_or_persists_gate_receipts() {
         let dir = std::env::temp_dir().join(format!("plate-candidate-{}", std::process::id()));
         std::fs::create_dir_all(dir.join(BUILD_DIR)).unwrap();
@@ -3362,7 +3410,7 @@ pub fn run_with_renderer(argv: &[String],io: &mut Io,organic_scan: OrganicScan,r
             return 1;
         }
         if comp.is_none() && direction.is_none() {
-            io.err("build-phase: start needs --comp <approved comp png> (comp already approved) or --direction <seed key> (comp round still to run)\n");
+            io.err("build-phase: start needs --comp <approved comp png> (comp already approved) or --direction <seed reference, or none> (comp round still to run)\n");
             return 1;
         }
         if let Some(c) = comp {
@@ -3416,7 +3464,8 @@ pub fn run_with_renderer(argv: &[String],io: &mut Io,organic_scan: OrganicScan,r
             // A new comp round: the comp it approves is kept when the comps gate closes.
             None => crate::approved_comp::forget(io),
         }
-        let mut state = new_state(comp, breakpoint.as_deref(), arg(argv, "artifact"), direction);
+        let direction_ref = direction.map(|d| seed_reference(io, d));
+        let mut state = new_state(comp, breakpoint.as_deref(), arg(argv, "artifact"), direction_ref.as_deref());
         if let Some(d) = chosen_decision { state["decisionComp"] = json!(d); }
         if io.env("IMPECCABLE_NATIVE_CAPTURE")==Some("1") {state["capturePolicy"]=json!("native-html-v1");}
         // Session identity is transport metadata, never guessed from a project

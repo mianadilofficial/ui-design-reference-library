@@ -8,26 +8,26 @@
   },
   "arc-library": {
     "branch": "main",
-    "commit": "86330cc9270c4acc55b7204c9583fcbaa378192c",
-    "date": "2026-10-09",
+    "commit": "b40c8906e8cc55cba920113be856b2e6d964885a",
+    "date": "2026-10-18",
     "repo": "kuratlielia/arc-library"
   },
   "audiocn-ui": {
     "branch": "main",
-    "commit": "4234aa114b8696e2704db7825c1289cf74d1e4f2",
-    "date": "2026-10-07",
+    "commit": "521c03f636a4e2cf14a25b79c5838223a3fd6ae8",
+    "date": "2026-10-18",
     "repo": "audiocn/ui"
   },
   "diagram-design": {
     "branch": "main",
-    "commit": "7a2e22170ee838e859d8142ba825d83f8b6375e6",
-    "date": "2026-10-10",
+    "commit": "550fd66edff058bc73056c3416b76d69cfe865ba",
+    "date": "2026-10-18",
     "repo": "cathrynlavery/diagram-design"
   },
   "emilkowalski-skills": {
     "branch": "main",
-    "commit": "e8a175de22ae1e49370fc144c1f3bb9aeedf988d",
-    "date": "2026-10-02",
+    "commit": "2d228630ba1446365f614a108cb8252f1feda202",
+    "date": "2026-10-18",
     "repo": "emilkowalski/skills"
   },
   "generativecharts": {
@@ -38,26 +38,26 @@
   },
   "impeccable": {
     "branch": "main",
-    "commit": "d631a8827f99414d2b6daba4ef08b7f8701751d7",
-    "date": "2026-10-08",
+    "commit": "08d5b470495d242ca0470f4aeae1956c3a074f83",
+    "date": "2026-10-18",
     "repo": "pbakaus/impeccable"
   },
   "inspira-ui": {
     "branch": "main",
-    "commit": "04c57ab62b9713872ebbf68988dff1836ed3d764",
-    "date": "2026-09-18",
+    "commit": "eec920b047589058b4b02ba64deb614869e7237a",
+    "date": "2026-10-18",
     "repo": "unovue/inspira-ui"
   },
   "lenis": {
     "branch": "main",
-    "commit": "bc152f90d7c9b04ef372718350e2f616f3c706b2",
-    "date": "2026-10-01",
+    "commit": "e01eefb1f55cd08bc051521d74f5f8182b71ee9d",
+    "date": "2026-10-18",
     "repo": "darkroomengineering/lenis"
   },
   "taste-skill": {
     "branch": "main",
-    "commit": "717446e07a78d4e6d7918b1fde1a263378eebac9",
-    "date": "2026-10-09",
+    "commit": "f624f37a8c650b9cc550253104925efe4c8de246",
+    "date": "2026-10-18",
     "repo": "Leonxlnx/taste-skill"
   },
   "ui-ux-pro-max-skill": {
@@ -81,8 +81,8 @@
   "magicui": {
     "repo": "dillionverma/magicui",
     "branch": "main",
-    "commit": "cdb348cb4c72a9b54b554d8617801e479fbc8714",
-    "date": "2026-10-05"
+    "commit": "efe76fc5755eca1142dd4f74c1d6f0ace2887e3c",
+    "date": "2026-10-18"
   },
   "realworld": {
     "repo": "gothinkster/realworld",
@@ -105,8 +105,8 @@
   "full-stack-fastapi-template": {
     "repo": "fastapi/full-stack-fastapi-template",
     "branch": "master",
-    "commit": "7257e606cb94eada1dca40173e2b7f99dd549bc6",
-    "date": "2026-10-08"
+    "commit": "b1125d8839482cb7bbae603ddc6d0081bf87532e",
+    "date": "2026-10-18"
   },
   "node-api-boilerplate": {
     "repo": "talyssonoc/node-api-boilerplate",
@@ -141,8 +141,8 @@
   "heroui": {
     "repo": "heroui-inc/heroui",
     "branch": "v3",
-    "commit": "ece1e4e15ea5d21e86cc4dcd11dd21647f96c678",
-    "date": "2026-10-09"
+    "commit": "ce90ea3ab49d58f6c428f71bfd6fe8ae2a87b960",
+    "date": "2026-10-18"
   },
   "go-clean-arch": {
     "repo": "bxcodec/go-clean-arch",
@@ -164,20 +164,20 @@
   },
   "motion": {
     "branch": "main",
-    "commit": "2b68ca99c8cc12fb95554c293253dc154267f728",
-    "date": "2026-10-14",
+    "commit": "2d27b041114f5f1cffc1f6d3ad522929ce0cc41f",
+    "date": "2026-10-18",
     "repo": "motiondivision/motion"
   },
   "react-bits": {
     "branch": "main",
-    "commit": "496968c4117e21278f13917201b7d615bc5e7450",
-    "date": "2026-10-12",
+    "commit": "310fc737fadcaa149a4e06fb088fc95332dc8bfb",
+    "date": "2026-10-18",
     "repo": "DavidHDev/react-bits"
   },
   "mantine": {
     "branch": "master",
-    "commit": "e243f7f999b3250c0babe6c6aa6dba9bcb4aa836",
-    "date": "2026-10-11",
+    "commit": "2d0a040f42011e791caf0bc56b9fbdd36ce55cef",
+    "date": "2026-10-18",
     "repo": "mantinedev/mantine"
   }
 }

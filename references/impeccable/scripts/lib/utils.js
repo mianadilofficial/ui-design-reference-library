@@ -415,7 +415,7 @@ export const PROVIDER_PLACEHOLDERS = {
   'claude-code': {
     model: 'Claude',
     config_file: 'CLAUDE.md',
-    ask_instruction: 'STOP and call the AskUserQuestion tool to clarify.',
+    ask_instruction: 'Ask with the AskUserQuestion tool and wait for the answer before continuing.',
     command_prefix: '/'
   },
   'cursor': {
@@ -427,7 +427,7 @@ export const PROVIDER_PLACEHOLDERS = {
   'dsh': {
     model: 'DeepSeek',
     config_file: 'AGENTS.md',
-    ask_instruction: 'STOP and call the ask_user_question tool to clarify.',
+    ask_instruction: 'Ask with the ask_user_question tool and wait for the answer before continuing.',
     command_prefix: '/'
   },
   'gemini': {
@@ -443,7 +443,7 @@ export const PROVIDER_PLACEHOLDERS = {
     // {{ask_instruction}} call site is sentence-initial. That is enforced by
     // validateAskInstructionSites() in scripts/build.js, not left to authors:
     // four reference files had already spliced the placeholder mid-sentence.
-    ask_instruction: "STOP and use Codex's structured user-input/question tool when available; if unavailable, ask directly in chat to clarify what you cannot infer.",
+    ask_instruction: "Ask with Codex's structured user-input/question tool when available, or directly in chat if it is not, and wait for the answer before continuing.",
     command_prefix: '$'
   },
   'agents': {
@@ -461,10 +461,16 @@ export const PROVIDER_PLACEHOLDERS = {
   opencode: {
     model: 'Claude',
     config_file: 'AGENTS.md',
-    ask_instruction: 'STOP and call the `question` tool to clarify.',
+    ask_instruction: 'Ask with the `question` tool and wait for the answer before continuing.',
     command_prefix: '/'
   },
   'pi': {
+    model: 'the model',
+    config_file: 'AGENTS.md',
+    ask_instruction: 'Ask the user directly to clarify what you cannot infer.',
+    command_prefix: '/'
+  },
+  'omp': {
     model: 'the model',
     config_file: 'AGENTS.md',
     ask_instruction: 'Ask the user directly to clarify what you cannot infer.',
@@ -503,7 +509,7 @@ export const PROVIDER_PLACEHOLDERS = {
   'grok': {
     model: 'Grok',
     config_file: 'AGENTS.md',
-    ask_instruction: 'STOP and call the AskUserQuestion tool to clarify.',
+    ask_instruction: 'Ask with the AskUserQuestion tool and wait for the answer before continuing.',
     command_prefix: '/'
   },
   'antigravity': {
@@ -538,6 +544,7 @@ export const PROVIDER_BLOCK_TAGS = new Set([
   'kiro',
   'opencode',
   'pi',
+  'omp',
   'qoder',
   'rovo-dev',
   'trae',

@@ -66,6 +66,7 @@ extern "C" {
     fn image_natural_size(el: u32) -> Vec<f64>;
     fn image_complete(el: u32) -> i32;
     fn image_current_src(el: u32) -> Option<String>;
+    fn video_ready_state(el: u32) -> i32;
     fn direct_text_rect(el: u32) -> Vec<f64>;
     fn running_animation_properties(el: u32) -> Option<String>;
     fn text_rects(el: u32) -> Vec<f64>;
@@ -401,6 +402,12 @@ impl Dom for JsDom {
     }
     fn image_current_src(&self, el: ElId) -> Option<String> {
         image_current_src(el)
+    }
+    fn video_ready_state(&self, el: ElId) -> Option<u8> {
+        match video_ready_state(el) {
+            v @ 0..=4 => Some(v as u8),
+            _ => None,
+        }
     }
     fn direct_text_rect(&self, el: ElId) -> Option<Rect> {
         let v = direct_text_rect(el);

@@ -458,7 +458,11 @@ fn stop(argv: &[String], cwd: &str, io: &mut Io) -> i32 {
         Some(port) => println(io, &format!("Stopped live server on port {}.", port)),
         None => println(io, "No running live server found."),
     }
-    if !keep_inject {
+    // No live config means nothing was ever injected (inject reads its target
+    // files from that config), so there is no tag to remove and nothing to
+    // report (#951).
+    let injectable = std::path::Path::new(&crate::paths::resolve_live_config_path(cwd, &env)).exists();
+    if !keep_inject && injectable {
         // JS: execFileSync(node, [live-inject.mjs, '--remove'], { cwd })
         // with the child's stderr inherited.
         let (mut child_io, captured) = Io::captured("", std::path::PathBuf::from(cwd), env.clone());

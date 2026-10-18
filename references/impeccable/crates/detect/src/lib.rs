@@ -10,6 +10,7 @@
 //! [`engines::Engines`]. crates/html depends on this crate for the design
 //! system types and helpers ([`design_system`]).
 
+pub mod cdp_endpoint;
 pub mod cli;
 pub mod config;
 pub mod design_system;
@@ -67,6 +68,7 @@ Commands:
   link                             Symlink skills from a local checkout or submodule
   update                           Update skills to the latest version
   check                            Check if skill updates are available
+  telemetry off|on|status          Turn the roll API's anonymous usage data off or on, or show it
 
 Options:
   --help       Show this help message

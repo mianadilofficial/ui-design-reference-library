@@ -4,7 +4,7 @@
 - **Author:** darkroom.engineering
 - **Original URL:** https://github.com/darkroomengineering/lenis
 - **License:** MIT License — see `LICENSE` in this folder (Copyright (c) 2024 darkroom.engineering)
-- **Mirrored snapshot:** commit `bc152f90d7c9b04ef372718350e2f616f3c706b2` (2026-10-01), shallow clone (`--depth 1`)
+- **Mirrored snapshot:** commit `e01eefb1f55cd08bc051521d74f5f8182b71ee9d` (2026-10-18), shallow clone (`--depth 1`)
 - **What it is:** Buttery-smooth scroll library for the web — the standard choice for premium-feeling page scroll, parallax and scroll-driven animation.
 - **Why it's here:** Motion reference for scroll experience — agents building high-end landing pages can study its patterns for scroll-driven storytelling.
 

@@ -16,6 +16,15 @@ const COMSPEC = process.env.ComSpec || process.env.COMSPEC || 'C:\\Windows\\Syst
 const PAYLOAD = WINDOWS ? fs.readFileSync(COMSPEC) : Buffer.from('#!/bin/sh\necho verified-engine\n');
 const HASH = createHash('sha256').update(PAYLOAD).digest('hex');
 
+// The run's in-flight download: a .impeccable.part.<id> file (sh) or the
+// impeccable.exe inside a .impeccable.part.<id> directory (cmd).
+function stagedDownload(cacheDir) {
+  const name = fs.readdirSync(cacheDir).find(file => file.startsWith('.impeccable.part.') && file !== '.impeccable.part.1');
+  assert.ok(name, 'a staging entry exists while the download is in flight');
+  const staged = path.join(cacheDir, name);
+  return fs.statSync(staged).isDirectory() ? path.join(staged, 'impeccable.exe') : staged;
+}
+
 async function exercise(t, scenario) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'impeccable-launcher-'));
   t.after(() => fs.rmSync(root, { recursive: true, force: true }));
@@ -35,15 +44,16 @@ async function exercise(t, scenario) {
     fs.mkdirSync(cache);
     fs.writeFileSync(path.join(cache, 'bin'), 'blocked');
   }
-  if (scenario === 'cache-write-failure') {
+  if (scenario === 'cache-write-failure') fs.mkdirSync(cacheDir, { recursive: true });
+  if (scenario === 'stale-staging') {
+    // Leftovers from an older launcher (fixed staging names) or a killed run
+    // must not block or be reused by a new download.
     fs.mkdirSync(cacheDir, { recursive: true });
-    if (WINDOWS) fs.mkdirSync(path.join(cacheDir, 'impeccable.exe.part'));
-  }
-  if (scenario === 'cache-readonly-file') {
-    fs.mkdirSync(cacheDir, { recursive: true });
-    const staging = path.join(cacheDir, 'impeccable.exe.part');
-    fs.writeFileSync(staging, 'read-only');
-    fs.chmodSync(staging, 0o444);
+    for (const name of ['impeccable.exe.part', 'impeccable.exe.sha256', '.impeccable.part.1']) {
+      const stale = path.join(cacheDir, name);
+      fs.writeFileSync(stale, 'stale');
+      fs.chmodSync(stale, 0o444);
+    }
   }
   const tools = path.join(root, 'tools');
   fs.mkdirSync(tools);
@@ -63,6 +73,14 @@ async function exercise(t, scenario) {
     const after = scenario === 'removed-after-move' ? 'rm -f "$3"\n' : scenario === 'emptied-after-move' ? ': > "$3"\n' : '';
     fs.writeFileSync(path.join(tools, 'mv'), scenario === 'move-failure' ? '#!/bin/sh\nexit 1\n' : `#!/bin/sh\n${before}/bin/mv "$@" || exit $?\n${after}`, { mode: 0o755 });
   }
+  if (WINDOWS && scenario === 'cache-write-failure') {
+    // The cmd launcher claims a fresh staging directory per run, so no
+    // pre-created path can collide with it; fail the claim itself instead.
+    const claim = 'mkdir "%staging%" >nul 2>nul';
+    const source = fs.readFileSync(launcher, 'utf8');
+    assert.equal(source.split(claim).length, 2, 'instrument exactly one claim');
+    fs.writeFileSync(launcher, source.replace(claim, 'cmd /c exit 1'));
+  }
   if (WINDOWS && (placementScenarios.includes(scenario) || ['hash-failure', 'removed-during-hash'].includes(scenario))) {
     // move is a cmd builtin and certutil is an .exe: PATH shims cannot
     // intercept them. Instrument ONLY the external-operation boundary in the
@@ -71,22 +89,22 @@ async function exercise(t, scenario) {
     const fault = path.join(tools, 'fault.cmd');
     const hashFault = ['hash-failure', 'removed-during-hash'].includes(scenario);
     const operation = hashFault
-      ? 'certutil -hashfile "%cached%.part" SHA256 >"%cached%.sha256" 2>nul'
-      : 'move /y "%cached%.part" "%cached%" >nul 2>nul';
+      ? 'certutil -hashfile "%part%" SHA256 >"%sidecar%" 2>nul'
+      : 'move /y "%part%" "%cached%" >nul 2>nul';
     let script;
     if (hashFault) {
-      script = `@echo off\n${scenario === 'removed-during-hash' ? 'del "%cached%.part" >nul 2>nul\n' : ''}echo hash header\necho ${HASH}\nexit /b 1\n`;
+      script = `@echo off\n${scenario === 'removed-during-hash' ? 'del "%part%" >nul 2>nul\n' : ''}echo hash header\necho ${HASH}\nexit /b 1\n`;
     } else if (scenario === 'move-failure') {
       script = '@echo off\nexit /b 1\n';
     } else {
-      const before = scenario === 'removed-before-move' ? 'del "%cached%.part" >nul 2>nul\n' : '';
+      const before = scenario === 'removed-before-move' ? 'del "%part%" >nul 2>nul\n' : '';
       const after = scenario === 'removed-after-move' ? 'del "%cached%" >nul 2>nul\n' : scenario === 'emptied-after-move' ? 'type nul >"%cached%"\n' : '';
       script = `@echo off\n${before}${operation}\nif errorlevel 1 exit /b 1\n${after}exit /b 0\n`;
     }
     fs.writeFileSync(fault, script.replaceAll('\n', '\r\n'));
     const source = fs.readFileSync(launcher, 'utf8');
     assert.equal(source.split(operation).length, 2, 'instrument exactly one operation');
-    const replacement = `call "${fault}"${hashFault ? ' >"%cached%.sha256" 2>nul' : ''}`;
+    const replacement = `call "${fault}"${hashFault ? ' >"%sidecar%" 2>nul' : ''}`;
     fs.writeFileSync(launcher, source.replace(operation, replacement));
   }
   const requests = [];
@@ -97,9 +115,9 @@ async function exercise(t, scenario) {
       return;
     }
     if (req.url.endsWith('.sha256')) {
-      const part = fs.readdirSync(cacheDir).find(file => file.includes('.part'));
-      if (scenario === 'removed') fs.unlinkSync(path.join(cacheDir, part));
-      if (scenario === 'emptied') fs.truncateSync(path.join(cacheDir, part));
+      const part = stagedDownload(cacheDir);
+      if (scenario === 'removed') fs.unlinkSync(part);
+      if (scenario === 'emptied') fs.truncateSync(part);
       res.writeHead(scenario === 'no-sidecar' ? 404 : 200);
       res.end(scenario === 'empty-sidecar' ? '' : `${scenario === 'mismatch' ? '0'.repeat(64) : HASH}  engine\n`);
     } else {
@@ -145,7 +163,7 @@ async function exercise(t, scenario) {
   return { ...result, files: fs.existsSync(cacheDir) ? fs.readdirSync(cacheDir) : [], requests, cacheDir };
 }
 
-for (const scenario of ['cache-directory-failure', 'cache-write-failure', 'download-failure', 'transport-failure', ...(WINDOWS ? ['cache-readonly-file'] : [])]) {
+for (const scenario of ['cache-directory-failure', 'cache-write-failure', 'download-failure', 'transport-failure']) {
   test(`launcher explains ${scenario} and how to retry setup`, async t => {
     const result = await exercise(t, scenario);
     assert.equal(result.status, 127, JSON.stringify(result));
@@ -172,6 +190,23 @@ test('launcher downloads and runs a verified executable', async t => {
   assert.match(result.stdout, /verified-engine/);
   assert.deepEqual(result.files, [WINDOWS ? 'impeccable.exe' : 'impeccable']);
   assert.equal(result.requests.length, 2);
+});
+
+test('launcher ignores stale staging files from older or killed runs', async t => {
+  const result = await exercise(t, 'stale-staging');
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /verified-engine/);
+  assert.deepEqual(result.files.sort(),
+    ['.impeccable.part.1', WINDOWS ? 'impeccable.exe' : 'impeccable', 'impeccable.exe.part', 'impeccable.exe.sha256'].sort(),
+    'the new download lands and leaves the leftovers untouched');
+});
+
+test('cmd launcher stages each run under its own name', () => {
+  // Concurrent first runs used to share %cached%.part and %cached%.sha256 (#1002).
+  const source = fs.readFileSync(path.join(ROOT, 'skill/scripts/impeccable.cmd'), 'utf8');
+  assert.doesNotMatch(source, /%cached%\.(part|sha256)/);
+  assert.match(source, /set "staging=[^"\n]*%RANDOM%/);
+  assert.match(source, /mkdir "%staging%" >nul 2>nul\r?\nif errorlevel 1 goto claim_staging/);
 });
 
 test('cmd launcher forwards engine exit code through cmd /c', { skip: WINDOWS ? false : 'Windows-only cmd /c exit-code forwarding' }, async t => {

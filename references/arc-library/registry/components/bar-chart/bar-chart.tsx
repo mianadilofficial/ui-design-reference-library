@@ -382,11 +382,11 @@ export function BarChart({ data, label, period, unit = "", averageLabel = "Daily
         onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={release} onPointerCancel={() => setActive(null)} onPointerLeave={event => { if (event.pointerType === "mouse") setActive(null); }} onKeyDown={onKeyDown} onBlur={() => setActive(null)}
         onFocus={event => { if (event.currentTarget.matches(":focus-visible") && last >= 0) setActive(current => current ?? last); }} />
     </div>
-    <table className={styles.srOnly}>
+    <div className={styles.srOnly}><table>
       <caption>{label}, {period}</caption>
       <thead><tr><th scope="col">{categoryLabel}</th><th scope="col">{label}</th></tr></thead>
       <tbody>{data.map(item => <tr key={item.key}><th scope="row">{item.label}</th><td>{formatValue(item.value)}{suffix}</td></tr>)}</tbody>
-    </table>
+    </table></div>
     <p className={styles.srOnly} aria-live="polite" aria-atomic="true">{known.changes ? `${period}. ${averageLabel} ${formatValue(Math.round(average))}${suffix}.` : ""}</p>
   </figure>;
 }

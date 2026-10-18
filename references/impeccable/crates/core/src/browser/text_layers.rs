@@ -193,6 +193,18 @@ fn masked(dom: &dyn Dom, node: ElId) -> bool {
     })
 }
 
+/// Whether a mask or a `clip-path` on `node` can leave part of its box
+/// unpainted, so its box covering something is no proof its paint does (a
+/// photo faded out by a `mask-image` gradient).
+pub(crate) fn masked_or_clipped(dom: &dyn Dom, node: ElId) -> bool {
+    masked(dom, node)
+        || ["clipPath", "webkitClipPath"].iter().any(|prop| {
+            let value = dom.style(node, prop);
+            let value = js::trim(&value);
+            !value.is_empty() && value != "none"
+        })
+}
+
 fn px(token: &str) -> Option<f64> {
     token
         .strip_suffix("px")
@@ -496,6 +508,11 @@ pub fn layers_at_text(
     };
     let points = occlusion_probe_points(&rect, vw, vh);
     if points.is_empty() || points.len() * 2 < occlusion_grid_size(&rect) {
+        // Below the fold no point is answered, but one layer can be read off
+        // the tree: a loaded picture a later sibling lays over the text.
+        if rect.top >= vh && covered_by_a_later_picture(dom, el) {
+            return TextLayers::Covered;
+        }
         return TextLayers::Undecided;
     }
     let answers: Vec<AtPoint> = points
@@ -516,4 +533,193 @@ pub fn layers_at_text(
     } else {
         TextLayers::Consistent
     }
+}
+
+/// The opacity a picture and the boxes between it and the sibling that holds
+/// it need for the picture to hide what is under it.
+const PICTURE_COVER_MIN_OPACITY: f64 = 0.95;
+
+/// Whether a picture URL may carry transparency. The engine cannot see a
+/// picture's alpha, so only a format that has none settles it: a JPEG, named
+/// by a `data:image/jpeg` URI or by a path (before any query or fragment,
+/// in any case) ending in `.jpg`, `.jpeg`, `.jpe`, `.jfif`, `.pjpeg` or
+/// `.pjp`. PNG, SVG, WebP, GIF and AVIF can all be transparent, and a URL
+/// that names no format (an image CDN's query, an empty source) is unknown,
+/// so every one of them may be, and such a picture is not taken to cover
+/// what lies beneath it.
+pub(crate) fn url_may_be_transparent(url: &str) -> bool {
+    let lower = url.trim().to_ascii_lowercase();
+    if let Some(data) = lower.strip_prefix("data:") {
+        let mime = data.split([';', ',']).next().unwrap_or("");
+        return !matches!(mime.trim(), "image/jpeg" | "image/jpg" | "image/pjpeg");
+    }
+    let path = lower.split(['?', '#']).next().unwrap_or("");
+    ![".jpg", ".jpeg", ".jpe", ".jfif", ".pjpeg", ".pjp"].iter().any(|ext| path.ends_with(ext))
+}
+
+/// `el`'s box cut to the overflow clip of every box from its parent up to
+/// and including `top`, axis by axis (`overflow` `hidden`, `clip`, `auto` or
+/// `scroll`, on a box that generates one of its own). Every clip on the way
+/// counts, even one an absolutely positioned box escapes: a smaller box
+/// covers less, which keeps a finding. A clip box the capture did not
+/// measure leaves nothing visible.
+pub(crate) fn visible_through_clips(dom: &dyn Dom, el: ElId, top: ElId) -> crate::browser::Rect {
+    let mut r = dom.rect(el);
+    if el == top {
+        return r;
+    }
+    let mut cur = dom.parent(el);
+    while let Some(c) = cur {
+        if super::painted::clips_contents(&dom.style(c, "display")) {
+            let (ox, oy) = super::painted::overflow_axes(dom, c);
+            let (clip_x, clip_y) = (super::painted::clips(&ox), super::painted::clips(&oy));
+            if clip_x || clip_y {
+                let cr = dom.rect(c);
+                if !cr.all_finite() {
+                    r.left = f64::NAN;
+                    return r;
+                }
+                if clip_x {
+                    r.left = r.left.max(cr.left);
+                    r.x = r.left;
+                    r.right = r.right.min(cr.right);
+                    r.width = (r.right - r.left).max(0.0);
+                }
+                if clip_y {
+                    r.top = r.top.max(cr.top);
+                    r.y = r.top;
+                    r.bottom = r.bottom.min(cr.bottom);
+                    r.height = (r.bottom - r.top).max(0.0);
+                }
+            }
+        }
+        if c == top {
+            break;
+        }
+        cur = dom.parent(c);
+    }
+    r
+}
+
+/// How far the picture's box may sit from the avatar box on each side.
+const AVATAR_BOX_SLACK: f64 = 3.0;
+
+/// The largest avatar box, on either axis.
+const AVATAR_MAX_SIDE: f64 = 160.0;
+
+/// The most characters initials run to, for a box larger than an avatar.
+const AVATAR_MAX_TEXT: usize = 3;
+
+/// Whether a later sibling of `el` lays a loaded picture over all of `el`'s
+/// text in the shape of an avatar: thingstohave.app's initials
+/// (`Avatar__Fallback`) under the photo the next sibling holds. The engine
+/// cannot see an image's alpha, and transparent pictures are common exactly
+/// where they lie over text (grain and texture overlays, frames, cut-out
+/// product shots), so the test keeps to the shape it was built for:
+///
+/// - the picture's box matches the box of `el`'s parent within
+///   [`AVATAR_BOX_SLACK`] on every side, and that box is no larger than
+///   [`AVATAR_MAX_SIDE`] on either axis or `el`'s text is at most
+///   [`AVATAR_MAX_TEXT`] characters (initials);
+/// - the picture is an `<img>` the capture saw complete with a size of its
+///   own, whose source is a JPEG ([`url_may_be_transparent`]), sized to
+///   cover (`object-fit` `fill` or `cover`), whose box, cut to every
+///   overflow clip between it and the sibling ([`visible_through_clips`]),
+///   covers the text within a pixel, and
+///   which neither it nor any box up to the sibling fades below
+///   [`PICTURE_COVER_MIN_OPACITY`];
+/// - the sibling is drawn over `el` (neither sets a `z-index`, the sibling
+///   is positioned or `el` is not, and in a flex or grid container CSS
+///   `order` does not put it first) and is painted.
+///
+/// An image whose load state was not recorded covers nothing.
+fn covered_by_a_later_picture(dom: &dyn Dom, el: ElId) -> bool {
+    let Some(parent) = dom.parent(el) else { return false };
+    let text = dom
+        .direct_text_rect(el)
+        .filter(|r| r.all_finite() && r.width > 0.0 && r.height > 0.0)
+        .unwrap_or_else(|| dom.rect(el));
+    if !text.all_finite() || text.width <= 0.0 || text.height <= 0.0 {
+        return false;
+    }
+    let host = dom.rect(parent);
+    if !host.all_finite() {
+        return false;
+    }
+    let small = host.width <= AVATAR_MAX_SIDE && host.height <= AVATAR_MAX_SIDE;
+    if !small && js::trim(&dom.text_content(el)).chars().count() > AVATAR_MAX_TEXT {
+        return false;
+    }
+    let positioned = |e: ElId| !matches!(dom.style(e, "position").as_str(), "static" | "");
+    let z_auto = |e: ElId| matches!(dom.style(e, "zIndex").as_str(), "auto" | "");
+    if !z_auto(el) {
+        return false;
+    }
+    let opaque = |e: ElId| {
+        let o = js::parse_float(&dom.style(e, "opacity"));
+        o.is_finite() && o >= PICTURE_COVER_MIN_OPACITY
+    };
+    let siblings = dom.children(parent);
+    let Some(at) = siblings.iter().position(|&c| c == el) else { return false };
+    siblings[at + 1..].iter().any(|&sib| {
+        if !z_auto(sib)
+            || !(positioned(sib) || !positioned(el))
+            || !super::painted::later_sibling_paints_after(dom, parent, el, sib)
+        {
+            return false;
+        }
+        if !super::painted::painted_at_capture(dom, sib) {
+            return false;
+        }
+        let pictures = if tag_lower(dom, sib) == "img" {
+            vec![sib]
+        } else {
+            dom.query_all(Some(sib), "img").unwrap_or_default()
+        };
+        pictures.into_iter().any(|img| {
+            let loaded = dom.image_complete(img) == Some(true)
+                && dom.image_natural_size(img).is_some_and(|(w, h)| w > 0.0 && h > 0.0);
+            if !loaded || !matches!(dom.style(img, "objectFit").as_str(), "fill" | "cover" | "") {
+                return false;
+            }
+            let src = dom.image_current_src(img).or_else(|| dom.attr(img, "src")).unwrap_or_default();
+            if url_may_be_transparent(&src) {
+                return false;
+            }
+            let r = dom.rect(img);
+            let matches_host = r.all_finite()
+                && (r.left - host.left).abs() <= AVATAR_BOX_SLACK
+                && (r.top - host.top).abs() <= AVATAR_BOX_SLACK
+                && (r.right - host.right).abs() <= AVATAR_BOX_SLACK
+                && (r.bottom - host.bottom).abs() <= AVATAR_BOX_SLACK;
+            if !matches_host {
+                return false;
+            }
+            // A wrapper with `overflow: hidden` narrower than the photo
+            // shows only part of it.
+            let r = visible_through_clips(dom, img, sib);
+            let covers = r.all_finite()
+                && r.left <= text.left + 1.0
+                && r.top <= text.top + 1.0
+                && r.right >= text.right - 1.0
+                && r.bottom >= text.bottom - 1.0;
+            if !covers || !super::painted::painted_at_capture(dom, img) {
+                return false;
+            }
+            // A `z-index` on the picture or a box under the sibling can put
+            // it behind the initials, and a mask or clip-path on the way can
+            // leave them showing.
+            let mut cur = Some(img);
+            while let Some(c) = cur {
+                if !opaque(c) || !z_auto(c) || masked_or_clipped(dom, c) {
+                    return false;
+                }
+                if c == sib {
+                    break;
+                }
+                cur = dom.parent(c);
+            }
+            true
+        })
+    })
 }

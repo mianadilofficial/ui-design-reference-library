@@ -254,6 +254,74 @@ def main() -> int:
         "ASCII decimal",
     )
 
+    # Content past the viewBox is clipped silently in the render (#406).
+    clipped_legend = static.replace('viewBox="0 0 1000 480"', 'viewBox="0 0 1000 400"', 1)
+    check_fail("legend below the viewBox", clipped_legend, "past the viewBox bottom edge")
+    for label, markup, needle in (
+        ("rect past the right edge", '<rect x="980" y="10" width="40" height="10"/>',
+         "past the viewBox right edge"),
+        ("translated text above the top edge",
+         '<g transform="translate(10, -30)"><text x="5" y="10">Late</text></g>',
+         "past the viewBox top edge"),
+        ("line past the left edge", '<line x1="-20" y1="5" x2="10" y2="5"/>',
+         "past the viewBox left edge"),
+        ("circle past the bottom edge", '<circle cx="500" cy="478" r="10"/>',
+         "past the viewBox bottom edge"),
+        ("polygon past the right edge", '<polygon points="990,10 1010,20 990,30"/>',
+         "past the viewBox right edge"),
+        ("square-cornered rect past the right edge",
+         '<rect x="1100" y="20" width="10" height="10" rx="0" ry="0"/>',
+         "past the viewBox right edge"),
+    ):
+        check_fail(label, static.replace("</svg>", markup + "</svg>", 1), needle)
+    for label, markup in (
+        ("rect on the viewBox edges", '<rect x="0" y="0" width="1000" height="480"/>'),
+        ("overhang within tolerance", '<rect x="990" y="0" width="12" height="5"/>'),
+        ("definitions off-canvas", '<defs><rect x="5000" y="5000" width="1" height="1"/></defs>'),
+        ("rotated group", '<g transform="rotate(90)"><rect x="5000" y="0" width="1" height="1"/></g>'),
+        ("percentage size", '<rect x="0" y="0" width="200%" height="200%"/>'),
+        ("display none group", '<g display="none"><rect x="1100" y="20" width="10" height="10"/></g>'),
+        ("inline display none", '<rect style="display: none" x="1100" y="20" width="10" height="10"/>'),
+        ("visibility hidden group", '<g visibility="hidden"><rect x="1100" y="20" width="10" height="10"/></g>'),
+        ("oversized artwork clipped inside the canvas",
+         '<clipPath id="inside"><rect x="10" y="10" width="200" height="100"/></clipPath>'
+         '<g clip-path="url(#inside)"><rect x="-100" y="20" width="1200" height="40"/></g>'),
+        ("masked group", '<g mask="url(#m)"><rect x="1100" y="20" width="10" height="10"/></g>'),
+        ("zero-width rect placeholder", '<rect x="1100" y="20" width="0" height="10"/>'),
+        ("zero-height rect placeholder", '<rect x="1100" y="20" width="10" height="0"/>'),
+        ("zero-radius circle placeholder", '<circle cx="1100" cy="20" r="0"/>'),
+        ("zero-radius ellipse placeholder", '<ellipse cx="1100" cy="20" rx="0" ry="5"/>'),
+    ):
+        check_source_pass(label, static.replace("</svg>", markup + "</svg>", 1))
+    def styled(rule: str, markup: str) -> str:
+        return static.replace("</style>", rule + "</style>", 1).replace("</svg>", markup + "</svg>", 1)
+
+    placed_rect = '<rect class="placed" x="1100" y="20" width="10" height="10"/>'
+    check_source_pass("stylesheet transform moves it inside",
+                      styled(".placed { transform: translateX(-200px); }", placed_rect))
+    check_source_pass("stylesheet display none on an ancestor",
+                      styled("g.off { display: none; }",
+                             '<g class="off"><rect x="1100" y="20" width="10" height="10"/></g>'))
+    check_source_pass("stylesheet transform under a combinator",
+                      styled(".motion-ready svg > .placed:hover { transform: none; }", placed_rect))
+    check_fail("stylesheet rule that only colors it",
+               styled(".placed { fill: #bf4520; }", placed_rect), "past the viewBox right edge")
+    check_fail("transform keyframes alone do not exempt it",
+               styled("@keyframes slide { 0% { transform: translateX(0); } }", placed_rect),
+               "past the viewBox right edge")
+    check_source_pass("aria-hidden decorative SVG", static.replace("</body>",
+        '<svg aria-hidden="true" viewBox="0 0 10 10"><rect x="50" y="50" width="5" height="5"/></svg></body>', 1))
+    outside_assets = []
+    for asset in sorted(ASSET_DIR.glob("*.html")):
+        viewbox_errors: list[str] = []
+        module.check_viewbox(asset.read_text(encoding="utf-8"), viewbox_errors)
+        if viewbox_errors:
+            outside_assets.append(f"{asset.name}: {viewbox_errors}")
+    if outside_assets:
+        failures.append(f"shipped assets reported outside their viewBox: {outside_assets}")
+    else:
+        print("OK: every shipped asset stays inside its viewBox")
+
     # --offline: system-font output must make no network request, so the one
     # remote stylesheet the default contract allows becomes a failure.
     if module.verify(STATIC_EXAMPLE, offline=False):

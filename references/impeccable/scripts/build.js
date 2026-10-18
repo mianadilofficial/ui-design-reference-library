@@ -433,10 +433,10 @@ function validateSkillProse(rootDir) {
  * Validate that every `{{ask_instruction}}` interpolation starts a sentence.
  *
  * The placeholder's per-provider values are complete capitalized sentences
- * ("STOP and call the AskUserQuestion tool to clarify."), so a call site that
+ * ("Ask with the AskUserQuestion tool and wait for the answer before continuing."), so a call site that
  * splices it mid-sentence ships malformed guidance to every provider at once:
- * `stop and STOP and call the AskUserQuestion tool to clarify. before expanding
- * it`. Four reference files shipped exactly that before this gate existed, and
+ * `stop and Ask with the AskUserQuestion tool and wait for the answer before
+ * continuing. before expanding it`. Four reference files shipped exactly that before this gate existed, and
  * a comment in PROVIDER_PLACEHOLDERS asking authors to keep the contract is
  * what failed to prevent it.
  *
@@ -654,6 +654,7 @@ This folder contains skills for all supported tools:
   .kiro/      -> Kiro
   .opencode/  -> OpenCode
   .pi/        -> Pi
+  .omp/       -> Oh My Pi
   .trae-cn/   -> Trae China
   .trae/      -> Trae International
   .rovodev/   -> Rovo Dev

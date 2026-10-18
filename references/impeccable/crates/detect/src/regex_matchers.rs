@@ -7,7 +7,7 @@ use impeccable_core::checks::css_scan::{
     CssHostIndex,
 };
 use impeccable_core::checks::rules::{
-    find_solid_chromatic_bg, is_near_black_neutral_class, DeclaredCorners, NOMINAL_CARD_WIDTH_PX,
+    find_gray_on_color_bg, find_solid_chromatic_bg, is_near_black_neutral_class, DeclaredCorners, NOMINAL_CARD_WIDTH_PX,
 };
 use impeccable_core::color::is_neutral_color;
 use impeccable_core::constants::{EM_DASH_CHARS_PER_DASH, EM_DASH_FLOOR, OVERUSED_FONTS};
@@ -1804,13 +1804,13 @@ pub static REGEX_MATCHERS: Lazy<Vec<Matcher>> = Lazy::new(|| {
                 !is_near_black_neutral_class(m.whole())
                     && gray_on_color_pairs(line, m.whole(), m.index)
                         .iter()
-                        .any(|scope| find_solid_chromatic_bg(scope).is_some())
+                        .any(|scope| find_gray_on_color_bg(scope).is_some())
             },
             fmt: |m, line| {
                 let pairs = gray_on_color_pairs(line, m.whole(), m.index);
                 let bg = pairs
                     .iter()
-                    .find_map(|scope| find_solid_chromatic_bg(scope))
+                    .find_map(|scope| find_gray_on_color_bg(scope))
                     .unwrap_or("?");
                 format!("{} on {}", m.whole(), bg)
             },
@@ -2055,28 +2055,10 @@ re!(
     format!("&{mdash};|&#0*8212;|&#[xX]0*2014;", mdash = ci("mdash"))
 );
 
+/// The page engines' count ([`impeccable_core::checks::text_rules::count_em_dashes`]):
+/// a run of more than two hyphens is a rule, not a dash.
 fn count_em_dashes(text: &str) -> usize {
-    let mut count = 0;
-    let mut chars = text.char_indices().peekable();
-    while let Some((i, c)) = chars.next() {
-        if c == '\u{2014}' {
-            count += 1;
-            continue;
-        }
-        if c == '-' {
-            if let Some((_, '-')) = chars.peek().copied() {
-                // `--(?=\S)`: the char after the pair must exist and be non-ws.
-                let after = text[i + 2..].chars().next();
-                if let Some(a) = after {
-                    if !js::is_js_whitespace(a) {
-                        count += 1;
-                        chars.next();
-                    }
-                }
-            }
-        }
-    }
-    count
+    impeccable_core::checks::text_rules::count_em_dashes(text)
 }
 
 fn analyze_em_dash_overuse(content: &str, file_path: &str) -> Vec<Finding> {
@@ -2263,6 +2245,8 @@ pub fn analyzer_rule_id(i: usize) -> String {
         "marketing-buzzword",
         "aphoristic-cadence",
         "dark-glow",
+        "radial-halo",
+        "marquee",
     ];
     IDS.get(i)
         .map(|s| s.to_string())
@@ -2293,6 +2277,8 @@ mod tests {
         // A `/10` opacity tint is not a solid fill.
         assert!(g(r#"<button className="text-slate-300 hover:bg-red-500/10 hover:text-red-400">Log out</button>"#).is_empty());
         assert!(g(r#"<button className="text-slate-300 bg-red-500/10">Log out</button>"#).is_empty());
+        // A pale tint is not colour (the computed form's OKLCH test).
+        assert!(g(r#"<p className="text-gray-600 bg-amber-100">Note</p>"#).is_empty());
         assert_eq!(
             g(r#"<button className="text-slate-300 bg-red-500">Log out</button>"#),
             vec!["text-slate-300 on bg-red-500"]
@@ -2753,7 +2739,8 @@ mod tests {
 
     #[test]
     fn dashes() {
-        assert_eq!(count_em_dashes("a — b -- c ---d"), 2);
+        assert_eq!(count_em_dashes("a — b -- c ---d"), 1);
+        assert_eq!(count_em_dashes("a — b --c"), 2);
         assert_eq!(count_em_dashes("a -- "), 0);
     }
 }

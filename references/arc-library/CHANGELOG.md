@@ -2,6 +2,30 @@
 
 New free components and blocks ship regularly. Every entry links to its live preview on uiarc.dev.
 
+## 2026-10-16
+
+### Added
+
+- [Expandable text](https://uiarc.dev/components/expandable-text) (component): Long text clamped to a few lines with a soft fade that glides open with Read more and closes with Show less, shown only when the text overflows.
+
+## 2026-10-14
+
+### Added
+
+- [Reactions](https://uiarc.dev/components/reactions) (component): Acknowledge a post in one tap, with counts that roll.
+
+## 2026-10-12
+
+### Added
+
+- [Cookie consent](https://uiarc.dev/components/cookie-consent) (component): A consent bar that morphs into preferences and folds into a reopen button.
+
+## 2026-10-11
+
+### Added
+
+- [Icon morph](https://uiarc.dev/components/icon-morph) (component): Icons that morph between states: menu to close, play to pause, copy to check, and more.
+
 ## 2026-10-09
 
 ### Added

@@ -1,21 +1,23 @@
 //! Port of `cli/engine/cli/main.mjs`: `detectCli()`, the text formatter, and
 //! stdin dispatch.
 
+use std::collections::BTreeSet;
 use std::io::Write;
 
 use impeccable_common::Io;
 use impeccable_core::findings::Finding;
-use impeccable_core::registry::{filter_by_scopes, rule_scopes};
+use impeccable_core::registry::{all_antipatterns, filter_by_scopes, rule_scopes};
 use serde_json::Value;
 
 use crate::config::{
-    filter_detection_findings, read_detection_config, should_ignore_detection_file, DetectionConfig,
+    filter_detection_findings, normalize_ignore_rule, read_detection_config, should_ignore_detection_file,
+    DetectionConfig,
 };
 use crate::design_system::{load_design_system_for_target, DesignSystemCache};
-use crate::detect_text::{detect_text, TextOptions};
+use crate::detect_text::{detect_text, ext_from_file_path, TextOptions};
 use crate::engines::{EngineError, Engines, ScanOptions};
 use crate::file_system::{
-    build_import_graph_reporting, detect_framework_config, is_html_path, is_port_listening,
+    build_import_graph_reporting, detect_framework_config, is_port_listening, uses_html_engine,
     walk_dir_reporting,
 };
 use crate::jsp;
@@ -43,6 +45,13 @@ Options:
   --no-overlay-hiding URL scans: keep product tours (driver.js) and
                       preloaders still covering the page instead of hiding
                       them before the scan
+  --cdp <port|url>    Scan a page of a running Chromium-based desktop app
+                      (Electron, NW.js, CEF, WebView2) through its local
+                      DevTools port instead of loading a URL. The page is
+                      scanned as shown and left as found: never navigated,
+                      resized or closed. Takes no file or URL targets
+  --target <text>     With --cdp: pick the page whose URL or title contains
+                      this text when the app has more than one
   --help              Show this help message
 
 Advisory findings:
@@ -78,14 +87,43 @@ Detection modes:
   Non-HTML files Regex pattern matching (CSS, JSX, TSX, etc.)
   URLs           Puppeteer full browser rendering (auto-detected;
                  http(s):// and file:// URLs; accessible linked CSS included)
+  Running apps   --cdp: a page of a Chromium-based app, attached through its
+                 DevTools port and scanned like a URL
 
 Examples:
   impeccable detect src/
   impeccable detect index.html
   impeccable detect https://example.com
+  impeccable detect --cdp 9222 --target \"My App\" --json
   impeccable detect --json .
   impeccable detect --no-config src/
 ";
+
+/// Remove every `--name <value>` / `--name=<value>` from `args`. `None` when
+/// the flag is absent, `Some(None)` when it has no value (the end of the
+/// arguments, or another `--` flag next), else the last value given.
+fn take_value_flag(args: &mut Vec<String>, name: &str) -> Option<Option<String>> {
+    let inline_prefix = format!("{name}=");
+    let mut found: Option<Option<String>> = None;
+    let mut i = 0;
+    while i < args.len() {
+        if let Some(v) = args[i].strip_prefix(&inline_prefix) {
+            found = Some(Some(v.to_string()).filter(|v| !v.is_empty()));
+            args.remove(i);
+            continue;
+        }
+        if args[i] != name {
+            i += 1;
+            continue;
+        }
+        args.remove(i);
+        match args.get(i) {
+            Some(v) if !v.starts_with("--") => found = Some(Some(args.remove(i))),
+            _ => found = Some(None),
+        }
+    }
+    found
+}
 
 fn format_finding_summary(count: usize) -> String {
     format!(
@@ -247,6 +285,14 @@ struct Ctx<'a> {
     /// JS `hadOperationalFailure`: at least one requested target could not be
     /// scanned, which forces exit 1 (#711).
     had_operational_failure: bool,
+    /// Local files that went to the regex engine instead of the static HTML
+    /// engine, so the run can say its findings are an undercount (#884).
+    regex_only_files: usize,
+    /// Their extensions, lowercased and sorted, for the note.
+    regex_only_exts: BTreeSet<String>,
+    /// Each scanned directory's framework dev-server port, deduplicated, so
+    /// the note can spell the URL scan that runs every rule.
+    dev_server_ports: BTreeSet<u32>,
     /// One line per design system that switched a check off for a scanned
     /// target (a DESIGN.md that declares a purple), and per URL scan note (a
     /// consent banner the engine hid), in first-seen order.
@@ -296,7 +342,7 @@ impl<'a> Ctx<'a> {
         file_path: &str,
         options: &ScanOptions,
     ) -> Result<Vec<Finding>, EngineError> {
-        if is_html_path(file_path) {
+        if uses_html_engine(file_path, &self.config.extensions) {
             return self
                 .engines
                 .html
@@ -314,6 +360,8 @@ impl<'a> Ctx<'a> {
                 }));
             }
         };
+        self.regex_only_files += 1;
+        self.regex_only_exts.insert(ext_from_file_path(file_path));
         Ok(detect_text(
             &content,
             file_path,
@@ -523,6 +571,38 @@ fn detect_cli(args_in: &[String], io: &mut Io, engines: &Engines) -> Result<i32,
         ));
         return Err(Exit(1));
     }
+    let cdp_value = take_value_flag(&mut args, "--cdp");
+    let target_filter = take_value_flag(&mut args, "--target");
+    let cdp = match cdp_value {
+        None => None,
+        Some(None) => {
+            io.err(crate::cdp_endpoint::CDP_VALUE_ERROR);
+            return Err(Exit(1));
+        }
+        Some(Some(v)) => match crate::cdp_endpoint::parse_cdp_endpoint(&v) {
+            Ok(endpoint) => Some(endpoint),
+            Err(line) => {
+                io.err(&line);
+                return Err(Exit(1));
+            }
+        },
+    };
+    let target_filter = match target_filter {
+        None => None,
+        Some(Some(v)) if !impeccable_core::js::trim(&v).is_empty() => Some(v),
+        Some(_) => {
+            io.err("Error: --target requires a substring of the page's URL or title, e.g. --target localhost:5173\n");
+            return Err(Exit(1));
+        }
+    };
+    if target_filter.is_some() && cdp.is_none() {
+        io.err("Error: --target picks a page of the app --cdp attaches to; pass --cdp <port> with it\n");
+        return Err(Exit(1));
+    }
+    if cdp.is_some() && viewport.is_some() {
+        io.err("Error: --viewport does not apply with --cdp: the attached window keeps its own size\n");
+        return Err(Exit(1));
+    }
     let design_system_enabled = config_enabled
         && !has(&args, "--no-design-system")
         && detection_config.design_system_not_disabled();
@@ -537,6 +617,7 @@ fn detect_cli(args_in: &[String], io: &mut Io, engines: &Engines) -> Result<i32,
         rule_pack: None,
         keep_consent_banners: has(&args, "--no-consent-hiding"),
         keep_overlays: has(&args, "--no-overlay-hiding"),
+        unreported_rules: unreported_rules(&detection_config.ignore_rules, &scopes),
     };
     let targets: Vec<String> = expand_joined_url_targets(
         args.iter()
@@ -548,6 +629,10 @@ fn detect_cli(args_in: &[String], io: &mut Io, engines: &Engines) -> Result<i32,
     if help_mode {
         io.out(USAGE);
         return Ok(0);
+    }
+    if cdp.is_some() && !targets.is_empty() {
+        io.err("Error: --cdp scans the page of a running app and takes no file or URL targets\n");
+        return Err(Exit(1));
     }
 
     let stdin_tty = io.stdin_is_tty;
@@ -569,11 +654,47 @@ fn detect_cli(args_in: &[String], io: &mut Io, engines: &Engines) -> Result<i32,
         cache: DesignSystemCache::new(),
         stdin_tty,
         had_operational_failure: false,
+        regex_only_files: 0,
+        regex_only_exts: BTreeSet::new(),
+        dev_server_ports: BTreeSet::new(),
         design_notes: Vec::new(),
     };
 
     let mut all: Vec<Finding> = Vec::new();
-    if !stdin_tty && targets.is_empty() {
+    if let Some(endpoint) = cdp.as_ref() {
+        // http(s) URL scans never load a design system, and neither does an
+        // attached page: its URL says nothing about which project it is.
+        let options = ctx.base.clone();
+        let result = match ctx.engines.url {
+            Some(u) => u.detect_cdp_scan(endpoint, target_filter.as_deref(), &options),
+            None => crate::engines::UrlEngine::detect_cdp_scan(
+                &crate::engines::MissingUrlEngine,
+                endpoint,
+                target_filter.as_deref(),
+                &options,
+            ),
+        };
+        match result {
+            Ok(scan) => {
+                all.extend(scan.findings);
+                for note in scan.notes {
+                    // JSON mode prints no notes, but an attached scan's capture
+                    // notes say which checks did not run (a hidden window skips
+                    // the pixel reads), so they go to stderr there and stdout
+                    // stays the JSON.
+                    if ctx.json_mode {
+                        ctx.io.err(&format!("{note}\n"));
+                    } else if !ctx.design_notes.contains(&note) {
+                        ctx.design_notes.push(note);
+                    }
+                }
+            }
+            Err(e) => {
+                ctx.had_operational_failure = true;
+                ctx.io.err(&format!("Error: {}\n", e.message));
+            }
+        }
+    } else if !stdin_tty && targets.is_empty() {
         all = ctx.handle_stdin().map_err(|e| fatal(ctx.io, e))?;
     } else {
         let paths: Vec<String> = if targets.is_empty() {
@@ -613,6 +734,10 @@ fn detect_cli(args_in: &[String], io: &mut Io, engines: &Engines) -> Result<i32,
             s.close();
         }
         result?;
+        if !json_mode && !quiet_mode && ctx.regex_only_files > 0 {
+            let note = regex_only_note(ctx.regex_only_files, &ctx.regex_only_exts, &ctx.dev_server_ports);
+            ctx.io.err(&note);
+        }
     }
 
     all = filter_detection_findings(all, &ctx.config);
@@ -667,6 +792,69 @@ fn detect_cli(args_in: &[String], io: &mut Io, engines: &Engines) -> Result<i32,
 
 /// Text mode: say which checks a project's DESIGN.md switched off, after the
 /// findings (or alone, when there are none).
+/// Template extensions the static HTML engine can parse, so the note can
+/// offer the `detector.extensions` opt-in for them. JSX is not on the list:
+/// the parser reads nothing useful from it.
+const HTML_LIKE_TEMPLATE_EXTS: &[&str] = &[".astro", ".svelte", ".vue"];
+
+/// The #884 note: which files only got the regex engine, what that misses,
+/// and the scan that would run every rule.
+/// The rules whose findings this run removes after the scan, for the
+/// browser engine ([`ScanOptions::unreported_rules`]): every `ignoreRules`
+/// entry, and, when `--scope` narrows the report, every registered rule in
+/// none of the requested scopes ([`filter_by_scopes`]).
+fn unreported_rules(ignore_rules: &[String], scopes: &[String]) -> Vec<String> {
+    let mut out: Vec<String> = ignore_rules.iter().map(|r| normalize_ignore_rule(r)).collect();
+    if !scopes.is_empty() {
+        for rule in all_antipatterns() {
+            let in_scope = rule.scopes.unwrap_or(&[]).iter().any(|s| scopes.iter().any(|w| w == s));
+            if !in_scope {
+                out.push(rule.id.to_string());
+            }
+        }
+    }
+    out.sort();
+    out.dedup();
+    out
+}
+
+fn regex_only_note(n: usize, exts: &BTreeSet<String>, ports: &BTreeSet<u32>) -> String {
+    let listed: Vec<&str> = exts.iter().map(String::as_str).filter(|e| !e.is_empty()).collect();
+    let mut note = format!(
+        "\n{n} file{} scanned with regex matching only{}.\nRules that need a parsed page (tiny-text, low-contrast and other element rules) did not run on them; findings are an undercount, not a clean bill of health.\n",
+        if n == 1 { "" } else { "s" },
+        if listed.is_empty() { String::new() } else { format!(" ({})", listed.join(", ")) }
+    );
+    if ports.is_empty() {
+        note.push_str(
+            "For the full check, scan the running dev server (npx impeccable detect http://localhost:PORT) or a static site's built .html.\n",
+        );
+    } else {
+        // One URL per scanned project, so a run over a Vite app and a Next
+        // app names both.
+        note.push_str(if ports.len() == 1 {
+            "For the full check, scan the running app:\n"
+        } else {
+            "For the full check, scan each running app:\n"
+        });
+        for p in ports {
+            note.push_str(&format!("  npx impeccable detect http://localhost:{p}\n"));
+        }
+    }
+    let templates: Vec<&str> = listed
+        .iter()
+        .copied()
+        .filter(|e| HTML_LIKE_TEMPLATE_EXTS.contains(e))
+        .collect();
+    if let Some(first) = templates.first() {
+        note.push_str(&format!(
+            "{} files can take the HTML engine instead: add {{ \"ext\": \"{first}\", \"engine\": \"html\" }} under detector.extensions in .impeccable/config.json (trades the regex rules and line numbers for the element rules).\n",
+            templates.join("/")
+        ));
+    }
+    note
+}
+
 fn print_design_notes(ctx: &mut Ctx, after_findings: bool) {
     if ctx.design_notes.is_empty() {
         return;
@@ -755,6 +943,7 @@ fn scan_targets(
         if stat.is_dir() {
             if !ctx.json_mode && !ctx.quiet_mode {
                 if let Some(fw) = detect_framework_config(&resolved) {
+                    ctx.dev_server_ports.insert(fw.port);
                     let probe = is_port_listening(fw.port, Some(fw.fingerprint));
                     let msg = if probe.listening && probe.matched {
                         format!(
@@ -793,7 +982,10 @@ fn scan_targets(
             for (dir, message) in walk_failures {
                 ctx.report_local_scan_failure(&dir, &message);
             }
-            let html_count = files.iter().filter(|f| is_html_path(f)).count();
+            let html_count = files
+                .iter()
+                .filter(|f| uses_html_engine(f, &ctx.config.extensions))
+                .count();
             if files.len() > 50 && ctx.stdin_tty && !ctx.json_mode && !ctx.quiet_mode {
                 ctx.io.err(&format!(
                     "\nFound {} files ({} HTML) in {}.\nScanning may take a while{}.\nTarget a specific subdirectory to narrow scope.\n",
@@ -954,5 +1146,23 @@ mod design_note_tests {
         let (_, err) = run(&dir, &page, &CleanHtml);
         assert!(err.contains("purple/violet check is off"), "{err}");
         let _ = std::fs::remove_dir_all(&dir);
+    }
+}
+
+#[cfg(test)]
+mod unreported_rules_tests {
+    use super::unreported_rules;
+
+    /// `low-contrast` declares no scope, so `--scope type` reports
+    /// `tiny-text` and never `low-contrast`: the browser engine is told, so
+    /// a finding the run drops does not stand in for one it keeps.
+    #[test]
+    fn ignored_and_out_of_scope_rules_are_unreported() {
+        assert!(unreported_rules(&[], &[]).is_empty());
+        let ignored = unreported_rules(&[" Low-Contrast ".to_string()], &[]);
+        assert_eq!(ignored, vec!["low-contrast".to_string()]);
+        let scoped = unreported_rules(&[], &["type".to_string()]);
+        assert!(scoped.iter().any(|r| r == "low-contrast"), "{scoped:?}");
+        assert!(!scoped.iter().any(|r| r == "tiny-text"), "{scoped:?}");
     }
 }

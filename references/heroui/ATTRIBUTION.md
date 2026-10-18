@@ -4,7 +4,7 @@
 - **Author:** HeroUI (formerly NextUI)
 - **Original URL:** https://github.com/heroui-inc/heroui
 - **License:** Apache License 2.0 — see `LICENSE` in this folder
-- **Mirrored snapshot:** commit `ece1e4e15ea5d21e86cc4dcd11dd21647f96c678` (2026-10-09), shallow clone (`--depth 1`, branch `v3`)
+- **Mirrored snapshot:** commit `ce90ea3ab49d58f6c428f71bfd6fe8ae2a87b960` (2026-10-18), shallow clone (`--depth 1`, branch `v3`)
 - **What it is:** Professional React component library (Tailwind + React Aria) — 30k+ stars, themeable, accessible components for real products.
 - **Why it's here:** A second canonical component reference alongside shadcn — agents compare both to learn professional component API design.
 

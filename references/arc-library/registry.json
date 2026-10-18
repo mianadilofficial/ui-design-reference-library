@@ -2600,6 +2600,47 @@
       }
     },
     {
+      "name": "reactions",
+      "type": "registry:ui",
+      "title": "Reactions",
+      "description": "Acknowledge a post in one tap, with counts that roll.",
+      "categories": [
+        "actions"
+      ],
+      "dependencies": [
+        "@radix-ui/react-popover",
+        "lucide-react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://uiarc.dev/r/arc-motion-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "registry/components/reactions/reactions.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/reactions/reactions.tsx"
+        },
+        {
+          "path": "registry/components/reactions/reactions.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/reactions/reactions.module.css"
+        }
+      ],
+      "docs": "Docs and live preview: https://uiarc.dev/components/reactions",
+      "meta": {
+        "tier": "free",
+        "kind": "component",
+        "docs": "https://uiarc.dev/components/reactions",
+        "markdown": "https://uiarc.dev/components/reactions/markdown",
+        "tags": [
+          "reactions",
+          "social",
+          "comments"
+        ]
+      }
+    },
+    {
       "name": "slider",
       "type": "registry:ui",
       "title": "Slider",
@@ -3390,6 +3431,44 @@
       }
     },
     {
+      "name": "icon-morph",
+      "type": "registry:ui",
+      "title": "Icon morph",
+      "description": "Icons that morph between states: menu to close, play to pause, copy to check, and more.",
+      "categories": [
+        "actions"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://uiarc.dev/r/arc-motion-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "registry/components/icon-morph/icon-morph.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/icon-morph/icon-morph.tsx"
+        },
+        {
+          "path": "registry/components/icon-morph/icon-morph.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/icon-morph/icon-morph.module.css"
+        }
+      ],
+      "docs": "Docs and live preview: https://uiarc.dev/components/icon-morph",
+      "meta": {
+        "tier": "free",
+        "kind": "component",
+        "docs": "https://uiarc.dev/components/icon-morph",
+        "markdown": "https://uiarc.dev/components/icon-morph/markdown",
+        "tags": [
+          "actions",
+          "new"
+        ]
+      }
+    },
+    {
       "name": "date-range-picker",
       "type": "registry:ui",
       "title": "Date range picker",
@@ -3864,6 +3943,68 @@
         "kind": "component",
         "docs": "https://uiarc.dev/components/countdown",
         "markdown": "https://uiarc.dev/components/countdown/markdown",
+        "tags": [
+          "feedback",
+          "new"
+        ]
+      }
+    },
+    {
+      "name": "cookie-consent",
+      "type": "registry:ui",
+      "title": "Cookie consent",
+      "description": "A consent bar that morphs into preferences and folds into a reopen button.",
+      "categories": [
+        "feedback"
+      ],
+      "dependencies": [
+        "@radix-ui/react-switch",
+        "lucide-react",
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://uiarc.dev/r/arc-motion-tokens.json",
+        "https://uiarc.dev/r/button.json",
+        "https://uiarc.dev/r/switch.json"
+      ],
+      "files": [
+        {
+          "path": "registry/components/cookie-consent/cookie-consent.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/cookie-consent/cookie-consent.tsx"
+        },
+        {
+          "path": "registry/components/cookie-consent/cookie-consent.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/cookie-consent/cookie-consent.module.css"
+        },
+        {
+          "path": "registry/components/switch/switch.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/switch/switch.tsx"
+        },
+        {
+          "path": "registry/components/switch/switch.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/switch/switch.module.css"
+        },
+        {
+          "path": "registry/components/button/button.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/button/button.tsx"
+        },
+        {
+          "path": "registry/components/button/button.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/button/button.module.css"
+        }
+      ],
+      "docs": "Docs and live preview: https://uiarc.dev/components/cookie-consent",
+      "meta": {
+        "tier": "free",
+        "kind": "component",
+        "docs": "https://uiarc.dev/components/cookie-consent",
+        "markdown": "https://uiarc.dev/components/cookie-consent/markdown",
         "tags": [
           "feedback",
           "new"
@@ -4415,6 +4556,45 @@
           "special",
           "text",
           "numbers",
+          "new"
+        ]
+      }
+    },
+    {
+      "name": "expandable-text",
+      "type": "registry:ui",
+      "title": "Expandable text",
+      "description": "Long text clamped to a few lines with a soft fade that glides open with Read more and closes with Show less, shown only when the text overflows.",
+      "categories": [
+        "disclosure"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "motion"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "registry/components/expandable-text/expandable-text.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/expandable-text/expandable-text.tsx"
+        },
+        {
+          "path": "registry/components/expandable-text/expandable-text.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/expandable-text/expandable-text.module.css"
+        }
+      ],
+      "docs": "Docs and live preview: https://uiarc.dev/components/expandable-text",
+      "meta": {
+        "tier": "free",
+        "kind": "component",
+        "docs": "https://uiarc.dev/components/expandable-text",
+        "markdown": "https://uiarc.dev/components/expandable-text/markdown",
+        "tags": [
+          "disclosure",
+          "text",
+          "motion",
           "new"
         ]
       }

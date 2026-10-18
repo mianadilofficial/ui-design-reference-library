@@ -49,6 +49,7 @@ macro_rules! page_js {
 
 page_js![
     "00-header.js",
+    "05-natives.js",
     "10-probe.js",
     "15-snapshot.js",
     "30-scan-common.js",
@@ -77,6 +78,7 @@ fn src(name: &str) -> Cow<'static, str> {
 /// `@@WASM@@` the embedded module + synchronous instantiation.
 const ORDER: &[&str] = &[
     "00-header.js",
+    "05-natives.js",
     "10-probe.js",
     "15-snapshot.js",
     "@@GLUE@@",
@@ -93,6 +95,9 @@ const ORDER: &[&str] = &[
 /// (the module ships beside it as `core_bg.wasm`; no base64: the offscreen
 /// document fetches it) + the scan plumbing and visual-contrast orchestration
 /// + the offscreen session protocol.
+/// `05-natives.js` is left out of the snapshot piece on purpose: a content
+/// script already has its own globals, and in Firefox its `window` is an Xray
+/// view of the page's, so natives built there throw on every capture.
 const EXT_SNAPSHOT: &[&str] = &["15-snapshot.js"];
 const EXT_OVERLAY: &[&str] = &["40-overlay.js"];
 const EXT_CORE: &[&str] = &["@@GLUE@@", "@@LOADER@@", "30-scan-common.js", "35-visual.js", "60-offscreen.js"];
@@ -418,6 +423,26 @@ mod tests {
         assert!(!ext.core_js.contains("__IMPECCABLE_WASM_B64"));
         assert_eq!(ext.core_bg_wasm, vec![0, 97, 115, 109]);
         assert_eq!(ext.antipatterns_json, "[]\n");
+    }
+
+    /// The extension's content scripts already run with their own globals,
+    /// and in Firefox a content script's `window` is an Xray wrapper of the
+    /// page's: natives built from it throw (`Permission denied to access
+    /// property Symbol.iterator`) and every extension capture failed. So the
+    /// page-world natives file stays out of every extension piece.
+    #[test]
+    fn extension_pieces_leave_out_the_page_world_natives() {
+        let natives = page_js("05-natives.js").unwrap();
+        for parts in [EXT_SNAPSHOT, EXT_OVERLAY, EXT_CORE] {
+            assert!(!parts.contains(&"05-natives.js"), "{parts:?}");
+        }
+        let ext = extension_pieces("const glue = 1;\n", &[0, 97, 115, 109], "[]\n");
+        for js in [&ext.snapshot_js, &ext.overlay_js, &ext.core_js] {
+            assert!(!js.contains(natives));
+            assert!(!js.contains("__impeccableBuildNatives"));
+        }
+        // The in-page bundle still carries it.
+        assert!(in_page_bundle("const glue = 1;\n", &[0, 97, 115, 109]).contains(natives));
     }
 
     #[test]

@@ -322,6 +322,15 @@
       "thumb_sha256": "6df85f1cf5744e9a8122519344a3eb9169bfaf2290b82f5ff8dfcbbedbb4d470"
     },
     {
+      "thumb": "service-blueprint.webp",
+      "source": "docs/screenshots/service-blueprint.png",
+      "source_sha256": "abc6eb3aa96281f821749dcb7983e77084db1257bd5d6d848a0172677346fce9",
+      "width": 600,
+      "height": 338,
+      "quality": 82,
+      "thumb_sha256": "596cc7b26023a39ac6fcf45ad84e24f3a4745db8eb9f66b08aa696f7abbdd176"
+    },
+    {
       "thumb": "state.webp",
       "source": "docs/screenshots/state.png",
       "source_sha256": "aababfa09a1cce0deb0ae9fa3234b57f34842893cd0f7c510d8bc90dfe1e0e9e",

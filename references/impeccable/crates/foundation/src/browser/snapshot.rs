@@ -80,6 +80,7 @@ pub const STYLE_PROPS: &[&str] = &[
     "backgroundColor",
     "backgroundImage",
     "backgroundPosition",
+    "backgroundRepeat",
     "backgroundSize",
     "blockSize",
     "borderBottomColor",
@@ -112,7 +113,9 @@ pub const STYLE_PROPS: &[&str] = &[
     "flexWrap",
     "float",
     "fontFamily",
+    "fontFeatureSettings",
     "fontSize",
+    "fontStretch",
     "fontStyle",
     "fontVariant",
     "fontVariantCaps",
@@ -144,12 +147,14 @@ pub const STYLE_PROPS: &[&str] = &[
     "objectFit",
     "objectPosition",
     "opacity",
+    "order",
     "outline",
     "outlineColor",
     "outlineOffset",
     "outlineStyle",
     "outlineWidth",
     "overflow",
+    "overflowClipMargin",
     "overflowX",
     "overflowY",
     "paddingBottom",
@@ -190,6 +195,7 @@ pub const STYLE_PROPS: &[&str] = &[
     "width",
     "willChange",
     "wordBreak",
+    "wordSpacing",
     "zIndex",
 ];
 
@@ -215,6 +221,10 @@ pub const PSEUDO_PROPS: &[&str] = &[
     "visibility",
     "zIndex",
     "translate",
+    "scale",
+    "rotate",
+    "filter",
+    "fontSize",
 ];
 
 /// One child of an element: an element (by id) or a text node's data.
@@ -255,6 +265,10 @@ pub struct MediaInfo {
     /// "not recorded", never "still loading".
     #[serde(rename = "cp", default, skip_serializing_if = "Option::is_none")]
     pub complete: Option<bool>,
+    /// `readyState` (video). Absent from a capture recorded before the
+    /// snapshot read it, and from every element that is not a `<video>`.
+    #[serde(rename = "rs", default, skip_serializing_if = "Option::is_none")]
+    pub ready_state: Option<u8>,
 }
 
 /// One element as captured. Field names are one letter on the wire to keep
@@ -1122,6 +1136,13 @@ impl Dom for SnapshotDom {
     fn image_current_src(&self, el: ElId) -> Option<String> {
         self.image_media(el).map(|m| m.cur.clone())
     }
+    fn video_ready_state(&self, el: ElId) -> Option<u8> {
+        let node = self.snap.get(el)?;
+        if node.ns != 0 || !node.tag.eq_ignore_ascii_case("video") {
+            return None;
+        }
+        node.media.as_ref()?.ready_state
+    }
     fn check_visibility(&self, el: ElId) -> Option<bool> {
         match self.snap.node(el).visibility {
             0 => Some(false),
@@ -1553,6 +1574,28 @@ mod tests {
         // An old record serializes as it was read: no `cp` key appears.
         let old = d.snap.node(5).media.as_ref().unwrap();
         assert!(!serde_json::to_string(old).unwrap().contains("cp"));
+    }
+
+    /// A `<video>` answers its `readyState` from its media record; a record
+    /// from before the capture read it, and any other element, answer
+    /// nothing.
+    #[test]
+    fn video_ready_state_comes_from_the_media_record() {
+        const PAGE: &str = r#"{
+          "v": 1, "documentElement": 1, "body": 2,
+          "els": [
+            {"t":"HTML","c":[2]},
+            {"t":"BODY","p":1,"c":[3,4,5]},
+            {"t":"VIDEO","p":2,"md":{"vw":1280,"vh":720,"cur":"","src":"","rs":4}},
+            {"t":"VIDEO","p":2,"md":{"vw":0,"vh":0,"cur":"","src":""}},
+            {"t":"IMG","p":2,"md":{"nw":1,"nh":1,"cur":"","src":"","rs":4}}
+          ]
+        }"#;
+        let d = snap(PAGE);
+        assert_eq!(d.video_ready_state(3), Some(4));
+        assert_eq!(d.video_ready_state(4), None);
+        assert_eq!(d.video_ready_state(5), None);
+        assert!(!serde_json::to_string(d.snap.node(4).media.as_ref().unwrap()).unwrap().contains("rs"));
     }
 
     /// A capture that recorded the text rects hands over the lines; one that

@@ -293,6 +293,13 @@ const __impeccableDom = {
     if (!__isImg(node)) return undefined;
     return typeof node.currentSrc === 'string' ? node.currentSrc : '';
   },
+  // `readyState` of an HTML <video>; -1 is "not a video".
+  video_ready_state(el) {
+    const node = __el(el);
+    if (!node || node.localName !== 'video' || node.namespaceURI !== 'http://www.w3.org/1999/xhtml'
+      || typeof node.readyState !== 'number') return -1;
+    return node.readyState;
+  },
   // getDirectTextRect(el) from the JS driver: union of the client rects of
   // the element's non-blank direct text nodes.
   direct_text_rect(el) {

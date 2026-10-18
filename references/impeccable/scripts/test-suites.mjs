@@ -8,6 +8,7 @@ export const OPT_IN_SUITES = [
   'live-e2e-accept-cleanup',
   'new-work-e2e',
   'skill-behavior',
+  'skill-activation',
   'skill-workflow',
   'live-svelte-adapter-deepseek',
 ];
@@ -74,6 +75,7 @@ export const SUITES = {
         timeoutMs: 180000,
         files: [
           'tests/ci-test-plan.test.mjs',
+          'tests/rust-test-selection.test.mjs',
           'tests/cli-shim.test.mjs',
           'tests/launcher-download.test.mjs',
           'tests/publish-platform-packages.test.mjs',
@@ -287,13 +289,29 @@ export const SUITES = {
       /^skill\/SKILL\.src\.md$/,
       /^skill\/reference\//,
       /^ENGINE_VERSION$/,
-      /^tests\/skill-behavior\//,
+      // activation.eval.mjs and its fixtures belong to skill-activation, which
+      // nothing here loads; editing them should not bill this lane.
+      /^tests\/skill-behavior\/(?!activation[.-])/,
     ],
     commands: [{
       runner: 'node',
       timeoutMs: 240000,
       wallClockMs: 1_800_000,
       files: ['tests/skill-behavior/scenarios.test.mjs'],
+    }],
+  },
+  'skill-activation': {
+    description: 'LLM-backed check that the skill description triggers on UI work and stays quiet otherwise.',
+    optIn: true,
+    triggers: [
+      /^skill\/SKILL\.src\.md$/,
+      /^tests\/skill-behavior\/(activation-cases|providers)\.mjs$/,
+    ],
+    commands: [{
+      runner: 'node',
+      timeoutMs: 900000,
+      wallClockMs: 1_200_000,
+      files: ['tests/skill-behavior/activation.eval.mjs'],
     }],
   },
   'skill-workflow': {
@@ -305,7 +323,9 @@ export const SUITES = {
       /^skill\//,
       /^ENGINE_VERSION$/,
       /^tests\/skill-workflow\//,
-      /^tests\/skill-behavior\//,
+      // activation.eval.mjs and its fixtures belong to skill-activation, which
+      // nothing here loads; editing them should not bill this lane.
+      /^tests\/skill-behavior\/(?!activation[.-])/,
     ],
     commands: [
       { runner: 'node', files: ['tests/skill-workflow-browser.test.mjs'] },

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Verify that routing and browsing surfaces stay in sync with the skill.
 
-Sixteen drift classes. The first fourteen have each shipped before; the
-fifteenth nearly did (#217); the sixteenth guards the ADR 0004 split:
+Seventeen drift classes. The first fourteen and the seventeenth have each
+shipped before; the fifteenth nearly did (#217); the sixteenth guards the
+ADR 0004 split:
 
 1. The SKILL.md frontmatter description is the only text an agent sees before
    deciding to load the skill — every visual type in the selection table must
@@ -45,6 +46,9 @@ fifteenth nearly did (#217); the sixteenth guards the ADR 0004 split:
    exactly the presets in the output-spec.md size table, in its order.
 16. Every SKILL.md section the ADR 0004 split thinned must keep the exact link
    to each block it moved out, or that content ships unreachable.
+17. Every type-loop.md sentence that names the top station must name station 0,
+   as theta_k = -90deg + k * 360/N does, and each Loop example must draw its
+   first station topmost (#443).
 """
 
 from __future__ import annotations
@@ -63,9 +67,11 @@ README = ROOT / "README.md"
 HIGH_LEVEL_REFERENCE = ROOT / "skills/diagram-design/references/type-high-level.md"
 ONBOARDING_REFERENCE = ROOT / "skills/diagram-design/references/onboarding.md"
 LINE_DARK_EXAMPLE = ROOT / "skills/diagram-design/assets/example-line-dark.html"
+LOOP_REFERENCE = ROOT / "skills/diagram-design/references/type-loop.md"
+LOOP_EXAMPLE_GLOB = "example-loop*.html"
 OUTPUT_SPEC_REFERENCE = ROOT / "skills/diagram-design/references/output-spec.md"
 VARIANTS = ("", "-dark", "-full")
-VISUAL_TYPE_COUNT = 44
+VISUAL_TYPE_COUNT = 45
 AGENT_SKILLS_DESCRIPTION_MAX = 1024
 PLUGIN_DESCRIPTION_MAX = 500
 # Types whose selection-table name differs from its description vocabulary.
@@ -78,6 +84,8 @@ DESCRIPTION_ALIASES = {
     "exploded axonometric": "exploded",
     "axonometric plan": "plan",
     "user journey": "journey",
+    "service blueprint": "blueprint",
+    "dependency graph": "dependency",
 }
 DISCOVERY_HOOKS = ("lifecycle phase",)
 ROUTING_SURFACES = {
@@ -123,6 +131,7 @@ REQUIRED_PACKAGED_RUNTIME_FILES = frozenset(
         "scripts/mermaid_extract.py",
         "scripts/excalidraw_extract.py",
         "scripts/export_svg.py",
+        "scripts/export_png.py",
         "assets/template.html",
         "assets/template-dark.html",
         "assets/template-full.html",
@@ -139,18 +148,55 @@ def normalized(text: str) -> str:
 
 
 def check_onboarding_trust_boundary(errors: list[str], markdown: str) -> None:
-    """Remote page ingestion must state its narrow, untrusted-data purpose."""
+    """Remote onboarding must require user trust before its narrow fetch."""
     text = normalized(markdown)
+    has_trust_prompt = (
+        "only continue if you trust this site" in text
+        and "do you want me to proceed?" in text
+    )
+    requires_explicit_confirmation = (
+        "before making any network request" in text
+        and "until the user explicitly confirms" in text
+        and "supplying the url in the onboarding request is not confirmation" in text
+    )
     has_boundary = "untrusted data" in text
     names_instruction_risk = "instruction" in text
     limits_use = (
         "use it only as a source of color, type, and spacing signals" in text
         and "never follow directive" in text
     )
-    if not (has_boundary and names_instruction_risk and limits_use):
+    if not (
+        has_trust_prompt
+        and requires_explicit_confirmation
+        and has_boundary
+        and names_instruction_risk
+        and limits_use
+    ):
         errors.append(
-            "onboarding.md fetches remote page content without an explicit "
-            "untrusted-data boundary"
+            "onboarding.md fetches remote page content without explicit trust "
+            "confirmation and an untrusted-data boundary"
+        )
+
+
+def check_onboarding_user_verification(errors: list[str], markdown: str) -> None:
+    """Onboarding must end with an explicit review of generated output."""
+    text = normalized(markdown)
+    identifies_output = (
+        "generate or rebuild a representative output document" in text
+        and "provide its local path" in text
+    )
+    tasks_user = (
+        "please open `<output-path>`" in text
+        and "reply `approved` or tell me what should change" in text
+    )
+    stays_pending = (
+        "automated checks do not replace this review" in text
+        and "pending user verification" in text
+        and "until the user explicitly confirms the output document" in text
+    )
+    if not (identifies_output and tasks_user and stays_pending):
+        errors.append(
+            "onboarding.md does not require user verification of the output document"
         )
 
 
@@ -166,6 +212,44 @@ def check_line_dark_skin(errors: list[str], source: str) -> None:
     for token in required:
         if token not in source:
             errors.append(f"example-line-dark.html lost canonical dark-skin token {token!r}")
+
+
+# Each type-loop.md sentence that says which station starts the ring.
+LOOP_ORIGIN_RE = re.compile(
+    r"`stations\[(\d+)\]` is the top station"
+    r"|\b[Ss]tation `?(\d+)`? sits at the top"
+    r"|\b[Ss]tation `?(\d+)`? is at `-90deg`"
+)
+STATION_RECT_RE = re.compile(r"<rect\b[^>]*\bclass=\"station\b[^\"]*\"[^>]*>")
+RECT_Y_RE = re.compile(r"\by=\"(-?\d+(?:\.\d+)?)\"")
+
+
+def check_loop_station_origin(
+    errors: list[str], markdown: str, examples: dict[str, str]
+) -> None:
+    """theta_k = -90deg + k * 360/N puts station 0 at the top; the prose must agree."""
+    origins = [
+        next(group for group in match.groups() if group)
+        for match in LOOP_ORIGIN_RE.finditer(markdown)
+    ]
+    if not origins:
+        errors.append("type-loop.md no longer says which station sits at the top")
+    for index in origins:
+        if index != "0":
+            errors.append(
+                f"type-loop.md puts station {index} at the top; "
+                "theta_k = -90deg + k * 360/N puts station 0 there"
+            )
+    if not examples:
+        errors.append("no Loop examples found to check station order")
+    for name, source in sorted(examples.items()):
+        ys = [RECT_Y_RE.search(tag) for tag in STATION_RECT_RE.findall(source)]
+        if not ys:
+            errors.append(f"{name}: no station rects found to check station order")
+        elif None in ys:
+            errors.append(f"{name}: a station rect has no y attribute to check station order")
+        elif float(ys[0].group(1)) != min(float(y.group(1)) for y in ys):
+            errors.append(f"{name}: the first station is not the topmost station")
 
 
 def frontmatter_description(markdown: str) -> str:
@@ -1692,7 +1776,18 @@ def main() -> int:
     check_onboarding_trust_boundary(
         errors, ONBOARDING_REFERENCE.read_text(encoding="utf-8")
     )
+    check_onboarding_user_verification(
+        errors, ONBOARDING_REFERENCE.read_text(encoding="utf-8")
+    )
     check_line_dark_skin(errors, LINE_DARK_EXAMPLE.read_text(encoding="utf-8"))
+    check_loop_station_origin(
+        errors,
+        LOOP_REFERENCE.read_text(encoding="utf-8"),
+        {
+            path.name: path.read_text(encoding="utf-8")
+            for path in sorted(ASSET_DIR.glob(LOOP_EXAMPLE_GLOB))
+        },
+    )
     check_type_ramp_surfaces(errors, ROOT)
     check_split_routes(errors, SKILL.read_text(encoding="utf-8"))
     check_legacy_type_sizes(
@@ -1713,6 +1808,7 @@ def main() -> int:
         "files, routing surfaces, size-preset surfaces, "
         "manifest descriptions, Factory install contract, type-count routing, "
         "High-Level invariants, onboarding trust boundary, Line dark-skin contract, "
+        "Loop station origin, "
         "font-link parity, title fallback order, type-ramp contract, registered legacy "
         "type sizes, split routing"
     )

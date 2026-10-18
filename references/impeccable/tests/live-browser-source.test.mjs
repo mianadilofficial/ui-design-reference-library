@@ -1045,6 +1045,27 @@ describe('live-browser source contracts', () => {
     );
   });
 
+  it('runs at most one scroll-tracking loop however often tracking starts (#1002)', () => {
+    const start = SOURCE.match(/function startScrollTracking\(\) \{[\s\S]*?\n  \}/)?.[0];
+    const stop = SOURCE.match(/function stopScrollTracking\(\) \{[\s\S]*?\n  \}/)?.[0];
+    assert.ok(start && stop);
+    const pending = new Map();
+    let next = 0;
+    const context = {
+      scrollRaf: null, state: 'IDLE', annotActive: false, shaderState: null,
+      requestAnimationFrame: (fn) => { pending.set(++next, fn); return next; },
+      cancelAnimationFrame: (id) => { pending.delete(id); },
+    };
+    runInNewContext(`${stop}\n${start}\nstartScrollTracking();\nstartScrollTracking();`, context);
+    assert.equal(pending.size, 1, 'the second start replaces the first loop');
+    const [[, tick]] = pending;
+    pending.clear();
+    tick();
+    assert.equal(pending.size, 1, 'the surviving loop keeps itself scheduled');
+    runInNewContext(`${stop}\nstopScrollTracking();`, context);
+    assert.equal(pending.size, 0, 'stop cancels the only loop');
+  });
+
   it('never DOMParser-injects JSX source (#454)', () => {
     const isJsxStart = SOURCE.indexOf('function isJsxSourceFile(');
     const isJsxEnd = SOURCE.indexOf('function sourceHasSessionWrapper(', isJsxStart);

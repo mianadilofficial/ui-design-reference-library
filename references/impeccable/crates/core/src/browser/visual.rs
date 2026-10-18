@@ -14,7 +14,7 @@ use super::painted::{unpainted_for, PaintGate};
 use crate::checks::rules::{
     is_emoji_only_text, is_glyph_only_text, text_fill_is_transparent, TRANSPARENT_INK_FLOOR,
 };
-use crate::color::{contrast_ratio, parse_gradient_colors, parse_rgb, Rgba};
+use crate::color::{contrast_ratio, parse_gradient_colors, parse_rgb, split_top_level_commas, Rgba};
 use impeccable_foundation::css::measures::{data_svg_intrinsic_size, ICON_MAX_PX};
 use crate::constants::{SAFE_TAGS, WCAG_LARGE_BOLD_TEXT_PX, WCAG_LARGE_TEXT_PX};
 use crate::js::{self, math_max, math_min, math_round, number_to_string, parse_float, parse_int, to_fixed, WS};
@@ -54,6 +54,8 @@ re!(
 pub const OVERLAY_SELECTOR: &str =
     ".impeccable-overlay, .impeccable-label, .impeccable-banner, .impeccable-tooltip";
 pub const LIVE_SELECTOR: &str = "[id^=\"impeccable-live-\"]";
+/// The reason a stacked gradient is left to the screenshot check.
+const STACKED_GRADIENTS: &str = "stacked gradients need screenshot pixels";
 
 /// JS `s.replace(/\s+/g, ' ')`.
 fn collapse_ws(s: &str) -> String {
@@ -120,7 +122,7 @@ pub fn collect_visual_contrast_reasons(dom: &dyn Dom, el: ElId) -> Vec<String> {
         }
     };
     let own_bg_image = dom.style(el, "backgroundImage");
-    if bg_clip == "text" && !own_bg_image.is_empty() && own_bg_image != "none" {
+    if crate::checks::rules::background_clips_to_text(&bg_clip) && !own_bg_image.is_empty() && own_bg_image != "none" {
         add(&mut reasons, "background-clip text");
     }
     let text_shadow = dom.style(el, "textShadow");
@@ -128,6 +130,7 @@ pub fn collect_visual_contrast_reasons(dom: &dyn Dom, el: ElId) -> Vec<String> {
         add(&mut reasons, "text shadow");
     }
 
+    let mut faded: Vec<ElId> = Vec::new();
     let mut current = Some(el);
     while let Some(cur) = current {
         // A `display: contents` box paints nothing (Framer's page root at
@@ -149,6 +152,7 @@ pub fn collect_visual_contrast_reasons(dom: &dyn Dom, el: ElId) -> Vec<String> {
         }
         if parse_float(&dom.style(cur, "opacity")) < 0.99 {
             add(&mut reasons, "opacity stack");
+            faded.push(cur);
         }
         let mix = dom.style(cur, "mixBlendMode");
         if !mix.is_empty() && mix != "normal" {
@@ -181,6 +185,11 @@ pub fn collect_visual_contrast_reasons(dom: &dyn Dom, el: ElId) -> Vec<String> {
             break;
         }
         current = dom.parent(cur);
+    }
+    // A fade the element pass folds into the colours it scores is no reason
+    // to read pixels (`opacity_fold_scores_fades`).
+    if !faded.is_empty() && super::element_checks::opacity_fold_scores_fades(dom, el, &faded) {
+        reasons.retain(|r| r != "opacity stack");
     }
 
     let sample_rect = dom.direct_text_rect(el).unwrap_or_else(|| dom.rect(el));
@@ -235,6 +244,16 @@ const MEDIA_TAGS: &[&str] = &["img", "picture", "video", "canvas"];
 const LAYER_MAX_LEVELS: usize = 32;
 const LAYER_MAX_SIBLINGS: usize = 32;
 const LAYER_MAX_DEPTH: usize = 6;
+/// How deep [`layer_in_box`] follows a chain of boxes that each cover the
+/// whole run, past [`LAYER_MAX_DEPTH`]: a slider nests its hero photo a dozen
+/// wrappers down (visitabudhabi.ae's `<picture>` is 16 boxes under the white
+/// page wrapper it paints over), and every box on the way covers the text.
+/// Narrower by design: past [`LAYER_MAX_DEPTH`] a `display: contents` or
+/// zero-height wrapper ends the chain, and children are visited in reverse
+/// document order, not z-order, so a deep stack of slides told apart only by
+/// a `clip-path` may answer with an inactive slide's paint. A picture routes
+/// to the pixels, which bounds the harm; a fill from such a slide would not.
+const LAYER_MAX_COVER_DEPTH: usize = 24;
 const LAYER_MAX_CHILDREN: usize = 64;
 const LAYER_MAX_NODES: usize = 1024;
 
@@ -299,6 +318,21 @@ fn raster_tiles_as_texture(dom: &dyn Dom, node: ElId) -> bool {
     }
     drawn_image_size(dom, node)
         .map_or(false, |(w, h)| w <= TEXTURE_MAX_TILE_PX && h <= TEXTURE_MAX_TILE_PX)
+}
+
+/// Whether the page ground carries a picture: `body` or `html` paints a
+/// raster background that is not a small repeating texture
+/// ([`raster_tiles_as_texture`]). The climb reads the document's images as
+/// no layer over it, because where the image is drawn (a `repeat-x` strip at
+/// `auto` size, a centred photo) is not in the capture; but text in exactly
+/// the ground's own colour over such a page is text the author set on the
+/// image (schlittermann.de's white tagline on a crimson `bg.png` header
+/// strip), and its `1.0:1` against the fill is not a verdict the engine can
+/// confirm.
+pub(crate) fn page_ground_paints_picture(dom: &dyn Dom) -> bool {
+    [dom.body(), dom.document_element()].into_iter().flatten().any(|node| {
+        URL_RE.is_match(&dom.style(node, "backgroundImage")) && !raster_tiles_as_texture(dom, node)
+    })
 }
 
 /// Whether a box's background image is an icon rather than a picture: one
@@ -687,6 +721,36 @@ fn pseudo_order(dom: &dyn Dom, node: ElId, which: &str) -> Order {
     }
 }
 
+/// Whether `node`'s `which` pseudo-element paints over the fills between it
+/// and the text, as far as the capture says ([`pseudo_order`]).
+pub(crate) fn pseudo_paints_over(dom: &dyn Dom, node: ElId, which: &str) -> bool {
+    pseudo_order(dom, node, which) == Order::Over
+}
+
+/// Whether `node`'s `which` pseudo-element is a face between its own
+/// background and its own text over `text`. The text is the host's inline
+/// content, which every positioned box at `z-index: auto` or above paints
+/// over, so only a negative `z-index` the host's stacking context keeps
+/// over its background ([`pseudo_order`]) is under the glyphs. A pseudo
+/// the capture places must cover the text run: a full-size face parked at
+/// `top: 100%` is not under it. One it cannot place is left to the
+/// caller's size test.
+pub(crate) fn pseudo_face_under_text(dom: &dyn Dom, node: ElId, which: &str, text: &Rect) -> bool {
+    let z = dom.pseudo_style(node, which, "zIndex").unwrap_or_default();
+    let z = js::trim(&z);
+    if z.is_empty() || z == "auto" {
+        return false;
+    }
+    let v = parse_float(z);
+    if !(v.is_finite() && v < 0.0) || !pseudo_paints_over(dom, node, which) {
+        return false;
+    }
+    match pseudo_box(dom, node, which) {
+        Some((b, _)) => rect_covers(&b, text),
+        None => true,
+    }
+}
+
 /// A `::before` or `::after` painting something over the whole text run.
 /// A small pseudo (an underline, a bullet, a badge dot) is not a surface,
 /// and neither is one laid out inline, one placed off the text (a "Most
@@ -972,12 +1036,24 @@ fn layer_in_box(
     if covers && beneath && !skipped && MEDIA_TAGS.contains(&tag_lower(dom, node).as_str()) {
         return Some((Paint::Picture, node));
     }
-    if depth < LAYER_MAX_DEPTH && (covers || overflow_visible(dom, node)) {
+    // Past the first levels, only a chain of boxes that each cover the run is
+    // followed: those are the wrappers a picture sits in, and a box that does
+    // not cover the run says nothing about the paint under all of it.
+    let deep = depth >= LAYER_MAX_DEPTH;
+    if (depth < LAYER_MAX_DEPTH && (covers || overflow_visible(dom, node)))
+        || (depth < LAYER_MAX_COVER_DEPTH && covers)
+    {
         let children = dom.children(node);
         let reaching = children
             .iter()
             .rev()
-            .filter(|&&child| may_reach_text(dom, child, text))
+            .filter(|&&child| {
+                if deep {
+                    rect_covers(&dom.rect(child), text)
+                } else {
+                    may_reach_text(dom, child, text)
+                }
+            })
             .take(LAYER_MAX_CHILDREN);
         for &child in reaching {
             if let Some(paint) =
@@ -1794,7 +1870,7 @@ fn candidate_text_reads_at_rest(dom: &dyn Dom, el: ElId) -> bool {
             a
         }
     };
-    if js::trim(&clip) != "text" {
+    if !crate::checks::rules::background_clips_to_text(&clip) {
         let ink_gone = parse_rgb_or_any(&dom.style(el, "color"))
             .map_or(false, |c| c.alpha_or_one() <= TRANSPARENT_INK_FLOOR);
         if ink_gone || text_fill_is_transparent(&dom.style(el, "webkitTextFillColor")) {
@@ -2714,6 +2790,35 @@ fn with_method(sample: Value, method: &str) -> Value {
     }
 }
 
+/// Whether background layer `index` is `none` or a gradient that paints the whole box:
+/// tiled in both directions, or sized to the box and not moved off it by a
+/// length offset. Shorter `background-*` lists repeat, as in CSS.
+fn gradient_layer_covers_box(dom: &dyn Dom, node: ElId, layers: &[String], index: usize) -> bool {
+    let layer = js::to_lower_case(js::trim(&layers[index]));
+    // The `none` a `background` shorthand leaves beside its color paints nothing.
+    if layer == "none" {
+        return true;
+    }
+    let is_gradient = ["linear-gradient(", "radial-gradient(", "conic-gradient("]
+        .iter()
+        .any(|kind| layer.starts_with(kind) || layer.strip_prefix("repeating-").is_some_and(|l| l.starts_with(kind)));
+    if !is_gradient {
+        return false;
+    }
+    let value = |prop: &str| {
+        let list = split_top_level_commas(&dom.style(node, prop));
+        list.get(index % list.len().max(1)).map(|v| js::trim(v).to_string()).unwrap_or_default()
+    };
+    if matches!(value("backgroundRepeat").as_str(), "" | "repeat" | "repeat repeat") {
+        return true;
+    }
+    // A gradient has no size of its own, so `auto` (and `contain`) fill the box.
+    let size = value("backgroundSize");
+    let fills = matches!(size.as_str(), "cover" | "contain") || split_ws(&size).iter().all(|t| matches!(&**t, "" | "auto" | "100%"));
+    fills
+        && split_ws(&value("backgroundPosition")).iter().all(|t| t.ends_with('%') || matches!(&**t, "" | "0px" | "left" | "top" | "center" | "right" | "bottom"))
+}
+
 /// JS: index.mjs#sampleCssBackground — every decision except the image
 /// load and the canvas sample.
 pub fn css_plan(dom: &dyn Dom, node: ElId, text_color: Option<&Rgba>) -> CssPlan {
@@ -2721,7 +2826,54 @@ pub fn css_plan(dom: &dyn Dom, node: ElId, text_color: Option<&Rgba>) -> CssPlan
     if !bg_image.is_empty() && bg_image != "none" {
         if GRADIENT_RE.is_match(&bg_image) {
             if let Some(tc) = text_color {
-                let colors = parse_gradient_colors(Some(&bg_image));
+                // Compared raw, `transparent` reads as black (issue #881). Over the
+                // element's own opaque background-color the layers composite bottom
+                // up before they are judged, while every layer is a gradient that
+                // paints the whole box; anything else takes the path below.
+                let layers = split_top_level_commas(&bg_image);
+                let own = parse_rgb_or_any(&dom.style(node, "backgroundColor")).filter(|c| {
+                    c.alpha_or_one() >= 0.999 && (0..layers.len()).all(|i| gradient_layer_covers_box(dom, node, &layers, i))
+                });
+                // Set when a translucent stop lands on more than one color: which
+                // composite is painted then depends on where each of them sits.
+                let mut positional = false;
+                let colors: Option<Vec<Rgba>> = match own {
+                    Some(own) => layers.iter().rev().try_fold(vec![own], |ground, layer| {
+                        let stops = parse_gradient_colors(Some(layer));
+                        if stops.is_empty() {
+                            return (js::trim(layer) == "none").then_some(ground);
+                        }
+                        let mut over: Vec<Rgba> = Vec::new();
+                        for stop in &stops {
+                            // An opaque stop hides the ground: one color, not one per ground.
+                            let under = if stop.alpha_or_one() >= 0.999 { &ground[..1] } else { &ground[..] };
+                            positional |= under.len() > 1;
+                            over.extend(under.iter().filter_map(|g| blend_rgba(Some(stop), Some(g))));
+                        }
+                        over.dedup();
+                        // A stack too deep to enumerate is left unread, not cut short.
+                        (over.len() <= 4096).then_some(over)
+                    }),
+                    None => Some(parse_gradient_colors(Some(&bg_image))),
+                };
+                let Some(colors) = colors else {
+                    return CssPlan::Sample {
+                        sample: json!({ "status": "unresolved", "reason": STACKED_GRADIENTS, "stop": true }),
+                    };
+                };
+                if positional {
+                    // The two ends of the range the stack can show, ranked as
+                    // `finish_analysis` scores them (translucent text blended
+                    // over each): it keeps the sample only when both ends agree
+                    // on the verdict.
+                    let painted = |bg: &Rgba| contrast_ratio(&blend_rgba(Some(tc), Some(bg)).unwrap(), bg);
+                    let by_contrast = |a: &&Rgba, b: &&Rgba| painted(a).total_cmp(&painted(b));
+                    if let (Some(color), Some(best)) = (colors.iter().min_by(by_contrast), colors.iter().max_by(by_contrast)) {
+                        return CssPlan::Sample {
+                            sample: json!({ "status": "sampled", "color": color, "best": best, "method": "analytic-gradient" }),
+                        };
+                    }
+                }
                 match analytic_gradient_verdict(tc, &colors) {
                     Some(GradientVerdict::Color(color)) => {
                         return CssPlan::Sample {
@@ -2997,11 +3149,16 @@ pub fn alpha_composite(sample: Value, under: &Value) -> Value {
         let base = rgba_from_value(under.get("color"));
         let blended = blend_rgba(top.as_ref(), base.as_ref());
         let method = str_or_empty(sample.get("method"));
-        return json!({
+        let mut out = json!({
             "status": "sampled",
             "color": rgba_value(blended.as_ref()),
             "method": format!("{method}+alpha"),
         });
+        // A stacked gradient's range (`best`) is veiled the same way.
+        if let Some(best) = rgba_from_value(under.get("best")) {
+            out["best"] = rgba_value(blend_rgba(top.as_ref(), Some(&best)).as_ref());
+        }
+        return out;
     }
     sample
 }
@@ -3185,6 +3342,9 @@ pub fn finish_analysis(candidate: &Value, text_color: &Rgba, samples: &[Value], 
     let mut ratios: Vec<f64> = Vec::new();
     let mut methods: Vec<String> = Vec::new();
     let mut unresolved_reasons: Vec<String> = Vec::new();
+    let mut straddles = false;
+    let threshold = candidate.get("threshold").and_then(Value::as_f64).unwrap_or(f64::NAN);
+    let ratio_on = |bg: &Rgba| contrast_ratio(&blend_rgba(Some(text_color), Some(bg)).unwrap(), bg);
     for sample in samples {
         let sampled = sample.get("status").and_then(Value::as_str) == Some("sampled");
         let color = rgba_from_value(sample.get("color"));
@@ -3192,15 +3352,31 @@ pub fn finish_analysis(candidate: &Value, text_color: &Rgba, samples: &[Value], 
             unresolved_reasons.push(str_or_empty(sample.get("reason")));
             continue;
         }
-        let bg = color.unwrap();
-        let fg = blend_rgba(Some(text_color), Some(&bg)).unwrap();
-        ratios.push(contrast_ratio(&fg, &bg));
+        let ratio = ratio_on(&color.unwrap());
+        // A stacked gradient reports the range of colors it can show. When the
+        // two ends disagree on the verdict, the answer depends on where the
+        // text sits, and only pixels can say. A veil over the range can swap
+        // which end is worse, so neither is assumed to be.
+        let other = rgba_from_value(sample.get("best")).map(|best| ratio_on(&best));
+        if other.is_some_and(|other| (ratio < threshold) != (other < threshold)) {
+            straddles = true;
+            unresolved_reasons.push(STACKED_GRADIENTS.to_string());
+            continue;
+        }
+        let ratio = other.map_or(ratio, |other| math_min(ratio, other));
+        ratios.push(ratio);
         let method = str_or_empty(sample.get("method"));
         if !method.is_empty() && !methods.contains(&method) {
             methods.push(method);
         }
     }
-    if ratios.len() < math_min(3.0, points_len as f64) as usize {
+    ratios.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+    let n = ratios.len();
+    let measured = if n > 0 { sampled_verdict(&ratios) } else { f64::NAN };
+    // A point left to the pixels can hide a failure: the readable points may
+    // fail the text without it, never pass it.
+    let uncertain_pass = straddles && n > 0 && !(measured < threshold);
+    if n < math_min(3.0, points_len as f64) as usize || uncertain_pass {
         let mut uniq: Vec<&str> = Vec::new();
         for r in &unresolved_reasons {
             if !r.is_empty() && !uniq.contains(&r.as_str()) {
@@ -3214,16 +3390,12 @@ pub fn finish_analysis(candidate: &Value, text_color: &Rgba, samples: &[Value], 
             vec![
                 ("status", json!("unresolved")),
                 ("confidence", json!("none")),
-                ("samples", json!(ratios.len())),
+                ("samples", json!(n)),
                 ("reason", json!(reason)),
             ],
         );
     }
-    ratios.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
-    let n = ratios.len();
     let median = percentile(&ratios, 50.0);
-    let measured = sampled_verdict(&ratios);
-    let threshold = candidate.get("threshold").and_then(Value::as_f64).unwrap_or(f64::NAN);
     // The points read two surfaces and the line passes on the one most of
     // them read: a few samples landed on a bright patch of a photo, or past
     // its edge (thekrogerco.com printed 1.9:1 against a median of 7.0:1 for
@@ -3536,6 +3708,36 @@ mod tests {
         assert_eq!(out2["status"], "unresolved");
         assert_eq!(out2["reason"], "not enough readable samples");
         assert_eq!(out2["samples"], json!(1));
+        // A range whose ends disagree on the verdict is left to the pixels;
+        // one whose ends agree is a verdict.
+        let range = |best: f64| -> Vec<Value> {
+            (0..3)
+                .map(|_| json!({ "status": "sampled", "color": { "r": 255, "g": 255, "b": 255, "a": 1 }, "best": { "r": best, "g": best, "b": best, "a": 1 }, "method": "analytic-gradient" }))
+                .collect()
+        };
+        let straddles = finish_analysis(&candidate, &tc, &range(0.0), 3);
+        assert_eq!((&straddles["status"], &straddles["reason"]), (&json!("unresolved"), &json!(STACKED_GRADIENTS)));
+        assert_eq!(finish_analysis(&candidate, &tc, &range(250.0), 3)["status"], "fail");
+        // A veil can swap the ends: a passing `color` beside a failing `best` straddles too.
+        let swapped: Vec<Value> = (0..3)
+            .map(|_| json!({ "status": "sampled", "color": { "r": 0, "g": 0, "b": 0, "a": 1 }, "best": { "r": 255, "g": 255, "b": 255, "a": 1 }, "method": "analytic-gradient" }))
+            .collect();
+        assert_eq!(finish_analysis(&candidate, &tc, &swapped, 3)["reason"], json!(STACKED_GRADIENTS));
+        // A translucent surface above the range veils both ends.
+        let veil = json!({ "status": "sampled", "color": { "r": 0, "g": 0, "b": 0, "a": 0.5 }, "method": "solid-background" });
+        let veiled = composite_stack(&[veil], &range(0.0)[0]);
+        assert_eq!(rgba_from_value(veiled.get("color")), Some(rgba(128.0, 128.0, 128.0, 1.0)));
+        assert_eq!(rgba_from_value(veiled.get("best")), Some(rgba(0.0, 0.0, 0.0, 1.0)));
+        // One such point beside readable ones: they may fail the text, never pass it.
+        let beside = |r: f64| -> Vec<Value> {
+            let mut v: Vec<Value> = (0..3)
+                .map(|_| json!({ "status": "sampled", "color": { "r": r, "g": r, "b": r, "a": 1 }, "method": "solid-background" }))
+                .collect();
+            v.push(range(0.0).remove(0));
+            v
+        };
+        assert_eq!(finish_analysis(&candidate, &tc, &beside(0.0), 4)["status"], "unresolved");
+        assert_eq!(finish_analysis(&candidate, &tc, &beside(255.0), 4)["status"], "fail");
     }
 
     #[test]
@@ -3605,6 +3807,74 @@ mod tests {
         // A line half over a light band and half over a dark one.
         assert_eq!(sampled_verdict(&[2.0, 2.1, 2.2, 12.0, 12.5, 13.0, 13.5]), 2.0);
         assert_eq!(sampled_verdict(&[3.0]), 3.0);
+    }
+
+    /// observations-47 row 10, doub.ly 323592: an `opacity-80` footer note
+    /// over the page's near-black. The element pass folds the fade into the
+    /// ink and passes it at 4.92:1, so the fade is no reason to read pixels
+    /// (the glyph-core median of its 12px strokes printed 4.47). A fade on
+    /// the box that paints the surface fades the surface too, over paint the
+    /// walk never read, and stays a reason.
+    #[test]
+    fn a_fade_the_element_pass_folds_is_no_reason_to_read_pixels() {
+        let mut d = FakeDom::new();
+        let (html, body) = d.with_page();
+        for n in [html, body] {
+            d.set_styles(n, &[("backgroundColor", "rgb(5, 5, 7)"), ("backgroundImage", "none"), ("opacity", "1")]);
+        }
+        let footer = d.add(Some(body), "footer");
+        d.set_styles(footer, &[("backgroundColor", "rgba(0, 0, 0, 0)"), ("backgroundImage", "none")]);
+        d.set_rect(footer, 0.0, 1500.0, 1280.0, 170.0);
+        let p = d.add(Some(footer), "p");
+        d.add_text(p, "Not affiliated with The Mechanical Licensing Collective.");
+        d.set_styles(
+            p,
+            &[
+                ("backgroundColor", "rgba(0, 0, 0, 0)"),
+                ("backgroundImage", "none"),
+                ("color", "rgb(154, 152, 173)"),
+                ("fontSize", "12px"),
+                ("opacity", "0.8"),
+            ],
+        );
+        d.set_rect(p, 84.0, 1591.0, 768.0, 39.0);
+        d.set_text_rect(p, 84.0, 1592.0, 753.0, 34.0);
+        assert!(collect_visual_contrast_reasons(&d, p).is_empty());
+        // Over a page ground that carries a photo, the fold composites over
+        // the ground's fill, which is not what the text sits on: the fade
+        // stays a reason (review B2).
+        d.set_styles(body, &[("backgroundImage", "url(\"/hero.jpg\")"), ("backgroundSize", "cover")]);
+        assert_eq!(collect_visual_contrast_reasons(&d, p), vec!["opacity stack".to_string()]);
+        d.set_styles(body, &[("backgroundImage", "none"), ("backgroundSize", "auto")]);
+        // The fade on the surface's own box.
+        d.set_style(p, "opacity", "1");
+        d.set_styles(footer, &[("backgroundColor", "rgb(20, 20, 24)"), ("opacity", "0.8")]);
+        assert_eq!(collect_visual_contrast_reasons(&d, p), vec!["opacity stack".to_string()]);
+        // A fade a view() timeline holds at 0 at the top of the page, with an
+        // opaque end keyframe, is read by the fold at full strength; the
+        // pixels would be the capture's transparent box (review).
+        d.set_styles(footer, &[("backgroundColor", "rgba(0, 0, 0, 0)"), ("opacity", "1")]);
+        d.keyframes.insert(
+            "fade-up".into(),
+            ["0", "1"]
+                .iter()
+                .map(|o| crate::browser::dom::KeyframeFrame { decls: vec![("opacity".to_string(), o.to_string())] })
+                .collect(),
+        );
+        d.keyframe_keys.insert("fade-up".into(), vec!["0%".to_string(), "100%".to_string()]);
+        d.set_styles(
+            p,
+            &[
+                ("opacity", "0"),
+                ("animationName", "fade-up"),
+                ("animationTimeline", "view()"),
+                ("animationFillMode", "both"),
+                ("animationDirection", "normal"),
+                ("animationComposition", "replace"),
+            ],
+        );
+        d.set_running_animations(p, &["opacity"]);
+        assert!(collect_visual_contrast_reasons(&d, p).is_empty());
     }
 
     #[test]
@@ -3864,8 +4134,10 @@ mod tests {
         let mut d = FakeDom::new();
         let (_h, body) = d.with_page();
         d.set_styles(body, &[("backgroundColor", "rgb(255, 255, 255)"), ("backgroundImage", "none")]);
+        // The row paints the surface it fades, so the element pass's fold
+        // does not score the fade and the pixels are asked.
         let row = d.add(Some(body), "div");
-        d.set_styles(row, &[("backgroundColor", "rgba(0, 0, 0, 0)"), ("backgroundImage", "none"), ("opacity", "0.5")]);
+        d.set_styles(row, &[("backgroundColor", "rgb(240, 240, 240)"), ("backgroundImage", "none"), ("opacity", "0.5")]);
         d.set_rect(row, 0.0, 0.0, 400.0, 40.0);
         let p = d.add(Some(row), "p");
         d.add_text(p, "Pick a template:");
@@ -3885,6 +4157,74 @@ mod tests {
         // The animation settled.
         d.set_running_animations(row, &[]);
         assert_eq!(collect_visual_contrast_candidates(&d, &json!({})).len(), 1);
+    }
+
+    #[test]
+    fn gradient_stops_are_judged_as_they_paint() {
+        let mut d = FakeDom::new();
+        let (_h, body) = d.with_page();
+        let sec = d.add(Some(body), "section");
+        let radial = "radial-gradient(at 75% 42%, rgba(233, 231, 249, 0.72) 0px, rgba(0, 0, 0, 0) 58%)";
+        let linear = "linear-gradient(rgb(242, 240, 250), rgba(0, 0, 0, 0) 75%)";
+        // The `background` shorthand leaves a `none` layer beside its color.
+        d.set_styles(sec, &[("backgroundImage", &format!("{radial}, none")), ("backgroundColor", "rgb(255, 255, 255)")]);
+        let text = rgba(24.0, 25.0, 28.0, 1.0);
+        let sample = |d: &FakeDom| match css_plan(d, sec, Some(&text)) {
+            CssPlan::Sample { sample } => sample,
+            other => panic!("{other:?}"),
+        };
+        let color = |d: &FakeDom| rgba_from_value(sample(d).get("color"));
+        // Over the element's own white, a faded stop is never black.
+        assert_eq!(color(&d), Some(rgba(239.0, 238.0, 251.0, 1.0)));
+        // No ground of its own: a translucent stop is left to the pixels.
+        let unread = |d: &FakeDom| sample(d)["reason"] == json!("gradient stops disagree");
+        d.set_style(sec, "backgroundColor", "rgba(0, 0, 0, 0)");
+        assert!(unread(&d));
+        // A url() layer sits between the gradient and the color: the color is not the ground.
+        d.set_styles(sec, &[
+            ("backgroundImage", "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url(\"a.png\")"),
+            ("backgroundColor", "rgb(255, 255, 255)"),
+        ]);
+        assert!(unread(&d));
+        // Stacked layers composite bottom up: the veil lands on the grey, not the white.
+        d.set_style(sec, "backgroundImage", "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), linear-gradient(rgb(180, 180, 180), rgb(180, 180, 180))");
+        assert_eq!(color(&d), Some(rgba(90.0, 90.0, 90.0, 1.0)));
+        // A translucent layer over one that shows two colors reports the range
+        // it can show: the worst, and the best beside it.
+        d.set_style(sec, "backgroundImage", &format!("{radial}, {linear}"));
+        let stacked = sample(&d);
+        assert_eq!(rgba_from_value(stacked.get("color")), Some(rgba(236.0, 234.0, 249.0, 1.0)));
+        assert_eq!(rgba_from_value(stacked.get("best")), Some(rgba(255.0, 255.0, 255.0, 1.0)));
+        // Translucent text is ranked as it paints: red at 0.65 passes over white and
+        // fails over black, so black is the worst end even though raw red is darker
+        // against white.
+        let veil_over_split = "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)), linear-gradient(rgb(0, 0, 0), rgb(255, 255, 255))";
+        d.set_style(sec, "backgroundImage", veil_over_split);
+        let red = rgba(255.0, 0.0, 0.0, 0.65);
+        let ranked = match css_plan(&d, sec, Some(&red)) {
+            CssPlan::Sample { sample } => sample,
+            other => panic!("{other:?}"),
+        };
+        assert_eq!(rgba_from_value(ranked.get("color")), Some(rgba(0.0, 0.0, 0.0, 1.0)));
+        // Only a fully opaque fill is a ground: what is behind a 0.96 fill still shows.
+        d.set_styles(sec, &[("backgroundImage", radial), ("backgroundColor", "rgba(255, 255, 255, 0.96)")]);
+        assert!(unread(&d));
+        // A layer that is not a gradient (a paint worklet) is not read as absent.
+        d.set_styles(sec, &[("backgroundImage", &format!("{radial}, paint(dots)")), ("backgroundColor", "rgb(255, 255, 255)")]);
+        assert!(unread(&d));
+        // A small untiled gradient does not hide the layers outside it.
+        d.set_styles(sec, &[
+            ("backgroundImage", "linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0)), linear-gradient(rgb(255, 255, 255), rgb(255, 255, 255))"),
+            ("backgroundSize", "40px 40px, auto"),
+            ("backgroundRepeat", "no-repeat, repeat"),
+        ]);
+        assert!(unread(&d));
+        // Tiled, the same gradient paints the whole box.
+        d.set_style(sec, "backgroundRepeat", "repeat");
+        assert_eq!(color(&d), Some(rgba(0.0, 0.0, 0.0, 1.0)));
+        // So does an untiled one whose `auto` side fills the box.
+        d.set_styles(sec, &[("backgroundSize", "100% auto, auto"), ("backgroundRepeat", "no-repeat, repeat")]);
+        assert_eq!(color(&d), Some(rgba(0.0, 0.0, 0.0, 1.0)));
     }
 
     #[test]
@@ -4643,6 +4983,65 @@ mod tests {
         // climb reaches the page, and only the hit test is left to answer.
         let (d, overline, img) = build("block");
         assert_ne!(layer_under_text_found(&d, overline).1, Some(img));
+    }
+
+    /// observations-47 row 5, visitabudhabi.ae 324008: the header's links sit
+    /// on a translucent bar over the hero photo, which a slider nests 16
+    /// boxes inside the white page wrapper it paints over (a `z-index:
+    /// -1111` layer inside the wrapper's own stacking context). The climb
+    /// follows the chain of wrappers that each cover the run past its usual
+    /// depth and finds the photo, where it used to stop and read the
+    /// wrapper's white. A chain that stops covering the run is not followed
+    /// that deep.
+    #[test]
+    fn the_climb_follows_covering_wrappers_down_to_a_deep_picture() {
+        let build = |depth: usize, gap_at: Option<usize>| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            d.set_style(body, "backgroundColor", "rgb(255, 255, 255)");
+            let header = d.add(Some(body), "header");
+            d.set_styles(header, &[("position", "fixed"), ("zIndex", "10"), ("display", "block")]);
+            d.set_rect(header, 0.0, 0.0, 1280.0, 106.0);
+            let link = d.add(Some(header), "a");
+            d.add_text(link, "Partners");
+            d.set_styles(link, &[("display", "block"), ("color", "rgb(255, 255, 255)"), ("fontSize", "11px")]);
+            d.set_rect(link, 40.0, 7.0, 49.0, 13.0);
+            d.set_text_rect(link, 40.0, 7.0, 49.0, 13.0);
+            let wrapper = d.add(Some(body), "div");
+            d.set_styles(
+                wrapper,
+                &[("position", "relative"), ("zIndex", "2"), ("display", "block"), ("backgroundColor", "rgb(255, 255, 255)")],
+            );
+            d.set_rect(wrapper, 0.0, 0.0, 1280.0, 4689.0);
+            let mut parent = wrapper;
+            for level in 0..depth {
+                let next = d.add(Some(parent), "div");
+                let z = if level == 0 { "-1111" } else { "auto" };
+                d.set_styles(next, &[("position", "relative"), ("zIndex", z), ("display", "block")]);
+                if gap_at == Some(level) {
+                    d.set_rect(next, 0.0, 200.0, 1280.0, 600.0);
+                } else {
+                    d.set_rect(next, 0.0, 0.0, 1280.0, 801.0);
+                }
+                parent = next;
+            }
+            let img = d.add(Some(parent), "img");
+            d.set_styles(img, &[("position", "absolute"), ("display", "block")]);
+            d.set_rect(img, 0.0, 0.0, 1280.0, 802.0);
+            (d, link, img)
+        };
+        let (d, link, img) = build(15, None);
+        assert_eq!(layer_under_text_found(&d, link), (LayerUnder::Picture, Some(img)));
+        // Within the usual depth the photo was always found.
+        let (d, link, img) = build(4, None);
+        assert_eq!(layer_under_text_found(&d, link), (LayerUnder::Picture, Some(img)));
+        // A wrapper deep in the chain that does not cover the run ends it,
+        // and the climb reads the wrapper's white as before.
+        let (d, link, _) = build(15, Some(10));
+        assert!(matches!(layer_under_text_found(&d, link).0, LayerUnder::Detached(_)));
+        // So does a chain deeper than the bound.
+        let (d, link, _) = build(LAYER_MAX_COVER_DEPTH + 2, None);
+        assert!(matches!(layer_under_text_found(&d, link).0, LayerUnder::Detached(_)));
     }
 
     /// observations-42 row 12, telekom.de: a consent notice scrolls its list

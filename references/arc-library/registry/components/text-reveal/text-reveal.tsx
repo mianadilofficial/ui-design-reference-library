@@ -19,8 +19,11 @@ export function TextReveal({ text, as = "h2", className, id, delay = 0 }: TextRe
   const step = Math.min(motionTokens.stagger.word, MAX_STAGGER / Math.max(count, 1));
   const blur = as === "p" ? motionTokens.blur.soft : motionTokens.blur.text;
   let index = 0;
-  return <Tag id={id} className={[styles.reveal, className].filter(Boolean).join(" ")} style={{ "--reveal-blur": `${blur}px` } as CSSProperties}>
-    <span className={styles.srOnly}>{text.replace(/\n/g, " ")}</span>
+  const spoken = text.replace(/\n/g, " ");
+  // Headings take their accessible name from aria-label, so the sentence appears once in the DOM. A paragraph cannot be named, so it keeps a visually hidden copy.
+  const named = as !== "p";
+  return <Tag id={id} aria-label={named ? spoken : undefined} className={[styles.reveal, className].filter(Boolean).join(" ")} style={{ "--reveal-blur": `${blur}px` } as CSSProperties}>
+    {named ? null : <span className={styles.srOnly}>{spoken}</span>}
     {lines.map((words, lineIndex) => <Fragment key={lineIndex}><span className={styles.line} aria-hidden="true">{words.map((word, wordIndex) => {
       const position = index++;
       return <Fragment key={`${word}-${position}`}><span className={styles.clip}><span className={styles.word} style={{ "--reveal-delay": `${delay + position * step + lineIndex * step}s` } as CSSProperties}>{word}</span></span>{wordIndex < words.length - 1 ? " " : null}</Fragment>;

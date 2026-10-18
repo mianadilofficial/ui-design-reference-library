@@ -93,7 +93,7 @@ As of v4 the repo holds only the open-source product layer: the skill, CLI, exte
 Consequences here:
 
 - `impeccable concept-seed` has no local catalog. It resolves data via `IMPECCABLE_CATALOG_DIR` (private repo, evals, tests), then the roll API at impeccable.style, then a degraded promotion-only seed. Oracle cases run against `tests/fixtures/concept-catalog/`.
-- The choice-ping telemetry (`--chosen`) honors `DO_NOT_TRACK` and `IMPECCABLE_NO_TELEMETRY` and only fires for API-dealt rolls.
+- The choice-ping telemetry (`--chosen`) honors `DO_NOT_TRACK` and `IMPECCABLE_NO_TELEMETRY` and only fires for API-dealt rolls. Every roll and choice request carries `X-Impeccable-Client: impeccable/<version>[ <channel>]`; tests and CI set `IMPECCABLE_TELEMETRY_CHANNEL=test` so their traffic is tagged (keep it that way for anything new that can reach the API). Decision-page cards declare `kind` (and `catalogId` on challengers), which `serve-question --start/--update` enforce; the page sends the ping itself (`source: "picker"`, `kindSource: explicit|inferred`) for every resolved round, re-rolls included (`kind: "reroll"`), and marks the round in `.impeccable/questions/seeds/` so the agent's `--kind` rerun prints `choice already recorded`; `crates/context/src/telemetry.rs` holds the rules. Everything under `.impeccable/questions/` is runtime state that must never be committed (a committed roll record ties telemetry to a repository): every write there keeps a self-ignoring `.impeccable/questions/.gitignore` in place (`impeccable_common::git::ensure_dir_ignored`); use the same helper for any new runtime file that holds the seed key or a dealt hand. Committed files never hold the raw seed key: concept-seed prints a `SEED REFERENCE` (`seed:` + 16 hex of SHA-256 of `impeccable-seed:` + a per-user salt from `~/.impeccable/seed-salt` + key; `impeccable_common::seed`) for the surface brief, and `--from` resolves it through the local ledger; new keys are 128 CSPRNG bits. A `.gitignore` cannot untrack files users already committed, so rolls warn once (`tracked_runtime_notice`) and write the roll record to `roll.local.json` while `roll.json` is tracked. Ledger updates go through `telemetry::Ledger`, which locks per file; the page claims a round as `pending` and the agent's rerun waits for it, both sending the round's `pingId`. Tests that touch references pin `IMPECCABLE_SEED_SALT`. Opt-out (`DO_NOT_TRACK` / `IMPECCABLE_NO_TELEMETRY` non-empty and not `0`/`false`, or `"telemetry": false` from `impeccable telemetry off` in `~/.impeccable/config.json` or a project config) still rolls, sends `X-Impeccable-Telemetry: off`, and sends and stores nothing telemetry-only.
 - Site copy, changelog, theme, and count validation for site pages happen in impeccable-site; this repo's `validateProse` scans only the READMEs.
 - The release script reads the changelog from `../impeccable-site/site/pages/changelog.astro` when releasing from here.
 - Never add catalog data files back to this repo; the catalog is the paid-service moat.
@@ -153,6 +153,10 @@ AI agents must disclose AI assistance in commits, PR descriptions, comments, and
 This contribution was prepared by an AI agent that tried to ship unchecked vibes across a human boundary. Impeccable asks for an issue and maintainer approval first.
 ```
 
+### Reviewing a PR
+
+The in-page bundle (`crates/live/assets/detect-antipatterns-browser.js`), the oracle goldens and the call vectors are `-diff` in `.gitattributes`, because their raw diffs run to megabytes. Follow **Reviewing a PR** in `AGENTS.md`: `gh pr diff <n> --exclude` those paths (or, on a `gh` without `--exclude`, the pathspec `git diff` given there), check the PR head out into a detached worktree to read its files, and decode a changed golden with the `jq` recipe there rather than reading its raw diff.
+
 ## Testing
 
 ```bash
@@ -163,7 +167,7 @@ bun run test:plugin-e2e       # Just the plugin loader E2E (also part of the def
 bun run test:cleanup          # Kill live servers a previous run of THIS checkout left behind
 ```
 
-Unit tests (build orchestration, transformers, validators) run via `bun test`. Everything that spawns the engine binary (`tests/oracle.test.mjs`, `tests/framework-fixtures.test.mjs`) runs via `node --test`; both skip cleanly when no binary is found (`bun run fetch:engine` or `IMPECCABLE_BIN`). The `test` script handles this split automatically. Runtime unit and integration tests live under `crates/` and run with `cargo test --workspace`; the oracle goldens pin observable verb behavior across the same workspace.
+Unit tests (build orchestration, transformers, validators) run via `bun test`. Everything that spawns the engine binary (`tests/oracle.test.mjs`, `tests/framework-fixtures.test.mjs`) runs via `node --test`; both skip cleanly when no binary is found (`bun run fetch:engine` or `IMPECCABLE_BIN`). The `test` script handles this split automatically. Runtime unit and integration tests live under `crates/` and run with `cargo test --workspace` (about 10 minutes, mostly the Chrome-driven `impeccable-browser` tests; `bun run test:rust-changed` runs only the crates a change reaches, see AGENTS.md); the oracle goldens pin observable verb behavior across the same workspace.
 
 ### Live servers must not outlive their test process
 
@@ -190,10 +194,11 @@ The default suite does not cover everything. When a change touches one of these 
 | `ENGINE_VERSION` bump | also `bun run test:live-e2e-accept-cleanup` | bills a provider API key |
 | `ENGINE_VERSION` bump | `bun run test:live-svelte-adapter-deepseek` | bills DeepSeek |
 | `SKILL.src.md` Setup, Setup-adjacent reference files, `ENGINE_VERSION` bump | `bun run test:skill-behavior` | ~5 min, bills all four provider keys |
+| The skill's frontmatter `description` in `SKILL.src.md` | `bun run test:skill-activation` | ~3 min, about $1 (Anthropic + Google keys); baseline in `tests/skill-behavior/README.md` |
 | `ENGINE_VERSION` bump | `bun run test:new-work-e2e` | Playwright, offline, no API cost |
 | `plugin/`, `skill/agents/`, `scripts/build.js`, plugin manifest validator | `bun run test:plugin-e2e` | ~1 s; already in the default suite, needs the `claude` CLI |
 
-For verb-level behavior changes in `crates/`, run focused crate tests and `cargo test --workspace`, then `cargo build --release -p impeccable`. Run `IMPECCABLE_BIN="$PWD/target/release/impeccable" bun run test` to exercise the changed source rather than an older downloaded release. Add a new oracle case when the contract grows and review golden changes by hand. See `docs/ENGINE.md` for browser-bundle checks and generated assets.
+For verb-level behavior changes in `crates/`, run focused crate tests and `bun run test:rust-changed` (CI runs the whole workspace), then `cargo build --release -p impeccable`. Start long cargo runs as background commands and wait for the exit notification instead of polling with `sleep` or `pgrep`. Run `IMPECCABLE_BIN="$PWD/target/release/impeccable" bun run test` to exercise the changed source rather than an older downloaded release. Add a new oracle case when the contract grows and review golden changes by hand. See `docs/ENGINE.md` for browser-bundle checks and generated assets.
 
 **Plugin loader E2E** (`tests/plugin-e2e.test.mjs`, in the default suite): installs the committed `./plugin` subtree into a real Claude Code, sandboxed via `CLAUDE_CONFIG_DIR` in a temp dir, and asserts the component inventory from `claude plugin details`: the skill parses, every `plugin/agents/*.md` is visible, hooks are discovered. This is the only check that catches loader-contract surprises the unit guards can't know about (PR #494 shipped an `agents` manifest key that silently loaded zero agents; `claude plugin validate` never flags plugin-manifest problems). Runs in about a second; skips cleanly when the `claude` CLI is not on PATH. The known contract itself (allowed manifest keys, no `agents` key, trailing-slash `skills` path, source agents shipped) is pinned deterministically by `scripts/lib/validate-plugin-manifest.js`, unit-tested in `tests/validate-plugin-manifest.test.js` and enforced as a `bun run build` gate. Never add a key to the generated plugin manifest without verifying it against a real install and extending `KNOWN_LOADER_KEYS`.
 
@@ -363,6 +368,14 @@ The rule logic lives in `crates/core`: every check, the browser rule adapters ov
 | `skill/SKILL.src.md` and `reference/*.md` | Hand-edited if the rule introduces new design guidance |
 
 Order for a new rule: fixture here first, registry row in `crates/foundation/src/registry.rs`, the check in `crates/core` against that fixture, oracle case + golden, `cargo xtask bundle` to refresh the two tracked live assets, then `bun run build && bun run test` with a binary present. Rule counts quoted in `README.md` / `README.npm.md` are validated by `generateCounts` against `crates/live/assets/antipatterns.json`.
+
+**Hook cost is part of a rule.** The edit hook is a new process on every Edit or Write in millions of agent sessions, and it runs the whole text engine (or, for `.html`, the whole static HTML engine) cold: `IMMEDIATE_TIER_RULES` only filters which findings are shown per edit, it does not skip rules. So every text or static-HTML rule is paid on every edit, regex compilation and lazy tables included, and a millisecond matters. Before landing a new or changed check in those engines, measure it on main and on the branch and put both numbers in the PR:
+
+```bash
+cargo run --release -p impeccable-html --example rule_cost -- --runs 9 tests/fixtures/antipatterns <real project source>
+```
+
+It writes `rule-cost.json`: per edit, cold, per engine, the shared parse and cascade work, and every profiled unit with the rules it emitted (mean, p50, p95 ms). A rule inside a shared pass (`color-rules`, `html-patterns`, ...) moves that pass's number. Prefer the detection that touches less: one regex over many, a tag- or property-gated check over a per-element walk, work that rides an existing pass over a new one. A check that needs layout or pixels belongs in the browser engine, not the hook. The Detector Lab's Rules page charts these numbers per rule.
 
 ### Rule packs (downstream crates adding rules)
 

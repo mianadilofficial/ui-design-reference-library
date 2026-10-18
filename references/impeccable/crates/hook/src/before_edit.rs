@@ -4,6 +4,7 @@
 
 use impeccable_core::findings::Finding;
 use impeccable_core::js;
+use impeccable_detect::file_system::uses_html_engine;
 use once_cell::sync::Lazy;
 use regex::Regex;
 use serde_json::{Map, Value};
@@ -812,10 +813,7 @@ fn main_flow(rt: &Runtime, stdin: &str) -> Out {
         return skip(&audit, "config-ignore-file");
     }
     let scan = design_system_options_for_file(rt, &config, &cwd, &file_path);
-    let use_html_engine = match configured {
-        Some(c) => c.engine == "html",
-        None => ext_name == ".html" || ext_name == ".htm",
-    };
+    let use_html_engine = uses_html_engine(&file_path, &config.extensions);
     let findings = if use_html_engine {
         match detect_proposed_html(rt, &content, &file_path, &scan) {
             Ok(f) => f,

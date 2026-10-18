@@ -28,7 +28,7 @@ use crate::checks::rules::{
     parse_font_weight, type_hierarchy_role, RuleHit,
     TypeSample, TYPE_HIERARCHY_SELECTOR,
 };
-use crate::color::parse_any_color;
+use crate::color::{composite_color_over, parse_any_color, Rgba};
 use crate::constants::{is_brand_font_on_own_domain, CSS_GENERIC_FONTS, OVERUSED_FONTS, SAFE_TAGS};
 use crate::js::{self, math_max, math_min, math_round, number_to_string, parse_float, to_fixed};
 use crate::js_ext_a::num_truthy;
@@ -134,6 +134,47 @@ fn direct_text_chars(dom: &dyn Dom, el: ElId) -> f64 {
         .sum()
 }
 
+/// The letters of `el`'s own text nodes, and how many of them are Han, kana
+/// or Hangul: `(letters, cjk)`. Digits, punctuation and spaces are neither.
+fn direct_text_letters(dom: &dyn Dom, el: ElId) -> (f64, f64) {
+    let (mut letters, mut cjk) = (0.0, 0.0);
+    for node in dom.direct_text_nodes(el) {
+        for c in node.chars().filter(|c| c.is_alphabetic()) {
+            letters += 1.0;
+            if crate::checks::text_rules::is_cjk_char(c) {
+                cjk += 1.0;
+            }
+        }
+    }
+    (letters, cjk)
+}
+
+/// The letters a page sets in text that has a box, for the CJK test in
+/// [`latin_face_on_a_cjk_page`].
+#[derive(Default)]
+struct LetterTally {
+    letters: f64,
+    cjk: f64,
+    /// Latin (non-CJK) letters per primary face.
+    latin_by_face: Vec<(String, f64)>,
+}
+
+/// Whether `font` heads the stack of a page written mostly in Han, kana or
+/// Hangul and sets under [`OVERUSED_FONT_MIN_CHAR_SHARE`] of its letters.
+/// None of the faces on the overused list has those glyphs: weathernews.jp
+/// names Arial first, and Hiragino and Meiryo set every Japanese letter
+/// (observations-47 row 14). Arial sets the Latin letters and the digits,
+/// about 12% of the characters, but a face is told by its letterforms, and
+/// it sets 3.6% of the letters. A page that is not mostly CJK is weighed by
+/// characters alone, as before.
+fn latin_face_on_a_cjk_page(font: &str, tally: &LetterTally) -> bool {
+    if !(tally.letters > 0.0) || tally.cjk * 2.0 <= tally.letters {
+        return false;
+    }
+    let latin = tally.latin_by_face.iter().find(|(k, _)| k == font).map_or(0.0, |(_, c)| *c);
+    latin / tally.letters < OVERUSED_FONT_MIN_CHAR_SHARE
+}
+
 /// Whether an element's text is laid out for a visitor: neither it nor an
 /// ancestor is `hidden`, `display: none`, `visibility: hidden` or
 /// `content-visibility: hidden`. Opacity is deliberately not read: copy
@@ -167,6 +208,7 @@ pub fn check_typography(dom: &dyn Dom) -> Vec<BrowserFinding> {
     let mut total_text_elements = 0.0f64;
     let mut font_chars: Vec<(String, f64)> = Vec::new();
     let mut total_text_chars = 0.0f64;
+    let mut letter_tally = LetterTally::default();
     for el in dom
         .query_all(
             None,
@@ -183,7 +225,9 @@ pub fn check_typography(dom: &dyn Dom) -> Vec<BrowserFinding> {
         // The characters each face sets in text that has a box: what
         // stands a finding down when the face it names sets next to none of
         // what a visitor reads (below).
-        let weight = if font_text_has_a_box(dom, el) { direct_text_chars(dom, el) } else { 0.0 };
+        let has_a_box = font_text_has_a_box(dom, el);
+        let weight = if has_a_box { direct_text_chars(dom, el) } else { 0.0 };
+        let (letters, cjk) = if has_a_box { direct_text_letters(dom, el) } else { (0.0, 0.0) };
         let ff = dom.style(el, "fontFamily");
         if ff.is_empty() {
             continue;
@@ -215,6 +259,15 @@ pub fn check_typography(dom: &dyn Dom) -> Vec<BrowserFinding> {
             }
             total_text_chars += weight;
         }
+        if letters > 0.0 {
+            letter_tally.letters += letters;
+            letter_tally.cjk += cjk;
+            if let Some(slot) = letter_tally.latin_by_face.iter_mut().find(|(k, _)| k == primary) {
+                slot.1 += letters - cjk;
+            } else {
+                letter_tally.latin_by_face.push((primary.clone(), letters - cjk));
+            }
+        }
     }
 
     if total_text_elements >= 20.0 {
@@ -232,6 +285,7 @@ pub fn check_typography(dom: &dyn Dom) -> Vec<BrowserFinding> {
                 if OVERUSED_FONTS.contains(&font.as_str())
                     && !is_brand_font_on_own_domain(font, Some(&hostname))
                     && !sets_next_to_none_of_the_text(font, &font_chars, total_text_chars)
+                    && !latin_face_on_a_cjk_page(font, &letter_tally)
                 {
                     findings.push(BrowserFinding::new(
                         "overused-font",
@@ -262,10 +316,16 @@ pub fn check_typography(dom: &dyn Dom) -> Vec<BrowserFinding> {
 pub const TYPE_HIERARCHY_SKIP_SELECTOR: &str =
     ".impeccable-overlay, .impeccable-label, .impeccable-banner, .impeccable-tooltip, [id^=\"impeccable-live-\"]";
 
-/// JS: checks.mjs#isRenderedTypeElement over a live DOM.
+/// JS: checks.mjs#isRenderedTypeElement over a live DOM, plus the
+/// screen-reader-only utility: a heading in a 1px box its `clip` or
+/// `clip-path: inset()` removes, or inside one (kingkong.tech's `h1.sr-only`
+/// and its 1px SEO block of 16px headings), sets no size a visitor sees.
 fn is_rendered_type_element(dom: &dyn Dom, el: ElId) -> bool {
     for current in ancestors_inclusive(dom, el) {
         if dom.hidden_prop(current) || dom.attr(current, "hidden").is_some() {
+            return false;
+        }
+        if super::painted::is_visually_hidden_box(dom, current) {
             return false;
         }
         let display = js::to_lower_case(&dom.style(current, "display"));
@@ -362,17 +422,111 @@ fn shows_border_or_shadow(dom: &dyn Dom, el: ElId) -> bool {
         l.alpha >= crate::checks::measures::FAINT_PAINT_ALPHA
             && (l.x != 0.0 || l.y != 0.0 || l.blur > 0.0 || l.spread != 0.0)
     });
-    casts_shadow
-        || ["Top", "Right", "Bottom", "Left"].iter().any(|side| {
-            let width = parse_float(&dom.style(el, &format!("border{side}Width")));
-            let style = dom.style(el, &format!("border{side}Style"));
-            let color = dom.style(el, &format!("border{side}Color"));
-            width >= 0.5
-                && style != "none"
-                && style != "hidden"
-                && crate::checks::measures::css_color_alpha(Some(&color))
-                    >= crate::checks::measures::FAINT_PAINT_ALPHA
-        })
+    casts_shadow || ["Top", "Right", "Bottom", "Left"].iter().any(|side| border_side_shows(dom, el, side, None))
+}
+
+/// The surface under `el` its borders are judged against: the painted
+/// ancestor fill ([`super::element_checks::painted_surface_under`]), when
+/// the text the box holds reads on it at 3:1 or better (the box's own ink
+/// and the first few elements with text of their own, found in a bounded
+/// walk; the box's own ink alone when it holds none). Text that does not
+/// read on the surface says the climb missed what paints there:
+/// arbiproseller's feature cards hold white copy on a dark layer the climb
+/// does not see, over a white `body`. Then no border is judged, and each
+/// counts as before.
+///
+/// The inks are read against the surface under the box, not the box's own
+/// fill or a nested one, so this is a sanity test on the surface, not a
+/// contrast verdict: where the text sits on a fill of its own and fails
+/// here, the border simply counts, the same as base behaviour.
+fn edge_surface_under(dom: &dyn Dom, el: ElId) -> Option<Rgba> {
+    const MAX_INKS: usize = 8;
+    const MAX_VISITED: usize = 64;
+    let surface = super::element_checks::painted_surface_under(dom, el)?;
+    let mut holders: Vec<ElId> = Vec::new();
+    let mut stack = vec![el];
+    let mut visited = 0usize;
+    while let Some(n) = stack.pop() {
+        visited += 1;
+        if visited > MAX_VISITED || holders.len() >= MAX_INKS {
+            break;
+        }
+        // A subtree that paints nothing says nothing about the surface.
+        if n != el && paints_no_subtree(dom, n) {
+            continue;
+        }
+        if !js::trim(&direct_text(dom, n)).is_empty() && paints_own_text(dom, n) {
+            holders.push(n);
+        }
+        // Children pushed in reverse so the walk reads in document order.
+        stack.extend(dom.children(n).into_iter().rev());
+    }
+    if holders.is_empty() {
+        holders.push(el);
+    }
+    for n in holders {
+        let ink = parse_any_color(Some(&dom.style(n, "color")))?;
+        let ink = composite_color_over(&ink, &surface);
+        if crate::color::contrast_ratio(&ink, &surface) < 3.0 {
+            return None;
+        }
+    }
+    Some(surface)
+}
+
+/// Whether nothing under `n` paints: `display: none`, `content-visibility:
+/// hidden`, or an opacity at zero. Read off `n` alone; the walk that asks
+/// starts under a box already gated as painted.
+fn paints_no_subtree(dom: &dyn Dom, n: ElId) -> bool {
+    dom.style(n, "display") == "none"
+        || js::to_lower_case(&dom.style(n, "contentVisibility")) == "hidden"
+        || parse_float(&dom.style(n, "opacity")) <= 0.01
+}
+
+/// Whether `n`'s own text paints: not `visibility: hidden` or `collapse`.
+/// Visibility inherits but a child can turn it back on, so a hidden node's
+/// subtree is still walked.
+fn paints_own_text(dom: &dyn Dom, n: ElId) -> bool {
+    let visibility = js::to_lower_case(&dom.style(n, "visibility"));
+    visibility != "hidden" && visibility != "collapse"
+}
+
+/// How far, on some channel, a border composited over the box has to sit
+/// from the surface under the box before it draws an edge a reader sees.
+const CARD_EDGE_MIN_CHANNEL_DELTA: f64 = 8.0;
+
+/// Whether `el`'s border on `side` draws: half a pixel wide or more, in a
+/// style that draws, in a colour that is not transparent, and, where the
+/// surface under the box is known, a colour that composited over the box
+/// sits [`CARD_EDGE_MIN_CHANNEL_DELTA`] from that surface on some channel.
+/// v0-ai-video-playground.vercel.app's shell draws its border at OKLab L
+/// 0.16 and half alpha on a black page: a border by the computed style,
+/// and no edge on screen. Where the surface cannot be read, the border
+/// counts as before. Only [`card_edge_sides`] passes a surface: whether an
+/// inner box shows a border at all (r4-p16) is read from the computed
+/// style alone, so a white panel with a `gray-100` hairline on `gray-50`
+/// keeps its border there.
+fn border_side_shows(dom: &dyn Dom, el: ElId, side: &str, surface: Option<&Rgba>) -> bool {
+    let width = parse_float(&dom.style(el, &format!("border{side}Width")));
+    let style = dom.style(el, &format!("border{side}Style"));
+    let color = dom.style(el, &format!("border{side}Color"));
+    if !(width >= 0.5
+        && style != "none"
+        && style != "hidden"
+        && crate::checks::measures::css_color_alpha(Some(&color))
+            >= crate::checks::measures::FAINT_PAINT_ALPHA)
+    {
+        return false;
+    }
+    let (Some(surface), Some(edge)) = (surface, parse_any_color(Some(&color))) else {
+        return true;
+    };
+    let under = super::element_checks::own_fill_over(dom, el, surface);
+    let shown = composite_color_over(&edge, &under);
+    math_max(
+        math_max((shown.r - surface.r).abs(), (shown.g - surface.g).abs()),
+        (shown.b - surface.b).abs(),
+    ) >= CARD_EDGE_MIN_CHANNEL_DELTA
 }
 
 /// Any corner of a computed `border-radius` above zero.
@@ -392,15 +546,9 @@ fn card_edge_sides(
     layers: &[crate::checks::measures::ShadowLayer],
 ) -> usize {
     let mut sides = [false; 4];
+    let surface = edge_surface_under(dom, el);
     for (i, side) in ["Top", "Right", "Bottom", "Left"].iter().enumerate() {
-        let width = parse_float(&dom.style(el, &format!("border{side}Width")));
-        let style = dom.style(el, &format!("border{side}Style"));
-        let color = dom.style(el, &format!("border{side}Color"));
-        sides[i] = width >= 0.5
-            && style != "none"
-            && style != "hidden"
-            && crate::checks::measures::css_color_alpha(Some(&color))
-                >= crate::checks::measures::FAINT_PAINT_ALPHA;
+        sides[i] = border_side_shows(dom, el, side, surface.as_ref());
     }
     for layer in layers {
         if layer.inset || layer.alpha < crate::checks::measures::FAINT_PAINT_ALPHA {
@@ -457,6 +605,16 @@ fn is_single_line_label_box(dom: &dyn Dom, el: ElId, rect: &Rect) -> bool {
     };
     if !line_height.is_finite() || line_height <= 0.0 {
         return false;
+    }
+    // A box set to a fixed height (loova.ai's 34px "Accept All" button,
+    // centred by flex with no padding) holds its one line in more room than
+    // the padding says. A box with no element child whose text renders on
+    // one line is a label too, up to three lines tall.
+    if dom.children(el).is_empty()
+        && rect.height <= line_height * 3.0
+        && dom.text_line_rects(el).is_some_and(|lines| lines.len() == 1)
+    {
+        return true;
     }
     let chrome = ["paddingTop", "paddingBottom", "borderTopWidth", "borderBottomWidth"]
         .iter()
@@ -1918,6 +2076,12 @@ pub fn check_heading_rhythm_dom(dom: &dyn Dom) -> Vec<ElFinding> {
         if !is_visible_flow(h) {
             continue;
         }
+        // A heading inside a quotation is a pull quote set large, not a
+        // section heading (tau.ac.il's `blockquote > h2`, 120 characters
+        // on three lines): it heads nothing, and counts toward no minimum.
+        if closest_or_none(dom, h, "blockquote, q").is_some() {
+            continue;
+        }
         // A heading nobody sees at rest (a slide parked past its track, a
         // carousel clone, a tab panel off to the side) sets no rhythm and
         // counts toward no page minimum.
@@ -1994,7 +2158,168 @@ pub fn check_heading_rhythm_dom(dom: &dyn Dom) -> Vec<ElFinding> {
         .collect()
 }
 
-/// JS: checks.mjs#checkCreamPalette(document) (browser path)
+/// The share of the page's height that full-width bands have to cover for
+/// the body's own fill to count as hidden.
+const GROUND_COVER_MIN_SHARE: f64 = 0.95;
+
+/// The deepest level under the body (its children are level 1) at which
+/// [`covering_ground`] takes a box for a band; it looks through transparent
+/// boxes only (body > main > section reaches level 2).
+const GROUND_BAND_MAX_DEPTH: usize = 3;
+
+/// The deepest level under the body at which [`cream_band_shows`] looks for
+/// a cream box. It looks through every full-width box, opaque ones
+/// included, since an SPA root that paints the ground can hold its cream
+/// sections several levels down (body > #root > div > div > main >
+/// section); it visits only full-width boxes, so the walk stays short.
+const CREAM_BAND_MAX_DEPTH: usize = 8;
+
+/// The colour a visitor sees as the page's ground when in-flow boxes as wide
+/// as the body, each painting an opaque fill and no image, cover the body
+/// from its top to the end of the page (within [`GROUND_COVER_MIN_SHARE`]):
+/// the fill that covers the most height. Transparent in-flow boxes are looked
+/// through, a few levels down. `None` (the body's own fill stands) when the
+/// bands leave more of the page uncovered (a box with no measured rect
+/// covers nothing), or when the page has no measured height.
+fn covering_ground(dom: &dyn Dom, body: ElId) -> Option<crate::color::Rgba> {
+    let body_rect = dom.rect(body);
+    let sy = finite_or_zero(dom.scroll_y());
+    if !body_rect.all_finite() || body_rect.width <= 0.0 {
+        return None;
+    }
+    let page_bottom = dom
+        .document_element()
+        .map(|root| dom.scroll_height(root))
+        .filter(|h| h.is_finite())
+        .unwrap_or(0.0)
+        .max(body_rect.bottom + sy);
+    if page_bottom <= 0.0 {
+        return None;
+    }
+    // (top, bottom, fill) in document coordinates.
+    let mut bands: Vec<(f64, f64, crate::color::Rgba)> = Vec::new();
+    let mut stack: Vec<(ElId, usize)> = vec![(body, 0)];
+    while let Some((el, depth)) = stack.pop() {
+        for child in dom.children(el) {
+            if !matches!(dom.style(child, "position").as_str(), "static" | "relative" | "sticky" | "") {
+                continue;
+            }
+            if !painted_at_capture(dom, child) {
+                continue;
+            }
+            // A box with no measured rect covers nothing: what it would have
+            // covered counts as the body's.
+            // Only the part of the band over the body counts: a full-width
+            // section shifted aside leaves the body showing beside it.
+            let r = dom.rect(child);
+            let over_body = r.right.min(body_rect.right) - r.left.max(body_rect.left);
+            if !r.all_finite() || r.height <= 0.0 || over_body < GROUND_COVER_MIN_SHARE * body_rect.width {
+                continue;
+            }
+            let image = dom.style(child, "backgroundImage");
+            let fill = super::background::read_own_background_color(dom, child);
+            // A band faded below full opacity lets the body show through.
+            let opaque = effective_opacity_dom(dom, child) >= 0.95;
+            match fill {
+                Some(f) if opaque && f.alpha_or_one() >= 0.95 && (image.is_empty() || image == "none") => {
+                    bands.push((r.top + sy, r.bottom + sy, f));
+                }
+                _ if depth + 1 < GROUND_BAND_MAX_DEPTH && fill.map_or(true, |f| f.alpha_or_one() <= 0.0) => {
+                    stack.push((child, depth + 1));
+                }
+                _ => {}
+            }
+        }
+    }
+    let start = (body_rect.top + sy).max(0.0);
+    let mut spans: Vec<(f64, f64)> = bands
+        .iter()
+        .map(|&(t, b, _)| (t.max(start), b.min(page_bottom)))
+        .filter(|(t, b)| b > t)
+        .collect();
+    spans.sort_by(|a, b| a.0.total_cmp(&b.0));
+    let mut covered = 0.0;
+    let mut reach = start;
+    for (t, b) in spans {
+        if b > reach {
+            covered += b - t.max(reach);
+            reach = b;
+        }
+    }
+    if covered < GROUND_COVER_MIN_SHARE * (page_bottom - start) {
+        return None;
+    }
+    let mut by_fill: Vec<(crate::color::Rgba, f64)> = Vec::new();
+    for (t, b, f) in bands {
+        let h = (b.min(page_bottom) - t.max(start)).max(0.0);
+        match by_fill.iter_mut().find(|(c, _)| c.r == f.r && c.g == f.g && c.b == f.b) {
+            Some(entry) => entry.1 += h,
+            None => by_fill.push((f, h)),
+        }
+    }
+    by_fill.into_iter().fold(None, |best: Option<(crate::color::Rgba, f64)>, (c, h)| match best {
+        Some((_, bh)) if bh >= h => best,
+        _ => Some((c, h)),
+    })
+    .map(|(c, _)| c)
+}
+
+/// Whether a painted in-flow box as wide as the body, up to
+/// [`CREAM_BAND_MAX_DEPTH`] levels under it, paints a cream fill of its own
+/// by the strict cream test. Near-cream (which keeps a finding when it is
+/// the ground) is deliberately not enough here: a warm near-white header or
+/// footer strip on a white page (visiby.net/guides) does not make the page
+/// cream, while a near-cream colour covering most of the page does.
+fn cream_band_shows(dom: &dyn Dom, body: ElId) -> bool {
+    let width = dom.rect(body).width;
+    let mut stack: Vec<(ElId, usize)> = vec![(body, 0)];
+    while let Some((el, depth)) = stack.pop() {
+        for child in dom.children(el) {
+            if !matches!(dom.style(child, "position").as_str(), "static" | "relative" | "sticky" | "") {
+                continue;
+            }
+            let r = dom.rect(child);
+            if !r.all_finite() || r.height <= 0.0 || r.width < GROUND_COVER_MIN_SHARE * width {
+                continue;
+            }
+            if !painted_at_capture(dom, child) {
+                continue;
+            }
+            let fill = super::background::read_own_background_color(dom, child);
+            if fill.is_some_and(|f| f.alpha_or_one() >= 0.95) && is_cream_color(fill.as_ref()) {
+                return true;
+            }
+            if depth + 1 < CREAM_BAND_MAX_DEPTH {
+                stack.push((child, depth + 1));
+            }
+        }
+    }
+    false
+}
+
+/// A light warm colour within a few steps of the cream test: every channel
+/// at 209 or more, red over green over blue, and red at least
+/// [`NEAR_CREAM_MIN_WARMTH`] over blue.
+fn near_cream(c: &crate::color::Rgba) -> bool {
+    c.r.min(c.g).min(c.b) >= 209.0 && c.r >= c.g && c.g >= c.b && c.r - c.b >= NEAR_CREAM_MIN_WARMTH
+}
+
+/// Red at least 2 over blue. The grounds the cover test drops are grey
+/// (useforward.co's rgb(241, 242, 239), green over red, which fails the
+/// channel order at any floor) or white (warmth 0); the warm ground it keeps
+/// (visiby.net's rgb(250, 248, 245), warmth 5) sits 3 units clear.
+const NEAR_CREAM_MIN_WARMTH: f64 = 2.0;
+
+fn finite_or_zero(v: f64) -> f64 {
+    if v.is_finite() {
+        v
+    } else {
+        0.0
+    }
+}
+
+/// JS: checks.mjs#checkCreamPalette(document) (browser path), plus the
+/// covered-body test ([`covering_ground`], [`cream_band_shows`]).
 pub fn check_cream_palette(dom: &dyn Dom) -> Vec<RuleHit> {
     let mut findings = Vec::new();
     let Some(body) = dom.body() else { return findings };
@@ -2007,6 +2332,23 @@ pub fn check_cream_palette(dom: &dyn Dom) -> Vec<RuleHit> {
         }
     }
     if is_cream_color(bg.as_ref()) {
+        // Where full-width bands cover the body from top to bottom, the
+        // body's fill is not what a visitor sees (useforward.co: a cream
+        // body under a dark hero and grey sections): the colour that covers
+        // the most of the page is its ground, and a ground that is not cream
+        // shows none. A cream ground keeps the finding as the body names it,
+        // and so does a ground just short of the cream test's warmth floor
+        // (visiby.net's wrapper at rgb(250, 248, 245) over a body at
+        // rgb(246, 244, 239)): what is dropped is a ground that is plainly
+        // not warm paper.
+        // A cream band laid over the covering ground (visiby.net's pricing
+        // page: a white root with a cream ticker and trust strip) still
+        // shows the cream.
+        if covering_ground(dom, body).is_some_and(|ground| !is_cream_color(Some(&ground)) && !near_cream(&ground))
+            && !cream_band_shows(dom, body)
+        {
+            return findings;
+        }
         let c = bg.unwrap();
         findings.push(RuleHit::new(
             "cream-palette",
@@ -2283,6 +2625,8 @@ fn closed_controlled_ids(dom: &dyn Dom) -> std::collections::HashSet<String> {
 ///   (the wrapper is a heading or holds nothing but the trigger);
 /// - the box itself is a drawer parked beside the page: `position: fixed`
 ///   and wholly left or right of the viewport;
+/// - the box itself is an overlay waiting to open: `position: fixed`, at
+///   `visibility: hidden`, and covering the whole viewport;
 /// - the box or an ancestor is a drawer slid off the page
 ///   ([`slid_off_drawer`]): hse.de's mobile menu, `position: absolute`
 ///   inside a panel translated a viewport width to the left.
@@ -2333,6 +2677,28 @@ fn closed_container(dom: &dyn Dom, el: ElId, closed_ids: &std::collections::Hash
         if rect.width > 0.0 && (rect.right <= 0.0 || (viewport_width > 0.0 && rect.left >= viewport_width)) {
             return true;
         }
+        // A layer fixed over the whole viewport and held at `visibility:
+        // hidden` is a dialog or overlay waiting to open (visitabudhabi.ae's
+        // MUI "Create Itinerary" modal), as long as it is not the page
+        // itself: an app shell fixed over the viewport (`#app { position:
+        // fixed; inset: 0 }`) held hidden by a reveal that failed is what the
+        // rule reports, so a layer holding a `main`, an `h1`, or half the
+        // page's text or more is left to the other tests. Transparency
+        // alone is not enough either: a shell faded to 0 waiting for its
+        // reveal looks the same.
+        let viewport_height = dom.inner_height();
+        if HIDDEN_VIS_RE.is_match(&dom.style(el, "visibility"))
+            && rect.all_finite()
+            && viewport_width > 0.0
+            && viewport_height > 0.0
+            && rect.left <= 1.0
+            && rect.top <= 1.0
+            && rect.right >= viewport_width - 1.0
+            && rect.bottom >= viewport_height - 1.0
+            && !holds_the_page(dom, el)
+        {
+            return true;
+        }
     }
     for a in ancestors_inclusive(dom, el) {
         if tag_lower(dom, a) == "nav" || CLOSED_NAV_ROLES.contains(&role(a).as_str()) {
@@ -2353,6 +2719,25 @@ fn closed_container(dom: &dyn Dom, el: ElId, closed_ids: &std::collections::Hash
         }
     }
     false
+}
+
+/// Whether `el` holds the page rather than an overlay on it: it is, or
+/// holds, a `main` (or `role="main"`) or an `h1`, or it holds at least half
+/// of the document's text.
+fn holds_the_page(dom: &dyn Dom, el: ElId) -> bool {
+    if tag_lower(dom, el) == "main"
+        || tag_lower(dom, el) == "h1"
+        || dom.attr(el, "role").is_some_and(|r| js::trim(&r).eq_ignore_ascii_case("main"))
+    {
+        return true;
+    }
+    if dom.query_one(Some(el), "main, [role=\"main\"], h1").ok().flatten().is_some() {
+        return true;
+    }
+    let Some(body) = dom.body() else { return true };
+    let own = js::trim(&dom.text_content(el)).chars().count();
+    let page = js::trim(&dom.text_content(body)).chars().count();
+    page == 0 || own * 2 >= page
 }
 
 /// Whether `el` is a drawer slid off the page: positioned (`absolute` or
@@ -3289,6 +3674,94 @@ fn buried_under_answer(dom: &dyn Dom, stack: &[ElId], victim: ElId) -> bool {
 /// are a moving ticker track.
 const MARQUEE_TRACK_MAX_DEPTH: usize = 4;
 
+/// The computed properties that decide which glyphs a run draws and where:
+/// two runs are an overprint only where every one is recorded and equal.
+const OVERPRINT_GLYPH_PROPS: &[&str] = &[
+    "fontFamily",
+    "fontSize",
+    "fontWeight",
+    "fontStyle",
+    "fontStretch",
+    "fontVariant",
+    "fontVariantCaps",
+    "fontFeatureSettings",
+    "letterSpacing",
+    "wordSpacing",
+    "textTransform",
+];
+
+/// What moves or breaks a wrapped run's later lines while its first stays
+/// put: two runs that wrap are an overprint only where these are recorded
+/// and equal too. `text-indent` moves the first line alone, which the
+/// origin test already compares.
+const OVERPRINT_WRAP_PROPS: &[&str] = &["lineHeight", "textAlign", "whiteSpace", "wordBreak", "hyphens"];
+
+/// How many of its lines a text rect may run to and still hold one: a
+/// second line takes it to two.
+const OVERPRINT_WRAP_LINES: f64 = 1.5;
+
+/// The height one line of `el`'s text takes: its `line-height` in pixels,
+/// or 1.2 of its font size where that is `normal` or a measure no wider
+/// than the font's own box, which is what a text rect may measure instead.
+/// `None` where the font size is not recorded.
+fn one_line_px(dom: &dyn Dom, el: ElId) -> Option<f64> {
+    let font = parse_float(&dom.style(el, "fontSize"));
+    if !(font.is_finite() && font > 0.0) {
+        return None;
+    }
+    let line = parse_float(&dom.style(el, "lineHeight"));
+    let line = if line.is_finite() && line > 0.0 { line } else { 0.0 };
+    Some(line.max(font * 1.2))
+}
+
+/// Whether `top` sets the words `victim` starts with again, drawing the same
+/// glyphs from the same origin (within a pixel), and, where the top run
+/// wraps, breaking its lines at the same width, so its glyphs land on the
+/// victim's own. Both have to carry text of their own and a measured text
+/// rect, and every property in [`OVERPRINT_GLYPH_PROPS`] (and, for a top run
+/// that wraps, in [`OVERPRINT_WRAP_PROPS`]: a taller `line-height` drops its
+/// later lines below the victim's) has to be recorded on both and equal: `text-transform: uppercase` over the same DOM text
+/// draws other glyphs, and a value the capture did not record is unknown,
+/// which keeps the collision.
+fn overprints(dom: &dyn Dom, top: ElId, victim: ElId) -> bool {
+    // A top run on one line redraws the start of the victim's first line,
+    // where it is no wider than the victim's text: wider, it runs past every
+    // line the victim breaks, setting words the victim puts lower down. A
+    // top run that wraps breaks where its width runs out, and its later
+    // lines land on the victim's only where the victim breaks at the same
+    // width: then the two text rects are as wide as each other, and the top
+    // one no taller.
+    let mut wraps = true;
+    let same_origin = match (dom.direct_text_rect(top), dom.direct_text_rect(victim)) {
+        (Some(a), Some(b)) if a.all_finite() && b.all_finite() => {
+            wraps = match one_line_px(dom, top) {
+                Some(line) => a.height > line * OVERPRINT_WRAP_LINES,
+                None => true,
+            };
+            let placed = if wraps {
+                (a.width - b.width).abs() <= 1.0 && a.height <= b.height + 1.0
+            } else {
+                a.width <= b.width + 1.0
+            };
+            (a.left - b.left).abs() <= 1.0 && (a.top - b.top).abs() <= 1.0 && placed
+        }
+        _ => false,
+    };
+    let equal = |p: &&str| {
+        let v = dom.style(top, p);
+        !v.is_empty() && v == dom.style(victim, p)
+    };
+    if !same_origin
+        || !OVERPRINT_GLYPH_PROPS.iter().all(equal)
+        || (wraps && !OVERPRINT_WRAP_PROPS.iter().all(equal))
+    {
+        return false;
+    }
+    let top_text = collapse_ws(js::trim(&element_direct_text(dom, top)));
+    let victim_text = collapse_ws(js::trim(&element_direct_text(dom, victim)));
+    !top_text.is_empty() && victim_text.starts_with(top_text.as_str())
+}
+
 /// JS: checks.mjs#checkTextOcclusionDOM()
 pub fn check_text_occlusion_dom(dom: &dyn Dom) -> Vec<ElFinding> {
     let mut findings = Vec::new();
@@ -3436,8 +3909,12 @@ pub fn check_text_occlusion_dom(dom: &dyn Dom) -> Vec<ElFinding> {
         }
         // Text a visitor cannot see (the items of a closed `<details>`, a
         // panel at `visibility: hidden`, a slide parked past its track) has
-        // nothing covering it on screen.
-        if !painted(el) {
+        // nothing covering it on screen. Nor has a run its clip cuts down to
+        // a sliver (v0-orbit's KPI label, 6px of it left inside a squeezed
+        // card): the Text gate's visible share decides, as it does for every
+        // rule that reads one run of text. The occluders keep the plain
+        // predicate: a box shows wherever any of it is painted.
+        if !painted(el) || super::painted::unpainted_text_box(dom, el).is_some() {
             continue;
         }
         // Text blurred past reading (a teaser under a sign-in gate) is
@@ -3549,12 +4026,21 @@ pub fn check_text_occlusion_dom(dom: &dyn Dom) -> Vec<ElFinding> {
             let top_glyphs = dom
                 .direct_text_rect(top)
                 .map(|r| if r.all_finite() { glyph_ink_band(dom, top, &r).unwrap_or(r) } else { r });
+            // The same words set again in the same face at the same origin
+            // (schlittermann.de's logo, `a.logo` laid exactly over the first
+            // word of `span.logo2`) draw the glyphs the victim draws: an
+            // overprint, not a collision a reader sees. Only the glyphs are
+            // exempt: a box whose own fill or borders hide the words after
+            // the ones it redraws still covers them.
+            let top_style = ElStyle { dom, el: top };
+            if !is_opaque_decorated_box(Some(&top_style)) && overprints(dom, top, el) {
+                continue;
+            }
             let top_own_text = !element_direct_text(dom, top).is_empty()
                 && !super::painted::under_1px(&dom.style(top, "fontSize"))
                 && glyphs_may_cover(top_glyphs, victim_glyphs.as_ref(), x, y);
             let top_in_svg = closest_or_none(dom, top, "svg").is_some();
             let top_has_text = top_own_text || top_in_svg;
-            let top_style = ElStyle { dom, el: top };
             // A box paints its fill and borders inside its own rect. Where the
             // box the page answered with is not at the point in the capture,
             // the page moved between the capture and the answer: a carousel
@@ -4193,6 +4679,30 @@ mod tests {
         assert_eq!(font_finding(&build("Label")).as_deref(), Some("Primary font: inter (80% of text)"));
     }
 
+    /// weathernews.jp: Arial heads a Japanese page's stack, and the CJK
+    /// faces after it set every Japanese letter. Arial sets the few Latin
+    /// letters, under one in twenty; digits name no face.
+    #[test]
+    fn a_latin_face_first_in_a_cjk_stack_sets_only_the_latin_letters() {
+        let build = |latin: &str| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            for _ in 0..25 {
+                typeset(&mut d, body, "p", &format!("{latin} 2026年10月8日 全国の天気予報と防災情報、気象ニュースをお届けします"), "Arial, \"Hiragino Sans\", Meiryo, sans-serif");
+            }
+            d
+        };
+        // One Latin letter in 30: 3.3%.
+        assert_eq!(font_finding(&build("x")), None);
+        // A Latin page set in the same stack still names Arial.
+        let mut d = FakeDom::new();
+        let (_h, body) = d.with_page();
+        for _ in 0..25 {
+            typeset(&mut d, body, "p", "Weather forecasts and alerts for today", "Arial, \"Hiragino Sans\", sans-serif");
+        }
+        assert_eq!(font_finding(&d).as_deref(), Some("Primary font: arial (100% of text)"));
+    }
+
     /// Only text with a box is weighed: the long copy in a closed drawer does
     /// not lift the face it is set in, and copy waiting for a scroll reveal
     /// at `opacity: 0` is weighed like any other.
@@ -4274,6 +4784,49 @@ mod tests {
         d.add_text(h1, "text");
         d.set_style(h1, "fontSize", "18px");
         assert!(check_typography(&d).is_empty());
+
+        // kingkong.tech: the h1 a reader sees nothing of is screen-reader
+        // only (1px, `clip-path: inset(50%)`), and so is a 1px SEO block
+        // (`clip: rect(0, 0, 0, 0)`) holding a 16px h2. Neither sets a size;
+        // the hero's 40px h2 does.
+        let build = |hide: bool| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            for (tag, size) in [("p", "16px"), ("p", "16px"), ("h2", "40px")] {
+                let el = d.add(Some(body), tag);
+                d.add_text(el, "text");
+                d.set_style(el, "fontSize", size);
+                d.set_rect(el, 0.0, 0.0, 600.0, 40.0);
+            }
+            let h1 = d.add(Some(body), "h1");
+            d.add_text(h1, "KingKong Technology");
+            d.set_styles(h1, &[("fontSize", "16px"), ("position", "absolute"), ("clipPath", "inset(50%)")]);
+            d.set_rect(h1, -1.0, 60.0, if hide { 1.0 } else { 400.0 }, if hide { 1.0 } else { 20.0 });
+            let seo = d.add(Some(body), "div");
+            d.set_styles(seo, &[("position", "absolute"), ("clip", "rect(0px, 0px, 0px, 0px)")]);
+            d.set_rect(seo, 0.0, 61.0, if hide { 1.0 } else { 400.0 }, if hide { 1.0 } else { 200.0 });
+            for _ in 0..3 {
+                let h2 = d.add(Some(seo), "h2");
+                d.add_text(h2, "Encoders");
+                d.set_style(h2, "fontSize", "16px");
+                d.set_rect(h2, 0.0, 61.0, 1.0, 20.0);
+            }
+            d
+        };
+        assert!(check_typography(&build(true)).is_empty());
+        // A 1px box that nothing clips is not the sr-only utility: its
+        // headings are type like any other.
+        let mut d = build(true);
+        for e in 0..d.els.len() as ElId {
+            if d.style(e, "position") == "absolute" {
+                d.set_styles(e, &[("clip", "auto"), ("clipPath", "none")]);
+            }
+        }
+        assert_eq!(check_typography(&d).len(), 1);
+        // Boxes the clip does not remove are type like any other.
+        let f = check_typography(&build(false));
+        assert_eq!(f.len(), 1, "{f:?}");
+        assert_eq!(f[0].type_, "flat-type-hierarchy");
     }
 
     /// rtx.com: closed mega-nav panels, `ul.esds-mega-nav__dropdown-level2`
@@ -5832,6 +6385,167 @@ mod tests {
         assert!(closed.is_empty(), "{closed:?}");
     }
 
+    /// schlittermann.de: `a.logo` sets "Schlittermann" again, in the same
+    /// face and size, exactly over the first word of `span.logo2`.
+    #[test]
+    fn text_occlusion_skips_an_exact_overprint() {
+        const GLYPHS: &[(&str, &str)] = &[
+            ("fontWeight", "400"),
+            ("fontStyle", "normal"),
+            ("fontStretch", "100%"),
+            ("fontVariant", "normal"),
+            ("fontVariantCaps", "normal"),
+            ("fontFeatureSettings", "normal"),
+            ("letterSpacing", "normal"),
+            ("wordSpacing", "0px"),
+            ("textTransform", "none"),
+        ];
+        let run_with = |shift: f64, size: &str, extra: &[(&str, &str)]| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            let tagline = d.add(Some(body), "span");
+            d.set_styles(tagline, PROBE_BASE);
+            d.set_styles(tagline, &[("position", "absolute"), ("fontSize", "52px"), ("fontFamily", "Arial")]);
+            d.set_styles(tagline, GLYPHS);
+            d.set_rect(tagline, 190.0, 80.0, 777.0, 60.0);
+            d.set_text_rect(tagline, 190.0, 81.0, 442.0, 58.0);
+            d.add_text(tagline, "Schlittermann");
+            let logo = d.add(Some(body), "a");
+            d.set_styles(logo, PROBE_BASE);
+            d.set_styles(logo, GLYPHS);
+            d.set_styles(logo, &[("position", "absolute"), ("fontSize", size), ("fontFamily", "Arial")]);
+            d.set_styles(logo, extra);
+            d.set_rect(logo, 190.0 + shift, 80.0, 442.0, 60.0);
+            d.set_text_rect(logo, 190.0 + shift, 81.0, 442.0, 58.0);
+            d.add_text(logo, "Schlittermann");
+            mark_body_descendants(&mut d);
+            check_text_occlusion_dom(&d)
+        };
+        let run = |shift: f64, size: &str| run_with(shift, size, &[]);
+        assert!(run(0.0, "52px").is_empty());
+        // Moved off the origin, or set at another size, the logo collides.
+        assert_eq!(run(30.0, "52px").len(), 1);
+        assert_eq!(run(0.0, "48px").len(), 1);
+        // Upper-cased, the same DOM text draws other glyphs.
+        assert_eq!(run_with(0.0, "52px", &[("textTransform", "uppercase")]).len(), 1);
+        // Other ligatures or numeral forms draw other glyphs too.
+        assert_eq!(run_with(0.0, "52px", &[("fontVariant", "tabular-nums")]).len(), 1);
+        // A glyph property the capture did not record is unknown.
+        assert_eq!(run_with(0.0, "52px", &[("wordSpacing", "")]).len(), 1);
+        // The logo's own opaque fill hides the words after the one it
+        // redraws.
+        assert_eq!(run_with(0.0, "52px", &[("backgroundColor", "rgb(255, 255, 255)")]).len(), 1);
+    }
+
+    /// Review: two transparent runs of the same words from the same origin
+    /// redraw the same glyphs only while they break their lines at the same
+    /// width. Wrapped at different widths, their later lines collide.
+    #[test]
+    fn text_occlusion_keeps_runs_that_wrap_apart() {
+        const GLYPHS: &[(&str, &str)] = &[
+            ("fontWeight", "400"),
+            ("fontStyle", "normal"),
+            ("fontStretch", "100%"),
+            ("fontVariant", "normal"),
+            ("fontVariantCaps", "normal"),
+            ("fontFeatureSettings", "normal"),
+            ("letterSpacing", "normal"),
+            ("wordSpacing", "0px"),
+            ("textTransform", "none"),
+            ("fontSize", "24px"),
+            ("fontFamily", "Arial"),
+            ("textAlign", "start"),
+            ("whiteSpace", "normal"),
+            ("wordBreak", "normal"),
+            ("hyphens", "manual"),
+        ];
+        // `tagline` and `logo` are the two runs' text rects (width, height).
+        let run_lines = |tagline_text: (f64, f64), logo_text: (f64, f64), tagline_lh: &str, logo_lh: &str, extra: &[(&str, &str)]| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            let words = "Schlittermann internet consulting and hosting";
+            let tagline = d.add(Some(body), "span");
+            d.set_styles(tagline, PROBE_BASE);
+            d.set_styles(tagline, GLYPHS);
+            d.set_styles(tagline, &[("position", "absolute"), ("lineHeight", tagline_lh)]);
+            d.set_rect(tagline, 190.0, 80.0, tagline_text.0 + 10.0, tagline_text.1 + 6.0);
+            d.set_text_rect(tagline, 190.0, 81.0, tagline_text.0, tagline_text.1);
+            d.add_text(tagline, words);
+            let logo = d.add(Some(body), "a");
+            d.set_styles(logo, PROBE_BASE);
+            d.set_styles(logo, GLYPHS);
+            d.set_styles(logo, &[("position", "absolute"), ("lineHeight", logo_lh)]);
+            d.set_styles(logo, extra);
+            d.set_rect(logo, 190.0, 80.0, logo_text.0 + 10.0, logo_text.1 + 6.0);
+            d.set_text_rect(logo, 190.0, 81.0, logo_text.0, logo_text.1);
+            d.add_text(logo, words);
+            mark_body_descendants(&mut d);
+            check_text_occlusion_dom(&d).len()
+        };
+        let run = |tagline_text: (f64, f64), logo_text: (f64, f64), line_height: &str| {
+            run_lines(tagline_text, logo_text, line_height, line_height, &[])
+        };
+        // Wrapped at the same width, the logo redraws the tagline's glyphs.
+        assert_eq!(run((290.0, 84.0), (290.0, 84.0), "normal"), 0);
+        // Wrapped narrower, its later lines land on other words.
+        assert_eq!(run((290.0, 84.0), (200.0, 112.0), "normal"), 1);
+        // On one line, the logo redraws the start of the tagline's first
+        // line however the tagline wraps after it (review): narrower than
+        // the tagline's two-line rect, at a normal line-height and at a
+        // `line-height: 2` that makes one line 48px tall.
+        assert_eq!(run((290.0, 56.0), (280.0, 28.0), "normal"), 0);
+        // A one-line run wider than the wrapped victim's text sets words
+        // the victim puts on its second line (review).
+        assert_eq!(run((200.0, 56.0), (280.0, 28.0), "normal"), 1);
+        assert_eq!(run((290.0, 96.0), (280.0, 48.0), "48px"), 0);
+        // The same 48px rect at a normal line-height is two lines.
+        assert_eq!(run((290.0, 96.0), (280.0, 48.0), "normal"), 1);
+        // Review: wrapped at the same width, a tighter `line-height` sets
+        // the logo's later lines between the tagline's, and the two collide.
+        assert_eq!(run_lines((290.0, 120.0), (290.0, 84.0), "40px", "28px", &[]), 1);
+        assert_eq!(run_lines((290.0, 84.0), (290.0, 84.0), "28px", "28px", &[]), 0);
+        // Centred, or with a `line-height` or break rule the capture did not
+        // record, the later lines may sit elsewhere too.
+        assert_eq!(run_lines((290.0, 84.0), (290.0, 84.0), "28px", "28px", &[("textAlign", "center")]), 1);
+        assert_eq!(run_lines((290.0, 84.0), (290.0, 84.0), "28px", "28px", &[("wordBreak", "")]), 1);
+        // On one line, only the first line's origin matters.
+        assert_eq!(run_lines((290.0, 56.0), (280.0, 28.0), "28px", "normal", &[("textAlign", "center")]), 0);
+    }
+
+    /// v0-orbit-internal-app: a KPI label clipped by its squeezed card to the
+    /// 6px left on screen, covered by the next card. A reader meets none of
+    /// it; with most of the label on screen the collision is real.
+    #[test]
+    fn text_occlusion_needs_the_victims_visible_share() {
+        let run = |card_width: f64| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            let card = d.add(Some(body), "div");
+            d.set_styles(card, OCCLUSION_BASE);
+            d.set_styles(card, &[("position", "relative"), ("overflow", "hidden"), ("overflowX", "hidden"), ("overflowY", "hidden")]);
+            d.set_rect(card, 384.0, 260.0, card_width, 80.0);
+            let label = d.add(Some(card), "span");
+            d.set_styles(label, OCCLUSION_BASE);
+            d.set_rect(label, 384.0, 271.0, 60.0, 50.0);
+            d.add_text(label, "Total Book of Business");
+            let next = d.add(Some(body), "div");
+            d.set_styles(next, OCCLUSION_BASE);
+            d.set_styles(next, &[("position", "relative"), ("backgroundColor", "rgb(255, 255, 255)")]);
+            // The grid squeezes the card under its neighbour, which is laid
+            // over the label.
+            d.set_rect(next, 384.0, 260.0, 300.0, 80.0);
+            mark_body_descendants(&mut d);
+            for (x, y) in occlusion_probe_points(&d.rect(label), 1280.0, 800.0) {
+                d.set_point(x, y, vec![next, body]);
+            }
+            (check_text_occlusion_dom(&d), label)
+        };
+        let (sliver, _) = run(6.0);
+        assert!(sliver.is_empty(), "{sliver:?}");
+        let (shown, label) = run(40.0);
+        assert!(shown.iter().any(|f| f.el == Some(label)), "{shown:?}");
+    }
+
     #[test]
     fn text_occlusion_overhang_needs_a_painted_card() {
         let run = |card_painted: bool| {
@@ -6365,6 +7079,84 @@ mod tests {
         el
     }
 
+    /// loova.ai's consent banner: a 34px "Accept All" button with no padding,
+    /// its one line centred by flex. v0-ai-video-playground.vercel.app: a
+    /// shell whose border, OKLab L 0.16 at half alpha on black, draws no edge.
+    #[test]
+    fn nested_cards_skip_fixed_height_labels_and_borders_nobody_sees() {
+        let mut d = FakeDom::new();
+        let (_h, body) = d.with_page();
+        let card = d.add(Some(body), "div");
+        outlined(&mut d, card, "16px");
+        d.set_rect(card, 0.0, 0.0, 600.0, 200.0);
+        d.add_text(card, "We use cookies to improve your experience");
+        let button = d.add(Some(card), "div");
+        outlined(&mut d, button, "6px");
+        d.set_rect(button, 400.0, 13.0, 114.0, 34.0);
+        d.set_styles(button, &[("fontSize", "14px"), ("lineHeight", "normal"), ("paddingTop", "0px"), ("paddingBottom", "0px")]);
+        d.add_text(button, "Accept All");
+        // Without recorded lines the box reads as two lines tall, as before.
+        assert_eq!(check_layout(&d).len(), 1, "no line rects: base behaviour");
+        d.set_text_lines(button, &[(425.0, 20.5, 64.0, 19.0)]);
+        assert!(check_layout(&d).is_empty(), "one rendered line in a fixed-height box");
+        // A box with an element child is not read this way.
+        let icon = d.add(Some(button), "span");
+        d.set_rect(icon, 495.0, 22.0, 12.0, 12.0);
+        assert_eq!(check_layout(&d).len(), 1, "a box with a child element");
+
+        let dark_page = |border: &str| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            d.set_style(body, "backgroundColor", "rgb(0, 0, 0)");
+            let shell = d.add(Some(body), "div");
+            outlined(&mut d, shell, "14px");
+            d.set_style(shell, "backgroundColor", "rgba(0, 0, 0, 0.5)");
+            for side in ["Top", "Right", "Bottom", "Left"] {
+                d.set_style(shell, &format!("border{side}Color"), border);
+            }
+            d.set_style(shell, "color", "rgb(240, 240, 240)");
+            d.set_rect(shell, 12.0, 12.0, 1256.0, 776.0);
+            d.add_text(shell, "Video playground workspace");
+            let panel = outlined_card(&mut d, shell, (37.0, 127.0, 1206.0, 300.0));
+            d.set_style(panel, "backgroundColor", "rgb(12, 12, 12)");
+            d.set_style(panel, "color", "rgb(240, 240, 240)");
+            for side in ["Top", "Right", "Bottom", "Left"] {
+                d.set_style(panel, &format!("border{side}Color"), "rgb(60, 60, 60)");
+            }
+            (d, panel)
+        };
+        // oklab(0.16 0 0 / 0.5) composites to about 7 on black.
+        let (d, _) = dark_page("oklab(0.16 -0.00000158697 0.00000374019 / 0.5)");
+        assert!(check_layout(&d).is_empty(), "the shell's border draws no edge");
+        // A descendant that paints nothing is no evidence about the surface:
+        // its unreadable ink does not make the shell's border count.
+        for (prop, value) in [("display", "none"), ("visibility", "hidden"), ("opacity", "0")] {
+            let (mut d, panel) = dark_page("oklab(0.16 -0.00000158697 0.00000374019 / 0.5)");
+            let shell = d.parent(panel).unwrap();
+            let hidden = d.add(Some(shell), "span");
+            d.set_style(hidden, "color", "rgb(10, 10, 10)");
+            d.add_text(hidden, "Dark copy nobody sees");
+            assert!(super::edge_surface_under(&d, shell).is_none(), "painted dark copy spoils the surface");
+            d.set_style(hidden, prop, value);
+            assert!(super::edge_surface_under(&d, shell).is_some(), "{prop}: {value}");
+            assert!(check_layout(&d).is_empty(), "{prop}: {value}");
+        }
+        let (d, panel) = dark_page("rgba(255, 255, 255, 0.1)");
+        let f = check_layout(&d);
+        assert_eq!(f.len(), 1, "a white/10 border draws one: {f:?}");
+        assert_eq!(f[0].el, Some(panel));
+        // White copy on a surface the climb reads as near-white says the
+        // climb missed the dark layer under the card: its border is not
+        // judged, and counts.
+        let (mut d, panel) = dark_page("oklab(0.16 -0.00000158697 0.00000374019 / 0.5)");
+        let body = d.body().unwrap();
+        d.set_style(body, "backgroundColor", "rgb(250, 250, 250)");
+        let shell = d.parent(panel).unwrap();
+        d.set_style(shell, "backgroundColor", "rgba(0, 0, 0, 0)");
+        assert!(super::edge_surface_under(&d, shell).is_none(), "white copy on a white surface");
+        assert_eq!(check_layout(&d).len(), 1, "an unreadable surface keeps the border");
+    }
+
     /// auradeballet.com's `border-t` footer, vibe-audit-lab.base44.app's
     /// chips, demotv.lol's eyebrow, veeza.ai's header band, climatempo.com.br's
     /// lip shadow.
@@ -6780,6 +7572,191 @@ mod tests {
         let f = check_cream_palette(&d);
         assert_eq!(f.len(), 1);
         assert_eq!(f[0].snippet, "cream/beige page background (Tailwind bg-amber-50)");
+    }
+
+    /// useforward.co (322742): a cream body under full-width sections that
+    /// paint a dark hero and a grey page. The ground a visitor sees is grey.
+    #[test]
+    fn cream_palette_reads_the_bands_that_cover_the_body() {
+        let build = |fills: &[(&str, f64)], page_h: f64| {
+            let mut d = FakeDom::new();
+            let (html, body) = d.with_page();
+            d.inner_width = 1280.0;
+            d.set_style(body, "backgroundColor", "rgb(245, 242, 236)");
+            d.set_rect(html, 0.0, 0.0, 1280.0, page_h);
+            d.set_rect(body, 0.0, 0.0, 1280.0, page_h);
+            d.el_mut(html).scroll_height = Some(page_h);
+            let main = d.add(Some(body), "main");
+            d.set_style(main, "backgroundColor", "rgba(0, 0, 0, 0)");
+            let mut y = 0.0;
+            for &(fill, h) in fills {
+                let section = d.add(Some(main), "section");
+                d.set_styles(section, &[("backgroundColor", fill), ("backgroundImage", "none")]);
+                d.set_rect(section, 0.0, y, 1280.0, h);
+                y += h;
+            }
+            d.set_rect(main, 0.0, 0.0, 1280.0, y);
+            check_cream_palette(&d)
+        };
+        let dark = "rgb(16, 16, 14)";
+        let grey = "rgb(241, 242, 239)";
+        let cream = "rgb(251, 247, 240)";
+        // Covered by dark and grey: no cream shows.
+        assert!(build(&[(dark, 800.0), (grey, 4200.0), (dark, 700.0)], 5700.0).is_empty());
+        // Covered, mostly by a cream band: cream is the ground, and the
+        // finding stands as the body names it.
+        let f = build(&[(dark, 800.0), (cream, 4900.0)], 5700.0);
+        assert_eq!(f.len(), 1);
+        assert_eq!(f[0].snippet, "cream/beige page background rgb(245, 242, 236)");
+        // The bands leave a third of the page to the body: its fill stands.
+        let f = build(&[(dark, 800.0), (grey, 3000.0)], 5700.0);
+        assert_eq!(f.len(), 1);
+        assert_eq!(f[0].snippet, "cream/beige page background rgb(245, 242, 236)");
+        // A cream strip laid over a white ground shows the cream.
+        let f = build(&[("rgb(255, 255, 255)", 2000.0), (cream, 300.0), ("rgb(255, 255, 255)", 3400.0)], 5700.0);
+        assert_eq!(f.len(), 1);
+        // Warmth at the boundaries of the near-cream floor (2): white drops,
+        // warmth 2 and 5 are warm paper, and a grey with green over red
+        // drops whatever its warmth.
+        assert!(build(&[("rgb(250, 250, 250)", 5700.0)], 5700.0).is_empty());
+        assert!(build(&[("rgb(250, 249, 249)", 5700.0)], 5700.0).is_empty(), "warmth 1");
+        assert_eq!(build(&[("rgb(250, 249, 248)", 5700.0)], 5700.0).len(), 1, "warmth 2");
+        assert_eq!(build(&[("rgb(250, 248, 245)", 5700.0)], 5700.0).len(), 1, "warmth 5");
+        assert!(build(&[("rgb(241, 242, 239)", 5700.0)], 5700.0).is_empty(), "grey");
+        // A band at half alpha, or an opaque band at half opacity, lets the
+        // cream through: it is no band.
+        let f = build(&[("rgba(16, 16, 14, 0.5)", 5700.0)], 5700.0);
+        assert_eq!(f.len(), 1);
+        let faded = {
+            let mut d = FakeDom::new();
+            let (html, body) = d.with_page();
+            d.inner_width = 1280.0;
+            d.set_style(body, "backgroundColor", "rgb(245, 242, 236)");
+            d.set_rect(html, 0.0, 0.0, 1280.0, 1000.0);
+            d.set_rect(body, 0.0, 0.0, 1280.0, 1000.0);
+            let band = d.add(Some(body), "section");
+            d.set_styles(band, &[("backgroundColor", dark), ("backgroundImage", "none"), ("opacity", "0.5")]);
+            d.set_rect(band, 0.0, 0.0, 1280.0, 1000.0);
+            check_cream_palette(&d)
+        };
+        assert_eq!(faded.len(), 1);
+        // A full-width band shifted half a page aside leaves the cream
+        // showing beside it.
+        let shifted = {
+            let mut d = FakeDom::new();
+            let (html, body) = d.with_page();
+            d.inner_width = 1280.0;
+            d.set_style(body, "backgroundColor", "rgb(245, 242, 236)");
+            d.set_rect(html, 0.0, 0.0, 1280.0, 1000.0);
+            d.set_rect(body, 0.0, 0.0, 1280.0, 1000.0);
+            let band = d.add(Some(body), "section");
+            d.set_styles(band, &[("backgroundColor", dark), ("backgroundImage", "none")]);
+            d.set_rect(band, 640.0, 0.0, 1280.0, 1000.0);
+            check_cream_palette(&d)
+        };
+        assert_eq!(shifted.len(), 1);
+        // A band with no measured rect covers nothing.
+        let f = build(&[(dark, 800.0), (grey, f64::NAN)], 5700.0);
+        assert_eq!(f.len(), 1);
+    }
+
+    /// An SPA root painting white over a cream body, with cream sections
+    /// five levels down, still shows cream; a band painted by an image is
+    /// no band, so a page it covers keeps the body's finding.
+    #[test]
+    fn cream_palette_finds_cream_deep_in_an_spa_and_skips_image_bands() {
+        let mut d = FakeDom::new();
+        let (html, body) = d.with_page();
+        d.inner_width = 1280.0;
+        d.set_style(body, "backgroundColor", "rgb(245, 242, 236)");
+        d.set_rect(html, 0.0, 0.0, 1280.0, 4000.0);
+        d.set_rect(body, 0.0, 0.0, 1280.0, 4000.0);
+        d.el_mut(html).scroll_height = Some(4000.0);
+        let root = d.add(Some(body), "div");
+        d.set_styles(root, &[("backgroundColor", "rgb(255, 255, 255)"), ("backgroundImage", "none")]);
+        d.set_rect(root, 0.0, 0.0, 1280.0, 4000.0);
+        let mut parent = root;
+        for tag in ["div", "div", "main"] {
+            let el = d.add(Some(parent), tag);
+            d.set_rect(el, 0.0, 0.0, 1280.0, 4000.0);
+            parent = el;
+        }
+        for i in 0..4 {
+            let section = d.add(Some(parent), "section");
+            d.set_style(section, "backgroundColor", "rgb(251, 247, 240)");
+            d.set_rect(section, 0.0, 1000.0 * i as f64, 1280.0, 1000.0);
+        }
+        assert_eq!(check_cream_palette(&d).len(), 1);
+
+        let mut d = FakeDom::new();
+        let (html, body) = d.with_page();
+        d.inner_width = 1280.0;
+        d.set_style(body, "backgroundColor", "rgb(245, 242, 236)");
+        d.set_rect(html, 0.0, 0.0, 1280.0, 1000.0);
+        d.set_rect(body, 0.0, 0.0, 1280.0, 1000.0);
+        let hero = d.add(Some(body), "section");
+        d.set_styles(hero, &[("backgroundColor", "rgb(16, 16, 14)"), ("backgroundImage", "url(\"/hero.jpg\")")]);
+        d.set_rect(hero, 0.0, 0.0, 1280.0, 1000.0);
+        assert_eq!(check_cream_palette(&d).len(), 1);
+    }
+
+    /// visitabudhabi.ae (324145): a MUI dialog fixed over the whole 390x844
+    /// viewport at `opacity: 0; visibility: hidden`, waiting for its trigger.
+    #[test]
+    fn hidden_text_measure_leaves_out_a_hidden_viewport_overlay() {
+        let run = |styles: &[(&str, &str)], rect: (f64, f64, f64, f64)| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            d.inner_width = 390.0;
+            d.inner_height = 844.0;
+            hidden_box(&mut d, body, "p", &[], "visible text on the page around the dialog");
+            let dialog = hidden_box(&mut d, body, "div", styles, "Create Itinerary");
+            d.set_rect(dialog, rect.0, rect.1, rect.2, rect.3);
+            mark_body_descendants(&mut d);
+            measure_hidden_text_dom(&d).hidden_chars
+        };
+        let full = (0.0, 0.0, 390.0, 844.0);
+        let hidden_fixed = [("position", "fixed"), ("opacity", "0"), ("visibility", "hidden")];
+        assert_eq!(run(&hidden_fixed, full), 0.0);
+        // Transparent but not hidden: a shell waiting for a reveal.
+        assert_eq!(run(&[("position", "fixed"), ("opacity", "0")], full), 16.0);
+        // Not fixed, or not over the whole viewport: content.
+        assert_eq!(run(&[("position", "absolute"), ("visibility", "hidden")], full), 16.0);
+        assert_eq!(run(&hidden_fixed, (0.0, 0.0, 390.0, 300.0)), 16.0);
+
+        // An app shell fixed over the viewport and held hidden by a reveal
+        // that failed is the page, not an overlay: a `main` in it, or most
+        // of the page's text, keeps it counted.
+        let shell = |with_main: bool, text: &str| {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            d.inner_width = 390.0;
+            d.inner_height = 844.0;
+            hidden_box(&mut d, body, "p", &[], "Loading");
+            let app = hidden_box(&mut d, body, "div", &hidden_fixed, "");
+            d.set_rect(app, 0.0, 0.0, 390.0, 844.0);
+            let inner = hidden_box(&mut d, app, if with_main { "main" } else { "div" }, &[], text);
+            d.set_rect(inner, 0.0, 0.0, 390.0, 844.0);
+            mark_body_descendants(&mut d);
+            measure_hidden_text_dom(&d).hidden_chars
+        };
+        assert_eq!(shell(true, "Short"), 5.0);
+        assert_eq!(shell(false, "Your orders, your saved items and your account"), 46.0);
+        // A short overlay beside more page text is still closed interface.
+        assert_eq!(shell(false, "Hi"), 0.0);
+        // The layer that is itself the `main` holds the page too.
+        let main_layer = {
+            let mut d = FakeDom::new();
+            let (_h, body) = d.with_page();
+            d.inner_width = 390.0;
+            d.inner_height = 844.0;
+            hidden_box(&mut d, body, "p", &[], "visible text on the page around the dialog");
+            let app = hidden_box(&mut d, body, "main", &hidden_fixed, "Short");
+            d.set_rect(app, 0.0, 0.0, 390.0, 844.0);
+            mark_body_descendants(&mut d);
+            measure_hidden_text_dom(&d).hidden_chars
+        };
+        assert_eq!(main_layer, 5.0);
     }
 
     /// hse.de (287847, 287911): the mobile menu at opacity 0, `position:

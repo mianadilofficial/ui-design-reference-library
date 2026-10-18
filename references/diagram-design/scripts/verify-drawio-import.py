@@ -68,13 +68,15 @@ def run_extract(args: list[str]) -> str:
     return proc.stdout
 
 
-def expect_extract_error(args: list[str], message: str) -> None:
+def expect_extract_error(args: list[str], message: str, *, quiet_stdout: bool = False) -> None:
     proc = invoke(args)
     if proc.returncode != 2 or message not in proc.stderr:
         fail(
             f"expected exit 2 containing {message!r} for {args}; got "
             f"{proc.returncode}: {proc.stderr.strip()!r}"
         )
+    if quiet_stdout and proc.stdout:
+        fail(f"expected no stdout for failed write {args}; got {proc.stdout.strip()!r}")
 
 
 def check_legacy_stdout_encoding(tmp: Path) -> None:
@@ -166,6 +168,31 @@ def png_chunk(ctype: bytes, data: bytes) -> bytes:
         + data
         + struct.pack(">I", zlib.crc32(ctype + data) & 0xFFFFFFFF)
     )
+
+
+def check_out_write_errors(tmp: Path) -> None:
+    # A missing parent directory is the common caller mistake; an existing
+    # directory or a regular file in the parent slot are the hostile cases.
+    missing_dir = tmp / "missing-output-directory"
+    expect_extract_error(
+        [str(FIXTURE), "--out", str(missing_dir / "digest.md")],
+        f"cannot write {missing_dir / 'digest.md'}",
+        quiet_stdout=True,
+    )
+    expect_extract_error(
+        [str(FIXTURE), "--json", "--out", str(missing_dir / "digest.json")],
+        f"cannot write {missing_dir / 'digest.json'}",
+        quiet_stdout=True,
+    )
+    expect_extract_error(
+        [str(FIXTURE), "--out", str(tmp)], "cannot write", quiet_stdout=True
+    )
+    parent_file = tmp / "regular-file.md"
+    parent_file.write_text("not a directory", encoding="utf-8")
+    expect_extract_error(
+        [str(FIXTURE), "--out", str(parent_file / "digest.md")], "cannot write", quiet_stdout=True
+    )
+    ok("draw.io --out write failures report a clear diagnostic and exit 2")
 
 
 def check_files() -> None:
@@ -371,6 +398,53 @@ def check_bom_prefixed(tmp: Path) -> None:
         if actual != expected:
             fail(f"UTF-8 BOM-prefixed {label} extracts differently from the same input without a BOM")
     ok("UTF-8 BOM-prefixed raw XML and bare compressed payload parse like their unprefixed input")
+
+
+def check_hidden_cells(tmp: Path) -> None:
+    # visible="0" on a cell, a group, or a layer hides it in draw.io; the import must not resurrect it.
+    def vertex(cid: str, parent: str, x: int, extra: str = "") -> str:
+        return (f'<mxCell id="{cid}" value="{cid.upper()}" vertex="1" parent="{parent}"{extra}>'
+                f'<mxGeometry x="{x}" width="60" height="40" as="geometry"/></mxCell>')
+
+    def edge(cid: str, parent: str, extra: str = "") -> str:
+        return (f'<mxCell id="{cid}" value="{cid}" edge="1" parent="{parent}" source="a" target="b"{extra}>'
+                '<mxGeometry relative="1" as="geometry"/></mxCell>')
+
+    source = tmp / "hidden-cells.drawio"
+    source.write_text(
+        '<mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/>'
+        '<mxCell id="layer2" value="Draft" parent="0" visible="0"/>'
+        + vertex("a", "1", 0) + vertex("b", "1", 100)
+        + vertex("hidden", "1", 200, ' visible="0"')
+        + vertex("draft", "layer2", 300)
+        + vertex("grp", "1", 400, ' visible="0"') + vertex("inside", "grp", 5)
+        + edge("shown", "1") + edge("hiddenedge", "1", ' visible="0"') + edge("draftedge", "layer2")
+        + "</root></mxGraphModel>",
+        encoding="utf-8",
+    )
+    page = json.loads(run_extract([str(source), "--json"]))["pages"][0]
+    nodes, edges = sorted(n["id"] for n in page["nodes"]), sorted(e["id"] for e in page["edges"])
+    if (nodes, edges) != (["a", "b"], ["shown"]):
+        fail(f"hidden cells, groups or layers leaked into the IR: nodes={nodes} edges={edges}")
+    # Put the deepest descendant first: memoization cannot shorten the first
+    # ancestor walk, and input order must not resurrect a hidden descendant.
+    deep = tmp / "hidden-child-first.drawio"
+    count = 8000
+    deep.write_text(
+        '<mxGraphModel><root>'
+        + ''.join(
+            f'<mxCell id="n{i}" parent="n{i + 1}" vertex="1"'
+            + (' visible="0"' if i == count - 1 else '')
+            + '><mxGeometry x="0" y="0" width="40" height="40" as="geometry"/></mxCell>'
+            for i in range(count)
+        )
+        + '</root></mxGraphModel>',
+        encoding="utf-8",
+    )
+    deep_page = json.loads(run_extract([str(deep), "--json"]))["pages"][0]
+    if deep_page["nodes"] or deep_page["edges"]:
+        fail("Child-first deep descendants escaped their hidden ancestor")
+    ok("cells hidden directly, through a group, or through a layer are dropped from the IR")
 
 
 def check_containers(tmp: Path) -> None:
@@ -795,18 +869,31 @@ def check_docs() -> None:
     ok("references, SKILL.md wiring, and slash command are consistent")
 
 
+def check_unicode_page_names() -> None:
+    extractor = load_extractor_module()
+    page = extractor.Page(id="page", name="²", index=0)
+    if extractor.select_pages([page], "²") != [page]:
+        fail("non-decimal numeric characters must remain valid page names")
+    if extractor.select_pages([page], "٠") != [page]:
+        fail("decimal Unicode selectors must remain supported")
+    ok("page selection distinguishes decimal indexes from Unicode names")
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="diagram-design-drawio-") as tmp_dir:
         tmp = Path(tmp_dir)
         check_files()
+        check_unicode_page_names()
         check_parse_raw()
         check_arrow_directions(tmp)
         check_relative_geometry(tmp)
         check_nested_geometry(tmp)
         check_nested_relative_geometry(tmp)
         check_bom_prefixed(tmp)
+        check_hidden_cells(tmp)
         check_containers(tmp)
         check_legacy_stdout_encoding(tmp)
+        check_out_write_errors(tmp)
         check_digest_escaping(tmp)
         check_security_and_limits(tmp)
         check_docs()

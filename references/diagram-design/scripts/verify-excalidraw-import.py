@@ -723,10 +723,55 @@ def check_mobile_example() -> None:
     ok("worked example is contained and locally scrollable at 390px")
 
 
+def check_json_nesting_diagnostic(tmp: Path) -> None:
+    source = tmp / "deeply-nested.excalidraw"
+    # Stay below the byte cap; JSON parser nesting limits vary across Python versions.
+    source.write_text(
+        '{"type":"excalidraw","elements":[],"appState":'
+        + "[" * 20000 + "0" + "]" * 20000 + "}",
+        encoding="utf-8",
+    )
+    successful_digests = []
+    for flags in ([], ["--json"]):
+        process = invoke([str(source), *flags])
+        if "Traceback" in process.stderr or "Traceback" in process.stdout:
+            fail("deeply nested JSON leaked a traceback")
+        if process.returncode == 2:
+            if "nesting exceeds the parser limit" not in process.stderr or process.stdout:
+                fail("deeply nested JSON lacked a nesting diagnostic or leaked a partial digest")
+        elif process.returncode == 0:
+            successful_digests.append((flags, process.stdout))
+        else:
+            fail(f"deeply nested JSON exited {process.returncode}: {process.stderr!r}")
+    source.write_text(scene("shallow-control", []), encoding="utf-8")
+    payload = json.loads(run_extract([str(source), "--json"]))
+    if payload["scene"]["nodes"] or payload["scene"]["edges"]:
+        fail("shallow JSON control unexpectedly changed the empty scene")
+    for flags, digest in successful_digests:
+        if digest != run_extract([str(source), *flags]):
+            fail("deeply nested JSON did not produce the normal empty-scene digest")
+    ok("deeply nested JSON imports or fails cleanly; shallow JSON still imports")
+
+
+def check_unimported_container_text(tmp: Path) -> None:
+    source = tmp / "unsupported-container.excalidraw"
+    source.write_text(json.dumps({"type": "excalidraw", "elements": [
+        {"id": "future", "type": "future-shape", "x": 0, "y": 0, "width": 10, "height": 10},
+        {"id": "label", "type": "text", "text": "Visible annotation", "containerId": "future",
+         "x": 0, "y": 0, "width": 10, "height": 10},
+    ]}), encoding="utf-8")
+    scene = json.loads(run_extract([str(source), "--json"]))["scene"]
+    if not any(node["id"] == "label" and node["label"] == "Visible annotation" for node in scene["nodes"]):
+        fail("bound text must remain standalone when its container cannot be imported")
+    ok("visible text survives unsupported containers")
+
+
 def main() -> int:
     with tempfile.TemporaryDirectory(prefix="diagram-design-excalidraw-") as directory:
         tmp = Path(directory)
         check_files()
+        check_json_nesting_diagnostic(tmp)
+        check_unimported_container_text(tmp)
         check_whiteboard()
         check_bindings_and_shapes(tmp)
         check_arrow_directions(tmp)

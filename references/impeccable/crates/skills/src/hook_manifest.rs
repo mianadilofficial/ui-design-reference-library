@@ -68,6 +68,17 @@ pub fn hook_artifacts_for_provider(bundle_dir: &str, root: &str, provider: &str)
         .collect()
 }
 
+fn hook_artifacts_for_install(bundle_dir: &str, root: &str, provider: &str, user_scope: bool) -> Vec<HookArtifact> {
+    if provider == ".claude" && user_scope {
+        return vec![HookArtifact {
+            src: jsp::join(&[bundle_dir, ".claude", "settings.json"]),
+            dest: jsp::join(&[root, ".claude", "settings.json"]),
+            shared_dest: None,
+        }];
+    }
+    hook_artifacts_for_provider(bundle_dir, root, provider)
+}
+
 /// JS: expectedHookDests(root, providers)
 pub fn expected_hook_dests(root: &str, providers: &[&str]) -> Vec<String> {
     providers
@@ -321,8 +332,8 @@ fn backup_commented(path: &str, had_comments: bool) -> Result<(), String> {
 
 /// A provider whose hook manifest is the user's whole settings file (model,
 /// auth, MCP servers), so an unreadable one is never replaced wholesale.
-fn manifest_is_user_settings(provider: &str) -> bool {
-    provider == ".gemini"
+fn manifest_is_user_settings(provider: &str, user_scope: bool) -> bool {
+    provider == ".gemini" || (provider == ".claude" && user_scope)
 }
 
 /// JS: hookInstalledForProvider(root, provider)
@@ -338,6 +349,60 @@ pub fn hook_installed_for_provider(root: &str, provider: &str) -> bool {
         }
         write_rel != spec.rel && file_has_impeccable_hook_marker(&jsp::join(&[root, spec.dest_provider, spec.rel]))
     })
+}
+
+/// User-scoped Claude hooks are loaded only from `settings.json`; the
+/// project-only `settings.local.json` path must not satisfy a global install.
+/// For that file, "installed" means current (`user_claude_hook_is_current`),
+/// not merely marked: a legacy `hook.mjs` entry or one naming a launcher that
+/// no longer exists must be rewritten, not counted.
+pub fn hook_installed_for_provider_at_scope(root: &str, provider: &str, user_scope: bool) -> bool {
+    if user_scope && provider == ".claude" {
+        return user_claude_hook_is_current(root);
+    }
+    hook_installed_for_provider(root, provider)
+}
+
+/// The command a user-scope install writes into `<home>/.claude/settings.json`:
+/// the guarded absolute launcher under `<home>/.claude/skills/impeccable`.
+pub fn user_claude_hook_command(home_root: &str, win32: bool) -> Option<String> {
+    let quoted = quoted_launcher_path(home_root, ".claude", true)?;
+    Some(hook_command(&quoted, ".claude", win32))
+}
+
+fn collect_impeccable_hook_commands<'a>(value: &'a Value, out: &mut Vec<&'a str>) {
+    match value {
+        Value::String(s) if is_impeccable_hook_command(s) => out.push(s),
+        Value::Array(a) => a.iter().for_each(|v| collect_impeccable_hook_commands(v, out)),
+        Value::Object(o) => o.values().for_each(|v| collect_impeccable_hook_commands(v, out)),
+        _ => {}
+    }
+}
+
+/// True only when `<home>/.claude/settings.json` parses, its launcher exists,
+/// and every Impeccable hook command in it is exactly the form this engine
+/// writes for a user-scope install. An Impeccable marker alone is not enough:
+/// a legacy `node .../hook.mjs` entry, or one naming a launcher that is gone,
+/// is a dead hook, and counting it would skip the rewrite and let the
+/// duplicate-hook cleanup delete the project hook that still works.
+pub fn user_claude_hook_is_current(home_root: &str) -> bool {
+    user_claude_hook_is_current_for(home_root, cfg!(windows))
+}
+
+/// `user_claude_hook_is_current` with the platform made explicit.
+pub fn user_claude_hook_is_current_for(home_root: &str, win32: bool) -> bool {
+    let Some(expected) = user_claude_hook_command(home_root, win32) else { return false };
+    let Some(launcher) = launcher_path(home_root, ".claude") else { return false };
+    if !util::exists(&launcher) {
+        return false;
+    }
+    let Some((Value::Object(map), _)) = read_manifest(&jsp::join(&[home_root, ".claude", "settings.json"])) else {
+        return false;
+    };
+    let Some(hooks @ (Value::Object(_) | Value::Array(_))) = map.get("hooks") else { return false };
+    let mut commands = Vec::new();
+    collect_impeccable_hook_commands(hooks, &mut commands);
+    !commands.is_empty() && commands.iter().all(|c| *c == expected)
 }
 
 fn marker_in(entry: &Map<String, Value>, key: &str) -> bool {
@@ -468,11 +533,13 @@ fn json_parse_message(e: &serde_json::Error) -> String {
 
 /// JS: copyProviderHooks(bundleDir, root, providers, {force, skillRoot}).
 /// Returns the providers whose manifest was written (deduplicated, in order).
-pub fn copy_provider_hooks(sys: &crate::providers::Sys, bundle_dir: &str, root: &str, providers: &[&'static str], force: bool, skill_root: Option<&str>) -> Result<Vec<&'static str>, String> {
+pub fn copy_provider_hooks(sys: &crate::providers::Sys, bundle_dir: &str, root: &str, providers: &[&'static str], force: bool, skill_root: Option<&str>, project_root: Option<&str>) -> Result<Vec<&'static str>, String> {
     let skill_root = skill_root.unwrap_or(root);
+    let user_scope = sys.is_home_dir(skill_root);
     let mut written: Vec<&'static str> = Vec::new();
     for provider in providers {
-        for artifact in hook_artifacts_for_provider(bundle_dir, root, provider) {
+        let manifest_root = if user_scope && *provider == ".claude" { skill_root } else { root };
+        for artifact in hook_artifacts_for_install(bundle_dir, manifest_root, provider, user_scope) {
             if !util::exists(&artifact.src) {
                 continue;
             }
@@ -492,7 +559,7 @@ pub fn copy_provider_hooks(sys: &crate::providers::Sys, bundle_dir: &str, root: 
                         backup_commented(&artifact.dest, had_comments)?;
                         next = merge_hook_manifests(&existing, &fresh);
                     }
-                    None if manifest_is_user_settings(provider) => {
+                    None if manifest_is_user_settings(provider, user_scope) => {
                         return Err(format!("Existing settings file is not valid JSON: {}. It holds your other settings too, so it is never replaced; fix it and re-run.", artifact.dest));
                     }
                     None => {
@@ -505,13 +572,34 @@ pub fn copy_provider_hooks(sys: &crate::providers::Sys, bundle_dir: &str, root: 
                 }
             }
             util::mkdir_p(&jsp::dirname(&artifact.dest))?;
-            util::write_bytes(&artifact.dest, format!("{}\n", util::json_pretty(&next)).as_bytes())?;
+            // Atomic: in user scope this is the user's whole Claude settings file.
+            impeccable_common::fsx::write_atomic(&artifact.dest, format!("{}\n", util::json_pretty(&next)).as_bytes()).map_err(|e| util::node_error("open", &artifact.dest, &e))?;
             if !written.contains(provider) {
                 written.push(provider);
             }
         }
+        if user_scope && *provider == ".claude" {
+            prune_duplicate_claude_hooks(sys, skill_root, project_root.unwrap_or(root))?;
+        }
     }
     Ok(written)
+}
+
+/// Once a user-scope Claude hook is in `<home>/.claude/settings.json`, the
+/// Impeccable entries in `settings.local.json` (the home one Claude never
+/// loads, and the project's gitignored one) only make the hook fire twice.
+/// Prunes them, and only when the user hook is confirmed current: a legacy or
+/// dangling user entry does not count. Runs after a fresh hook write and on a
+/// repeat install whose user hook is already current.
+pub fn prune_duplicate_claude_hooks(sys: &crate::providers::Sys, home_root: &str, project_root: &str) -> Result<(), String> {
+    if !user_claude_hook_is_current(home_root) {
+        return Ok(());
+    }
+    prune_impeccable_hook_from_manifest(&jsp::join(&[home_root, ".claude", "settings.local.json"]))?;
+    if !sys.is_home_dir(project_root) {
+        prune_impeccable_hook_from_manifest(&jsp::join(&[project_root, ".claude", "settings.local.json"]))?;
+    }
+    Ok(())
 }
 
 /// Self-heal for the v3 -> launcher upgrade (triage E8): a present provider

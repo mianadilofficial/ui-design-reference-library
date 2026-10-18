@@ -287,6 +287,15 @@ pub trait Dom {
     fn image_current_src(&self, _el: ElId) -> Option<String> {
         None
     }
+    /// `video.readyState` (0 to 4) for an HTML `<video>`: 2
+    /// (`HAVE_CURRENT_DATA`) or more means a frame is decoded, so the element
+    /// paints a picture (its poster, or that frame where the poster did not
+    /// load). Nothing tells whether a `poster` image loaded, so below 2 a
+    /// video may paint nothing at all. `None` for anything that is not a
+    /// `<video>` and where the probe did not read it.
+    fn video_ready_state(&self, _el: ElId) -> Option<u8> {
+        None
+    }
 
     // ── the flat tree ─────────────────────────────────────────────────
     /// The box an element paints inside once shadow trees are composed: the
@@ -638,5 +647,6 @@ mod tests {
         assert_eq!(LightTreeOnly.image_natural_size(3), None);
         assert_eq!(LightTreeOnly.image_complete(3), None);
         assert_eq!(LightTreeOnly.image_current_src(3), None);
+        assert_eq!(LightTreeOnly.video_ready_state(3), None);
     }
 }

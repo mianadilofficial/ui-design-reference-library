@@ -6,6 +6,11 @@
   outline: none;
 }
 
+.pixel-swap:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
 .pixel-swap__layer {
   position: absolute;
   inset: 0;
@@ -15,22 +20,4 @@
 
 .pixel-swap__layer[data-visible='false'] {
   visibility: hidden;
-}
-
-.pixel-swap__grid {
-  position: absolute;
-  inset: 0;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.pixel-swap__pixel {
-  position: absolute;
-  overflow: hidden;
-  opacity: 0;
-  contain: paint;
-}
-
-.pixel-swap__pixel-content {
-  position: absolute;
 }
