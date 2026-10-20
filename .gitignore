@@ -1,0 +1,6 @@
+# Dependency machinery is never design-reference material.
+# The 2026-10-18 weekly sync pulled motion's .yarn/cache (1,446 zips,
+# ~280 MB) into the library because nothing excluded it. The sync
+# workflow also strips these paths; this file is the second layer.
+**/.yarn/cache/
+**/node_modules/

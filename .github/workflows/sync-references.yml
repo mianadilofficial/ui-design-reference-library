@@ -55,6 +55,13 @@ jobs:
             cp -a "$TMP/new/." "$target/"
             cp "$TMP/attr.md" "$target/ATTRIBUTION.md"
 
+            # Strip dependency machinery — it is never reference material.
+            # The 2026-10-18 sync copied upstream verbatim and pulled in
+            # motion's .yarn/cache (1,446 zips, ~280 MB of prebuilt
+            # binaries), doubling the library tree (602 MB -> 1.3 GB).
+            # Root .gitignore carries the same patterns as a second layer.
+            find "$target" -type d \( -name node_modules -o -path '*/.yarn/cache' \) -prune -exec rm -rf {} + 2>/dev/null || true
+
             # Update snapshot line in ATTRIBUTION.md and manifest
             today=$(date +%F)
             sed -i -E "s|commit \`[0-9a-f]{40}\` \([0-9-]{10}\)|commit \`${new_commit}\` (${today})|" "$target/ATTRIBUTION.md"
