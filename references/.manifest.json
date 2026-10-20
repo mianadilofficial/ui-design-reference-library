@@ -1,5 +1,5 @@
 {
-  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand — sync-references.yml updates it.",
+  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand \u2014 sync-references.yml updates it.",
   "animate-ui": {
     "branch": "main",
     "commit": "efeb96ffd7a3b7a4868667e4ac3c346620fb3044",
@@ -179,5 +179,53 @@
     "commit": "2d0a040f42011e791caf0bc56b9fbdd36ce55cef",
     "date": "2026-10-18",
     "repo": "mantinedev/mantine"
+  },
+  "angular-ngrx-starter": {
+    "repo": "tomastrajan/angular-ngrx-material-starter",
+    "branch": "master",
+    "commit": "3d95daa95b5a53798f33b390815bdccad733995e",
+    "date": "2026-10-12"
+  },
+  "animejs": {
+    "repo": "juliangarnier/anime",
+    "branch": "master",
+    "commit": "01b81be1df6843ccfe0a71c0699a746bf740dd77",
+    "date": "2026-10-12"
+  },
+  "django-styleguide": {
+    "repo": "HackSoftware/Django-Styleguide",
+    "branch": "master",
+    "commit": "d43445abde57e4c96d056fe3f1d6462a2a9315ec",
+    "date": "2026-10-12"
+  },
+  "nextjs-blog-template": {
+    "repo": "timlrx/tailwind-nextjs-starter-blog",
+    "branch": "main",
+    "commit": "b45bef66b40c63b6f57c15ee8cd090682238df4c",
+    "date": "2026-10-12"
+  },
+  "nuxt-ui": {
+    "repo": "nuxt/ui",
+    "branch": "v4",
+    "commit": "1ec7cb06cee60181e279ce7d759c9a0d5be12a39",
+    "date": "2026-10-12"
+  },
+  "portfolio-brittany": {
+    "repo": "bchiang7/v4",
+    "branch": "main",
+    "commit": "539cef0bf60cad438499a69d76dba2c27cc16c9a",
+    "date": "2026-10-12"
+  },
+  "nextjs-landing-template": {
+    "repo": "ixartz/Next-JS-Landing-Page-Starter-Template",
+    "branch": "master",
+    "commit": "cd6694e6c69efad1128c1ed732188389182789df",
+    "date": "2026-10-12"
+  },
+  "tabler-dashboard": {
+    "repo": "tabler/tabler",
+    "branch": "dev",
+    "commit": "64e290bafa3f6ab6035ae649ff6a46854f345a86",
+    "date": "2026-10-12"
   }
 }

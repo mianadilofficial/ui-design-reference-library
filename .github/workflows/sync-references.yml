@@ -65,6 +65,13 @@ jobs:
             # Update snapshot line in ATTRIBUTION.md and manifest
             today=$(date +%F)
             sed -i -E "s|commit \`[0-9a-f]{40}\` \([0-9-]{10}\)|commit \`${new_commit}\` (${today})|" "$target/ATTRIBUTION.md"
+            # Other attribution templates in this library use different
+            # snapshot lines — update those too, or they silently go stale:
+            #   "**Snapshot commit:** `hash`" + "**Mirrored on:** date"
+            #   "**Mirrored snapshot commit:** shorthash"
+            sed -i -E "s|Snapshot commit:\*\* \`[0-9a-f]{40}\`|Snapshot commit:** \`${new_commit}\`|" "$target/ATTRIBUTION.md"
+            sed -i -E "s|Mirrored on:\*\* [0-9-]{10}|Mirrored on:** ${today}|" "$target/ATTRIBUTION.md"
+            sed -i -E "s|Mirrored snapshot commit:\*\* [0-9a-f]{7,40}|Mirrored snapshot commit:** ${new_commit}|" "$target/ATTRIBUTION.md"
             jq --arg f "$folder" --arg c "$new_commit" --arg d "$today" '.[$f].commit=$c | .[$f].date=$d' "$MANIFEST" > "$TMP/manifest.json" && mv "$TMP/manifest.json" "$MANIFEST"
 
             updated=$((updated+1))
