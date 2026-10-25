@@ -69,7 +69,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = 2 * Math.PI / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const RISE = physical(.46, .1), HEIGHT = physical(.42, 0), COLLAPSE = physical(.44, 0);
+const RISE = physical(.46, 0), HEIGHT = physical(.42, 0), COLLAPSE = physical(.44, 0);
 
 /** Next rises from below and leaves upward; previous runs the other way. */
 const faceVariants: Variants = {
@@ -95,7 +95,7 @@ function Digit({ char, reduced }: { char: string; reduced: boolean }) {
     <AnimatePresence initial={false}>
       <motion.span key={char} className={styles.digitFace}
         initial={reduced ? { opacity: 0 } : { y: "-70%", opacity: 0 }} animate={{ y: "0%", opacity: 1 }} exit={reduced ? { opacity: 0 } : { y: "70%", opacity: 0 }}
-        transition={reduced ? { duration: motionTokens.duration.instant } : { y: physical(.32, .08), opacity: { duration: motionTokens.duration.fast, ease: standard } }}>{char}</motion.span>
+        transition={reduced ? { duration: motionTokens.duration.instant } : { y: physical(.32, 0), opacity: { duration: motionTokens.duration.fast, ease: standard } }}>{char}</motion.span>
     </AnimatePresence>
   </span>;
 }

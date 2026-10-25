@@ -267,7 +267,7 @@ export const PasswordStrength = forwardRef<HTMLInputElement, PasswordStrengthPro
     if (!error || error === previous || reduced) return;
     // A spring released with sideways velocity rings out on its own, the way a refused field shakes on a phone.
     shaking.current?.stop();
-    shaking.current = animate(shake, 0, { type: "spring", velocity: -240, stiffness: 900, damping: 15, restDelta: .1 });
+    shaking.current = animate(shake, 0, { type: "spring", velocity: -240, stiffness: 900, damping: 57, restDelta: .1 });
   }, [error, reduced, shake]);
 
   function toggleReveal() {

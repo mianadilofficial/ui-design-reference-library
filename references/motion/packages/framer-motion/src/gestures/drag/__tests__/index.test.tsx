@@ -144,6 +144,56 @@ describe("dragging", () => {
         expect(onDragEnd).toBeCalledTimes(1)
     })
 
+    test("disabling drag from onDrag ends the gesture (#2248)", async () => {
+        const y = motionValue(0)
+        const onDragEnd = jest.fn()
+        const onDragTransitionEnd = deferred()
+
+        const Component = () => {
+            const [isEnabled, setIsEnabled] = useState(true)
+
+            return (
+                <MockDrag>
+                    <motion.div
+                        drag={isEnabled && "y"}
+                        dragSnapToOrigin
+                        dragTransition={{
+                            bounceStiffness: 100000,
+                            bounceDamping: 100000,
+                        }}
+                        style={{ y }}
+                        onDrag={(_, { offset }) =>
+                            offset.y > 100 && setIsEnabled(false)
+                        }
+                        onDragEnd={onDragEnd}
+                        onDragTransitionEnd={onDragTransitionEnd.resolve}
+                    />
+                </MockDrag>
+            )
+        }
+
+        const { container, rerender } = render(<Component />)
+        rerender(<Component />)
+
+        // Pointer is never released
+        const pointer = await drag(container.firstChild).to(0, 50)
+        await pointer.to(0, 150)
+        await nextFrame()
+
+        expect(onDragEnd).toBeCalledTimes(1)
+
+        await onDragTransitionEnd.promise
+        expect(y.get()).toBe(0)
+
+        // Further pointer movement no longer drags the element
+        await pointer.to(0, 300)
+        expect(y.get()).toBe(0)
+
+        pointer.end()
+        await nextFrame()
+        expect(onDragEnd).toBeCalledTimes(1)
+    })
+
     test("dragEnd fires when a child stops pointerup propagation (#2794)", async () => {
         const onDragEnd = jest.fn()
         const Component = () => (
@@ -391,13 +441,15 @@ describe("dragging", () => {
         await pointer.to(50, 50)
         pointer.end()
 
-        const endValue = await new Promise<number>((resolve) => {
-            setTimeout(() => {
-                resolve(x.get())
-            }, 40)
-        })
+        /**
+         * Wait on frames, not wall-clock time: on a loaded machine 40ms can
+         * pass with only the animation's first frame (where it's still at
+         * the release point) having run.
+         */
+        await nextFrame()
+        await nextFrame()
 
-        return expect(endValue).toBeGreaterThan(50)
+        expect(x.get()).toBeGreaterThan(50)
     })
 
     test.skip("outputs to external values if provided", async () => {

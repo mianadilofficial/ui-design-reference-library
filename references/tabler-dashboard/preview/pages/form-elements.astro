@@ -11,7 +11,7 @@ import Layout from '@shared/components/cards/form/Layout.astro'
 import InputIcon from '@ui/form/InputIcon.astro'
 import InputMask from '@ui/form/InputMask.astro'
 import OtpInput from '@ui/OtpInput.astro'
-import Stepper from '@ui/Stepper.astro'
+import NumberInput from '@ui/NumberInput.astro'
 import Button from '@ui/Button.astro'
 import Avatar from '@ui/Avatar.astro'
 import Card from '@ui/Card.astro'
@@ -113,7 +113,7 @@ const rows = [
         <CardBody>
           <CardTitle>Node.js Version</CardTitle>
           <CardSubtitle> The version of Node.js that is used in the Build Step and for Serverless Functions. A new Deployment is required for your changes to take effect. </CardSubtitle>
-          <select class="form-select">
+          <select class="form-select" aria-label="Node.js version">
             <option>14.x</option>
             <option>12.x</option>
           </select>
@@ -161,13 +161,13 @@ const rows = [
         </div>
         <div class="col-12 col-lg-6">
           <Card>
-            <CardHeader title="Stepper" />
+            <CardHeader title="Number input" />
             <CardBody>
-              <FormGroup label="Quantity" for="stepper-basic"><Stepper id="stepper-basic" value={1} min={1} max={99} /></FormGroup>
-              <FormGroup label="Step of 0.25" for="stepper-decimal"><Stepper id="stepper-decimal" value={1.5} min={0} max={10} step={0.25} /></FormGroup>
-              <FormGroup label="Without bounds" for="stepper-unbounded"><Stepper id="stepper-unbounded" value={0} /></FormGroup>
-              <FormGroup label="Native number input" for="stepper-number"><Stepper id="stepper-number" type="number" value={5} min={0} max={10} /></FormGroup>
-              <FormGroup label="Disabled" for="stepper-disabled"><Stepper id="stepper-disabled" value={3} disabled /></FormGroup>
+              <FormGroup label="Quantity" for="number-input-basic"><NumberInput id="number-input-basic" value={1} min={1} max={99} /></FormGroup>
+              <FormGroup label="Step of 0.25" for="number-input-decimal"><NumberInput id="number-input-decimal" value={1.5} min={0} max={10} step={0.25} /></FormGroup>
+              <FormGroup label="Without bounds" for="number-input-unbounded"><NumberInput id="number-input-unbounded" value={0} /></FormGroup>
+              <FormGroup label="Native number input" for="number-input-number"><NumberInput id="number-input-number" type="number" value={5} min={0} max={10} /></FormGroup>
+              <FormGroup label="Disabled" for="number-input-disabled"><NumberInput id="number-input-disabled" value={3} disabled /></FormGroup>
             </CardBody>
           </Card>
         </div>
@@ -216,7 +216,7 @@ const rows = [
                 <div class="col-md-12"><FormGroup label="Address"><input type="text" class="form-control" placeholder="Home Address" value="Melbourne, Australia" /></FormGroup></div>
                 <div class="col-sm-6 col-md-4"><FormGroup label="City"><input type="text" class="form-control" placeholder="City" value="Melbourne" /></FormGroup></div>
                 <div class="col-sm-6 col-md-3"><FormGroup label="Postal Code"><input type="text" class="form-control" placeholder="ZIP Code" /></FormGroup></div>
-                <div class="col-md-5"><FormGroup label="Country"><select class="form-control form-select"><option value="">Germany</option></select></FormGroup></div>
+                <div class="col-md-5"><FormGroup label="Country"><select class="form-control form-select" aria-label="Country"><option value="">Germany</option></select></FormGroup></div>
                 <div class="col-md-12">
                   <FormGroup label="About Me" class="mb-3 mb-0">
                     <textarea rows="5" class="form-control" placeholder="Here can be your description">Oh so, your weak rhyme You doubt I'll bother, reading into it I'll probably won't, left to my own devices But that's the difference in our opinions.</textarea>
@@ -233,7 +233,7 @@ const rows = [
             <CardBody>
               <div class="row row-cards">
                 <FormGroup label="Method" required class="mb-3 col-sm-4 col-md-2">
-                  <select class="form-select">
+                  <select class="form-select" aria-label="Method">
                     {httpMethods.map((m) => <option value={m}>{m}</option>)}
                   </select>
                 </FormGroup>

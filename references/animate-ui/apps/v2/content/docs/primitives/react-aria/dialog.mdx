@@ -1,0 +1,112 @@
+---
+title: Dialog
+description: An overlay shown above other content in an application. Also the primitive under shadcn/ui's Sheet.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="react-aria/dialog" />
+
+## Installation
+
+<Installation name="dialog" />
+
+## Usage
+
+Import from Animate UI instead of `react-aria-components`: it re-exports all of React Aria, with animated `Modal` and `ModalOverlay`. Everything else stays the same.
+
+```tsx
+import {
+  Button,
+  Dialog,
+  DialogTrigger,
+  Heading,
+  Modal,
+  ModalOverlay,
+} from '@animate-ui/react/primitives/react-aria';
+
+export function EditProfile() {
+  return (
+    <DialogTrigger>
+      <Button>Edit profile</Button>
+      <ModalOverlay isDismissable>
+        <Modal>
+          <Dialog>
+            <Heading slot="title">Edit profile</Heading>
+            <Button slot="close">Save</Button>
+          </Dialog>
+        </Modal>
+      </ModalOverlay>
+    </DialogTrigger>
+  );
+}
+```
+
+A `Modal` on its own (without a `ModalOverlay`) animates too. `DialogTrigger`, `Dialog` and `Heading` are not animated.
+
+## Sheet
+
+shadcn/ui's Sheet is built on this primitive: with `data-side` on its `Modal`, it slides in from that edge instead of tipping in. See [Sheet](/docs/primitives/react-aria/sheet).
+
+## Animation
+
+React Aria has no Animate UI v1 counterpart: the motion is v1's Dialog (Radix UI, Base UI and Headless UI shipped the same one) with a quicker exit.
+
+- **ModalOverlay** fades in over 400ms on a soft ease-out, along with the modal's fade, and out the same way. React Aria renders the Modal inside it, where v1's overlay and content were siblings: fading its opacity (or filter) would fade and blur the modal too and cut its exit short. So it fades its own background color and backdrop filter, from transparent to the values its classes set, and the modal moves exactly like v1's content.
+- **Modal** tips forward into place, around its center: it starts from `perspective(500px) rotateX(-20deg) scale(0.8)`, transparent and blurred (4px), and comes upright and sharp on a spring (stiffness 150, damping 25), fading in ahead of it with the overlay (400ms on a soft ease-out): it's there first, then it settles. Dismissed, it goes back the way it came, at once, quicker and speeding away (0.2s, a steady push from half its average speed to one and a half), out of sight just before the overlay has cleared, then unmounts.
+- `from` picks the edge the modal tips from, as in v1: `top` by default (`rotateX(-20deg)`), `bottom` (`rotateX(20deg)`), `left` (`rotateY(20deg)`) or `right` (`rotateY(-20deg)`) (a sheet, with `data-side`, slides from its side instead).
+- On the overlay, `exitTransition` defaults to `transition`: change `transition` and both directions follow, as in v1. A dialog's or a sheet's own exit is the quicker one above unless you set `exitTransition`.
+- React Aria only keeps a closing modal mounted if animations are running when it closes, before Motion starts any. Animate UI tracks the same open state React Aria reads (the `DialogTrigger`'s, or `isOpen`/`defaultOpen`) and passes `isExiting` while the exit plays, so `data-exiting` and the `isExiting` render prop stay accurate, focus stops being trapped and returns to the trigger.
+- Reopening while it closes picks up from where it is.
+- Opening from the keyboard animates the same way; focus moves into the dialog at once.
+- `className` and `style` functions keep working, and your own `render` function is made animatable rather than replaced.
+- Under reduced motion, the modal fades and un-blurs without tilting, scaling or sliding.
+- `AnimateUIProvider tempo` scales every duration and spring.
+
+## API Reference
+
+`Modal` and `ModalOverlay` take exactly the props of [React Aria's Modal](https://react-spectrum.adobe.com/react-aria/Modal.html#props), plus:
+
+### ModalOverlay
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the fade in (of its background color and backdrop filter).',
+      type: 'Transition',
+      default: '{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the fade out.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+### Modal
+
+<TypeTable
+  type={{
+    from: {
+      description:
+        'The edge the modal tips from as it comes in, as in v1. Ignored by a sheet (data-side).',
+      type: "'top' | 'bottom' | 'left' | 'right'",
+      default: "'top'",
+    },
+    transition: {
+      description:
+        'Transition of the opening. One you pass drives its fade too.',
+      type: 'Transition',
+      default:
+        "{ type: 'spring', stiffness: 150, damping: 25, opacity: { duration: 0.4, ease: [0.215, 0.61, 0.355, 1] } }; with data-side: { duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }",
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: '{ duration: 0.2, ease: [0.33, 0.17, 0.67, 0.5] }',
+    },
+  }}
+/>
+
+`DialogTrigger`, `Dialog`, `Heading` and the other components take [React Aria props](https://react-spectrum.adobe.com/react-aria/Dialog.html#props) only. They are not animated.

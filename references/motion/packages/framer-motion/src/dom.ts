@@ -2,11 +2,17 @@ export * from "motion-dom"
 export * from "motion-utils"
 
 export { animate, createScopedAnimate } from "./animation/animate"
+export type {
+    Timeline,
+    TimelineCallback,
+    TimelineItem,
+    TimelineOptions,
+} from "./animation/timeline"
 export { animateMini } from "./animation/animators/waapi/animate-style"
 export { scroll } from "./render/dom/scroll"
 export { scrollInfo } from "./render/dom/scroll/track"
 export { inView } from "./render/dom/viewport"
-export { HTMLElements } from "./render/html/supported-elements"
+export type { HTMLElements } from "./render/html/supported-elements"
 
 /**
  * Types
@@ -17,4 +23,3 @@ export * from "./animation/sequence/types"
  * Utils
  */
 export { delayInSeconds as delay, type DelayedFunction } from "motion-dom"
-export * from "./utils/distance"

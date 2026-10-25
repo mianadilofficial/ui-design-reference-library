@@ -53,6 +53,7 @@ import { reactivePick } from '@vueuse/core'
 import { useAppConfig } from '#imports'
 import { useComponentProps } from '../composables/useComponentProps'
 import { useForwardProps } from '../composables/useForwardProps'
+import { useLocale } from '../composables/useLocale'
 import { useToast, toastMaxInjectionKey } from '../composables/useToast'
 import { usePortal } from '../composables/usePortal'
 import { omit } from '../utils'
@@ -91,11 +92,12 @@ onBeforeUnmount(() => {
 })
 
 const { toasts, remove } = useToast()
+const { t } = useLocale()
 const appConfig = useAppConfig() as Toaster['AppConfig']
 
 provide(toastMaxInjectionKey, toRef(() => props.max))
 
-const providerProps = useForwardProps(reactivePick(props, 'duration', 'label', 'swipeThreshold', 'disableSwipe'))
+const providerProps = useForwardProps(reactivePick(props, 'duration', 'swipeThreshold', 'disableSwipe'))
 const portalProps = usePortal(toRef(() => props.portal))
 
 const swipeDirection = computed(() => {
@@ -129,7 +131,19 @@ function onUpdateOpen(value: boolean, id: string | number) {
 }
 
 const hovered = ref(false)
-const expanded = computed(() => props.expand || hovered.value)
+const focused = ref(false)
+const expanded = computed(() => props.expand || hovered.value || focused.value)
+
+// Only keyboard focus expands, a click on a toast is already covered by the hover.
+function onFocusin(event: FocusEvent) {
+  focused.value = (event.target as HTMLElement).matches(':focus-visible')
+}
+
+function onFocusout(event: FocusEvent) {
+  if (!(event.currentTarget as HTMLElement).contains(event.relatedTarget as Node | null)) {
+    focused.value = false
+  }
+}
 
 const refs = ref<{ height: number }[]>([])
 
@@ -142,7 +156,7 @@ function getOffset(index: number) {
 </script>
 
 <template>
-  <ToastProvider :swipe-direction="swipeDirection" v-bind="providerProps">
+  <ToastProvider :swipe-direction="swipeDirection" :label="props.label ?? t('toaster.label')" v-bind="providerProps">
     <slot />
 
     <UToast
@@ -150,7 +164,7 @@ function getOffset(index: number) {
       :key="toast.id"
       ref="refs"
       :progress="props.progress"
-      v-bind="omit(toast, ['id', 'close', '_duplicate', '_updated', 'onClick'])"
+      v-bind="omit(toast, ['id', 'close', '_duplicate', '_updated', '_animatedAt', 'onClick'])"
       :close="(toast.close as boolean)"
       :data-collapsed="!expanded"
       :data-front="!expanded && index === toasts.length - 1"
@@ -171,6 +185,7 @@ function getOffset(index: number) {
 
     <ToastPortal v-bind="portalProps">
       <ToastViewport
+        :label="t('toaster.viewport')"
         :data-expanded="expanded"
         data-slot="viewport"
         :class="ui.viewport({ class: [props.ui?.viewport, props.class] })"
@@ -183,6 +198,8 @@ function getOffset(index: number) {
         }"
         @mouseenter="hovered = true"
         @mouseleave="hovered = false"
+        @focusin="onFocusin"
+        @focusout="onFocusout"
       />
     </ToastPortal>
   </ToastProvider>

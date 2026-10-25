@@ -1,0 +1,73 @@
+---
+title: Collapsible
+description: A collapsible panel controlled by a button.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/collapsible" />
+
+## Installation
+
+<Installation name="collapsible" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same.
+
+```tsx
+import { Collapsible } from '@animate-ui/react/primitives/base-ui/collapsible';
+
+export function Changelog() {
+  return (
+    <Collapsible.Root>
+      <Collapsible.Trigger>Show all changes</Collapsible.Trigger>
+      <Collapsible.Panel>
+        Drop-in primitives for Radix UI, Base UI and React Aria.
+      </Collapsible.Panel>
+    </Collapsible.Root>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { Collapsible } from '@animate-ui/react/primitives/base-ui'`.
+
+## Animation
+
+- **Panel** unfolds like the accordions: its height grows from 0 while the content fades in from a 2px blur, over 350ms on a soft ease-out. While it moves, its bottom edge fades (over 16px, or over the part still hidden): the content never meets what follows it with a hard cut. It folds back the same way, in reverse, then unmounts.
+- Toggling it while it moves retargets from where it is.
+- Open by default (`defaultOpen`), it animates open on mount (page load), as in v1.
+- Motion animates the panel itself: you don't need Base UI's `h-(--collapsible-panel-height)` and `data-starting-style`/`data-ending-style` CSS (the CLI removes it). `--collapsible-panel-height` and `--collapsible-panel-width` read `auto`.
+- With `keepMounted`, the closed panel stays in the DOM: it collapses, then gets Base UI's `hidden` attribute.
+- With `hiddenUntilFound`, it collapses, then gets `hidden="until-found"` so find-in-page can reveal it. A panel revealed by find-in-page opens at once, as in Base UI.
+- An `onOpenChange` that calls `eventDetails.cancel()` still cancels the change.
+- `<AnimateUIProvider tempo>` paces both transitions.
+- Under reduced motion, the height changes at once; the fade and the blur still play.
+
+## API Reference
+
+Every part takes exactly the props of [Base UI's Collapsible](https://base-ui.com/react/components/collapsible#api-reference). Animate UI adds the animation props below.
+
+### Root, Trigger
+
+[Base UI props](https://base-ui.com/react/components/collapsible#root) only. They are not animated.
+
+### Panel
+
+[Base UI props](https://base-ui.com/react/components/collapsible#panel), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the opening.',
+      type: 'Transition',
+      default: '{ duration: 0.35, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+A `render` element (or function) of your own is made animatable with `motion.create`.

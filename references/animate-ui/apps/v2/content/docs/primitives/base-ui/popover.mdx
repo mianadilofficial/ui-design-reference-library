@@ -1,0 +1,82 @@
+---
+title: Popover
+description: An accessible popup anchored to a button.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/popover" />
+
+## Installation
+
+<Installation name="popover" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same.
+
+```tsx
+import { Popover } from '@animate-ui/react/primitives/base-ui/popover';
+
+export function SharePopover() {
+  return (
+    <Popover.Root>
+      <Popover.Trigger>Share</Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner sideOffset={4}>
+          <Popover.Popup>
+            <Popover.Title>Share this document</Popover.Title>
+            <Popover.Description>
+              Anyone with the link can view it.
+            </Popover.Description>
+            <Popover.Close>Done</Popover.Close>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { Popover } from '@animate-ui/react/primitives/base-ui'`.
+
+## Animation
+
+The motion of Animate UI v1's Base UI Popover, value for value:
+
+- **Popup** grows from 0.8 and fades in, from the trigger (`--transform-origin`), on a spring (stiffness 400, damping 29) that overshoots a little before it settles, by ~440ms.
+- It closes the same way: it shrinks back to 0.8 on the same spring while it fades out, then unmounts.
+- The Portal keeps Base UI's portal mounted while the popup exits; Base UI waits for the exit before it hides the positioner, and `onOpenChangeComplete` fires once it's over.
+- Opening from the keyboard animates the same way.
+- With `keepMounted` on the Portal, the closed popup stays in the DOM: it plays its exit, then is hidden.
+- Your own `render` element (or function) on the Popup is made animatable rather than replaced.
+- Reopening while it closes picks up from where it is, on the same spring.
+- Open from the start (`defaultOpen`), it plays the same entrance on page load, like v1.
+- Under reduced motion, it only fades (no scale).
+
+## API Reference
+
+Every part takes exactly the props of [Base UI's Popover](https://base-ui.com/react/components/popover#api-reference). Animate UI adds the animation props below.
+
+### Root, Trigger, Portal, Positioner, Arrow, Backdrop, Title, Description, Close, Viewport
+
+[Base UI props](https://base-ui.com/react/components/popover#root) only. They are not animated.
+
+### Popup
+
+[Base UI props](https://base-ui.com/react/components/popover#popup), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the opening, and of the closing unless `exitTransition` is set.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 400, damping: 29 }",
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>

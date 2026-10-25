@@ -1,0 +1,55 @@
+---
+title: Toggle
+description: A two-state button that can be either on or off.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="react-aria/toggle" />
+
+## Installation
+
+<Installation name="toggle" />
+
+## Usage
+
+Import from Animate UI instead of `react-aria-components`: it re-exports all of React Aria, with the animated controls below. Everything else stays the same. shadcn/ui's Toggle is React Aria's `ToggleButton`.
+
+```tsx
+import { ToggleButton } from '@animate-ui/react/primitives/react-aria';
+
+export function BoldToggle() {
+  return (
+    <ToggleButton aria-label="Toggle bold">
+      <BoldIcon />
+    </ToggleButton>
+  );
+}
+```
+
+The same `ToggleButton` is the item of a [Toggle Group](/docs/primitives/react-aria/toggle-group).
+
+## Animation
+
+The motion of Animate UI v1's Radix UI toggle (v1 had no React Aria one):
+
+- **ToggleButton** scales to 0.97 while pressed (React Aria's `isPressed`: the pointer, or Space and Enter on the keyboard), on Motion's default spring for scale (stiffness 550, damping 30). No hover scale.
+- The press scale runs on the compositor (a `transform`), so shadcn/ui's `transition-all` doesn't tween its frames.
+- The on/off colours are the component's CSS: shadcn/ui colours the toggle itself (`data-[state=on]:bg-muted`) and fades it with `transition-all`. v1's styled toggle faded a separate highlight in and out instead (0.3s).
+- Toggling with Space changes the state at once.
+- Under reduced motion, there is no press scale.
+
+## API Reference
+
+`ToggleButton` takes exactly the props of [React Aria's ToggleButton](https://react-spectrum.adobe.com/react-aria/ToggleButton.html#props), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the press scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+  }}
+/>
+
+A `render` function of your own gets React Aria's behaviour, without the press scale. `AnimateUIProvider`'s `tempo` scales these transitions with everything else.

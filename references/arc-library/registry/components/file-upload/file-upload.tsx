@@ -232,7 +232,7 @@ export function FileUpload({
 
   const height: Transition = reduce ? instant : { height: motionTokens.spring.smooth, opacity: enter };
   return <div className={styles.root}>
-    <input ref={inputRef} id={inputId} className={styles.input} type="file" accept={accept} multiple={multiple} disabled={disabled} onChange={handleInput} />
+    <input ref={inputRef} id={inputId} className={styles.input} type="file" accept={accept} multiple={multiple} disabled={disabled} tabIndex={-1} aria-hidden="true" onChange={handleInput} />
     <div
       ref={dropzoneRef}
       className={[styles.dropzone, dragging ? styles.dragging : "", disabled ? styles.disabled : ""].filter(Boolean).join(" ")}

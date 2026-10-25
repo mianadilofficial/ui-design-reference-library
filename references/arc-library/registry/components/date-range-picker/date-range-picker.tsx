@@ -98,7 +98,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = 2 * Math.PI / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const GROW = physical(.48, .12), SHRINK = physical(.38, 0), STRETCH = physical(.3, .04), GLIDE = physical(.3, .1), SLIDE = physical(.4, .06);
+const GROW = physical(.48, 0), SHRINK = physical(.38, 0), STRETCH = physical(.3, 0), GLIDE = physical(.3, 0), SLIDE = physical(.4, 0);
 const TRIGGER_RADIUS = 18, PANEL_RADIUS = 26, WIDE_CELL = 36, WIDE_MIN = 712, EDGE = 8;
 
 const roll: Variants = {
@@ -115,9 +115,9 @@ const faceIn: Variants = {
 };
 const faceFade: Variants = { hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: .12 } }, gone: { opacity: 0, transition: { duration: .08 } } };
 const slide: Variants = {
-  enter: (direction: number) => ({ opacity: 0, x: direction * 48, filter: `blur(${blur.soft}px)` }),
-  center: { opacity: 1, x: 0, filter: "blur(0px)", transition: { x: SLIDE, opacity: { duration: .22, ease: enterEase }, filter: { duration: .24, ease: enterEase } } },
-  exit: (direction: number) => ({ opacity: 0, x: direction * -36, filter: `blur(${blur.soft}px)`, transition: { x: SLIDE, opacity: { duration: .14, ease: standardEase }, filter: { duration: .14, ease: standardEase } } }),
+  enter: (direction: number) => ({ opacity: 0, x: direction * 48 }),
+  center: { opacity: 1, x: 0, transition: { x: SLIDE, opacity: { duration: .22, ease: enterEase } } },
+  exit: (direction: number) => ({ opacity: 0, x: direction * -36, transition: { x: SLIDE, opacity: { duration: .14, ease: standardEase } } }),
 };
 
 /** Words roll one by one: a later date rises from below, an earlier one drops from above; words that stay the same hold still. */
@@ -601,8 +601,9 @@ export function DateRangePicker({ value, defaultValue = null, onChange, label = 
                 disabled={Boolean(minDate && monthDiff(view, minDate) <= 0)}><ChevronLeft size={16} strokeWidth={1.75} aria-hidden="true" /></button>
               <button type="button" className={styles.navButton} data-side="next" aria-label="Next month" onClick={() => goTo(addMonths(view, 1))}
                 disabled={Boolean(maxDate && monthDiff(addMonths(view, count - 1), maxDate) >= 0)}><ChevronRight size={16} strokeWidth={1.75} aria-hidden="true" /></button>
+              {/* The viewport keeps a fixed six-week height and stacks the leaving and arriving months in one cell, so the panel never resizes mid-slide. */}
               <div className={styles.viewport}>
-                <AnimatePresence initial={false} mode="popLayout" custom={direction}>
+                <AnimatePresence initial={false} custom={direction}>
                   <Months key={`${keyOf(view)}-${count}`} direction={direction} reduced={reduced}>
                     {visible.map(month => <Month key={keyOf(month)} month={month} range={shown} tabbable={tabbable} today={today} minDate={minDate} maxDate={maxDate}
                       weekStartsOn={weekStartsOn} reduced={reduced} formatters={formatters} idBase={uid}

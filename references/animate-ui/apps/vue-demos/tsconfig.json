@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "types": [
+      "vite/client"
+    ],
+    "paths": {
+      "@/*": [
+        "./src/*"
+      ],
+      "vue": [
+        "./node_modules/vue"
+      ],
+      "motion-v": [
+        "./node_modules/motion-v"
+      ],
+      "@hugeicons/vue": [
+        "./node_modules/@hugeicons/vue"
+      ],
+      "vue-router": [
+        "./node_modules/vue-router"
+      ],
+      "@animate-ui/vue/*": [
+        "../../packages/vue/src/*"
+      ],
+      "cn": [
+        "./node_modules/cn"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+    "vite.config.ts"
+  ]
+}

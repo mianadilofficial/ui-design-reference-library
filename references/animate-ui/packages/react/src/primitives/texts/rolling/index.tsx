@@ -1,0 +1,159 @@
+'use client';
+
+import * as React from 'react';
+import { motion, type Transition } from 'motion/react';
+
+import {
+  useIsInView,
+  type UseIsInViewOptions,
+} from '../../../utils/use-is-in-view';
+import {
+  ReducedMotionConfig,
+  transition as motionTransition,
+  useMotionTokens,
+  useShouldReduceMotion,
+  useTempoTransition,
+} from '../../../utils/motion';
+import { VISUALLY_HIDDEN, splitGraphemes } from '../_text';
+
+const formatCharacter = (char: string) => (char === ' ' ? ' ' : char);
+
+const CHAR_STYLE: React.CSSProperties = {
+  position: 'absolute',
+  display: 'inline-block',
+  backfaceVisibility: 'hidden',
+};
+
+const DEFAULT_TRANSITION: Transition = {
+  duration: 0.5,
+  delay: 0.1,
+  ease: 'easeOut',
+};
+
+const BACK_OFFSET = 0.3;
+
+type RollingTextProps = Omit<React.ComponentProps<'span'>, 'children'> & {
+  text: string;
+  transition?: Transition;
+  delay?: number;
+} & UseIsInViewOptions;
+
+function RollingText(props: RollingTextProps) {
+  return (
+    <ReducedMotionConfig remount>
+      <RollingTextContent {...props} />
+    </ReducedMotionConfig>
+  );
+}
+
+function RollingTextContent({
+  ref,
+  text,
+  inView = false,
+  inViewMargin = '0px',
+  inViewOnce = true,
+  transition: transitionProp,
+  delay = 0,
+  ...props
+}: RollingTextProps) {
+  const { ref: localRef, isInView } = useIsInView(
+    ref as React.Ref<HTMLElement>,
+    {
+      inView,
+      inViewOnce,
+      inViewMargin,
+    },
+  );
+  const reduce = useShouldReduceMotion();
+  const { tempo } = useMotionTokens();
+  const defaultTransition = useTempoTransition(DEFAULT_TRANSITION);
+  const transition = transitionProp ?? defaultTransition;
+
+  const rolled = isInView || reduce;
+
+  const words = React.useMemo(
+    () =>
+      text
+        .split(/(\s+)/)
+        .filter(Boolean)
+        .map((part) =>
+          /^\s+$/.test(part)
+            ? { space: true as const, part }
+            : { space: false as const, chars: splitGraphemes(part) },
+        ),
+    [text],
+  );
+  const stepDelay = transition.delay ?? 0;
+
+  let charIdx = 0;
+
+  return (
+    <span ref={localRef} data-slot="rolling-text" {...props}>
+      <span aria-hidden="true">
+        {words.map((word, wi) => {
+          if (word.space) return <span key={`space-${wi}`}>{word.part}</span>;
+
+          return (
+            <span
+              key={`word-${wi}`}
+              style={{ display: 'inline-block', whiteSpace: 'nowrap' }}
+            >
+              {word.chars.map((char, ci) => {
+                const charDelay = delay / 1000 + charIdx++ * stepDelay;
+                const label = formatCharacter(char);
+
+                return (
+                  <span
+                    key={`c-${wi}-${ci}`}
+                    style={{
+                      position: 'relative',
+                      display: 'inline-block',
+                      perspective: '9999999px',
+                      transformStyle: 'preserve-3d',
+                      width: 'auto',
+                    }}
+                  >
+                    <motion.span
+                      style={{ ...CHAR_STYLE, transformOrigin: '50% 25%' }}
+                      initial={reduce ? false : { rotateX: 0 }}
+                      animate={rolled ? { rotateX: 90 } : undefined}
+                      transition={
+                        reduce
+                          ? motionTransition.instant
+                          : { ...transition, delay: charDelay }
+                      }
+                    >
+                      {label}
+                    </motion.span>
+                    <motion.span
+                      style={{ ...CHAR_STYLE, transformOrigin: '50% 100%' }}
+                      initial={reduce ? false : { rotateX: 90 }}
+                      animate={rolled ? { rotateX: 0 } : undefined}
+                      transition={
+                        reduce
+                          ? motionTransition.instant
+                          : {
+                              ...transition,
+                              delay: charDelay + BACK_OFFSET * tempo,
+                            }
+                      }
+                    >
+                      {label}
+                    </motion.span>
+                    <span style={{ visibility: 'hidden' }}>{label}</span>
+                  </span>
+                );
+              })}
+            </span>
+          );
+        })}
+      </span>
+
+      <span className="sr-only" style={VISUALLY_HIDDEN}>
+        {text}
+      </span>
+    </span>
+  );
+}
+
+export { RollingText, type RollingTextProps };

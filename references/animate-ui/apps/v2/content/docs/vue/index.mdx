@@ -1,0 +1,29 @@
+---
+title: Introduction
+description: Animated drop-in primitives for Reka UI, built with Motion for Vue.
+---
+
+Animate UI animates the primitives your components are built on, not the components themselves. Your shadcn-vue components stay yours: same structure, same styles, same API. Only the import of their primitive changes.
+
+```ts
+import { AccordionContent } from 'reka-ui'; // [!code --]
+import { AccordionContent } from '@animate-ui/vue/primitives/reka-ui'; // [!code ++]
+```
+
+## Why primitives
+
+shadcn-vue components change often, and come in many styles. Animate UI doesn't copy them: each Animate UI primitive has exactly the API of Reka UI, with [Motion for Vue](https://motion.dev/docs/vue) inside. Whatever your shadcn-vue configuration, swapping the import is enough, and one command does it for every installed component:
+
+```npm
+npx @animate-ui/cli@latest animate all
+```
+
+## Motion that feels right
+
+Every primitive follows the same rules as Animate UI for React, with the same springs, curves and timings: springs and short tweens on a strong ease-out, exits quicker than entrances, transforms and opacity rather than layout, interruptible animations, and nothing on keyboard navigation. Reduced motion is respected everywhere, without any setup.
+
+The motion is restrained on purpose. A menu opened fifty times a day has to feel quick, not impressive: each primitive animates just enough to show where things come from and where they go, then gets out of the way. The balance between motion and the experience of using your app always comes first.
+
+## Library
+
+Animate UI for Vue supports [Reka UI](https://reka-ui.com), the base of shadcn-vue, plus a few primitives of its own.

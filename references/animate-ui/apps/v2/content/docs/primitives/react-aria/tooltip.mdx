@@ -1,0 +1,75 @@
+---
+title: Tooltip
+description: A tooltip displays a description of an element on hover or focus.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="react-aria/tooltip" />
+
+## Installation
+
+<Installation name="tooltip" />
+
+## Usage
+
+Import from Animate UI instead of `react-aria-components`: it re-exports all of React Aria, with an animated `Tooltip`. Everything else stays the same.
+
+```tsx
+import {
+  Button,
+  OverlayArrow,
+  Tooltip,
+  TooltipTrigger,
+} from '@animate-ui/react/primitives/react-aria';
+
+export function BoldButton() {
+  return (
+    <TooltipTrigger delay={0}>
+      <Button aria-label="Bold">B</Button>
+      <Tooltip placement="top" offset={4}>
+        <OverlayArrow>
+          <svg width={8} height={8} viewBox="0 0 8 8">
+            <path d="M0 0 L4 4 L8 0" />
+          </svg>
+        </OverlayArrow>
+        Bold
+      </Tooltip>
+    </TooltipTrigger>
+  );
+}
+```
+
+## Animation
+
+React Aria has no Animate UI v1 counterpart: the Tooltip moves like v1's Radix Tooltip.
+
+- **Tooltip** grows from 0.7 and fades in, from the trigger (`--trigger-anchor-point`, or the side facing the trigger before React Aria measures it), on a spring (stiffness 400, damping 29) that overshoots a little before it settles.
+- It closes the same way: it shrinks back to 0.7 on the same spring while it fades out, then unmounts.
+- During React Aria's warmup, a tooltip replaced by its neighbour swaps with it at once, both ways, as React Aria intends (`shouldSkipAnimation`). A cold tooltip plays its entrance.
+- React Aria keeps a closing tooltip mounted only if animations are running when it closes: Animate UI tracks the same open state and passes `isExiting` while the exit plays.
+- React Aria only opens it on hover for pointer input, and on keyboard focus.
+- **OverlayArrow** scales with the tooltip; it needs nothing more.
+- Open from the start (`defaultOpen`), it plays its entrance on page load, like v1.
+- Under reduced motion, it only fades (no scale).
+
+## API Reference
+
+`Tooltip` takes exactly the props of [React Aria's Tooltip](https://react-spectrum.adobe.com/react-aria/Tooltip.html#props), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the opening, and of the closing unless `exitTransition` is set.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 400, damping: 29 }",
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+`TooltipTrigger` and `OverlayArrow` take [React Aria props](https://react-spectrum.adobe.com/react-aria/Tooltip.html#props) only. They are not animated.

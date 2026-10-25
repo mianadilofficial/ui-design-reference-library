@@ -1,0 +1,71 @@
+---
+title: Collapsible
+description: A collapsible section of content, built with React Aria's Disclosure.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="react-aria/collapsible" />
+
+## Installation
+
+<Installation name="collapsible" />
+
+## Usage
+
+Import from Animate UI instead of `react-aria-components`: it re-exports all of React Aria, with an animated `DisclosurePanel`. Everything else stays the same.
+
+```tsx
+import {
+  Button,
+  Disclosure,
+  DisclosurePanel,
+} from '@animate-ui/react/primitives/react-aria';
+
+export function Changelog() {
+  return (
+    <Disclosure>
+      <Button slot="trigger">Show all changes</Button>
+      <DisclosurePanel>
+        Drop-in primitives for Radix UI, Base UI and React Aria.
+      </DisclosurePanel>
+    </Disclosure>
+  );
+}
+```
+
+## Animation
+
+- **DisclosurePanel** unfolds like the accordions: its height grows from 0 while the content fades in from a 2px blur, over 350ms on a soft ease-out. While it moves, its bottom edge fades (over 16px, or over the part still hidden): the content never meets what follows it with a hard cut. It folds back the same way, in reverse.
+- Toggling it while it moves retargets from where it is.
+- Expanded by default (`defaultExpanded`), it animates open on mount (page load), as in v1.
+- React Aria keeps a closed panel mounted with `hidden="until-found"`: the panel stays visible (and `inert`) while it collapses, then gets `hidden="until-found"` back, so find-in-page can still reveal it. A panel revealed by find-in-page opens at once, as in React Aria.
+- `--disclosure-panel-height` and `--disclosure-panel-width` read `auto`: classes using them follow Motion's height.
+- `<AnimateUIProvider tempo>` paces both transitions.
+- Under reduced motion, the height changes at once; the fade and the blur still play.
+
+## API Reference
+
+Every component takes exactly the props of [React Aria's Disclosure](https://react-spectrum.adobe.com/react-aria/Disclosure.html#props). Animate UI adds the animation props below.
+
+### Disclosure, Button
+
+[React Aria props](https://react-spectrum.adobe.com/react-aria/Disclosure.html#props) only. They are not animated.
+
+### DisclosurePanel
+
+[React Aria props](https://react-spectrum.adobe.com/react-aria/Disclosure.html#disclosurepanel), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the opening.',
+      type: 'Transition',
+      default: '{ duration: 0.35, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>

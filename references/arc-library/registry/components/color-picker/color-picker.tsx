@@ -48,7 +48,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1, restDelta: .0005, restSpeed: .005 };
 };
 /** Thumbs chase the pointer on a quick spring with a little life, so a click lands with a soft settle and a drag trails by a hair. */
-const thumbSpring = physical(.26, .22);
+const thumbSpring = physical(.26, 0);
 /** Under a finger or mouse drag the thumb stays glued to the pointer: a stiff spring with no bounce, so it never trails or wobbles. */
 const dragSpring = physical(.1, 0);
 const openSpring = physical(spring.morph.visualDuration, .1), closeSpring = physical(.3, 0);

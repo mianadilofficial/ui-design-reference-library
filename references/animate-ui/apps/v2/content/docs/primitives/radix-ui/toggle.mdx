@@ -1,0 +1,55 @@
+---
+title: Toggle
+description: A two-state button that can be either on or off.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="radix-ui/toggle" />
+
+## Installation
+
+<Installation name="toggle" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Radix UI. Everything else stays the same.
+
+```tsx
+import { Toggle } from '@animate-ui/react/primitives/radix-ui';
+
+export function BoldToggle() {
+  return (
+    <Toggle.Root aria-label="Toggle bold">
+      <BoldIcon />
+    </Toggle.Root>
+  );
+}
+```
+
+Coming from the `@radix-ui/react-toggle` package? Use the subpath: `import * as TogglePrimitive from '@animate-ui/react/primitives/radix-ui/toggle'`.
+
+## Animation
+
+The motion of Animate UI v1's toggle:
+
+- **Toggle** scales to 0.97 while pressed, on Motion's default spring for scale (stiffness 550, damping 30). No hover scale.
+- The press scale runs on the compositor (a `transform`), so shadcn/ui's `transition-all` doesn't tween its frames.
+- The on/off colours are the component's CSS: shadcn/ui colours the toggle itself (`data-[state=on]:bg-muted`) and fades it with `transition-all`. v1's styled toggle faded a separate highlight in and out instead (0.3s).
+- Toggling with Space changes the state at once.
+- Under reduced motion, there is no press scale.
+
+## API Reference
+
+`Toggle.Root` takes exactly the props of [Radix UI's Toggle](https://www.radix-ui.com/primitives/docs/components/toggle#api-reference), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the press scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+  }}
+/>
+
+With `asChild`, it renders your element with Radix's behaviour, without the animation. `AnimateUIProvider`'s `tempo` scales these transitions with everything else.

@@ -1,6 +1,7 @@
 "use client"
 
-import { invariant, warning } from "motion-utils"
+import { rootProjectionNode } from "motion-dom"
+import { invariant, warnOnce } from "motion-utils"
 import * as React from "react"
 import { forwardRef, useContext } from "react"
 import { LayoutGroupContext } from "../context/LayoutGroupContext"
@@ -16,6 +17,7 @@ import { useHTMLVisualState } from "../render/html/use-html-visual-state"
 import { SVGRenderState } from "../render/svg/types"
 import { useSVGVisualState } from "../render/svg/use-svg-visual-state"
 import { CreateVisualElement } from "../render/types"
+import { useConstant } from "../utils/use-constant"
 import { getInitializedFeatureDefinitions } from "./features/definitions"
 import { loadFeatures } from "./features/load-features"
 import { FeatureBundle, FeaturePackages } from "./features/types"
@@ -97,10 +99,32 @@ export function createMotionComponent<
          */
         let MeasureLayout: undefined | React.ComponentType<MotionProps>
 
+        const layoutId = useLayoutId(props)
+
+        /**
+         * An element that mounts with the layoutId of one that's already
+         * rendered takes over from it with a shared layout animation, so
+         * visually it has already entered. Mount it as if initial={false}
+         * rather than replaying its entrance.
+         *
+         * Only when it has an initial: without one there's no entrance to
+         * skip, and initial={false} would make its animate values its base
+         * values, so removing them later wouldn't return it to its defaults.
+         */
+        if (
+            useConstant(
+                () =>
+                    !!rootProjectionNode.current?.sharedNodes.get(layoutId!)
+                        ?.lead && props.initial
+            )
+        ) {
+            props = { ...props, initial: false }
+        }
+
         const configAndProps = {
             ...useContext(MotionConfigContext),
             ...props,
-            layoutId: useLayoutId(props),
+            layoutId,
         }
 
         const { isStatic, isValidProp } = configAndProps
@@ -195,9 +219,20 @@ function useStrictMode(
         isStrict
     ) {
         const strictMessage =
-            "You have rendered a `motion` component within a `LazyMotion` component. This will break tree shaking. Import and render a `m` component instead."
+            "You have rendered a `motion` component within a `LazyMotion` component. This will break tree shaking. Import and render a `m` component instead"
+
+        /**
+         * `ignoreStrict` is set by the main `Reorder`, which renders `motion`
+         * on every render of every item, so warn once and point to the
+         * `Reorder` that renders `m`.
+         */
         configAndProps.ignoreStrict
-            ? warning(false, strictMessage, "lazy-strict-mode")
+            ? warnOnce(
+                  false,
+                  strictMessage +
+                      '. For Reorder, import it from "motion/react-m"',
+                  "lazy-strict-mode"
+              )
             : invariant(false, strictMessage, "lazy-strict-mode")
     }
 }

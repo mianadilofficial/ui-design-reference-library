@@ -1,49 +1,45 @@
-import { waitFor } from "@testing-library/dom"
 import { motionValue, Variants } from "motion-dom"
+import { MotionGlobalConfig } from "motion-utils"
 import * as React from "react"
 import { act, createRef } from "react"
 import {
     AnimatePresence,
-    frame,
     LayoutGroup,
     motion,
     MotionConfig,
     useAnimation,
 } from "../../.."
-import { nextFrame } from "../../../gestures/__tests__/utils"
+import { nextFrame, stepFrames } from "../../../gestures/__tests__/utils"
 import { render } from "../../../jest.setup"
 import { ResolvedValues } from "../../../render/types"
 
+afterEach(() => {
+    MotionGlobalConfig.useManualTiming = false
+})
+
 describe("AnimatePresence", () => {
     test("Allows initial animation if no `initial` prop defined", async () => {
-        const promise = new Promise((resolve) => {
-            const x = motionValue(0)
-            const Component = () => {
-                return (
-                    <AnimatePresence>
-                        <motion.div
-                            animate={{ x: 100 }}
-                            style={{ x }}
-                            exit={{ x: 0 }}
-                            onAnimationStart={() => {
-                                frame.postRender(() => {
-                                    frame.postRender(() => {
-                                        resolve(x.get())
-                                    })
-                                })
-                            }}
-                        />
-                    </AnimatePresence>
-                )
-            }
+        MotionGlobalConfig.useManualTiming = true
+        const x = motionValue(0)
+        const Component = () => {
+            return (
+                <AnimatePresence>
+                    <motion.div
+                        animate={{ x: 100 }}
+                        style={{ x }}
+                        exit={{ x: 0 }}
+                    />
+                </AnimatePresence>
+            )
+        }
 
-            const { rerender } = render(<Component />)
-            rerender(<Component />)
-        })
+        const { rerender } = render(<Component />)
+        rerender(<Component />)
 
-        const x = await promise
-        expect(x).not.toBe(0)
-        expect(x).not.toBe(100)
+        await stepFrames(1000 / 30)
+
+        expect(x.get()).not.toBe(0)
+        expect(x.get()).not.toBe(100)
     })
 
     test("Suppresses initial animation if `initial={false}`", async () => {
@@ -88,6 +84,7 @@ describe("AnimatePresence", () => {
     })
 
     test("Animates out a component when its removed", async () => {
+        MotionGlobalConfig.useManualTiming = true
         const opacity = motionValue(1)
 
         const Component = ({ isVisible }: { isVisible: boolean }) => {
@@ -112,21 +109,13 @@ describe("AnimatePresence", () => {
             rerender(<Component isVisible={false} />)
         })
 
-        await act(async () => {
-            await new Promise<void>((resolve) => {
-                // Check it's animating out
-                setTimeout(() => {
-                    expect(opacity.get()).not.toBe(1)
-                    expect(opacity.get()).not.toBe(0)
-                }, 50)
+        // Check it's animating out
+        await stepFrames(50)
+        expect(opacity.get()).not.toBe(1)
+        expect(opacity.get()).not.toBe(0)
 
-                //  Resolve after the animation is expected to have completed
-                setTimeout(() => {
-                    resolve()
-                }, 150)
-            })
-        })
-
+        // Check it's removed once the animation is expected to have completed
+        await stepFrames(100)
         expect(container.firstChild).toBeFalsy()
     })
 
@@ -217,44 +206,38 @@ describe("AnimatePresence", () => {
     })
 
     test("Animates a component back in if it's re-added before animating out", async () => {
-        const promise = new Promise<Element | null>((resolve) => {
-            const Component = ({ isVisible }: { isVisible: boolean }) => {
-                return (
-                    <AnimatePresence>
-                        {isVisible && (
-                            <motion.div
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.1 }}
-                            />
-                        )}
-                    </AnimatePresence>
-                )
-            }
+        MotionGlobalConfig.useManualTiming = true
+        const Component = ({ isVisible }: { isVisible: boolean }) => {
+            return (
+                <AnimatePresence>
+                    {isVisible && (
+                        <motion.div
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.1 }}
+                        />
+                    )}
+                </AnimatePresence>
+            )
+        }
 
-            const { container, rerender } = render(<Component isVisible />)
-            rerender(<Component isVisible />)
+        const { container, rerender } = render(<Component isVisible />)
+        rerender(<Component isVisible />)
 
-            setTimeout(() => {
-                rerender(<Component isVisible={false} />)
-                rerender(<Component isVisible={false} />)
+        await stepFrames(50)
+        rerender(<Component isVisible={false} />)
+        rerender(<Component isVisible={false} />)
 
-                setTimeout(() => {
-                    rerender(<Component isVisible />)
-                    rerender(<Component isVisible />)
+        await stepFrames(50)
+        rerender(<Component isVisible />)
+        rerender(<Component isVisible />)
 
-                    setTimeout(() => {
-                        resolve(container.firstChild as Element | null)
-                    }, 150)
-                }, 50)
-            }, 50)
-        })
-
-        const child = await promise
-        expect(child).toHaveStyle("opacity: 1;")
+        await stepFrames(150)
+        expect(container.firstChild).toHaveStyle("opacity: 1;")
     })
 
     test("Animates a component out after having an animation cancelled", async () => {
+        MotionGlobalConfig.useManualTiming = true
         const opacity = motionValue(1)
         const Component = ({ isVisible }: { isVisible: boolean }) => {
             return (
@@ -279,21 +262,13 @@ describe("AnimatePresence", () => {
         rerender(<Component isVisible={false} />)
         rerender(<Component isVisible={false} />)
 
-        await act(async () => {
-            await new Promise<void>((resolve) => {
-                // Check it's animating out
-                setTimeout(() => {
-                    expect(opacity.get()).not.toBe(1)
-                    expect(opacity.get()).not.toBe(0)
-                }, 50)
+        // Check it's animating out
+        await stepFrames(50)
+        expect(opacity.get()).not.toBe(1)
+        expect(opacity.get()).not.toBe(0)
 
-                //  Resolve after the animation is expected to have completed
-                setTimeout(() => {
-                    resolve()
-                }, 300)
-            })
-        })
-
+        // Check it's removed once the animation is expected to have completed
+        await stepFrames(250)
         expect(container.firstChild).toBeFalsy()
     })
 
@@ -317,65 +292,59 @@ describe("AnimatePresence", () => {
     })
 
     test("Can cycle through multiple components", async () => {
-        const promise = new Promise<number>((resolve) => {
-            const Component = ({ i }: { i: number }) => {
-                return (
-                    <AnimatePresence>
-                        <motion.div
-                            key={i}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.5 }}
-                        />
-                    </AnimatePresence>
-                )
-            }
+        MotionGlobalConfig.useManualTiming = true
+        const Component = ({ i }: { i: number }) => {
+            return (
+                <AnimatePresence>
+                    <motion.div
+                        key={i}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                    />
+                </AnimatePresence>
+            )
+        }
 
-            const { container, rerender } = render(<Component i={0} />)
-            rerender(<Component i={0} />)
-            setTimeout(() => {
-                rerender(<Component i={1} />)
-                rerender(<Component i={1} />)
-            }, 50)
-            setTimeout(() => {
-                rerender(<Component i={2} />)
-                rerender(<Component i={2} />)
-                resolve(container.childElementCount)
-            }, 400)
-        })
+        const { container, rerender } = render(<Component i={0} />)
+        rerender(<Component i={0} />)
 
-        return await expect(promise).resolves.toBe(3)
+        await stepFrames(50)
+        rerender(<Component i={1} />)
+        rerender(<Component i={1} />)
+
+        await stepFrames(350)
+        rerender(<Component i={2} />)
+        rerender(<Component i={2} />)
+        expect(container.childElementCount).toBe(3)
     })
 
     test("Only renders one child at a time if mode === 'wait'", async () => {
-        const promise = new Promise<number>((resolve) => {
-            const Component = ({ i }: { i: number }) => {
-                return (
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={i}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.1 }}
-                        />
-                    </AnimatePresence>
-                )
-            }
+        MotionGlobalConfig.useManualTiming = true
+        const Component = ({ i }: { i: number }) => {
+            return (
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={i}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.1 }}
+                    />
+                </AnimatePresence>
+            )
+        }
 
-            const { container, rerender } = render(<Component i={0} />)
-            rerender(<Component i={0} />)
-            setTimeout(() => {
-                rerender(<Component i={1} />)
-                rerender(<Component i={1} />)
-            }, 50)
-            setTimeout(() => {
-                rerender(<Component i={2} />)
-                rerender(<Component i={2} />)
-                resolve(container.childElementCount)
-            }, 200)
-        })
+        const { container, rerender } = render(<Component i={0} />)
+        rerender(<Component i={0} />)
 
-        return await expect(promise).resolves.toBe(1)
+        await stepFrames(50)
+        rerender(<Component i={1} />)
+        rerender(<Component i={1} />)
+
+        await stepFrames(150)
+        rerender(<Component i={2} />)
+        rerender(<Component i={2} />)
+        expect(container.childElementCount).toBe(1)
     })
 
     test("Immediately remove child if no exit animations defined", async () => {
@@ -410,81 +379,72 @@ describe("AnimatePresence", () => {
     })
 
     test("Fast animations with wait render the child content correctly", async () => {
-        const promise = new Promise<boolean>((resolve) => {
-            const Component = ({ i }: { i: number }) => {
-                return (
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            initial={false}
-                            key={i}
-                            data-testid={i}
-                            exit={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.1 }}
-                        >
-                            {i}
-                        </motion.div>
-                    </AnimatePresence>
-                )
-            }
+        MotionGlobalConfig.useManualTiming = true
+        const Component = ({ i }: { i: number }) => {
+            return (
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        initial={false}
+                        key={i}
+                        data-testid={i}
+                        exit={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.1 }}
+                    >
+                        {i}
+                    </motion.div>
+                </AnimatePresence>
+            )
+        }
 
-            const { rerender, getByTestId } = render(<Component i={0} />)
-            rerender(<Component i={0} />)
-            setTimeout(() => {
-                rerender(<Component i={1} />)
+        const { rerender, getByTestId } = render(<Component i={0} />)
+        rerender(<Component i={0} />)
 
-                setTimeout(() => {
-                    rerender(<Component i={2} />)
-                    // wait for the exit animation to check the DOM again
-                    setTimeout(() => {
-                        resolve(getByTestId("2").textContent === "2")
-                    }, 250)
-                }, 50)
-            }, 50)
-        })
+        await stepFrames(50)
+        rerender(<Component i={1} />)
 
-        return await expect(promise).resolves.toBeTruthy()
+        await stepFrames(50)
+        rerender(<Component i={2} />)
+
+        // wait for the exit animation to check the DOM again
+        await stepFrames(250)
+        expect(getByTestId("2").textContent).toBe("2")
     })
 
     test("Fast animations with wait render the child content correctly (strict mode disabled)", async () => {
-        await new Promise<boolean>((resolve) => {
-            const Component = ({ i }: { i: number }) => {
-                return (
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={i}
-                            data-testid={i}
-                            exit={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ duration: 0.1 }}
-                        >
-                            {i}
-                        </motion.div>
-                    </AnimatePresence>
-                )
-            }
+        MotionGlobalConfig.useManualTiming = true
+        const Component = ({ i }: { i: number }) => {
+            return (
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={i}
+                        data-testid={i}
+                        exit={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ duration: 0.1 }}
+                    >
+                        {i}
+                    </motion.div>
+                </AnimatePresence>
+            )
+        }
 
-            const { rerender, getByTestId } = render(<Component i={0} />, false)
-            rerender(<Component i={0} />)
-            setTimeout(() => {
-                rerender(<Component i={1} />)
-            }, 50)
-            setTimeout(() => {
-                rerender(<Component i={2} />)
-                // wait for the exit animation to check the DOM again
-                async function checkElement() {
-                    await waitFor(() =>
-                        expect(getByTestId("2").textContent === "2")
-                    )
-                    resolve(true)
-                }
+        const { rerender, getByTestId } = render(<Component i={0} />, false)
+        rerender(<Component i={0} />)
 
-                checkElement()
-            }, 200)
-        })
+        await stepFrames(50)
+        rerender(<Component i={1} />)
+
+        await stepFrames(150)
+        rerender(<Component i={2} />)
+
+        // wait for the exit animation to check the DOM again
+        await stepFrames(500)
+        expect(getByTestId("2").textContent).toBe("2")
     })
 
     test("Elements exit in sequence during fast renders", async () => {
+        MotionGlobalConfig.useManualTiming = true
         const Component = ({ nums }: { nums: number[] }) => {
             return (
                 <AnimatePresence>
@@ -515,27 +475,20 @@ describe("AnimatePresence", () => {
             )
         }
 
-        await new Promise<void>((resolve) => {
-            setTimeout(() => {
-                act(() => rerender(<Component nums={[1, 2, 3]} />))
-                setTimeout(() => {
-                    expect(getTextContents()).toEqual([1, 2, 3])
-                }, 100)
-            }, 100)
-            setTimeout(() => {
-                act(() => rerender(<Component nums={[2, 3]} />))
-                setTimeout(() => {
-                    expect(getTextContents()).toEqual([2, 3])
-                }, 100)
-            }, 250)
-            setTimeout(() => {
-                act(() => rerender(<Component nums={[3]} />))
-                setTimeout(() => {
-                    expect(getTextContents()).toEqual([3])
-                    resolve()
-                }, 100)
-            }, 400)
-        })
+        await stepFrames(100)
+        act(() => rerender(<Component nums={[1, 2, 3]} />))
+        await stepFrames(100)
+        expect(getTextContents()).toEqual([1, 2, 3])
+
+        await stepFrames(50)
+        act(() => rerender(<Component nums={[2, 3]} />))
+        await stepFrames(100)
+        expect(getTextContents()).toEqual([2, 3])
+
+        await stepFrames(50)
+        act(() => rerender(<Component nums={[3]} />))
+        await stepFrames(100)
+        expect(getTextContents()).toEqual([3])
     })
 
     test("Exit variants are triggered with `AnimatePresence.custom`, not that of the element.", async () => {
@@ -826,33 +779,28 @@ describe("AnimatePresence", () => {
 
 describe("AnimatePresence with custom components", () => {
     test("Does nothing on initial render by default", async () => {
-        const promise = new Promise((resolve) => {
-            const x = motionValue(0)
+        MotionGlobalConfig.useManualTiming = true
+        const x = motionValue(0)
 
-            const CustomComponent = () => (
-                <motion.div
-                    animate={{ x: 100 }}
-                    style={{ x }}
-                    exit={{ x: 0 }}
-                />
+        const CustomComponent = () => (
+            <motion.div animate={{ x: 100 }} style={{ x }} exit={{ x: 0 }} />
+        )
+
+        const Component = () => {
+            return (
+                <AnimatePresence>
+                    <CustomComponent />
+                </AnimatePresence>
             )
+        }
 
-            const Component = () => {
-                setTimeout(() => resolve(x.get()), 75)
-                return (
-                    <AnimatePresence>
-                        <CustomComponent />
-                    </AnimatePresence>
-                )
-            }
+        const { rerender } = render(<Component />)
+        rerender(<Component />)
 
-            const { rerender } = render(<Component />)
-            rerender(<Component />)
-        })
+        await stepFrames(75)
 
-        const x = await promise
-        expect(x).not.toBe(0)
-        expect(x).not.toBe(100)
+        expect(x.get()).not.toBe(0)
+        expect(x.get()).not.toBe(100)
     })
 
     test("Suppresses initial animation if `initial={false}`", async () => {
@@ -908,6 +856,7 @@ describe("AnimatePresence with custom components", () => {
     })
 
     test("Animates out a component when its removed", async () => {
+        MotionGlobalConfig.useManualTiming = true
         const opacity = motionValue(1)
 
         const CustomComponent = () => (
@@ -930,59 +879,47 @@ describe("AnimatePresence with custom components", () => {
         rerender(<Component isVisible={false} />)
         rerender(<Component isVisible={false} />)
 
-        await act(async () => {
-            await new Promise<void>((resolve) => {
-                // Check it's animating out
-                setTimeout(() => {
-                    expect(opacity.get()).not.toBe(1)
-                    expect(opacity.get()).not.toBe(0)
-                }, 50)
+        // Check it's animating out
+        await stepFrames(50)
+        expect(opacity.get()).not.toBe(1)
+        expect(opacity.get()).not.toBe(0)
 
-                //  Resolve after the animation is expected to have completed
-                setTimeout(() => {
-                    resolve()
-                }, 150)
-            })
-        })
-
+        // Check it's removed once the animation is expected to have completed
+        await stepFrames(100)
         expect(container.firstChild).toBeFalsy()
     })
 
     test("Can cycle through multiple components", async () => {
-        const promise = new Promise<number>((resolve) => {
-            const CustomComponent = ({ i }: any) => (
-                <motion.div
-                    key={i}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1 }}
-                />
+        MotionGlobalConfig.useManualTiming = true
+        const CustomComponent = ({ i }: any) => (
+            <motion.div
+                key={i}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1 }}
+            />
+        )
+        const Component = ({ i }: { i: number }) => {
+            return (
+                <AnimatePresence>
+                    <CustomComponent key={i} i={i} />
+                </AnimatePresence>
             )
-            const Component = ({ i }: { i: number }) => {
-                return (
-                    <AnimatePresence>
-                        <CustomComponent key={i} i={i} />
-                    </AnimatePresence>
-                )
-            }
+        }
 
-            const { container, rerender } = render(<Component i={0} />)
-            rerender(<Component i={0} />)
-            setTimeout(() => {
-                rerender(<Component i={1} />)
-                rerender(<Component i={1} />)
-            }, 50)
-            setTimeout(() => {
-                rerender(<Component i={2} />)
-                rerender(<Component i={2} />)
-            }, 200)
+        const { container, rerender } = render(<Component i={0} />)
+        rerender(<Component i={0} />)
 
-            setTimeout(() => {
-                resolve(container.childElementCount)
-            }, 750)
-        })
+        await stepFrames(50)
+        rerender(<Component i={1} />)
+        rerender(<Component i={1} />)
 
-        return await expect(promise).resolves.toBe(3)
+        await stepFrames(150)
+        rerender(<Component i={2} />)
+        rerender(<Component i={2} />)
+
+        await stepFrames(550)
+        expect(container.childElementCount).toBe(3)
     })
 
     test("Exit variants are triggered with `AnimatePresence.custom`, not that of the element.", async () => {
@@ -1359,7 +1296,7 @@ describe("AnimatePresence with custom components", () => {
         })
 
         // Wait for all exit animations to complete
-        await new Promise((resolve) => setTimeout(resolve, 500))
+        await stepFrames(500)
         await act(async () => {
             await nextFrame()
             await nextFrame()
@@ -1435,7 +1372,7 @@ describe("AnimatePresence with custom components", () => {
         })
 
         // Wait for all exit animations to complete
-        await new Promise((resolve) => setTimeout(resolve, 500))
+        await stepFrames(500)
         await act(async () => {
             await nextFrame()
             await nextFrame()
@@ -1683,9 +1620,7 @@ describe("AnimatePresence with custom components", () => {
         const { getByTestId } = render(<Component />)
 
         // Wait for all state changes and exit animations to settle
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 1000))
-        })
+        await stepFrames(1000)
         await act(async () => {
             await nextFrame()
             await nextFrame()
@@ -1732,9 +1667,7 @@ describe("AnimatePresence with custom components", () => {
         rerender(<Component i={3} />)
 
         // Wait for exit animations to complete
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 500))
-        })
+        await stepFrames(500)
         await act(async () => {
             await nextFrame()
             await nextFrame()
@@ -1828,9 +1761,7 @@ describe("AnimatePresence with custom components", () => {
         // Wait for enter animations to complete (type: "tween", duration: 100s
         // applies to enter too, but the enter target values use variants
         // which have their own transition, not the component's transition prop)
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 200))
-        })
+        await stepFrames(200)
 
         expect(container.childElementCount).toBe(1)
 
@@ -1842,9 +1773,7 @@ describe("AnimatePresence with custom components", () => {
             rerender(<Component isVisible={false} />)
         })
 
-        await act(async () => {
-            await new Promise((resolve) => setTimeout(resolve, 500))
-        })
+        await stepFrames(500)
         await act(async () => {
             await nextFrame()
             await nextFrame()

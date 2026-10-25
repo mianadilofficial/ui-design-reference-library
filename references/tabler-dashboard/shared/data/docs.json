@@ -109,6 +109,10 @@
 					"url": "/ui/getting-started/upgrade",
 					"children": [
 						{
+							"title": "Upgrade to 1.7",
+							"url": "/ui/getting-started/upgrade/1-7"
+						},
+						{
 							"title": "Upgrade to 1.6",
 							"url": "/ui/getting-started/upgrade/1-6"
 						},
@@ -231,6 +235,10 @@
 							"url": "/ui/components/icon"
 						},
 						{
+							"title": "Icon list",
+							"url": "/ui/components/icon-list"
+						},
+						{
 							"title": "Image label",
 							"url": "/ui/components/image-label"
 						},
@@ -279,6 +287,10 @@
 							"url": "/ui/components/popover"
 						},
 						{
+							"title": "Pricing",
+							"url": "/ui/components/pricing"
+						},
+						{
 							"title": "Progress bar",
 							"url": "/ui/components/progress"
 						},
@@ -293,6 +305,10 @@
 						{
 							"title": "Segmented control",
 							"url": "/ui/components/segmented-control"
+						},
+						{
+							"title": "Shape",
+							"url": "/ui/components/shape"
 						},
 						{
 							"title": "Signal",
@@ -405,8 +421,8 @@
 							"url": "/ui/forms/otp-input"
 						},
 						{
-							"title": "Stepper",
-							"url": "/ui/forms/stepper"
+							"title": "Number input",
+							"url": "/ui/forms/number-input"
 						},
 						{
 							"title": "CSS variables",

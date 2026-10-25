@@ -39,7 +39,7 @@
   }
 
   .text-bg-#{'' + $color} {
-    color: color-contrast($value) if(sass($enable-important-utilities): !important; else: null);
+    color: if(sass(map.has-key($theme-colors, $color) and $color-contrast-dark == $black and $color-contrast-light == $white): var(--#{$color}-fg); else: color-contrast($value)) if(sass($enable-important-utilities): !important; else: null);
     background-color: color-transparent(var(--#{$color}), calc(var(--bg-opacity, 1) * 100%)) if(sass($enable-important-utilities): !important; else: null);
   }
 
@@ -58,6 +58,17 @@
         text-decoration-color: color-transparent($hover-color, calc(var(--link-underline-opacity, 1) * 100%)) if(sass($enable-important-utilities): !important; else: null);
       }
     }
+  }
+}
+
+// Fills
+.bg-fill {
+  background-color: var(--fill) !important;
+}
+
+@each $level in (primary, secondary, tertiary, quaternary) {
+  .bg-fill-#{$level} {
+    background-color: var(--fill-#{$level}) !important;
   }
 }
 

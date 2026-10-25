@@ -1,0 +1,69 @@
+---
+title: Switch
+description: A control that allows the user to toggle between checked and not checked.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="radix-ui/switch" />
+
+## Installation
+
+<Installation name="switch" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Radix UI. Everything else stays the same.
+
+```tsx
+import { Switch } from '@animate-ui/react/primitives/radix-ui';
+
+export function AirplaneMode() {
+  return (
+    <label className="flex items-center gap-2">
+      <Switch.Root>
+        <Switch.Thumb />
+      </Switch.Root>
+      Airplane mode
+    </label>
+  );
+}
+```
+
+Coming from the `@radix-ui/react-switch` package? Use the subpath: `import * as SwitchPrimitive from '@animate-ui/react/primitives/radix-ui/switch'`.
+
+## Animation
+
+The motion of Animate UI v1's switch:
+
+- **Thumb**, pressed: stretches toward the middle of the track, its other edge in place. Its width grows by 3/16 (a 16px thumb becomes 19px, v1's `pressedWidth`) on a spring (stiffness 300, damping 25). It's the thumb's real width, so its round ends stay round.
+- **Thumb**, on a change: springs to its new side while its width springs back, on the same spring (v1's `layout` animation). The thumb's `translate` classes still decide where it rests (`data-checked:translate-x-…`): Animate UI puts it back where it was with a `transform` and springs it to its new place.
+- **Root** doesn't move. Its colours are the component's CSS, and v1's track changed colour at once: shadcn/ui's `transition-all` on the track would fade it, so the CLI removes it.
+- The press is v1's: the pointer, or Enter on the keyboard. Space toggles without the stretch, and the thumb glides the same way.
+- Toggling again mid-glide turns back from where the thumb is, without a jump.
+- Under reduced motion, the thumb jumps to its side, without the stretch.
+- shadcn/ui's `transition-transform` on the thumb would tween its `translate`; the CLI removes it too (Animate UI also skips it while measuring, so a leftover class doesn't break the glide).
+
+## API Reference
+
+Every part takes exactly the props of [Radix UI's Switch](https://www.radix-ui.com/primitives/docs/components/switch#api-reference). Animate UI adds the animation props below. With `asChild`, a part renders your element with Radix's behaviour: an `asChild` Root has no press stretch, an `asChild` Thumb no animation.
+
+### Root
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/switch#root). The Root doesn't animate itself: it tells the Thumb when it's pressed.
+
+### Thumb
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/switch#thumb), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the thumb: its stretch while pressed, and its glide to the new side.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 300, damping: 25 }",
+    },
+  }}
+/>
+
+`AnimateUIProvider`'s `tempo` scales the spring with everything else.

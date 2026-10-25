@@ -111,7 +111,8 @@
 .navButton:disabled { opacity: .35; cursor: default; }
 
 /* Months slide horizontally inside a clipped window that keeps a little room for the blur. */
-.viewport { position: relative; overflow: clip; overflow-clip-margin: 2px; }
+.viewport { position: relative; display: grid; height: calc(60px + var(--cell) * 6); overflow: clip; overflow-clip-margin: 2px; }
+.viewport > * { grid-area: 1 / 1; }
 .months { display: flex; gap: 24px; }
 .month { width: calc(var(--cell) * 7); }
 .monthTitle { height: 32px; margin: 0; color: var(--foreground); font-weight: 500; line-height: 32px; text-align: center; white-space: nowrap; }
@@ -154,7 +155,7 @@
 .day:focus-visible:not([data-edge]) > span { background: color-mix(in oklab, var(--foreground) 7%, transparent); }
 
 /* Footer: the formatted range and the two decisions. */
-.footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 10px 2px 0 12px; border-top: 1px solid var(--border-subtle); }
+.footer { display: flex; width: 0; min-width: 100%; align-items: center; justify-content: space-between; gap: 12px; margin-top: 10px; padding: 10px 2px 0 12px; border-top: 1px solid var(--border-subtle); }
 .summary { display: grid; min-width: 0; gap: 1px; }
 .summaryValue { display: inline-flex; width: max-content; font-weight: 500; font-variant-numeric: tabular-nums; }
 .summaryCount { display: inline-flex; min-height: 1.4em; color: var(--text-muted); font-size: var(--text-xs); font-variant-numeric: tabular-nums; }

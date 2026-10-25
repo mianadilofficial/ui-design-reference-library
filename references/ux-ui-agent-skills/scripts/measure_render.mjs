@@ -47,7 +47,20 @@ function ratio(a, b) { const l1 = L(a), l2 = L(b), hi = Math.max(l1, l2), lo = M
 
 let browser;
 try { browser = await chromium.launch({ channel: 'chrome' }); }
-catch { try { browser = await chromium.launch(); } catch (e) { console.log('measure_render: no browser available — SKIPPED'); process.exit(0); } }
+catch {
+  try { browser = await chromium.launch(); }
+  catch (e) {
+    // Same contract as the import guard above: with DS_REQUIRE_BROWSER a launch
+    // that fails is a failure, never a SKIPPED that exits 0.
+    if (process.env.DS_REQUIRE_BROWSER === '1') {
+      console.log(`measure_render: REQUIRED, FAILING: no browser available (${String(e.message).split('\n')[0]}).`);
+      console.log('Fix: npm install && npx playwright install chrome');
+      process.exit(1);
+    }
+    console.log('measure_render: no browser available — SKIPPED');
+    process.exit(0);
+  }
+}
 
 let totalFail = 0;
 for (const f of files) {

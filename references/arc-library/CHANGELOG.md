@@ -2,6 +2,43 @@
 
 New free components and blocks ship regularly. Every entry links to its live preview on uiarc.dev.
 
+## 2026-10-24
+
+### Added
+
+- [Tree table](https://uiarc.dev/components/tree-table) (component): A table with nested rows, tri-state selection, hierarchy-preserving sort, and lazy-loaded children.
+
+## 2026-10-23
+
+### Added
+
+- [Action swap](https://uiarc.dev/components/action-swap) (component): Swap an action label while preserving its place and intent.
+
+## 2026-10-22
+
+### Added
+
+- [Range histogram slider](https://uiarc.dev/components/range-histogram-slider) (component): A price range over a live histogram of the data, lighting the bars inside the range and settling on bar edges.
+
+## 2026-10-21
+
+### Added
+
+- [Rating](https://uiarc.dev/components/rating) (component): A simple, accessible way to capture a numeric opinion.
+
+## 2026-10-20
+
+### Added
+
+- [Onboarding checklist](https://uiarc.dev/components/onboarding-checklist) (component): Guide a new workspace through setup, one step at a time.
+
+## 2026-10-19
+
+### Added
+
+- [Reorderable list](https://uiarc.dev/components/reorderable-list) (component): Organize items with direct drag and drop.
+- [Scrub input](https://uiarc.dev/components/scrub-input) (component): A Figma-style number field: drag the label to scrub, or type values, units, and arithmetic.
+
 ## 2026-10-16
 
 ### Added

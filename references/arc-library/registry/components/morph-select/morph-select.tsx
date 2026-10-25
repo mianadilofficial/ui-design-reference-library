@@ -71,11 +71,11 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = 2 * Math.PI / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const GROW = physical(.4, .12), SHRINK = physical(.34, 0), GLIDE = physical(.28, .08), WIDTH = physical(.42, .16);
+const GROW = physical(.4, 0), SHRINK = physical(.34, 0), GLIDE = physical(.28, 0), WIDTH = physical(.42, 0);
 /** Width that narrows never overshoots: dipping even half a pixel under the closed width ellipsizes the label and nudges the chevron. */
 const NARROW = physical(.42, 0);
 /** The lifted label travels a touch faster than the surface folds, so the closing edge never catches it. */
-const FLY = physical(.3, .06);
+const FLY = physical(.3, 0);
 const OPEN_RADIUS = 22;
 const TYPEAHEAD_RESET = 600, PAGE = 8;
 

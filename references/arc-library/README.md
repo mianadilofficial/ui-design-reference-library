@@ -12,7 +12,7 @@
   <a href="./LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-111111?style=flat-square"></a>
   <a href="https://uiarc.dev/docs/installation"><img alt="shadcn registry: @uiarc" src="https://img.shields.io/badge/shadcn%20registry-%40uiarc-111111?style=flat-square"></a>
   <a href="https://github.com/kuratlielia/arc-library/actions/workflows/ci.yml"><img alt="CI" src="https://img.shields.io/github/actions/workflow/status/kuratlielia/arc-library/ci.yml?branch=main&style=flat-square&label=CI"></a>
-  <img alt="112 components" src="https://img.shields.io/badge/components-112-7747ff?style=flat-square">
+  <img alt="119 components" src="https://img.shields.io/badge/components-119-7747ff?style=flat-square">
   <img alt="22 blocks" src="https://img.shields.io/badge/blocks-22-7747ff?style=flat-square">
   <img alt="React 19" src="https://img.shields.io/badge/React-19-111111?style=flat-square">
 </p>
@@ -29,7 +29,7 @@
   <a href="https://uiarc.dev/pro"><b>Pro</b></a>
 </p>
 
-Arc is a library of React components and blocks with motion built in. Every item is plain source you own: CSS modules on a small set of design tokens, [Motion](https://motion.dev) for animation, keyboard support, and a reduced motion path for every animation. Install anything with the shadcn CLI or copy the files by hand. It works in Next.js and Vite, with or without Tailwind. This repository holds the free, open source part: **112 components and 22 blocks**, plus the design and motion tokens they share. Every one of them has a live preview at [uiarc.dev](https://uiarc.dev).
+Arc is a library of React components and blocks with motion built in. Every item is plain source you own: CSS modules on a small set of design tokens, [Motion](https://motion.dev) for animation, keyboard support, and a reduced motion path for every animation. Install anything with the shadcn CLI or copy the files by hand. It works in Next.js and Vite, with or without Tailwind. This repository holds the free, open source part: **119 components and 22 blocks**, plus the design and motion tokens they share. Every one of them has a live preview at [uiarc.dev](https://uiarc.dev).
 
 ## Showcase
 
@@ -263,9 +263,9 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 
 ## Components
 
-112 free components, grouped as on the site. Click a name for the live preview and docs.
+119 free components, grouped as on the site. Click a name for the live preview and docs.
 
-[Actions](#actions) (19) · [Inputs](#inputs) (34) · [Disclosure](#disclosure) (14) · [Feedback](#feedback) (10) · [Data](#data) (30) · [Text](#text) (4) · [Special](#special) (1)
+[Actions](#actions) (20) · [Inputs](#inputs) (37) · [Disclosure](#disclosure) (14) · [Feedback](#feedback) (11) · [Data](#data) (32) · [Text](#text) (4) · [Special](#special) (1)
 
 ### Actions
 
@@ -280,6 +280,7 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 | [Floating button group](https://uiarc.dev/components/floating-button-group) | Separate soft buttons in a quiet tray, with one shared highlight that morphs from button to button as you move, and a pressed state that settles in place. | `npx shadcn@latest add @uiarc/floating-button-group` |
 | [Expanding button group](https://uiarc.dev/components/expanding-button-group) | Icon buttons in a compact group: the one you point at or focus grows to reveal its label while its neighbours slide aside, and an action confirms in place. | `npx shadcn@latest add @uiarc/expanding-button-group` |
 | [Copy button](https://uiarc.dev/components/copy-button) | Copy a value with immediate confirmation. | `npx shadcn@latest add @uiarc/copy-button` |
+| [Action swap](https://uiarc.dev/components/action-swap) | Swap an action label while preserving its place and intent. | `npx shadcn@latest add @uiarc/action-swap` |
 | [Icon morph](https://uiarc.dev/components/icon-morph) | Icons that morph between states: menu to close, play to pause, copy to check, and more. | `npx shadcn@latest add @uiarc/icon-morph` |
 | [Confirm morph](https://uiarc.dev/components/confirm-morph) | A destructive button that morphs into an inline confirmation, a spinner, and a result with undo. | `npx shadcn@latest add @uiarc/confirm-morph` |
 
@@ -329,6 +330,7 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 | [Number field](https://uiarc.dev/components/number-field) | Enter a bounded number with clear increment controls. | `npx shadcn@latest add @uiarc/number-field` |
 | [Money input](https://uiarc.dev/components/money-input) | A currency field with live grouping, stable width, rolling digits, and minor-unit output. | `npx shadcn@latest add @uiarc/money-input` |
 | [Phone input](https://uiarc.dev/components/phone-input) | A phone field with a country picker, formatting as you type, and E.164 output. | `npx shadcn@latest add @uiarc/phone-input` |
+| [Scrub input](https://uiarc.dev/components/scrub-input) | A Figma-style number field: drag the label to scrub, or type values, units, and arithmetic. | `npx shadcn@latest add @uiarc/scrub-input` |
 | [Tag input](https://uiarc.dev/components/tag-input) | Turn short text values into removable tags. | `npx shadcn@latest add @uiarc/tag-input` |
 | [Mention input](https://uiarc.dev/components/mention-input) | A textarea with @people and #channel mentions that act as single tokens, with suggestions at the caret. | `npx shadcn@latest add @uiarc/mention-input` |
 | [Shortcut recorder](https://uiarc.dev/components/shortcut-recorder) | Record key combinations into key caps, with conflict warnings, Kbd, and a searchable cheatsheet. | `npx shadcn@latest add @uiarc/shortcut-recorder` |
@@ -353,6 +355,7 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 | [Radio group](https://uiarc.dev/components/radio-group) | Choose one option from a visible set. | `npx shadcn@latest add @uiarc/radio-group` |
 | [Switch](https://uiarc.dev/components/switch) | A tactile toggle for settings that take effect immediately. | `npx shadcn@latest add @uiarc/switch` |
 | [Segmented control](https://uiarc.dev/components/segmented-control) | Switch between a small set of related views. | `npx shadcn@latest add @uiarc/segmented-control` |
+| [Rating](https://uiarc.dev/components/rating) | A simple, accessible way to capture a numeric opinion. | `npx shadcn@latest add @uiarc/rating` |
 
 **Sliders**
 
@@ -360,6 +363,7 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 | --- | --- | --- |
 | [Slider](https://uiarc.dev/components/slider) | Pick a value or a range on a track that follows your finger. | `npx shadcn@latest add @uiarc/slider` |
 | [Elastic slider](https://uiarc.dev/components/elastic-slider) | A slider that stretches like rubber past its ends, with a swaying value tag and detents the thumb clicks into. | `npx shadcn@latest add @uiarc/elastic-slider` |
+| [Range histogram slider](https://uiarc.dev/components/range-histogram-slider) | A price range over a live histogram of the data, lighting the bars inside the range and settling on bar edges. | `npx shadcn@latest add @uiarc/range-histogram-slider` |
 
 **Pickers**
 
@@ -431,6 +435,7 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 | [Stepper](https://uiarc.dev/components/stepper) | Show where a person is in a multi-step flow and what is done. | `npx shadcn@latest add @uiarc/stepper` |
 | [Countdown](https://uiarc.dev/components/countdown) | A launch countdown with rolling digits that morphs into a live state at zero. | `npx shadcn@latest add @uiarc/countdown` |
 | [Usage meter](https://uiarc.dev/components/usage-meter) | Show what fills an allowance and how close it is to the limit. | `npx shadcn@latest add @uiarc/usage-meter` |
+| [Onboarding checklist](https://uiarc.dev/components/onboarding-checklist) | Guide a new workspace through setup, one step at a time. | `npx shadcn@latest add @uiarc/onboarding-checklist` |
 
 ### Data
 
@@ -473,7 +478,9 @@ More in the [theming docs](https://uiarc.dev/docs/theming) and [motion docs](htt
 | Component | Description | Install |
 | --- | --- | --- |
 | [Sortable data table](https://uiarc.dev/components/sortable-data-table) | Compare structured records with sortable columns. | `npx shadcn@latest add @uiarc/sortable-data-table` |
+| [Tree table](https://uiarc.dev/components/tree-table) | A table with nested rows, tri-state selection, hierarchy-preserving sort, and lazy-loaded children. | `npx shadcn@latest add @uiarc/tree-table` |
 | [Tree view](https://uiarc.dev/components/tree-view) | Navigate nested folders and structured content. | `npx shadcn@latest add @uiarc/tree-view` |
+| [Reorderable list](https://uiarc.dev/components/reorderable-list) | Organize items with direct drag and drop. | `npx shadcn@latest add @uiarc/reorderable-list` |
 | [Filter toolbar](https://uiarc.dev/components/filter-toolbar) | Keep collection filters close and easy to reset. | `npx shadcn@latest add @uiarc/filter-toolbar` |
 | [Code block](https://uiarc.dev/components/code-block) | Present code with legible hierarchy and copy access. | `npx shadcn@latest add @uiarc/code-block` |
 | [JSON viewer](https://uiarc.dev/components/json-viewer) | A collapsible JSON tree with search, paging for long arrays, and copy value or path. | `npx shadcn@latest add @uiarc/json-viewer` |
@@ -698,7 +705,7 @@ public/r/<id>.json           prebuilt registry items, one per component or block
 
 ## Arc Pro
 
-[Arc Pro](https://uiarc.dev/pro) adds 124 more components and blocks on top of this library: galleries like the Cover flow above, wallet and finance surfaces, richer charts, and complete product screens. They follow the same rules as everything here: plain source you own, both themes, keyboard support and a reduced motion path.
+[Arc Pro](https://uiarc.dev/pro) adds 156 more components and blocks on top of this library: galleries like the Cover flow above, wallet and finance surfaces, richer charts, and complete product screens. They follow the same rules as everything here: plain source you own, both themes, keyboard support and a reduced motion path.
 
 - Source for every Pro component and block, installed with the same shadcn CLI through a personal token, or through the MCP server
 - Every new Pro release, plus fixes and updates to the pieces you already have

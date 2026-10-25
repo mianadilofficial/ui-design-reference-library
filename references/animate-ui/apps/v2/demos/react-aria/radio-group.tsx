@@ -1,0 +1,71 @@
+"use client"
+
+import { cn } from "cn"
+import {
+  composeRenderProps,
+  RadioGroup as RadioGroupPrimitive,
+  Radio as RadioPrimitive,
+  type RadioGroupProps,
+  type RadioProps,
+} from "@animate-ui/react/primitives/react-aria"
+import { Label } from "@/components/ui/react-aria/label"
+
+function RadioGroup({ className, ...props }: RadioGroupProps) {
+  return (
+    <RadioGroupPrimitive
+      data-slot="radio-group"
+      className={cn("grid gap-2 w-full", className)}
+      {...props}
+    />
+  )
+}
+
+function RadioGroupItem({ className, children, ...props }: RadioProps) {
+  return (
+    <RadioPrimitive
+      data-slot="radio-group-item"
+      className={cn(
+        "border-input dark:bg-input/30 data-checked:text-primary-foreground aria-invalid:border-destructive focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 dark:aria-invalid:border-destructive/50 flex size-4 rounded-full focus-visible:ring-3 aria-invalid:ring-3 group-has-[:focus-visible]/field-label:ring-0 group-has-[:focus-visible]/field-label:not-data-checked:border-input group-has-[:focus-visible]/field-label:data-checked:border-primary data-selected:text-primary-foreground data-focus-visible:border-ring data-focus-visible:ring-ring/50 data-focus-visible:ring-3 data-invalid:border-destructive data-invalid:ring-destructive/20 dark:data-invalid:ring-destructive/40 dark:data-invalid:border-destructive/50 data-invalid:ring-3 group/radio-group-item peer relative aspect-square shrink-0 border outline-none after:absolute after:-inset-x-3 after:-inset-y-2 before:absolute before:-inset-px before:rounded-[inherit] before:bg-primary before:opacity-0 before:scale-70 before:transition-[scale,opacity] before:duration-300 motion-reduce:before:scale-100 data-selected:before:opacity-100 data-selected:before:scale-100 data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
+        className
+      )}
+      {...props}
+    >
+      {composeRenderProps(children, (children, { isSelected }) => (
+        <>
+          <span
+            data-slot="radio-group-indicator"
+            className="flex size-4 items-center justify-center"
+          >
+            {isSelected && <span className="bg-primary-foreground absolute top-1/2 left-1/2 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full" />}
+          </span>
+          {children}
+        </>
+      ))}
+    </RadioPrimitive>
+  )
+}
+
+export { RadioGroup, RadioGroupItem }
+
+export default function RadioGroupDemo() {
+  return (
+    <RadioGroup
+      aria-label="Density"
+      defaultValue="comfortable"
+      className="w-fit"
+    >
+      <div className="flex items-center gap-3">
+        <RadioGroupItem value="default" id="r1" />
+        <Label htmlFor="r1">Default</Label>
+      </div>
+      <div className="flex items-center gap-3">
+        <RadioGroupItem value="comfortable" id="r2" />
+        <Label htmlFor="r2">Comfortable</Label>
+      </div>
+      <div className="flex items-center gap-3">
+        <RadioGroupItem value="compact" id="r3" />
+        <Label htmlFor="r3">Compact</Label>
+      </div>
+    </RadioGroup>
+  )
+}

@@ -1,0 +1,76 @@
+---
+title: Accordion
+description: A set of collapsible panels with headings.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/accordion" />
+
+## Installation
+
+<Installation name="accordion" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same.
+
+```tsx
+import { Accordion } from '@animate-ui/react/primitives/base-ui/accordion';
+
+export function FAQ() {
+  return (
+    <Accordion.Root defaultValue={['item-1']}>
+      <Accordion.Item value="item-1">
+        <Accordion.Header>
+          <Accordion.Trigger>Is it accessible?</Accordion.Trigger>
+        </Accordion.Header>
+        <Accordion.Panel>
+          Yes. It adheres to the WAI-ARIA design pattern.
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion.Root>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { Accordion } from '@animate-ui/react/primitives/base-ui'`.
+
+## Animation
+
+- **Panel** unfolds: its height grows from 0 while the content fades in from a 2px blur, over 350ms on a soft ease-out. While it moves, its bottom edge fades (over 16px, or over the part still hidden): the content never meets what follows it, an item's border, with a hard cut. It folds back the same way, in reverse, then unmounts.
+- Opening another item while one is closing retargets smoothly.
+- An item open by default animates open on mount (page load), as in v1.
+- Motion animates the panel itself: shadcn/ui's `h-(--accordion-panel-height) data-starting-style:h-0 data-ending-style:h-0` classes are no longer needed (the CLI removes them). `--accordion-panel-height` and `--accordion-panel-width` read `auto`.
+- `keepMounted` and `hiddenUntilFound`, on the Root or a Panel, keep closed panels in the DOM: they collapse, then get Base UI's `hidden` (or `hidden="until-found"`, which find-in-page can reveal; a panel revealed that way opens at once, as in Base UI).
+- An `onValueChange` that calls `eventDetails.cancel()` still cancels the change.
+- `<AnimateUIProvider tempo>` paces both transitions.
+- Under reduced motion, the height changes at once; the fade and the blur still play.
+
+## API Reference
+
+Every part takes exactly the props of [Base UI's Accordion](https://base-ui.com/react/components/accordion#api-reference). Animate UI adds the animation props below.
+
+### Root, Item, Header, Trigger
+
+[Base UI props](https://base-ui.com/react/components/accordion#root) only. They are not animated.
+
+### Panel
+
+[Base UI props](https://base-ui.com/react/components/accordion#panel), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the opening.',
+      type: 'Transition',
+      default: '{ duration: 0.35, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+A `render` element (or function) of your own is made animatable with `motion.create`.

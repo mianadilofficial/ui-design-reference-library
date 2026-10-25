@@ -1,0 +1,121 @@
+---
+title: CLI
+description: Use the Animate UI CLI to animate your shadcn-vue components.
+new: true
+---
+
+The CLI changes your components in place, without copying anything: it swaps their `reka-ui` imports for `@animate-ui/vue`'s animated primitives and removes the CSS animations Motion replaces. It needs Node.js 22.12 or later.
+
+## animate
+
+Use the `animate` command to animate the shadcn-vue components installed in your project.
+
+```npm
+npx @animate-ui/cli@latest animate all
+```
+
+Name the components to animate only some of them:
+
+```npm
+npx @animate-ui/cli@latest animate accordion switch
+```
+
+Or animate all of them but some, with `--exclude`:
+
+```npm
+npx @animate-ui/cli@latest animate all --exclude toggle
+```
+
+**Usage**
+
+```txt
+Usage: animate-ui animate <components...|all> [options]
+
+Arguments:
+  components      the components to animate (their folder names in your ui
+                  folder), or all
+
+Options:
+  --cwd <path>    the project directory (default: the current directory)
+  --dry-run       show the changes without writing them
+  --exclude <components...>
+                  leave these components out: comma-separated
+                  (--exclude toggle,switch) or repeated
+  -h, --help      show the help
+```
+
+### What it changes
+
+`animate` recognizes a shadcn-vue project by its `components.json`, finds your components through its `ui` alias (resolved with your `tsconfig.json` or `tsconfig.app.json` paths), and changes two things in every file of a component's folder (`components/ui/accordion/*.vue` and its `index.ts`):
+
+1. **The import source.**
+
+```ts
+import { AccordionContent } from 'reka-ui'; // [!code --]
+import { AccordionContent } from '@animate-ui/vue/primitives/reka-ui'; // [!code ++]
+```
+
+`@animate-ui/vue/primitives/reka-ui` re-exports everything else from Reka UI, so an import mixing animated and plain parts (`{ AccordionItem, useForwardProps }`) keeps working, types included.
+
+2. **The CSS animations Motion replaces.** Left in place, they would run on top of Motion, so `animate` removes them, wherever the classes are written (`class`, `:class`, `cn()`, `cva()`):
+
+- the tw-animate-css utilities (`animate-in`, `animate-out`, `fade-in-0`, `zoom-in-95`, `slide-in-from-top-2`…), whatever their variants (`data-[state=closed]:`…);
+- shadcn-vue's keyframes (`animate-accordion-down`, `animate-collapsible-up`…);
+- each primitive's own CSS transitions that Motion takes over (the switch's `transition-all` and its thumb's `transition-transform`, the progress indicator's `transition-all`).
+
+The rest of each file stays as it is: your styles, parts, props and markup.
+
+### Output
+
+```txt
+✔ src/components/ui/accordion/AccordionContent.vue
+    reka-ui → @animate-ui/vue/primitives/reka-ui
+    removed CSS animations: data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down
+
+1 file animated.
+```
+
+- A component that isn't installed is reported with the `shadcn-vue add` command to install it, and the CLI exits with code 1.
+- Components Animate UI doesn't animate yet are listed under **Not animated yet** and left as they are.
+- If `@animate-ui/vue` isn't installed (neither in your `package.json` nor in `node_modules`) and files were animated, the CLI tells you to install it with `motion-v`.
+- Running it again changes nothing: a component already animated is skipped.
+
+### Supported primitives
+
+| Library       | Primitives                                                                                                                                                                                                                                                  |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reka UI       | Accordion, Alert Dialog, Checkbox, Collapsible, Combobox, Context Menu, Dialog, Drawer, Dropdown Menu, Hover Card, Menubar, Navigation Menu, Pagination, Popover, Progress, Radio Group, Select, Sheet, Slider, Switch, Tabs, Toggle, Toggle Group, Tooltip |
+| vue-input-otp | Input OTP                                                                                                                                                                                                                                                   |
+
+The Questionnaire and the Sidebar have no import to swap: their pages list the edits.
+
+## audit
+
+Use the `audit` command to list what moves in your project and how: the properties each animation changes and what they cost the browser, the transitions on `all`, ease-in curves, long durations, hover scales, scales from 0, popups scaling without an origin, CSS transitions fighting Motion on the same element, hovers that move on touch screens, endless loops, layout animations, and the files that move without a reduced-motion path.
+
+```npm
+npx @animate-ui/cli@latest audit
+```
+
+Or only some folders or files:
+
+```npm
+npx @animate-ui/cli@latest audit src/components src/App.vue
+```
+
+It reads `.vue` files whole: the `motion.*` bindings of their template (`:initial`, `:animate`, `:exit`, `:while-hover`, `:while-press`, `:variants`, `:transition`, `layout`), their `<script>` blocks (`animate()` calls, the objects bound in the template) and their `<style>` blocks, plus Tailwind's transition, duration, ease and animation classes. It changes nothing. Each animated property is sorted by what it costs: **compositor** (`transform`, `opacity`, `filter`), **main-thread** (Motion's `x`, `y`, `scale`, `rotate` shorthands), **paint** (colors, shadows, SVG strokes) and **layout** (`width`, `height`, `top`, margins). A file that only transitions colors needs no reduced-motion path.
+
+The report states facts, it doesn't grade them: a 800ms entrance can be right on a page and wrong on a menu opened all day. Read it yourself, or hand it to your AI assistant with the [Animate UI skill](/docs/vue/skills), which judges each fact in context. `--json` prints the same report for scripts.
+
+## Options
+
+| Option                      | Description                                                                                   |
+| --------------------------- | --------------------------------------------------------------------------------------------- |
+| `--cwd <path>`              | The project directory, with its `components.json`.                                            |
+| `--dry-run`                 | Show the changes without writing them.                                                        |
+| `--exclude <components...>` | Leave these components out of `all`: comma-separated (`--exclude toggle,switch`) or repeated. |
+| `--json`                    | Print the `audit` report as JSON.                                                             |
+| `-h, --help`                | Show the help.                                                                                |
+| `-v, --version`             | Show the CLI's version.                                                                       |
+
+The CLI exits with code 1 when a component can't be found or a command fails.

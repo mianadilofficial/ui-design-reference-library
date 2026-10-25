@@ -91,7 +91,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = 2 * Math.PI / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const GLIDE = physical(.3, .1), GROW = physical(spring.smooth.visualDuration, 0);
+const GLIDE = physical(.3, 0), GROW = physical(spring.smooth.visualDuration, 0);
 /** First placements. A jump made in the commit that mounts its element never reaches the DOM; an instant animation lands on the first frame. */
 const INSTANT: Transition = { duration: 0 };
 

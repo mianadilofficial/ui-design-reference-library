@@ -4,6 +4,7 @@ seoTitle: Form CSS variables
 order: 11
 summary: Every form control reads its size, colors and states from CSS variables, so you can restyle inputs, selects, checks and switches at runtime without recompiling Sass.
 description: Reference of the CSS variables that size and color Tabler form controls, with examples of runtime overrides.
+added-in: '1.7.0'
 related: [/ui/forms/elements, /ui/forms/floating-labels, /ui/getting-started/customize]
 ---
 import Example from '@components/Example.astro';
@@ -147,7 +148,7 @@ Set on `.form-control`, `.form-control-plaintext` and `.form-select`. `.form-con
 | `--tblr-control-action-hover-bg` | `var(--tblr-secondary-bg)` |
 | `--tblr-control-transition` | border color, outline color and shadow, `0.15s` |
 
-`.form-select` adds the arrow: `--tblr-control-select-bg`, `--tblr-control-select-bg-dark`, `--tblr-control-select-bg-position`, `--tblr-control-select-bg-size` and `--tblr-control-select-indicator-padding` (the room kept for the arrow, `3 ×` the scale's horizontal padding).
+`.form-select` adds the arrow: `--tblr-control-select-bg`, `--tblr-control-select-bg-dark`, `--tblr-control-select-bg-position`, `--tblr-control-select-bg-size` and `--tblr-control-select-indicator-padding` (the room kept for the arrow: twice the horizontal padding plus the arrow width).
 
 Tom Select copies the `.form-control` or `.form-select` class onto its wrapper, so its control reads the same tokens.
 

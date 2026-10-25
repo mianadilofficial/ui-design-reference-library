@@ -1,0 +1,105 @@
+{
+  "name": "@animate-ui/react",
+  "version": "2.2.1",
+  "type": "module",
+  "sideEffects": false,
+  "devDependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@floating-ui/react": "^0.27.20",
+    "@shadcn/react": "^0.3.1",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@workspace/eslint-config": "workspace:*",
+    "eslint": "catalog:",
+    "input-otp": "^1.5.0",
+    "motion": "catalog:",
+    "radix-ui": "catalog:",
+    "react": "catalog:",
+    "react-aria-components": "^1.21.1",
+    "react-dom": "catalog:",
+    "shiki": "^4.5.0",
+    "tsdown": "^0.23.0",
+    "typescript": "~6.0.3"
+  },
+  "description": "Animated drop-in primitives for Radix UI, Base UI and React Aria, built with Motion.",
+  "keywords": [
+    "animate-ui",
+    "react",
+    "motion",
+    "animation",
+    "radix-ui",
+    "base-ui",
+    "react-aria",
+    "shadcn",
+    "shadcn-ui",
+    "primitives",
+    "components"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imskyleen/animate-ui.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://animate-ui.com",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepublishOnly": "node ../../scripts/check-publish.mjs agent && pnpm build && node ../../scripts/check-publish.mjs dist",
+    "build": "node scripts/generate-barrels.mts && tsdown",
+    "dev": "tsdown --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint .",
+    "gen": "node scripts/generate-barrels.mts"
+  },
+  "peerDependencies": {
+    "@base-ui/react": "^1.8.0",
+    "@floating-ui/react": "^0.27.20",
+    "@shadcn/react": "^0.3.1",
+    "input-otp": "^1.5.0",
+    "motion": "^14.0.0",
+    "radix-ui": "^1.6.0",
+    "react": "^19.0.0",
+    "react-aria-components": "^1.21.0",
+    "react-dom": "^19.0.0",
+    "shiki": "^4.5.0"
+  },
+  "peerDependenciesMeta": {
+    "@base-ui/react": {
+      "optional": true
+    },
+    "@floating-ui/react": {
+      "optional": true
+    },
+    "@shadcn/react": {
+      "optional": true
+    },
+    "input-otp": {
+      "optional": true
+    },
+    "radix-ui": {
+      "optional": true
+    },
+    "react-aria-components": {
+      "optional": true
+    },
+    "shiki": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      "./*": {
+        "types": "./dist/*/index.d.ts",
+        "default": "./dist/*/index.js"
+      },
+      "./package.json": "./package.json"
+    }
+  },
+  "exports": {
+    "./*": "./src/*/index.tsx",
+    "./package.json": "./package.json"
+  }
+}

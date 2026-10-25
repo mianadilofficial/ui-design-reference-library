@@ -49,7 +49,7 @@ const clamp = (value: number) => Math.min(Math.max(value, 0), 100);
 const SHAKE = { x: [0, -7, 6, -4, 3, -1.5, 0] };
 const shakeTransition: Transition = { duration: .42, ease: "easeOut" };
 /** New rows drop out of the target into the list, with a touch of life as they land. */
-const land: Transition = { type: "spring", visualDuration: .42, bounce: .14 };
+const land: Transition = { type: "spring", visualDuration: .42, bounce: 0 };
 
 export function formatFileSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;

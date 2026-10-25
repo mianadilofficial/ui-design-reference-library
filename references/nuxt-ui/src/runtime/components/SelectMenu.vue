@@ -233,7 +233,7 @@ export interface SelectMenuSlots<
 </script>
 
 <script setup lang="ts" generic="T extends ArrayOrNested<SelectMenuItem>, VK extends GetItemKeys<T> | undefined = undefined, M extends boolean = false, Mod extends Omit<ModelModifiers, 'lazy'> = Omit<ModelModifiers, 'lazy'>, C extends boolean | object = false">
-import { useTemplateRef, computed, ref, onMounted, onScopeDispose, toRef, toRaw, watch, nextTick } from 'vue'
+import { useTemplateRef, useId, computed, ref, onMounted, onScopeDispose, toRef, toRaw, watch, nextTick } from 'vue'
 import { ComboboxRoot, ComboboxArrow, ComboboxAnchor, ComboboxInput, ComboboxTrigger, ComboboxCancel, ComboboxPortal, ComboboxContent, ComboboxEmpty, ComboboxGroup, ComboboxVirtualizer, ComboboxLabel, ComboboxSeparator, ComboboxItem, ComboboxItemIndicator, FocusScope } from 'reka-ui'
 import { useForwardProps } from '../composables/useForwardProps'
 import { defu } from 'defu'
@@ -543,14 +543,32 @@ function onClear() {
   emits('clear')
 }
 
+const focusScopeRef = useTemplateRef('focusScopeRef')
+
 function onMountAutoFocus(event: Event) {
-  // Prevent the `FocusScope` from focusing the search input on open when its autofocus is disabled.
+  // Focus the scope instead of the search input on open when its autofocus is disabled,
+  // so the focus still moves inside the menu without opening the virtual keyboard on touch devices.
   if (searchInputProps.value.autofocus === false) {
     event.preventDefault()
+    const el = focusScopeRef.value?.$el as HTMLElement | undefined
+    el?.focus({ preventScroll: true })
   }
 }
 
-const focusScopeRef = useTemplateRef('focusScopeRef')
+// The listbox only navigates from the search input while it's rendered, so forward the keys to it when the focus is on the scope itself.
+function onFocusScopeKeydown(event: KeyboardEvent) {
+  if (event.target !== event.currentTarget) {
+    return
+  }
+
+  const input = (event.currentTarget as HTMLElement).querySelector<HTMLElement>('[data-slot="input"] input')
+  if (!input) {
+    return
+  }
+
+  event.preventDefault()
+  input.dispatchEvent(new KeyboardEvent('keydown', { key: event.key, shiftKey: event.shiftKey, bubbles: true, cancelable: true }))
+}
 
 // The `FocusScope` uses `loop` instead of `trapped`: a trapped scope pulls focus back while the menu is closing,
 // so focusing another element on select never lands. Pull it back here instead, only while the menu is open,
@@ -577,6 +595,9 @@ function onUnmountAutoFocus(event: Event) {
 }
 
 const viewportRef = useTemplateRef('viewportRef')
+const selectMenuId = useId()
+const triggerId = computed(() => id.value ?? `select-menu-${selectMenuId}`)
+const listboxId = `select-menu-listbox-${selectMenuId}`
 
 const comboboxRootRef = useTemplateRef('comboboxRootRef')
 
@@ -686,12 +707,13 @@ defineExpose({
   >
     <ComboboxAnchor as-child>
       <ComboboxTrigger
-        :id="id"
+        :id="triggerId"
         ref="triggerRef"
         data-slot="base"
         :class="ui.base({ class: [props.ui?.base, props.class] })"
         tabindex="0"
         v-bind="{ 'aria-label': undefined, ...$attrs, ...ariaAttrs }"
+        :aria-controls="listboxId"
         @keydown.down="onTriggerKeydown"
         @keydown.up="onTriggerKeydown"
       >
@@ -738,7 +760,15 @@ defineExpose({
 
     <ComboboxPortal v-bind="portalProps">
       <FieldGroupReset>
-        <ComboboxContent data-slot="content" :class="ui.content({ class: props.ui?.content })" v-bind="contentProps" @focus-outside="onFocusOutside">
+        <ComboboxContent
+          data-slot="content"
+          :class="ui.content({ class: props.ui?.content })"
+          v-bind="contentProps"
+          :role="undefined"
+          :aria-orientation="undefined"
+          :aria-multiselectable="undefined"
+          @focus-outside="onFocusOutside"
+        >
           <FocusScope
             ref="focusScopeRef"
             loop
@@ -746,10 +776,11 @@ defineExpose({
             :class="ui.focusScope({ class: props.ui?.focusScope })"
             @mount-auto-focus="onMountAutoFocus"
             @unmount-auto-focus="onUnmountAutoFocus"
+            @keydown.down.up.home.end="onFocusScopeKeydown"
           >
             <slot name="content-top" />
 
-            <ComboboxInput v-if="!!props.searchInput" v-model="searchTerm" :display-value="() => searchTerm" as-child>
+            <ComboboxInput v-if="!!props.searchInput" v-model="searchTerm" :display-value="() => searchTerm" :aria-controls="listboxId" as-child>
               <UInput
                 autofocus
                 autocomplete="off"
@@ -770,7 +801,16 @@ defineExpose({
               </slot>
             </ComboboxEmpty>
 
-            <div ref="viewportRef" role="presentation" data-slot="viewport" :class="ui.viewport({ class: props.ui?.viewport })">
+            <div
+              :id="listboxId"
+              ref="viewportRef"
+              role="listbox"
+              :aria-labelledby="triggerId"
+              :aria-multiselectable="!!props.multiple"
+              aria-orientation="vertical"
+              data-slot="viewport"
+              :class="ui.viewport({ class: props.ui?.viewport })"
+            >
               <template v-if="!!props.virtualize">
                 <ReuseCreateItemTemplate v-if="createItem && createItemPosition === 'top'" />
 

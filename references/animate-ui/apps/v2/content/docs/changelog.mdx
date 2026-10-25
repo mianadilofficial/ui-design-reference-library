@@ -1,0 +1,229 @@
+---
+title: Changelog
+description: What changed in Animate UI.
+version: '2.2.1'
+---
+
+<Changelog>
+
+<ChangelogItem date="2026-10-23">
+  <ChangelogItemVersion>
+
+## 2.2.1
+
+  </ChangelogItemVersion>
+
+<ChangelogItemTitle>Fixes</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- `@animate-ui/react` and `@animate-ui/vue` resolve to their built files again: 2.2.0 pointed its imports at sources the package doesn't ship.
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+<ChangelogItem date="2026-10-23">
+  <ChangelogItemVersion>
+
+## 2.2.0
+
+  </ChangelogItemVersion>
+
+<ChangelogItemTitle>Vue</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- Animate UI for Vue: `@animate-ui/vue` animates reka-ui's primitives with Motion for Vue, moving like the React ones.
+  - Accordion, Collapsible, Switch, Checkbox, Toggle, Progress, Radio Group, Toggle Group, Dialog, Alert Dialog, Sheet, Popover, Tooltip, Hover Card, Dropdown Menu, Context Menu, Menubar, Tabs, Slider, Select, Navigation Menu, Preview Link Card, Combobox, Pagination, Sidebar, Toast, Drawer and Questionnaire.
+  - In Vue, `ComboboxValue` wraps the label a combobox's trigger shows, so it swaps its text like the rest.
+- Animate UI's own primitives in Vue: Counting Number, Gradient Text, Highlight Text, Morphing Text, Rolling Text, Rotating Text, Scrolling Number, Shimmering Text, Sliding Number, Sliding Text, Splitting Text, Swapping Text, Typing Text, Button, Copy Button, Flip Button, GitHub Stars Button, Icon Button, Liquid Button, Ripple Button, Theme Toggler Button, Motion Grid, Scroll Progress, Spring, Pinned List, GitHub Stars, Cursor, Tooltip, Avatar Group, Tabs, Input OTP, Code Block, Page Transition, Auto Height, Blur, Click, Effect, Fade, Highlight, Image Zoom, Magnetic, Particles, Scroll Fade, Shine, Slide, Theme Toggler, Tilt and Zoom.
+- The animated icons in Vue, Lucide and Hugeicons: each is a .vue file added with shadcn-vue, on the `@animate-ui/vue/icons` core.
+- The backgrounds in Vue: Bubble, Fireworks, Glyph, Gradient, Gravity Stars, Hexagon, Hole, Stars and Topography, added with shadcn-vue.
+- The CLI animates shadcn-vue projects too: `animate` swaps the reka-ui imports and removes the CSS animations, and `audit` reads `.vue` files.
+- The skill animates Vue and Nuxt projects too (shadcn-vue, reka-ui, Motion for Vue).
+- The Vue registry has an index, so shadcn-vue's `search` and its MCP server find Animate UI's icons, backgrounds and components.
+- The docs have a React / Vue switch, always in view at the top of the sidebar, every guide page in Vue, and a Vue home page.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Components</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- Menus and lists stagger their rows as they open: Dropdown Menu, Context Menu, Menubar, Select, Combobox and Navigation Menu, in Radix, Base UI and React Aria, and the Sidebar's collapsible submenus. Each row slides in from the right out of a blur, 33ms after the one before (closer in a long list), an item already highlighted shows its highlight once its row has landed, and the box itself (a submenu's panel too) is there at once; moving between menus, reopening while closing and filtering don't stagger again.
+- Select and Combobox swap their chosen text instead of changing it in one frame: the old text rises into a blur as the new one rises into place out of it, in 400ms, in Radix, Base UI and React Aria. A list laid over its trigger is let go first. A combobox's input does it when an item is picked, not while typing.
+- The Sidebar's trigger shows Animate UI's animated Panel Left: its panel narrows while the sidebar is closed, instead of swapping two icons.
+- Morphing Text morphs more smoothly: the letters both texts share slide in their order without crossing, the others blur out and the new ones rise in, and each letter keeps the font's kerning at rest.
+- Sliding Text inside a link or a button slides when the whole control is hovered or clicked, not just its text.
+- Animated icons take `initial={false}`: mounted while `animate` is on, they show its end state at once instead of playing it.
+- The Motion Grid page has its editor back.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Fixes</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- Sidebar: from a sub-menu button back to its trigger, the highlight glides up as one, instead of a two-tone band cut at the sub-menu's edge.
+- Theme Toggler wipes across the old page on a site with a Page Transition (the page no longer goes blank while the new theme comes in), and elements named for other view transitions, like a header kept across pages, are wiped with the page instead of crossfading on their own. Page Transition only hides the old page during a page change, in Next.js, React Router and TanStack Router.
+- Questionnaire: content that appears while the next question's height is still waiting to glide restarts that glide on its own timing every time, instead of sometimes switching to a quicker spring.
+- Toggle Group surfaces, menu highlights and the text a toast swaps out sit exactly on their items in a box of fractional width, instead of up to half a pixel off.
+- A Collapsible or Accordion panel in a column with a `gap` closes that gap as it folds, instead of the layout jumping by it at the end of the close and the start of the open.
+- Navigation Menu triggers painted like the page no longer hide the highlight gliding under them.
+- Pagination: the page left no longer fades its own border out beside the sliding indicator when its link changes look (outline to ghost).
+- The Hexagon background's borders are as thick on the slanted sides as on the upright ones.
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+<ChangelogItem date="2026-10-19">
+  <ChangelogItemVersion>
+
+## 2.1.2
+
+  </ChangelogItemVersion>
+
+<ChangelogItemTitle>AI</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- The Animate UI skill checks focus in its reviews: a focus ring delayed or clipped by an animation, something leaving or invisible that can still be focused, a swap that drops the focus, and a result shown only as motion that screen readers never hear.
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+<ChangelogItem date="2026-10-19">
+  <ChangelogItemVersion>
+
+## 2.1.1
+
+  </ChangelogItemVersion>
+
+<ChangelogItemTitle>AI</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- The Animate UI skill knows Page Transition: it installs the right file for your router, wires it into the layout, marks the links that go back, and writes new effects that follow the component's rules.
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+<ChangelogItem date="2026-10-19">
+  <ChangelogItemVersion>
+
+## 2.1.0
+
+  </ChangelogItemVersion>
+
+<ChangelogItemTitle>Components</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- New **Page Transition** component: animates the change from one page to the next with view transitions, for Next.js, React Router and TanStack Router.
+  - Ten effects (`fade`, `slide`, `push`, `zoom`, `iris`, `wipe`, `bands`, `stack`, `flow`, `chop`), plus `random`.
+  - Direction from the `nav-back` and `nav-forward` transition types, and a transition type named after an effect plays it for one navigation.
+  - `PageTransitionShared` morphs an element from one page to the other.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Docs</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- The docs change pages with Page Transition's `stack` effect.
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+<ChangelogItem major date="2026-10-18">
+  <ChangelogItemVersion>
+
+## 2.0.0
+
+  </ChangelogItemVersion>
+
+<ChangelogItemDescription>
+
+Animate UI is now an npm package. Instead of copying animated versions of shadcn/ui components, you keep your own components and swap the primitives they're built on.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Packages</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- **`@animate-ui/react`**: animated primitives for Radix UI, Base UI and React Aria, each with exactly its library's API, plus `transition` / `exitTransition` animation props.
+- **`@animate-ui/cli`**: `animate-ui animate <component>` swaps the primitive imports of installed shadcn/ui components and removes the CSS animations Motion replaces, whatever your base and style. `animate-ui migrate` moves a v1 project to v2: every import it can (v1-only parts stay on their v1 file, reported as manual steps), then asks before deleting the v1 files nothing imports anymore.
+- **React Aria** support, and a drop-in replacement for Vaul built on the Radix Dialog. Headless UI is no longer supported.
+- **`AnimateUIProvider`**: one `tempo` to make every animation faster or slower, and `checkAnimation` to draw checks (the default) or pop them, single selections' checks gliding from item to item, and `reducedMotion` to choose how reduced motion applies.
+- **Motion 14**: `motion` 14 is a peer dependency.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Components</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- **New components**: Combobox, Context Menu, Drawer, Menubar, Navigation Menu, Pagination, Questionnaire, Select, Slider and Toast, for every library that has them, plus Input OTP, Scroll Fade, Sliding Text and Swapping Text. Sidebar now comes for Base UI and React Aria too.
+- **Motion rules everywhere**: springs and short ease-out tweens, exits quicker than entrances, transforms and opacity instead of layout, interruptible animations, nothing on keyboard navigation, reduced motion respected.
+- **Registry**: backgrounds, icons and the styled buttons (Liquid, Flip, GitHub Stars, Theme Toggler) are files added to your project with the shadcn CLI, to style as you like; Code Block has a ready-made block too.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Icons</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- The animated Lucide icons, plus 133 new ones, installed with shadcn; their core now comes from `@animate-ui/react/icons`, with a `speed` prop.
+- **Hugeicons**: a second library of animated icons, next to Lucide.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Backgrounds</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- Topography and Glyph join the backgrounds. The animated ones pause off screen and in hidden tabs, show a still frame under reduced motion, and leave their content on top and clickable.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>AI</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- The Animate UI skill (`npx skills add imskyleen/animate-ui`) teaches Claude Code, Cursor or Codex to animate any component the Animate UI way, and `animate-ui audit` lists the animations of a project and what each one costs for the skill to review.
+- Every registry file can also be added through the shadcn MCP server.
+
+</ChangelogItemDescription>
+
+<ChangelogItemTitle>Docs</ChangelogItemTitle>
+
+<ChangelogItemDescription>
+
+- New documentation, with one page per primitive and a tab per library.
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+<ChangelogItem date="2025-12-15">
+  <ChangelogItemVersion>
+
+## 1.0.27 and earlier
+
+  </ChangelogItemVersion>
+
+<ChangelogItemDescription>
+
+The v1 changelog and documentation stay available at [v1.animate-ui.com](https://v1.animate-ui.com/docs/changelog).
+
+</ChangelogItemDescription>
+
+</ChangelogItem>
+
+</Changelog>

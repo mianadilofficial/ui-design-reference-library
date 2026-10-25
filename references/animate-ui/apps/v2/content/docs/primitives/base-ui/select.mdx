@@ -1,0 +1,143 @@
+---
+title: Select
+description: A common form component for choosing a predefined value in a dropdown menu.
+releaseDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/select" />
+
+## Installation
+
+<Installation name="select" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same.
+
+```tsx
+import { Select } from '@animate-ui/react/primitives/base-ui/select';
+
+const fonts = [
+  { label: 'Inter', value: 'inter' },
+  { label: 'Geist', value: 'geist' },
+];
+
+export function FontPicker() {
+  return (
+    <Select.Root items={fonts} defaultValue="geist">
+      <Select.Trigger aria-label="Font">
+        <Select.Value />
+        <Select.Icon />
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Positioner alignItemWithTrigger={false} sideOffset={4}>
+          <Select.Popup>
+            <Select.List>
+              {fonts.map((font) => (
+                <Select.Item key={font.value} value={font.value}>
+                  <Select.ItemText>{font.label}</Select.ItemText>
+                  <Select.ItemIndicator>✓</Select.ItemIndicator>
+                </Select.Item>
+              ))}
+            </Select.List>
+          </Select.Popup>
+        </Select.Positioner>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { Select } from '@animate-ui/react/primitives/base-ui'`.
+
+### Check animation
+
+The chosen item's check draws itself while the previous one erases itself. With `animation="pop"` on every item's ItemIndicator, the check glides from the previous item to the chosen one instead (a first choice pops it in from half its size):
+
+```tsx
+<Select.Item key={font.value} value={font.value}>
+  <Select.ItemText>{font.label}</Select.ItemText>
+  <Select.ItemIndicator animation="pop">✓</Select.ItemIndicator>
+</Select.Item>
+```
+
+With a multiple selection, each check pops in and shrinks back out on its own.
+
+The same demo with `checkAnimation="pop"` (its Controls switch it back to `draw`):
+
+<ComponentPreview
+  name="base-ui/select"
+  values={{ checkAnimation: 'pop' }}
+  code={false}
+/>
+
+To pop every check of your app at once (checkboxes, menus, selects, comboboxes), set `checkAnimation="pop"` on an [`AnimateUIProvider`](/docs/installation#choose-how-checks-animate-optional) instead.
+
+## Animation
+
+Base UI's Select has no Animate UI v1 counterpart: it moves like v1's Base UI Menu.
+
+- **Popup** fades and scales in from 0.9, from the trigger (`--transform-origin`), in 220ms (`{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }`, a soft ease-out), and closes the same way; then Base UI unmounts it (or hides it, when it keeps the items mounted for typeahead on the closed trigger).
+- **Stagger**: opening from closed, the options (and labels, separators) come in one after another, 33ms apart (closer past 10 rows: 33ms × √(10 / rows), so a long list doesn't wait): each slides 8px in from the right and clears from a 4px blur as it fades in, in 0.3s on a soft ease-out (`{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1] }`). The box itself is there at once (its opacity in 0.1s, its scale as before), so the rows bring the fade, and a disabled row comes in at its own opacity. An item highlighted as it opens (the chosen one) shows its highlight once its row has landed. Reopened while it closes it doesn't stagger again, closing shows every row at once, and under reduced motion nothing staggers.
+- **Value**: when the choice changes, the old text rises 6px into a 4px blur and fades, while the new one rises 6px into place out of the same blur, in 400ms on a soft ease-out (`{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }`), instead of changing in one frame. The trigger keeps its size. When the list is laid over the trigger, the old value stays under it, and the swap waits until it has mostly faded out (30% opacity), so it's seen.
+- With `alignItemWithTrigger` (Base UI's default), the list is laid over the trigger with the selected item on the value, like a native select: it only fades.
+- **The highlight**: one surface glides behind the highlighted item on a spring (stiffness 500, damping 40), following the pointer and the arrow keys alike, like v1's menu highlight. Moving to another item, it carries on from where it is, at its speed: however fast the pointer or the arrow keys go, there's one highlight on screen. It only fades in (200ms, on CSS's `ease`) when it appears from nothing, and its color changes the same way when the item's highlighted background differs from the previous one's. It glides on the compositor (a Web Animation of `transform`), so a busy main thread, a heavy render for instance, doesn't stall it. When the pointer leaves the list, it stays on the last item. It wears the item's own highlighted background (`focus:bg-accent`, `data-highlighted:bg-accent`…), read from your styles: the item's background is cleared while it's highlighted; its text colors stay.
+- **ItemIndicator** (kept mounted on every item, so a check can hide itself): with a single value, the chosen item's check draws itself like a Checkbox's check (its stroke and opacity in 0.3s on Motion's easeOut, at once) while the previous one erases itself, and the list holds still for 250ms before it closes, so the change is seen nearly done before the list fades out. With `animation="pop"` (or `checkAnimation="pop"` on an `AnimateUIProvider`), the check glides there instead, on the highlight's spring (stiffness 500, damping 40), and the list holds for 150ms, and a first choice pops it in from half its size out of a 2px blur (a spring, stiffness 500, damping 24). The demo's Controls switch between the two. Choosing the item already chosen, and closing any other way (Escape, a click outside), don't wait. With `multiple`, the list stays open: a selected item's check draws itself, and erases itself when it's deselected; with `pop`, it pops in from half its size and shrinks back out in 0.15s; a check written as text ("✓") fades (or pops). Only a change of selection animates the checks: opening the list shows them at rest.
+- Reopening while the list is closing picks up from where it is.
+- Base UI's Select has no `keepMounted`: Animate UI passes an `actionsRef` to the Root and unmounts the popup when its exit is over. Your own `actionsRef` still works, and `onOpenChangeComplete` fires after the entrance and after the exit.
+- Open from the start (`defaultOpen`), the list plays its entrance on page load.
+- Under reduced motion, nothing scales or glides: the popup and the checks only fade, and the list doesn't hold; the highlight jumps from item to item and only fades in when it appears.
+
+## API Reference
+
+Every part takes exactly the props of [Base UI's Select](https://base-ui.com/react/components/select#api-reference). Animate UI adds the animation props below.
+
+### Root, Trigger, Value, Icon, Portal, Backdrop, Positioner, List, ItemText, Group, GroupLabel, Separator, ScrollUpArrow, ScrollDownArrow, Arrow, Label
+
+[Base UI props](https://base-ui.com/react/components/select#root) only. They are not animated.
+
+### Item
+
+[Base UI props](https://base-ui.com/react/components/select#item) only. It takes part in the highlight; it needs nothing more.
+
+### Popup
+
+[Base UI props](https://base-ui.com/react/components/select#popup), except `render` (Animate UI renders the popup as a `motion.div`), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the opening, and of the closing unless `exitTransition` is set.',
+      type: 'Transition',
+      default: '{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+### ItemIndicator
+
+[Base UI props](https://base-ui.com/react/components/select#item-indicator), plus:
+
+<TypeTable
+  type={{
+    animation: {
+      description:
+        "How the check shows and hides: `draw` (it draws itself and erases itself) or `pop` (it pops in from half its size and shrinks back out; a single selection's check glides to the chosen item).",
+      type: "'draw' | 'pop'",
+      default: "the closest AnimateUIProvider's checkAnimation, else 'draw'",
+    },
+    transition: {
+      description:
+        "Transition of the check showing and hiding itself, and of a single selection's check gliding (`pop`).",
+      type: 'Transition',
+      default:
+        "draw: 0.3s on Motion's easeOut both ways (a Checkbox's, without its delay); pop: a spring (stiffness 500, damping 24) in, 0.15s out, and the highlight's spring (stiffness 500, damping 40) for the glide",
+    },
+  }}
+/>

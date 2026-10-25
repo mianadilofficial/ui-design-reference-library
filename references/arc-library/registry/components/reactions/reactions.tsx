@@ -97,7 +97,7 @@ function RollingCount({ value, reduced }: { value: number; reduced: boolean }) {
 }
 
 /** An impulse rather than a keyframe: the icon starts at rest with velocity, overshoots, and settles. A quick second tap adds to the motion instead of restarting it. */
-const kick = { type: "spring", stiffness: 420, damping: 17 } as const;
+const kick = { type: "spring", stiffness: 420, damping: 39 } as const;
 
 function KickIcon({ icon: Icon, pop, reduced }: { icon: LucideIcon; pop: number; reduced: boolean }) {
   const scale = useMotionValue(1), rotate = useMotionValue(0);

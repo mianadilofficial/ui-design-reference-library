@@ -1,0 +1,94 @@
+---
+title: Radio Group
+description: A set of checkable buttons, known as radio buttons, where no more than one of the buttons can be checked at a time.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="radix-ui/radio-group" />
+
+## Installation
+
+<Installation name="radio-group" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Radix UI. Everything else stays the same.
+
+```tsx
+import { RadioGroup } from '@animate-ui/react/primitives/radix-ui';
+
+export function Density() {
+  return (
+    <RadioGroup.Root defaultValue="comfortable" aria-label="Density">
+      {['default', 'comfortable', 'compact'].map((value) => (
+        <label key={value} className="flex items-center gap-2">
+          <RadioGroup.Item value={value}>
+            <RadioGroup.Indicator>
+              <span className="size-2 rounded-full bg-current" />
+            </RadioGroup.Indicator>
+          </RadioGroup.Item>
+          {value}
+        </label>
+      ))}
+    </RadioGroup.Root>
+  );
+}
+```
+
+Coming from the `@radix-ui/react-radio-group` package? Use the subpath: `import * as RadioGroupPrimitive from '@animate-ui/react/primitives/radix-ui/radio-group'`.
+
+## Animation
+
+The motion of Animate UI v1's radio group:
+
+- **Indicator**: the dot pops in when its item is selected. Its scale and its opacity spring from 0 to 1 (stiffness 200, damping 16: it overshoots a little before settling), and back to 0 the same way when another item is selected, then the indicator unmounts, as in Radix. The indicator element itself never moves: its content (the dot) animates, so shadcn/ui's centered dot stays centered.
+- **Item** scales to 0.97 while pressed (no hover scale), on Motion's default spring for scale (stiffness 550, damping 30).
+- In the demo, an item's fill is a layer of its own (`before:` in its classes) that grows from 70% while it fades in, in 300ms, and shrinks back as it fades out, like the [Checkbox](/docs/primitives/radix-ui/checkbox)'s: the dot pops in over it. The layer covers the border (`before:-inset-px`) and the border keeps its color, so no outline rings the growing fill. It's CSS, so copy the classes for the same effect; under reduced motion the layer only fades.
+- An item already selected when the group appears (the page loading, a dialog opening) shows its dot at rest, unlike v1's: only a change of selection animates a dot. On a server-rendered page, the dot is there before any script runs.
+- Selecting with the arrow keys animates like a click, as v1's did.
+- Selecting again mid-animation turns back from where the dot is.
+- Under reduced motion, the dot only fades and nothing scales.
+- With `forceMount`, an unselected item's indicator stays in the DOM with its dot hidden.
+
+## API Reference
+
+Every part takes exactly the props of [Radix UI's Radio Group](https://www.radix-ui.com/primitives/docs/components/radio-group#api-reference). Animate UI adds the animation props below. With `asChild`, a part renders your element with Radix's behaviour, without the animation.
+
+### Root
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/radio-group#root) only: nothing animates on the group itself.
+
+### Item
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/radio-group#item), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the press scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+  }}
+/>
+
+### Indicator
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/radio-group#indicator), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the dot appearing.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 200, damping: 16 }",
+    },
+    exitTransition: {
+      description: 'Transition of the dot leaving.',
+      type: 'Transition',
+      default: 'the same spring as transition',
+    },
+  }}
+/>
+
+`AnimateUIProvider`'s `tempo` scales these transitions with everything else.

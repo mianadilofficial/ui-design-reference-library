@@ -136,7 +136,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = 2 * Math.PI / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const GROW = physical(.46, .14), SHRINK = physical(.38, 0);
+const GROW = physical(.46, 0), SHRINK = physical(.38, 0);
 const BAR_MAX = 660, PANEL_MAX = 420, CHIP = 44, STACK_BELOW = 560;
 
 const subscribe = () => () => {};
@@ -144,7 +144,7 @@ function useHydrated() { return useSyncExternalStore(subscribe, () => true, () =
 
 const faceVariants: Variants = {
   hidden: { opacity: 0, y: 10, filter: `blur(${motionTokens.blur.soft}px)` },
-  shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { y: physical(.42, .08), opacity: { duration: .22, ease: enter, delay: .04 }, filter: { duration: .26, ease: enter, delay: .04 } } },
+  shown: { opacity: 1, y: 0, filter: "blur(0px)", transition: { y: physical(.42, 0), opacity: { duration: .22, ease: enter, delay: .04 }, filter: { duration: .26, ease: enter, delay: .04 } } },
   gone: { opacity: 0, y: 4, filter: `blur(${motionTokens.blur.soft}px)`, transition: { duration: .12, ease: standard } },
 };
 const fadeVariants: Variants = { hidden: { opacity: 0 }, shown: { opacity: 1, transition: { duration: .16 } }, gone: { opacity: 0, transition: { duration: .1 } } };
@@ -305,7 +305,7 @@ export const CookieConsent = forwardRef<CookieConsentHandle, CookieConsentProps>
     <AnimatePresence>
       {mode ? <motion.div key="surface" className={styles.surface} style={{ x, width, height, borderRadius: radius }}
         initial={reduced ? { opacity: 0 } : { opacity: 0, y: 24, scale: .98 }}
-        animate={{ opacity: 1, y: 0, scale: 1, transition: reduced ? { duration: .16 } : { y: physical(.5, .1), scale: physical(.5, .1), opacity: { duration: .24, ease: enter } } }}
+        animate={{ opacity: 1, y: 0, scale: 1, transition: reduced ? { duration: .16 } : { y: physical(.5, 0), scale: physical(.5, 0), opacity: { duration: .24, ease: enter } } }}
         exit={reduced ? { opacity: 0, transition: { duration: .12 } } : { opacity: 0, y: 12, scale: .96, transition: { duration: .18, ease: standard } }}>
         <AnimatePresence initial={false}>
           {mode === "bar" ? <Face key="bar" id="bar" width={widths.bar} side={align} reduced={reduced} onSize={onSize} focusOnMount={focusTarget === "bar"}

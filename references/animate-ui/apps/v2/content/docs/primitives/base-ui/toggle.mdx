@@ -1,0 +1,57 @@
+---
+title: Toggle
+description: A two-state button that can be either on or off.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/toggle" />
+
+## Installation
+
+<Installation name="toggle" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same.
+
+```tsx
+import { Toggle } from '@animate-ui/react/primitives/base-ui/toggle';
+
+export function BoldToggle() {
+  return (
+    <Toggle aria-label="Toggle bold">
+      <BoldIcon />
+    </Toggle>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { Toggle } from '@animate-ui/react/primitives/base-ui'`.
+
+`Toggle.Props` and `Toggle.State` are kept. The same `Toggle` is the item of a [Toggle Group](/docs/primitives/base-ui/toggle-group).
+
+## Animation
+
+The motion of Animate UI v1's toggle:
+
+- **Toggle** scales to 0.97 while pressed, on Motion's default spring for scale (stiffness 550, damping 30). No hover scale.
+- The press scale runs on the compositor (a `transform`), so shadcn/ui's `transition-all` doesn't tween its frames.
+- The on/off colours are the component's CSS: shadcn/ui colours the toggle itself (`data-[state=on]:bg-muted`) and fades it with `transition-all`. v1's styled toggle faded a separate highlight in and out instead (0.3s).
+- Toggling with Space changes the state at once.
+- Under reduced motion, there is no press scale.
+
+## API Reference
+
+`Toggle` takes exactly the props of [Base UI's Toggle](https://base-ui.com/react/components/toggle#api-reference), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the press scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+  }}
+/>
+
+A `render` element (or function) of your own gets Base UI's behaviour, without the animation. `AnimateUIProvider`'s `tempo` scales these transitions with everything else.

@@ -9,12 +9,10 @@
 .iconInner { position: absolute; inset: 0; display: grid; place-items: center; }
 .iconInner[data-state="copied"] { color: var(--success); }
 .iconInner[data-state="error"] { color: var(--danger); }
-/* The inline padding gives blurred edge letters room before the horizontal clip; the negative margin keeps the box the same size. */
-.label { display: grid; min-width: 0; margin-inline: calc(var(--space-1) * -1); padding-inline: var(--space-1); overflow-x: clip; text-align: left; white-space: nowrap; }
-.measure, .glyphs { grid-area: 1 / 1; }
+.label { display: grid; min-width: 0; text-align: left; white-space: nowrap; }
+.measure, .text { grid-area: 1 / 1; }
 .measure { visibility: hidden; }
-.glyphs { position: relative; display: inline-flex; justify-self: start; white-space: pre; }
-.glyph { display: inline-block; }
+.text { justify-self: start; }
 .iconOnly { width: var(--control-height-sm); padding: 0; }
 .plain { border-color: transparent; background: transparent; color: var(--text-secondary); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }

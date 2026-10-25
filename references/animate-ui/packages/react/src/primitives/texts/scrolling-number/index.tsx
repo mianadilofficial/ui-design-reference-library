@@ -1,0 +1,341 @@
+'use client';
+
+import * as React from 'react';
+import {
+  animate,
+  motion,
+  useMotionValue,
+  useMotionValueEvent,
+  useTransform,
+  type HTMLMotionProps,
+  type Transition,
+} from 'motion/react';
+
+import {
+  useIsInView,
+  type UseIsInViewOptions,
+} from '../../../utils/use-is-in-view';
+import { getStrictContext } from '../../../utils/strict-context';
+import {
+  ReducedMotionConfig,
+  useShouldReduceMotion,
+  useTempoTransition,
+} from '../../../utils/motion';
+import { VISUALLY_HIDDEN } from '../_text';
+
+const formatter = new Intl.NumberFormat('en-US');
+
+function generateRange(
+  max: number,
+  step: number,
+  sideItemsCount: number,
+): number[] {
+  const result: number[] = [];
+  const end = max + sideItemsCount * step;
+  for (let value = end; value >= 0; value -= step) {
+    result.push(value);
+  }
+  return result;
+}
+
+type ScrollingNumberDirection = 'ltr' | 'rtl' | 'ttb' | 'btt';
+
+type ScrollingNumberContextType = {
+  number: number;
+  step: number;
+  itemsSize: number;
+  sideItemsCount: number;
+  displayedItemsCount: number;
+  isInView: boolean;
+  direction: ScrollingNumberDirection;
+  isVertical: boolean;
+  range: number[];
+  onNumberChange?: (value: number) => void;
+};
+
+const [ScrollingNumberProvider, useScrollingNumber] =
+  getStrictContext<ScrollingNumberContextType>('ScrollingNumberContext');
+
+type ScrollingNumberContainerProps = React.ComponentProps<'div'> & {
+  number: number;
+  step: number;
+  itemsSize?: number;
+  sideItemsCount?: number;
+  direction?: ScrollingNumberDirection;
+  onNumberChange?: (value: number) => void;
+} & UseIsInViewOptions;
+
+function ScrollingNumberContainer({
+  ref,
+  number,
+  step: stepProp,
+  itemsSize = 30,
+  sideItemsCount = 2,
+  direction = 'btt',
+  inView = false,
+  inViewMargin = '0px',
+  inViewOnce = true,
+  onNumberChange,
+  style,
+  children,
+  ...props
+}: ScrollingNumberContainerProps) {
+  const step = stepProp > 0 ? stepProp : 1;
+  const { ref: localRef, isInView } = useIsInView(
+    ref as React.Ref<HTMLDivElement>,
+    {
+      inView,
+      inViewOnce,
+      inViewMargin,
+    },
+  );
+
+  const displayedItemsCount = React.useMemo(
+    () => 1 + sideItemsCount * 2,
+    [sideItemsCount],
+  );
+  const isVertical = React.useMemo(
+    () => direction === 'btt' || direction === 'ttb',
+    [direction],
+  );
+  const range = React.useMemo(
+    () => generateRange(number, step, sideItemsCount),
+    [number, step, sideItemsCount],
+  );
+
+  return (
+    <ScrollingNumberProvider
+      value={{
+        number,
+        step,
+        itemsSize,
+        sideItemsCount,
+        displayedItemsCount,
+        isInView,
+        direction,
+        isVertical,
+        range,
+        onNumberChange,
+      }}
+    >
+      <div
+        ref={localRef}
+        data-slot="scrolling-number-container"
+        data-direction={direction}
+        style={{
+          position: 'relative',
+          overflow: 'hidden',
+          height: isVertical ? itemsSize * displayedItemsCount : undefined,
+          width: !isVertical ? itemsSize * displayedItemsCount : undefined,
+          ...style,
+        }}
+        {...props}
+      >
+        {children}
+        <span className="sr-only" style={VISUALLY_HIDDEN}>
+          {formatter.format(number)}
+        </span>
+      </div>
+    </ScrollingNumberProvider>
+  );
+}
+
+type ScrollingNumberHighlightProps = React.ComponentProps<'div'>;
+
+function ScrollingNumberHighlight({
+  style,
+  ...props
+}: ScrollingNumberHighlightProps) {
+  const { itemsSize, isVertical, direction } = useScrollingNumber();
+  return (
+    <div
+      data-slot="scrolling-number-highlight"
+      data-direction={direction}
+      style={{
+        position: 'absolute',
+        height: isVertical ? itemsSize : undefined,
+        width: !isVertical ? itemsSize : undefined,
+        left: !isVertical ? '50%' : undefined,
+        top: isVertical ? '50%' : undefined,
+        transform: !isVertical ? 'translateX(-50%)' : 'translateY(-50%)',
+        zIndex: 0,
+        ...style,
+      }}
+      {...props}
+    />
+  );
+}
+
+type ScrollingNumberProps = HTMLMotionProps<'div'> & {
+  delay?: number;
+  onCompleted?: () => void;
+};
+
+const DEFAULT_TRANSITION: Transition = { stiffness: 90, damping: 30 };
+
+function resolveTransition(transition: Transition): Transition {
+  if ('type' in transition || 'ease' in transition) return transition;
+  return {
+    type: 'spring',
+    restDelta: 0.001,
+    restSpeed: 0.01,
+    ...transition,
+  } as Transition;
+}
+
+const DIRECTION_FLEX: Record<
+  ScrollingNumberDirection,
+  React.CSSProperties['flexDirection']
+> = {
+  btt: 'column',
+  ttb: 'column-reverse',
+  rtl: 'row',
+  ltr: 'row-reverse',
+};
+
+function ScrollingNumber(props: ScrollingNumberProps) {
+  return (
+    <ReducedMotionConfig remount>
+      <ScrollingNumberContent {...props} />
+    </ReducedMotionConfig>
+  );
+}
+
+function ScrollingNumberContent({
+  transition,
+  delay = 0,
+  onCompleted,
+  style,
+  ...props
+}: ScrollingNumberProps) {
+  const {
+    itemsSize,
+    sideItemsCount,
+    displayedItemsCount,
+    isInView,
+    direction,
+    isVertical,
+    range,
+    step,
+    number,
+    onNumberChange,
+  } = useScrollingNumber();
+  const reduce = useShouldReduceMotion();
+
+  const sign = direction === 'ttb' || direction === 'ltr' ? -1 : 1;
+  const initialPosition = -sign * itemsSize * sideItemsCount;
+  const finalPosition = sign * itemsSize * (range.length - displayedItemsCount);
+
+  const position = useMotionValue(initialPosition);
+  const transform = useTransform(position, (p) =>
+    isVertical ? `translateY(${p}px)` : `translateX(${p}px)`,
+  );
+
+  const defaultTransition = useTempoTransition(DEFAULT_TRANSITION);
+  const transitionRef = React.useRef(transition ?? defaultTransition);
+  React.useEffect(() => {
+    transitionRef.current = transition ?? defaultTransition;
+  });
+
+  React.useEffect(() => {
+    if (!isInView) return;
+
+    if (reduce) {
+      position.jump(finalPosition);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      animate(
+        position,
+        finalPosition,
+        resolveTransition(transitionRef.current),
+      );
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [isInView, finalPosition, position, delay, reduce]);
+
+  React.useEffect(() => () => position.stop(), [position]);
+
+  const indexAt = (p: number) => (sign * p) / itemsSize + sideItemsCount;
+  const lastNumberRef = React.useRef<number | null>(null);
+  const completedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    completedRef.current = false;
+  }, [number]);
+
+  useMotionValueEvent(position, 'change', (p) => {
+    const index = indexAt(p);
+    const snapped = Math.min(Math.max(Math.round(index) * step, 0), number);
+    if (snapped !== lastNumberRef.current) {
+      lastNumberRef.current = snapped;
+      onNumberChange?.(snapped);
+    }
+
+    const total = finalPosition - initialPosition;
+    const progress = total === 0 ? 1 : (p - initialPosition) / total;
+    if (!completedRef.current && progress >= 0.99) {
+      completedRef.current = true;
+      onCompleted?.();
+    }
+  });
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      data-slot="scrolling-number"
+      style={{
+        position: 'absolute',
+        top: direction === 'ttb' ? 0 : undefined,
+        bottom: direction === 'btt' ? 0 : undefined,
+        left: direction === 'ltr' ? 0 : undefined,
+        right: direction === 'rtl' ? 0 : undefined,
+        width: isVertical ? '100%' : undefined,
+        height: !isVertical ? '100%' : undefined,
+        display: 'flex',
+        zIndex: 1,
+        flexDirection: DIRECTION_FLEX[direction],
+        transform,
+        ...style,
+      }}
+      {...props}
+    />
+  );
+}
+
+type ScrollingNumberItemsProps = Omit<React.ComponentProps<'div'>, 'children'>;
+
+function ScrollingNumberItems({ style, ...props }: ScrollingNumberItemsProps) {
+  const { range, direction, itemsSize, isVertical } = useScrollingNumber();
+  return range.map((value) => (
+    <div
+      key={value}
+      data-slot="scrolling-number-item"
+      data-value={value}
+      data-direction={direction}
+      style={{
+        height: isVertical ? itemsSize : undefined,
+        width: !isVertical ? itemsSize : undefined,
+        ...style,
+      }}
+      {...props}
+    >
+      {formatter.format(value)}
+    </div>
+  ));
+}
+
+export {
+  ScrollingNumberContainer,
+  ScrollingNumber,
+  ScrollingNumberHighlight,
+  ScrollingNumberItems,
+  useScrollingNumber,
+  type ScrollingNumberContainerProps,
+  type ScrollingNumberProps,
+  type ScrollingNumberHighlightProps,
+  type ScrollingNumberItemsProps,
+  type ScrollingNumberDirection,
+  type ScrollingNumberContextType,
+};

@@ -25,7 +25,7 @@ only the Claude Code one.
 | Tokens, components, accessibility, taste, 138 design systems | yes | **yes** |
 | All 52 gates | yes | **yes** — plain Node and Python |
 | The doctrine: eight states, token by intent, mobile-first, the house rules | yes | **yes** |
-| 25 skills that load on demand | yes | no — the doctrine is inlined instead |
+| 26 skills that load on demand | yes | no — the doctrine is inlined instead |
 | Hooks that fire whether or not the model remembers | yes | **no** |
 | `/critique` in a separate context | yes | no — a step in the instructions |
 

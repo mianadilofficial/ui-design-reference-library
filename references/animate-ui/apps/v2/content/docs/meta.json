@@ -1,0 +1,15 @@
+{
+  "pages": [
+    "index",
+    "installation",
+    "primitives",
+    "backgrounds",
+    "icons",
+    "react",
+    "cli",
+    "skills",
+    "mcp",
+    "accessibility",
+    "changelog"
+  ]
+}

@@ -1,0 +1,137 @@
+---
+title: Select
+description: Displays a list of options for the user to pick from, triggered by a button.
+releaseDate: '2026-10-18'
+---
+
+<ComponentPreview name="radix-ui/select" />
+
+## Installation
+
+<Installation name="select" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Radix UI. Everything else stays the same.
+
+```tsx
+import { Select } from '@animate-ui/react/primitives/radix-ui';
+
+export function FontPicker() {
+  return (
+    <Select.Root defaultValue="geist">
+      <Select.Trigger aria-label="Font">
+        <Select.Value placeholder="Choose a font" />
+        <Select.Icon />
+      </Select.Trigger>
+      <Select.Portal>
+        <Select.Content position="popper" sideOffset={4}>
+          <Select.Viewport>
+            <Select.Item value="inter">
+              <Select.ItemText>Inter</Select.ItemText>
+              <Select.ItemIndicator>✓</Select.ItemIndicator>
+            </Select.Item>
+            <Select.Item value="geist">
+              <Select.ItemText>Geist</Select.ItemText>
+              <Select.ItemIndicator>✓</Select.ItemIndicator>
+            </Select.Item>
+          </Select.Viewport>
+        </Select.Content>
+      </Select.Portal>
+    </Select.Root>
+  );
+}
+```
+
+Coming from the `@radix-ui/react-select` package? Use the subpath: `import * as SelectPrimitive from '@animate-ui/react/primitives/radix-ui/select'`.
+
+### Check animation
+
+The chosen item's check draws itself while the previous one erases itself. With `animation="pop"` on every item's ItemIndicator, the check glides from the previous item to the chosen one instead (a first choice pops it in from half its size):
+
+```tsx
+<Select.Item value="geist">
+  <Select.ItemText>Geist</Select.ItemText>
+  <Select.ItemIndicator animation="pop">✓</Select.ItemIndicator>
+</Select.Item>
+```
+
+The same demo with `checkAnimation="pop"` (its Controls switch it back to `draw`):
+
+<ComponentPreview
+  name="radix-ui/select"
+  values={{ checkAnimation: 'pop' }}
+  code={false}
+/>
+
+To pop every check of your app at once (checkboxes, menus, selects, comboboxes), set `checkAnimation="pop"` on an [`AnimateUIProvider`](/docs/installation#choose-how-checks-animate-optional) instead.
+
+## Animation
+
+Radix's Select has no Animate UI v1 counterpart: it moves like v1's Dropdown Menu.
+
+- **Content** with `position="popper"` fades and scales in from 0.9, from the trigger (`--radix-select-content-transform-origin`), in 220ms (`{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }`, a soft ease-out), and closes the same way before it unmounts.
+- **Stagger**: opening from closed, the options (and labels, separators) come in one after another, 33ms apart (closer past 10 rows: 33ms × √(10 / rows), so a long list doesn't wait): each slides 8px in from the right and clears from a 4px blur as it fades in, in 0.3s on a soft ease-out (`{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1] }`). The box itself is there at once (its opacity in 0.1s, its scale as before), so the rows bring the fade, and a disabled row comes in at its own opacity. An item highlighted as it opens (the chosen one) shows its highlight once its row has landed. Reopened while it closes it doesn't stagger again, closing shows every row at once, and under reduced motion nothing staggers.
+- **Value**: when the choice changes, the old text rises 6px into a 4px blur and fades, while the new one rises 6px into place out of the same blur, in 400ms on a soft ease-out (`{ duration: 0.4, ease: [0.215, 0.61, 0.355, 1] }`), instead of changing in one frame. The trigger keeps its size. When the list is laid over the trigger, the old value stays under it, and the swap waits until it has mostly faded out (30% opacity), so it's seen.
+- With `position="item-aligned"` (Radix's default), the list is laid over the trigger with the selected item lined up on the value, so it only fades: there is no side to grow from, and a scale would skew Radix's measurement.
+- **The highlight**: one surface glides behind the highlighted item on a spring (stiffness 500, damping 40), following the pointer and the arrow keys alike, like v1's menu highlight. Moving to another item, it carries on from where it is, at its speed: however fast the pointer or the arrow keys go, there's one highlight on screen. It only fades in (200ms, on CSS's `ease`) when it appears from nothing, and its color changes the same way when the item's highlighted background differs from the previous one's. It glides on the compositor (a Web Animation of `transform`), so a busy main thread, a heavy render for instance, doesn't stall it. When the pointer leaves the list, it stays on the last item. It wears the item's own highlighted background (`focus:bg-accent`, `data-highlighted:bg-accent`…), read from your styles: the item's background is cleared while it's highlighted; its text colors stay.
+- **ItemIndicator**: the chosen item's check draws itself like a Checkbox's check (its stroke and opacity in 0.3s on Motion's easeOut, at once) while the previous one erases itself, and the list holds still for 250ms before it closes, so the change is seen nearly done before the list fades out. With `animation="pop"` (or `checkAnimation="pop"` on an `AnimateUIProvider`), the check glides there instead, on the highlight's spring (stiffness 500, damping 40), and the list holds for 150ms, and a first choice pops it in from half its size out of a 2px blur (a spring, stiffness 500, damping 24). The demo's Controls switch between the two. Choosing the item already chosen, and closing any other way (Escape, a click outside), don't wait. Only a change of selection animates the checks: opening the list shows them at rest. Radix renders the indicator for the chosen item only: in the animated list, Animate UI renders it on every item (the same `<span aria-hidden>`), so a check can hide itself.
+- Reopening while the list is closing picks up from where it is. A closing list is `inert`, so it can't be clicked through.
+- After the exit, the closed list goes back to Radix, which keeps the items mounted off-screen: the trigger keeps its label, typeahead on the closed trigger and native form submission still work.
+- `forceMount` (on `Content` or `Portal`) doesn't keep the closed list mounted: it plays its exit, then leaves, so a closed select never blocks clicks on the page.
+- Open from the start (`defaultOpen`), the list plays its entrance on page load.
+- Under reduced motion, nothing scales or glides: the list and the checks only fade, and the list doesn't hold; the highlight jumps from item to item and only fades in when it appears.
+
+## API Reference
+
+Every part takes exactly the props of [Radix UI's Select](https://www.radix-ui.com/primitives/docs/components/select#api-reference). Animate UI adds the animation props below.
+
+### Root, Trigger, Value, Icon, Portal, Viewport, ItemText, Group, Label, Separator, ScrollUpButton, ScrollDownButton, Arrow
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/select#root) only. They are not animated.
+
+### Item
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/select#item) only. It takes part in the highlight; it needs nothing more.
+
+### Content
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/select#content), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the opening, and of the closing unless `exitTransition` is set.',
+      type: 'Transition',
+      default: '{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+### ItemIndicator
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/select#itemindicator), plus:
+
+<TypeTable
+  type={{
+    animation: {
+      description:
+        "How the check shows and hides: `draw` (it draws itself and erases itself) or `pop` (it pops in from half its size and shrinks back out; a single selection's check glides to the chosen item).",
+      type: "'draw' | 'pop'",
+      default: "the closest AnimateUIProvider's checkAnimation, else 'draw'",
+    },
+    transition: {
+      description:
+        "Transition of the check showing and hiding itself, and of a single selection's check gliding (`pop`).",
+      type: 'Transition',
+      default:
+        "draw: 0.3s on Motion's easeOut both ways (a Checkbox's, without its delay); pop: a spring (stiffness 500, damping 24) in, 0.15s out, and the highlight's spring (stiffness 500, damping 40) for the glide",
+    },
+  }}
+/>

@@ -217,6 +217,25 @@ def check_flowchart() -> None:
     ok("flowchart parses: shapes, subgraphs, labels, cycle, budgets, tables")
 
 
+def check_flowchart_header_statements(tmp: Path) -> None:
+    # Mermaid accepts `graph TD; A-->B;` on the header line itself; the
+    # statements after the header's semicolon are diagram content.
+    for name, header in (("graph-td", "graph TD;"), ("flowchart-lr", "flowchart LR;")):
+        source = tmp / f"header-statements-{name}.mmd"
+        source.write_text(f"{header} A-->B; B-->|ok| C;\n", encoding="utf-8")
+        diagram = json.loads(run_extract([str(source), "--json"]))["diagrams"][0]
+        nodes = sorted(node["id"] for node in diagram["nodes"])
+        edges = [(e["source"], e["target"], e["label"]) for e in diagram["edges"]]
+        if nodes != ["A", "B", "C"] or edges != [("A", "B", ""), ("B", "C", "ok")]:
+            fail(f"header-line statements were dropped for {header!r}: {nodes} {edges}")
+    bare = tmp / "header-statements-bare.mmd"
+    bare.write_text("flowchart LR;\nA-->B\n", encoding="utf-8")
+    diagram = json.loads(run_extract([str(bare), "--json"]))["diagrams"][0]
+    if [edge["target"] for edge in diagram["edges"]] != ["B"]:
+        fail("a bare header semicolon changed the following statements")
+    ok("flowchart statements after the header semicolon are retained")
+
+
 def check_entity_label_codes(tmp: Path) -> None:
     source = tmp / "entity-labels.mmd"
     source.write_text(
@@ -961,6 +980,26 @@ def check_sequence_highlight_nesting_regression(tmp: Path) -> None:
     ok("sequence highlight blocks preserve semantic fragment regions and depth")
 
 
+def check_sequence_digest_regions(tmp: Path) -> None:
+    scene = tmp / "sequence-digest-regions.mmd"
+    scene.write_text(
+        "sequenceDiagram\nparticipant A\nparticipant B\n"
+        "alt valid file\nA->>B: ok\nelse too large\nA->>B: 413\nelse too<br>slow\nA->>B: 504\n"
+        "else\nA->>B: other\nend\n"
+        "par one\nA->>B: x\nand two\nA->>B: y\nend\n"
+        "critical connect\nA->>B: c\noption timeout\nA->>B: t\nend\n",
+        encoding="utf-8",
+    )
+    expected = (
+        "- fragments: alt(valid file | else: too large | else: too ⏎ slow | else: unlabeled), "
+        "par(one | and: two), "
+        "critical(connect | option: timeout)"
+    )
+    if expected not in run_extract([str(scene)]).splitlines():
+        fail("digest drops the else/and/option regions of sequence fragments")
+    ok("digest lists the else/and/option regions of sequence fragments")
+
+
 def check_sequence_grammar_forms(tmp: Path) -> None:
     """Quoted participants, create directives, and full arrow vocabulary.
 
@@ -1459,6 +1498,7 @@ def main() -> int:
         check_node_shape_updates(tmp)
         check_invisible_links(tmp)
         check_spaced_pipe_labels(tmp)
+        check_flowchart_header_statements(tmp)
         check_entity_label_codes(tmp)
         check_shape_and_edge_vocabulary(tmp)
         check_frontmatter(tmp)
@@ -1471,6 +1511,7 @@ def main() -> int:
         check_legacy_stdout_encoding(tmp)
         check_sequence_grammar_forms(tmp)
         check_sequence_highlight_nesting_regression(tmp)
+        check_sequence_digest_regions(tmp)
         check_adversarial(tmp)
         check_errors_and_limits(tmp)
         check_docs_and_wiring()

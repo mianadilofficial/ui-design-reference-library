@@ -1,0 +1,165 @@
+---
+title: Dropdown Menu
+description: Displays a menu to the user, such as a set of actions or functions, triggered by a button.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="radix-ui/dropdown-menu" />
+
+## Installation
+
+<Installation name="dropdown-menu" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Radix UI. Everything else stays the same.
+
+```tsx
+import { DropdownMenu } from '@animate-ui/react/primitives/radix-ui';
+
+export function AccountMenu() {
+  return (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>Account</DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content sideOffset={4}>
+          <DropdownMenu.Item>Profile</DropdownMenu.Item>
+          <DropdownMenu.Item>Billing</DropdownMenu.Item>
+          <DropdownMenu.Separator />
+          <DropdownMenu.Item>Log out</DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}
+```
+
+Coming from the `@radix-ui/react-dropdown-menu` package? Use the subpath: `import * as DropdownMenuPrimitive from '@animate-ui/react/primitives/radix-ui/dropdown-menu'`.
+
+### Check animation
+
+Checkbox and radio items show their check in an `ItemIndicator`: it draws itself when the item is checked, and erases itself when it's unchecked (a radio item's while the new one draws). With `animation="pop"`, it pops in from half its size and shrinks back out instead, and a radio item's check glides to the newly checked item:
+
+```tsx
+import * as React from 'react';
+import { DropdownMenu } from '@animate-ui/react/primitives/radix-ui';
+
+export function ViewMenu() {
+  const [statusBar, setStatusBar] = React.useState(true);
+  const [panel, setPanel] = React.useState('bottom');
+
+  return (
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>View</DropdownMenu.Trigger>
+      <DropdownMenu.Portal>
+        <DropdownMenu.Content sideOffset={4}>
+          <DropdownMenu.CheckboxItem
+            checked={statusBar}
+            onCheckedChange={setStatusBar}
+          >
+            <DropdownMenu.ItemIndicator animation="pop">
+              <CheckIcon />
+            </DropdownMenu.ItemIndicator>
+            Status bar
+          </DropdownMenu.CheckboxItem>
+          <DropdownMenu.Separator />
+          <DropdownMenu.RadioGroup value={panel} onValueChange={setPanel}>
+            <DropdownMenu.RadioItem value="top">
+              <DropdownMenu.ItemIndicator animation="pop">
+                <CheckIcon />
+              </DropdownMenu.ItemIndicator>
+              Top
+            </DropdownMenu.RadioItem>
+            <DropdownMenu.RadioItem value="bottom">
+              <DropdownMenu.ItemIndicator animation="pop">
+                <CheckIcon />
+              </DropdownMenu.ItemIndicator>
+              Bottom
+            </DropdownMenu.RadioItem>
+          </DropdownMenu.RadioGroup>
+        </DropdownMenu.Content>
+      </DropdownMenu.Portal>
+    </DropdownMenu.Root>
+  );
+}
+```
+
+The same demo with `checkAnimation="pop"` (its Controls switch it back to `draw`):
+
+<ComponentPreview
+  name="radix-ui/dropdown-menu"
+  values={{ checkAnimation: 'pop' }}
+  code={false}
+/>
+
+To pop every check of your app at once (checkboxes, menus, selects, comboboxes), set `checkAnimation="pop"` on an [`AnimateUIProvider`](/docs/installation#choose-how-checks-animate-optional) instead.
+
+## Animation
+
+The motion of Animate UI v1's Dropdown Menu:
+
+- **Content** fades and scales in from 0.9, from the trigger (`--radix-dropdown-menu-content-transform-origin`, set inline so it works without styles), in 220ms (`{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }`, a soft ease-out), and closes the same way before it unmounts.
+- **Stagger**: opening from closed, the rows (items, labels, separators) come in one after another, 33ms apart (closer past 10 rows: 33ms × √(10 / rows), so a long list doesn't wait): each slides 8px in from the right and clears from a 4px blur as it fades in, in 0.3s on a soft ease-out (`{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1] }`). The box itself is there at once (its opacity in 0.1s, its scale as before), so the rows bring the fade, and a disabled row comes in at its own opacity. An item highlighted as it opens (the chosen one) shows its highlight once its row has landed. Reopened while it closes it doesn't stagger again, closing shows every row at once, and under reduced motion nothing staggers.
+- **SubContent** grows from the side of its trigger the same way.
+- **The highlight**: one surface glides behind the highlighted item on a spring (stiffness 500, damping 40), following the pointer and the arrow keys alike, and into submenus. Moving to another item, it carries on from where it is, at its speed: however fast the pointer or the arrow keys go, there's one highlight on screen. It only fades in (200ms, on CSS's `ease`) when it appears from nothing, and its color changes the same way when the item's highlighted background differs from the previous one's. It glides on the compositor (a Web Animation of `transform`), so a busy main thread, a submenu opening for instance, doesn't stall it. Into a submenu or back out of it, each menu clips its own part, as in v1: the previous surface glides along with the new one, the same box on screen, so the two make one highlight crossing from one menu into the other; the entering part fades in as it glides. When the pointer leaves the menu, it stays on the last item. It wears the item's own highlighted background (`focus:bg-accent`, `data-highlighted:bg-accent`…), read from your styles: the item's background is cleared while it's highlighted (or still has the focus, or its submenu is open), and a `focus:` background is read again once the item has the focus; its text colors stay.
+- **ItemIndicator**: an item's check draws itself like a Checkbox's check (its stroke and opacity in 0.3s on Motion's easeOut, at once: there's no box to fill first) when the item is checked, and erases itself in 0.3s when it's unchecked (it stays mounted for that). Checking another radio item erases the old check while the new one draws itself. Only checking and unchecking animate: opening the menu shows its checks at rest, and closing it leaves them as they are.
+- With `animation="pop"` on the ItemIndicator (or `checkAnimation="pop"` on an `AnimateUIProvider`), checks pop instead: in from half their size out of a 2px blur (a spring, stiffness 500, damping 24), and back into their blur in 0.15s. A radio item's check doesn't pop from one item to another: it glides from the item it leaves to the newly checked one, on the highlight's spring (stiffness 500, damping 40), like a select's. The demo's Controls switch between the two.
+- Choosing an item closes the menu (Radix's default): when its check changes (a checkbox item's, or another radio item's than the checked one), the menu holds still first (250ms while a check draws itself, 150ms while it pops or glides), so the change is seen, then fades out. Escape and outside clicks don't wait.
+- When the menu closes with focus inside, focus goes back to the trigger at once instead of after the exit, and the leaving menu ignores the pointer and can't dismiss anything.
+- With `forceMount` (on the Content or the Portal), the closed content stays in the DOM: it plays its exit, then is hidden (`visibility: hidden`). It still opens on a click: closed, it's a dismissable layer already, and Radix would take the pointer down that opens it for one outside it, closing it at once.
+- Open from the start (`defaultOpen`), the menu plays its entrance on page load, like v1.
+- Under reduced motion, nothing scales or glides: the menu and the checks only fade, and the menu doesn't hold; the highlight jumps from item to item and only fades in when it appears.
+
+## API Reference
+
+Every part takes exactly the props of [Radix UI's Dropdown Menu](https://www.radix-ui.com/primitives/docs/components/dropdown-menu#api-reference). Animate UI adds the animation props below.
+
+### Root, Trigger, Portal, Group, Label, RadioGroup, Separator, Arrow, Sub
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/dropdown-menu#api-reference) only. They are not animated.
+
+### Item, CheckboxItem, RadioItem, SubTrigger
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/dropdown-menu#item) only. They take part in the highlight; it needs nothing more.
+
+### Content, SubContent
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/dropdown-menu#content), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the opening, and of the closing unless `exitTransition` is set.',
+      type: 'Transition',
+      default: '{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+### ItemIndicator
+
+[Radix UI props](https://www.radix-ui.com/primitives/docs/components/dropdown-menu#itemindicator), plus:
+
+<TypeTable
+  type={{
+    animation: {
+      description:
+        "How the check shows and hides: `draw` (it draws itself and erases itself) or `pop` (it pops in from half its size and shrinks back out; a radio item's check glides to the newly checked item).",
+      type: "'draw' | 'pop'",
+      default: "the closest AnimateUIProvider's checkAnimation, else 'draw'",
+    },
+    transition: {
+      description:
+        "Transition of the check showing and hiding itself, and of a radio item's check gliding (`pop`).",
+      type: 'Transition',
+      default:
+        "draw: 0.3s on Motion's easeOut both ways (a Checkbox's, without its delay); pop: a spring (stiffness 500, damping 24) in, 0.15s out, and the highlight's spring (stiffness 500, damping 40) for the glide",
+    },
+  }}
+/>

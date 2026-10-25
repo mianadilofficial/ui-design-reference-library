@@ -211,7 +211,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = (2 * Math.PI) / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const GROW = physical(.4, .12), SHRINK = physical(.32, 0), GLIDE = physical(.28, .08), WIDTH = physical(.42, .16);
+const GROW = physical(.4, 0), SHRINK = physical(.32, 0), GLIDE = physical(.28, 0), WIDTH = physical(.42, 0);
 const PANEL_MAX = 340, CLOSED_RADIUS = 17, OPEN_RADIUS = 22, PAGE = 8;
 
 const subscribe = () => () => {};

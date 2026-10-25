@@ -39,7 +39,9 @@ export type AnimationList = string[] | TargetAndTransition[]
  * Type for the animate function that can be injected.
  * This allows the animation implementation to be provided by the framework layer.
  */
-export type AnimateFunction = (animations: DefinitionAndOptions[]) => Promise<any>
+export type AnimateFunction = (
+    animations: DefinitionAndOptions[]
+) => Promise<any>
 
 const reversePriorityOrder = [...variantPriorityOrder].reverse()
 
@@ -113,8 +115,6 @@ export function createAnimationState(visualElement: any): AnimationState {
             const activeDelta =
                 type === changedActiveType ? typeState.isActive : null
 
-            if (activeDelta === false) removedVariantIndex = i
-
             /**
              * Inherited labels are animated by the parent through
              * variantChildren, unless this element mounted after its parent.
@@ -134,6 +134,13 @@ export function createAnimationState(visualElement: any): AnimationState {
             ) {
                 return
             }
+
+            /**
+             * Set after the skip above, so deactivating a type that has nothing
+             * to animate (e.g. whileTap with no prop) doesn't re-run the variants
+             * below it.
+             */
+            if (activeDelta === false) removedVariantIndex = i
 
             /**
              * Don't re-resolve a running exit: a changed custom would start
@@ -193,10 +200,7 @@ export function createAnimationState(visualElement: any): AnimationState {
                         ? !shallowCompare(next, prev) || variantDidChange
                         : next !== prev
 
-                if (
-                    valueHasChanged &&
-                    (next === undefined || next === null)
-                ) {
+                if (valueHasChanged && (next === undefined || next === null)) {
                     removedKeys.add(key)
                 } else if (
                     valueHasChanged ||

@@ -14,9 +14,11 @@ interface MockAnimation {
     startTime: number | null
     currentTime: number | null
     playbackRate: number
+    playState: string
     onfinish: (() => void) | null
     cancel: jest.Mock
     pause: jest.Mock
+    updatePlaybackRate: jest.Mock
 }
 
 let animations: MockAnimation[] = []
@@ -32,6 +34,7 @@ beforeAll(() => {
         ) {
             let timer: ReturnType<typeof setTimeout> | undefined
             let startTime: number | null = null
+            let heldTime: number | null = null
 
             /**
              * Finish at the end of the (finite) animation, like WAAPI.
@@ -40,9 +43,21 @@ beforeAll(() => {
                 element: this,
                 keyframes,
                 options,
-                currentTime: null,
                 playbackRate: 1,
+                playState: "running",
                 onfinish: null,
+                get currentTime() {
+                    if (heldTime !== null || startTime === null) {
+                        return heldTime
+                    }
+                    return (
+                        (performance.now() - startTime) *
+                        animation.playbackRate
+                    )
+                },
+                set currentTime(value) {
+                    heldTime = value
+                },
                 get startTime() {
                     return startTime
                 },
@@ -63,7 +78,13 @@ beforeAll(() => {
                     )
                 },
                 cancel: jest.fn(() => clearTimeout(timer)),
-                pause: jest.fn(() => clearTimeout(timer)),
+                pause: jest.fn(() => {
+                    clearTimeout(timer)
+                    animation.playState = "paused"
+                }),
+                updatePlaybackRate: jest.fn((rate: number) => {
+                    animation.playbackRate = rate
+                }),
             }
             animations.push(animation)
             return animation
@@ -79,6 +100,10 @@ beforeEach(() => {
     animations = []
 })
 
+afterEach(() => {
+    jest.restoreAllMocks()
+})
+
 const nextFrame = () =>
     new Promise<void>((resolve) => frame.postRender(() => resolve()))
 
@@ -86,14 +111,20 @@ const wait = (ms: number) =>
     new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 /**
+ * WAAPI animations ever created on an element. Earlier tests' animations
+ * are still running and can rebuild during a later test, so count per
+ * element rather than reading the shared animations list.
+ */
+const created = (element: Element) =>
+    animations.filter((animation) => animation.element === element)
+
+/**
  * WAAPI transform animations on an element that haven't been cancelled.
  */
 const running = (element: Element) =>
-    animations.filter(
+    created(element).filter(
         (animation) =>
-            animation.element === element &&
-            animation.keyframes &&
-            !animation.cancel.mock.calls.length
+            animation.keyframes && !animation.cancel.mock.calls.length
     ) as Array<MockAnimation & { keyframes: { transform: string[] } }>
 
 /**
@@ -226,7 +257,7 @@ describe("independent transform acceleration", () => {
         )
         await nextFrame()
 
-        expect(animations.length).toBeGreaterThan(1)
+        expect(created(element).length).toBeGreaterThan(1)
         expect(running(element)).toHaveLength(1)
         const [first] = running(element)[0].keyframes.transform
         // x carries on from where it was.
@@ -293,17 +324,29 @@ describe("independent transform acceleration", () => {
     })
 
     it("moves to the main thread when another source keeps writing a transform", async () => {
+        /**
+         * Frames are 1000/60ms apart however long this environment takes
+         * between them, so writes in consecutive frames always land within
+         * the churn window. Not useManualTiming, which turns WAAPI off.
+         */
+        let now = performance.now()
+        jest.spyOn(performance, "now").mockImplementation(() => now)
+        const nextFrameAt60fps = () => {
+            now += 1000 / 60
+            return nextFrame()
+        }
+
         const element = document.createElement("div")
         const rotate = motionValue(0)
         styleEffect(element, { rotate })
 
         animateElement(element, { x: [0, 100] }, { duration: 1 })
-        await nextFrame()
+        await nextFrameAt60fps()
         expect(running(element)).toHaveLength(1)
 
         // One outside write rebuilds the animation with the new value.
         rotate.set(10)
-        await nextFrame()
+        await nextFrameAt60fps()
         expect(running(element)).toHaveLength(1)
         expect(running(element)[0].keyframes.transform[0]).toContain(
             "rotate(10deg)"
@@ -311,7 +354,7 @@ describe("independent transform acceleration", () => {
 
         // Writing every frame moves it to the main thread.
         rotate.set(20)
-        await nextFrame()
+        await nextFrameAt60fps()
         expect(running(element)).toHaveLength(0)
         expect(element.style.transform).toContain("rotate(20deg)")
     })
@@ -381,7 +424,7 @@ describe("independent transform acceleration", () => {
         )
         await nextFrame()
         const [waapi] = running(element)
-        const count = animations.length
+        const count = created(element).length
 
         animation.forEach((a) => a.pause())
         await nextFrame()
@@ -401,7 +444,33 @@ describe("independent transform acceleration", () => {
         await nextFrame()
         expect(waapi.playbackRate).toBe(2)
 
-        expect(animations.length).toBe(count)
+        expect(created(element).length).toBe(count)
+        expect(running(element)).toEqual([waapi])
+    })
+
+    it("changes the speed of a running animation without restarting it", async () => {
+        const element = document.createElement("div")
+        const animation = animateElement(
+            element,
+            { x: [0, 100] },
+            { duration: 1, ease: "linear" }
+        )
+        await nextFrame()
+        const [waapi] = running(element)
+        const startTime = waapi.startTime
+        const setStartTime = jest.spyOn(waapi, "startTime", "set")
+
+        /**
+         * Setting playbackRate and startTime restarts a running compositor
+         * animation, which can show the underlying value for a frame.
+         */
+        animation.forEach((a) => (a.speed = -1))
+        await nextFrame()
+
+        expect(waapi.updatePlaybackRate).toHaveBeenCalledWith(-1)
+        expect(waapi.playbackRate).toBe(-1)
+        expect(setStartTime).not.toHaveBeenCalled()
+        expect(waapi.startTime).toBe(startTime)
         expect(running(element)).toEqual([waapi])
     })
 
@@ -416,11 +485,14 @@ describe("independent transform acceleration", () => {
             { scale: [1, 2] },
             { duration: 0.1 }
         )
-        short.then(() => (finishedAt = performance.now() - start))
-        await wait(250)
+        await short.then(() => (finishedAt = performance.now() - start))
 
+        /**
+         * Well before x's 1s, though how long after 100ms depends on how
+         * busy the test machine is.
+         */
         expect(finishedAt).toBeGreaterThan(80)
-        expect(finishedAt).toBeLessThan(200)
+        expect(finishedAt).toBeLessThan(800)
         // x is still running on the compositor.
         expect(running(element)).toHaveLength(1)
     })
@@ -625,13 +697,25 @@ describe("independent transform acceleration", () => {
             }
         }
 
+        /**
+         * Start in a frame, so the build uses the same timestamp as the
+         * start. A slow first frame would otherwise build it far enough in
+         * that it's no longer a round trip. A negative delay builds it a
+         * fixed time after it starts.
+         */
         it.each([
-            ["built just after it starts", [0, -18, 0]],
-            ["from a float residue", [-1e-30, -18, 0]],
-        ])("%s", async (_, y) => {
+            ["built just after it starts", [0, -18, 0], -0.005],
+            ["from a float residue", [-1e-30, -18, 0], 0],
+        ])("%s", async (_, y, delay) => {
             const element = document.createElement("div")
 
-            animateElement(element, { y }, { duration: 1.2, ease: "easeInOut" })
+            frame.update(() => {
+                animateElement(
+                    element,
+                    { y },
+                    { duration: 1.2, ease: "easeInOut", delay }
+                )
+            })
             await nextFrame()
 
             expectRoundTrip(element)
@@ -640,17 +724,19 @@ describe("independent transform acceleration", () => {
         it("from a float residue when it repeats forever", async () => {
             const element = document.createElement("div")
 
-            animateElement(
-                element,
-                { y: [-1e-30, -18, 0] },
-                {
-                    duration: 1.2,
-                    ease: "easeInOut",
-                    repeat: Infinity,
-                    repeatDelay: 0.9,
-                    delay: 0.66,
-                }
-            )
+            frame.update(() => {
+                animateElement(
+                    element,
+                    { y: [-1e-30, -18, 0] },
+                    {
+                        duration: 1.2,
+                        ease: "easeInOut",
+                        repeat: Infinity,
+                        repeatDelay: 0.9,
+                        delay: 0.66,
+                    }
+                )
+            })
             await nextFrame()
 
             expectRoundTrip(element)
@@ -726,5 +812,57 @@ describe("independent transform acceleration", () => {
         await nextFrame()
 
         expect(animations.filter((a) => a.element === element)).toHaveLength(0)
+    })
+
+    it("leaves the element's transform to its caller once stopped", async () => {
+        const element = document.createElement("div")
+
+        const animations = animateElement(
+            element,
+            { x: [0, 100], scale: [1, 2] },
+            { duration: 1, ease: "linear" }
+        )
+        await nextFrame()
+        for (const animation of animations) {
+            animation.pause()
+            animation.time = 0.5
+        }
+        await nextFrame()
+
+        for (const animation of animations) animation.stop()
+
+        /**
+         * It stops where it was, without waiting for a frame.
+         */
+        expect(running(element)).toHaveLength(0)
+        expect(element.style.transform).toBe("translateX(50px) scale(1.5)")
+
+        element.style.transform = "translateX(-40px)"
+        await nextFrame()
+        await nextFrame()
+
+        expect(element.style.transform).toBe("translateX(-40px)")
+    })
+
+    it("keeps an animation that starts as another is stopped from its onPlay", async () => {
+        const element = document.createElement("div")
+
+        const [x] = animateElement(
+            element,
+            { x: [0, 100], scale: [1, 2] },
+            { duration: 1 }
+        )
+        await nextFrame()
+
+        const [y] = animateElement(
+            element,
+            { y: [0, 100] },
+            { duration: 0.1, onPlay: () => x.stop() }
+        )
+        await nextFrame()
+
+        const transform = running(element)[0].keyframes.transform
+        expect(transform[transform.length - 1]).toContain("translateY(100px)")
+        await y.finished
     })
 })

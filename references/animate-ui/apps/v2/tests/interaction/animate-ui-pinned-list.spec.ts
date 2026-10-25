@@ -1,0 +1,166 @@
+import { expect, test, type Page } from '../test';
+
+import { FRAMEWORKS, ready } from './animate-ui-frameworks';
+
+for (const framework of FRAMEWORKS) {
+  const open = (page: Page) =>
+    page.goto(framework.demo('pinned-list'), {
+      waitUntil: 'networkidle',
+    });
+
+  const group = (page: Page, slot: 'pinned' | 'unpinned') =>
+    page.locator(`[data-slot="pinned-list-${slot}"]`);
+  const item = (page: Page, name: string) =>
+    page.locator('[data-slot="pinned-list-item"]', { hasText: name });
+
+  test.describe(`${framework.name} pinned list`, () => {
+    test('pinning moves the item to the pinned group, animated', async ({
+      page,
+    }) => {
+      await open(page);
+      const before = (await item(page, 'Inbox').boundingBox())!;
+      const mid = await page.evaluate(async () => {
+        document
+          .querySelector<HTMLButtonElement>('[aria-label="Pin Inbox"]')!
+          .click();
+        await new Promise((r) =>
+          requestAnimationFrame(() => requestAnimationFrame(r)),
+        );
+        const el = [
+          ...document.querySelectorAll('[data-slot="pinned-list-item"]'),
+        ].find((e) => e.textContent?.includes('Inbox'))!;
+        return el.getBoundingClientRect().y;
+      });
+      await expect(group(page, 'pinned').getByText('Inbox')).toBeVisible();
+      await expect
+        .poll(async () => (await item(page, 'Inbox').boundingBox())!.y)
+        .toBeLessThan(before.y - 50);
+      await page.waitForTimeout(800);
+      const end = (await item(page, 'Inbox').boundingBox())!;
+      expect(mid).toBeGreaterThan(end.y + 5);
+      await expect(
+        page.getByRole('button', { name: 'Unpin Inbox' }),
+      ).toBeVisible();
+    });
+
+    test('the trigger stays put on hover and shrinks on press', async ({
+      page,
+    }) => {
+      await open(page);
+      const trigger = page.getByRole('button', { name: 'Pin Inbox' });
+      const scale = () =>
+        trigger.evaluate(
+          (el) => new DOMMatrix(getComputedStyle(el).transform).a,
+        );
+      await trigger.hover();
+      await page.waitForTimeout(300);
+      expect(await scale()).toBe(1);
+      await page.mouse.down();
+      await expect.poll(scale).toBeCloseTo(0.97, 2);
+      await page.mouse.up();
+    });
+
+    test('the move springs past its place, then settles', async ({ page }) => {
+      await open(page);
+      const before = (await item(page, 'Inbox').boundingBox())!;
+      const offsets = await page.evaluate(async () => {
+        document
+          .querySelector<HTMLButtonElement>('[aria-label="Pin Inbox"]')!
+          .click();
+        const values: number[] = [];
+        const t0 = performance.now();
+        while (performance.now() - t0 < 1200) {
+          await new Promise((r) => requestAnimationFrame(r));
+          const el = [
+            ...document.querySelectorAll('[data-slot="pinned-list-item"]'),
+          ].find((e) => e.textContent?.includes('Inbox'))!;
+          values.push(new DOMMatrix(getComputedStyle(el).transform).m42);
+        }
+        return values;
+      });
+      const after = (await item(page, 'Inbox').boundingBox())!;
+      expect(Math.max(...offsets)).toBeGreaterThan(before.y - after.y - 60);
+      expect(Math.min(...offsets)).toBeLessThan(-1);
+      expect(offsets.at(-1)).toBeCloseTo(0, 0);
+    });
+
+    test('the labels slide with the items, on their spring, not ahead', async ({
+      page,
+    }) => {
+      await open(page);
+      await page.evaluate(() => {
+        const label = [...document.querySelectorAll('p')].find(
+          (p) => p.textContent?.trim() === 'All',
+        )!;
+        const w = window as unknown as { __label: [number, number][] };
+        const out: [number, number][] = (w.__label = []);
+        const t0 = performance.now();
+        const tick = () => {
+          out.push([performance.now() - t0, label.getBoundingClientRect().top]);
+          if (performance.now() - t0 < 800) requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
+      });
+      await page.getByRole('button', { name: 'Pin Inbox' }).click();
+      await page.waitForTimeout(900);
+      const frames = await page.evaluate(
+        () => (window as unknown as { __label: [number, number][] }).__label,
+      );
+      const [, from] = frames[0]!;
+      const [, to] = frames.at(-1)!;
+      expect(Math.abs(to - from)).toBeGreaterThan(20);
+      const progress = (y: number) => (y - from) / (to - from);
+      const moving = frames.find(([, y]) => Math.abs(y - from) > 0.5)!;
+      const there = frames.find(([, y]) => progress(y) >= 0.95)!;
+      expect(there[0] - moving[0]).toBeGreaterThan(100);
+    });
+
+    test('unpinning every item hides the pinned label', async ({ page }) => {
+      await open(page);
+      await page.getByRole('button', { name: 'Unpin Drafts' }).click();
+      await page.getByRole('button', { name: 'Unpin Projects' }).click();
+      await expect(group(page, 'pinned').getByText('Pinned')).toHaveCount(0);
+      await expect(
+        group(page, 'unpinned').locator('[data-slot="pinned-list-item"]'),
+      ).toHaveCount(4);
+    });
+
+    // Bug: in Vue, when the pinned label came back, the All label and the items below jumped down at once.
+    test('the pinned label coming back slides what is below, without a jump', async ({
+      page,
+    }) => {
+      await open(page);
+      await page.getByRole('button', { name: 'Unpin Drafts' }).click();
+      await page.getByRole('button', { name: 'Unpin Projects' }).click();
+      await expect(group(page, 'pinned').getByText('Pinned')).toHaveCount(0);
+      await page.waitForTimeout(800);
+      const label = group(page, 'unpinned').getByText('All', { exact: true });
+      const steps = label.evaluate(async (el) => {
+        const tops: number[] = [];
+        const start = performance.now();
+        while (performance.now() - start < 900) {
+          await new Promise((r) => requestAnimationFrame(r));
+          tops.push(el.getBoundingClientRect().top);
+        }
+        return tops.slice(1).map((top, i) => Math.abs(top - tops[i]!));
+      });
+      await page.getByRole('button', { name: 'Pin Inbox' }).click();
+      const moves = await steps;
+      expect(moves.filter((step) => step > 0.5).length).toBeGreaterThan(5);
+      expect(Math.max(...moves)).toBeLessThan(15);
+    });
+
+    test('reduced motion: the item jumps to its new place', async ({
+      page,
+    }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      await open(page);
+      await page.getByRole('button', { name: 'Pin Inbox' }).click();
+      await page.waitForTimeout(50);
+      const transform = await item(page, 'Inbox').evaluate(
+        (el) => getComputedStyle(el).transform,
+      );
+      expect(['none', 'matrix(1, 0, 0, 1, 0, 0)']).toContain(transform);
+    });
+  });
+}

@@ -1,0 +1,70 @@
+---
+title: Button
+description: A button that presses down when tapped.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="animate-ui/button" />
+
+## Installation
+
+<Installation />
+
+## Usage
+
+```tsx
+import { Button } from '@animate-ui/react/primitives/buttons/button';
+
+export function Save() {
+  return <Button className="rounded-md px-4 py-2">Save</Button>;
+}
+```
+
+With `asChild`, the animation lands on your own element:
+
+```tsx
+<Button asChild>
+  <a href="/docs">Docs</a>
+</Button>
+```
+
+## Animation
+
+- Pressing scales the button to `tapScale` (0.97), on Motion's spring for scale (`stiffness: 550, damping: 30`): quick, with a slight overshoot. It doesn't scale on hover, unless you set `hoverScale`.
+- `transition` replaces that spring.
+- `<AnimateUIProvider tempo>` paces the default spring.
+- Under reduced motion, the button doesn't scale.
+
+## API Reference
+
+### Button
+
+<TypeTable
+  type={{
+    hoverScale: {
+      description:
+        'Scale of the button on hover. The buttons answer the press, not the hover: none unless you set one.',
+      type: 'number',
+      default: '1',
+    },
+    tapScale: {
+      description: 'Scale of the button while pressed.',
+      type: 'number',
+      default: '0.97',
+    },
+    transition: {
+      description: 'Transition of the tap (and hover) scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+    asChild: {
+      description: 'Render your child element instead of a `button`.',
+      type: 'boolean',
+      default: 'false',
+    },
+    '...props': {
+      description: 'Props of the button.',
+      type: "HTMLMotionProps<'button'>",
+    },
+  }}
+/>

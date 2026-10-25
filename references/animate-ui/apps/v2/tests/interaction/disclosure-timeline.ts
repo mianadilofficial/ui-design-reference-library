@@ -1,0 +1,381 @@
+import { expect, test, type Locator, type Page } from '../test';
+
+export async function gotoHydrated(page: Page, url: string) {
+  if (url.includes('/vue-demos/')) return gotoVueMounted(page, url);
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.waitForFunction(() => {
+    const buttons = [...document.querySelectorAll('button')];
+    return (
+      buttons.length > 0 &&
+      buttons.every((button) =>
+        Object.keys(button).some((key) => key.startsWith('__reactProps')),
+      )
+    );
+  });
+}
+
+/** Vue demos are mounted by VueDemo once the page is up. */
+export async function gotoVueMounted(page: Page, url: string) {
+  await page.goto(url, { waitUntil: 'networkidle' });
+  await page.locator('[data-slot="vue-demo"][data-mounted]').waitFor();
+}
+
+export type HeightSample = {
+  t: number;
+  h: number;
+  o: number;
+  b: number;
+  e: number;
+};
+
+export async function recordHeights(
+  page: Page,
+  selector: string,
+  durationMs = 1200,
+  text = '',
+) {
+  await page.evaluate(
+    ({ sel, duration, text }) => {
+      const w = window as unknown as { __heights?: Promise<unknown> };
+      w.__heights = new Promise((resolve) => {
+        const samples: {
+          t: number;
+          h: number;
+          o: number;
+          b: number;
+          e: number;
+        }[] = [];
+        const start = performance.now();
+        const tick = () => {
+          const el = [...document.querySelectorAll<HTMLElement>(sel)].find(
+            (candidate) => candidate.textContent?.includes(text),
+          );
+          const shown = el && !el.hasAttribute('hidden');
+          const style = el ? getComputedStyle(el) : null;
+          const blur = style?.filter.match(/blur\(([\d.e-]+)px\)/);
+          samples.push({
+            t: performance.now() - start,
+            h: shown ? el.getBoundingClientRect().height : 0,
+            o: shown ? Number(style!.opacity) : 0,
+            b: blur ? Number(blur[1]) : 0,
+            e: parseFloat(
+              style?.getPropertyValue('--animate-ui-panel-content') ?? '',
+            ),
+          });
+          if (performance.now() - start < duration) requestAnimationFrame(tick);
+          else resolve(samples);
+        };
+        requestAnimationFrame(tick);
+      });
+    },
+    { sel: selector, duration: durationMs, text },
+  );
+
+  return {
+    samples: async () =>
+      (await page.evaluate(
+        () => (window as unknown as { __heights: Promise<unknown> }).__heights,
+      )) as HeightSample[],
+  };
+}
+
+export function transitionTime(samples: HeightSample[]) {
+  const from = samples[0]!.h;
+  const to = samples[samples.length - 1]!.h;
+  const start = samples.findIndex((s) => Math.abs(s.h - from) > 0.5);
+  if (start === -1) return { from, to, duration: 0, steps: 0 };
+  const end = samples.findIndex(
+    (s, i) => i >= start && Math.abs(s.h - to) < 0.5,
+  );
+  const begin = samples[Math.max(start - 1, 0)]!.t;
+  return {
+    from,
+    to,
+    duration: samples[end]!.t - begin,
+    steps: end - start,
+  };
+}
+
+export async function clickAndInspect(
+  page: Page,
+  label: string,
+  panel: Locator,
+) {
+  await page.evaluate((name) => {
+    const button = [...document.querySelectorAll('button')].find(
+      (b) =>
+        b.getAttribute('aria-label') === name || b.textContent?.trim() === name,
+    );
+    if (!button) throw new Error(`No button ${name}`);
+    button.click();
+  }, label);
+  return panel.evaluate(async (el) => {
+    await new Promise((r) =>
+      requestAnimationFrame(() => requestAnimationFrame(r)),
+    );
+    return {
+      hidden: el.hasAttribute('hidden'),
+      inert: (el as HTMLElement).inert,
+      height: el.getBoundingClientRect().height,
+      opacity: Number(getComputedStyle(el).opacity),
+    };
+  });
+}
+
+type DemoOptions = {
+  url: string;
+  panel: string;
+  closed: { trigger: string; text: string };
+  open?: { trigger: string; text: string };
+  closedState: 'unmounted' | 'hidden';
+  goto?: (page: Page, url: string) => Promise<void>;
+};
+
+export function disclosureDemoTests(name: string, options: DemoOptions) {
+  const {
+    url,
+    panel,
+    closed,
+    open,
+    closedState,
+    goto = gotoHydrated,
+  } = options;
+
+  test.describe(name, () => {
+    test.beforeEach(async ({ page }) => {
+      await goto(page, url);
+    });
+
+    const trigger = (page: Page, label: string) =>
+      page.getByRole('button', { name: label, exact: true });
+    const panelOf = (page: Page, text: string) =>
+      page.locator(panel).filter({ hasText: text });
+    const expectClosed = async (page: Page, text: string) => {
+      if (closedState === 'unmounted')
+        await expect(panelOf(page, text)).toHaveCount(0, { timeout: 600 });
+      else await expect(panelOf(page, text)).toBeHidden({ timeout: 600 });
+    };
+
+    test('unfolds: its height grows while the content fades in from a blur, then settles', async ({
+      page,
+    }) => {
+      const timeline = await recordHeights(page, panel, 1200, closed.text);
+      await trigger(page, closed.trigger).click();
+      const samples = await timeline.samples();
+      const entrance = transitionTime(samples);
+
+      expect(entrance.from).toBe(0);
+      expect(entrance.to).toBeGreaterThan(20);
+      expect(entrance.steps).toBeGreaterThan(2);
+      const moving = samples.filter((s) => s.h > 0.5 && s.o < 0.99);
+      expect(moving.some((s) => s.o > 0 && s.o < 1)).toBe(true);
+      expect(moving.some((s) => s.b > 0.1 && s.b < 2)).toBe(true);
+      const first = samples.findIndex((s) => s.h > 0.5);
+      const begin = samples[Math.max(first - 1, 0)]!.t;
+      const fourFifths = samples.find((s) => s.h >= entrance.to * 0.8)!;
+      expect(fourFifths.t - begin).toBeGreaterThan(110);
+      expect(entrance.duration).toBeGreaterThan(200);
+      expect(entrance.duration).toBeLessThan(550);
+      await expect(panelOf(page, closed.text)).toHaveCSS('opacity', '1');
+      await expect(panelOf(page, closed.text)).toHaveCSS('filter', 'none');
+      expect(samples.at(-1)!.b).toBe(0);
+      await expect(panelOf(page, closed.text)).toHaveCSS(
+        'mask-image',
+        /linear-gradient/,
+      );
+      expect(moving.some((s) => Math.abs(s.e - entrance.to) < 1)).toBe(true);
+      expect(samples.at(-1)!.e).toBeNaN();
+    });
+
+    test('closes the same way, in reverse, then goes away', async ({
+      page,
+    }) => {
+      let timeline = await recordHeights(page, panel, 1200, closed.text);
+      await trigger(page, closed.trigger).click();
+      const entrance = transitionTime(await timeline.samples());
+
+      timeline = await recordHeights(page, panel, 1200, closed.text);
+      await trigger(page, closed.trigger).click();
+      const samples = await timeline.samples();
+      const exit = transitionTime(samples);
+
+      expect(exit.to).toBe(0);
+      expect(exit.steps).toBeGreaterThan(2);
+      expect(exit.duration).toBeGreaterThan(200);
+      expect(exit.duration).toBeLessThan(550);
+      expect(Math.abs(exit.duration - entrance.duration)).toBeLessThan(150);
+      const moving = samples.filter((s) => s.h > 0.5 && s.o < 0.99);
+      expect(moving.some((s) => s.b > 0.1 && s.b < 2)).toBe(true);
+      await expectClosed(page, closed.text);
+    });
+
+    if (open) {
+      test('page load: the panel open by default animates open, as in v1', async ({
+        page,
+      }) => {
+        await page.addInitScript(
+          ({ selector, text }) => {
+            const w = window as unknown as { __mount: number[][] };
+            w.__mount = [];
+            const tick = () => {
+              const el = [
+                ...document.querySelectorAll<HTMLElement>(selector),
+              ].find((candidate) => candidate.textContent?.includes(text));
+              if (el) {
+                const style = getComputedStyle(el);
+                const blur = style.filter.match(/blur\(([\d.e-]+)px\)/);
+                w.__mount.push([
+                  el.getBoundingClientRect().height,
+                  Number(style.opacity),
+                  blur ? Number(blur[1]) : 0,
+                ]);
+              }
+              if (w.__mount.length < 3600) requestAnimationFrame(tick);
+            };
+            requestAnimationFrame(tick);
+          },
+          { selector: panel, text: open.text },
+        );
+        await goto(page, url);
+        await expect(panelOf(page, open.text)).toHaveCSS('opacity', '1');
+        const full = await panelOf(page, open.text).evaluate(
+          (el) => el.getBoundingClientRect().height,
+        );
+        const frames = await page.evaluate(
+          () => (window as unknown as { __mount: number[][] }).__mount,
+        );
+        expect(full).toBeGreaterThan(20);
+        expect(frames[0]![0]).toBeLessThan(1);
+        expect(
+          frames.some(
+            ([h, o, b]) => h! > 1 && h! < full - 1 && o! < 1 && b! > 0.1,
+          ),
+        ).toBe(true);
+      });
+
+      test('a panel open by default collapses on click', async ({ page }) => {
+        await expect(panelOf(page, open.text)).toBeVisible();
+        await expect(panelOf(page, open.text)).toHaveCSS('opacity', '1');
+        const timeline = await recordHeights(page, panel, 1000, open.text);
+        await trigger(page, open.trigger).click();
+        const exit = transitionTime(await timeline.samples());
+        expect(exit.from).toBeGreaterThan(20);
+        expect(exit.to).toBe(0);
+        expect(exit.steps).toBeGreaterThan(1);
+        await expectClosed(page, open.text);
+      });
+    }
+
+    test('the keyboard toggles it', async ({ page }) => {
+      await trigger(page, closed.trigger).focus();
+      await page.keyboard.press('Enter');
+      await expect(trigger(page, closed.trigger)).toHaveAttribute(
+        'aria-expanded',
+        'true',
+      );
+      await expect(panelOf(page, closed.text)).toBeVisible();
+      await page.keyboard.press('Enter');
+      await expect(trigger(page, closed.trigger)).toHaveAttribute(
+        'aria-expanded',
+        'false',
+      );
+      await expectClosed(page, closed.text);
+    });
+
+    test('reopening during the exit retargets', async ({ page }) => {
+      await trigger(page, closed.trigger).click();
+      await expect(panelOf(page, closed.text)).toHaveCSS('opacity', '1');
+      await page.waitForTimeout(300);
+      const result = await page.evaluate(
+        async ({ selector, text, label }) => {
+          const frame = () => new Promise((r) => requestAnimationFrame(r));
+          const height = () =>
+            [...document.querySelectorAll<HTMLElement>(selector)]
+              .find((el) => el.textContent?.includes(text))
+              ?.getBoundingClientRect().height ?? 0;
+          const button = [...document.querySelectorAll('button')].find(
+            (b) =>
+              b.getAttribute('aria-label') === label ||
+              b.textContent?.trim() === label,
+          )!;
+          const full = height();
+          button.click();
+          const start = performance.now();
+          while (performance.now() - start < 120) await frame();
+          const closing = height();
+          button.click();
+          const after: number[] = [];
+          const reopened = performance.now();
+          while (performance.now() - reopened < 900) {
+            await frame();
+            after.push(height());
+          }
+          return { full, closing, after };
+        },
+        { selector: panel, text: closed.text, label: closed.trigger },
+      );
+      expect(result.closing).toBeGreaterThan(0);
+      expect(result.closing).toBeLessThan(result.full);
+      expect(Math.min(...result.after)).toBeGreaterThan(0);
+      expect(result.after.at(-1)).toBeCloseTo(result.full, 0);
+    });
+
+    // Bug: a closed panel kept its parent's gap until it unmounted, so the layout jumped by it at the end of the close and the start of the open.
+    test('the gap beside the panel opens and closes with it, without a jump', async ({
+      page,
+    }) => {
+      const track = () =>
+        page.evaluate(
+          async ({ selector, text, label }) => {
+            const frame = () => new Promise((r) => requestAnimationFrame(r));
+            const button = [...document.querySelectorAll('button')].find(
+              (b) =>
+                b.getAttribute('aria-label') === label ||
+                b.textContent?.trim() === label,
+            )!;
+            const panelHeight = () =>
+              [...document.querySelectorAll<HTMLElement>(selector)]
+                .find((el) => el.textContent?.includes(text))
+                ?.getBoundingClientRect().height ?? 0;
+            const container = button.parentElement!.parentElement!;
+            const before = container.getBoundingClientRect().height;
+            button.click();
+            const frames: [number, number][] = [];
+            const start = performance.now();
+            while (performance.now() - start < 1200) {
+              await frame();
+              frames.push([
+                panelHeight(),
+                container.getBoundingClientRect().height,
+              ]);
+            }
+            return { before, frames };
+          },
+          { selector: panel, text: closed.text, label: closed.trigger },
+        );
+      const opening = await track();
+      const shut = opening.frames
+        .filter(([h]) => h < 0.5)
+        .map(([, size]) => size);
+      for (const size of shut)
+        expect(Math.abs(size - opening.before)).toBeLessThan(1.5);
+      await page.waitForTimeout(200);
+      const closing = await track();
+      const gone = closing.frames
+        .filter(([h]) => h < 0.5)
+        .map(([, size]) => size);
+      expect(gone.length).toBeGreaterThan(0);
+      for (const size of gone)
+        expect(Math.abs(size - gone.at(-1)!)).toBeLessThan(1.5);
+    });
+
+    test('reduced motion: the height jumps', async ({ page }) => {
+      await page.emulateMedia({ reducedMotion: 'reduce' });
+      const timeline = await recordHeights(page, panel, 1000, closed.text);
+      await trigger(page, closed.trigger).click();
+      const entrance = transitionTime(await timeline.samples());
+      expect(entrance.to).toBeGreaterThan(20);
+      expect(entrance.steps).toBeLessThanOrEqual(1);
+    });
+  });
+}

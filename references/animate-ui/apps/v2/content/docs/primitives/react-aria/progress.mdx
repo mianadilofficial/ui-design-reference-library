@@ -1,0 +1,69 @@
+---
+title: Progress
+description: Progress bars show either determinate or indeterminate progress of an operation over time.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="react-aria/progress" />
+
+## Installation
+
+<Installation name="progress" />
+
+## Usage
+
+Import from Animate UI instead of `react-aria-components`: it re-exports all of React Aria, with an animated `ProgressBar`. Everything else stays the same.
+
+```tsx
+import { Label, ProgressBar } from '@animate-ui/react/primitives/react-aria';
+
+export function Upload({ value }: { value: number }) {
+  return (
+    <ProgressBar value={value}>
+      {({ percentage, valueText }) => (
+        <>
+          <Label>Uploading</Label>
+          <span>{valueText}</span>
+          <div className="h-2 overflow-hidden rounded-full bg-muted">
+            <div
+              className="h-full bg-primary"
+              style={{ width: `${percentage}%` }}
+            />
+          </div>
+        </>
+      )}
+    </ProgressBar>
+  );
+}
+```
+
+## Animation
+
+The motion of Animate UI v1's Base UI progress (v1 had no React Aria one):
+
+- **Bar**: React Aria only hands its children a `percentage`, and the bar is your markup, sized with an inline percentage width (``style={{ width: `${percentage}%` }}``, as shadcn/ui and React Aria's docs do). The ProgressBar finds that element and springs its width from the previous value to the new one (stiffness 300, damping 35: most of the way in ~230ms and settled by ~550ms, with no jump at the end; no overshoot) instead of letting it jump.
+- It starts at its value on mount, with no animation.
+- The value text is your markup: it changes at once (v1's Base UI value counted; React Aria's `valueText` isn't animated).
+- shadcn/ui's `transition-all` on the bar would run on top of Motion: the CLI removes it.
+- Under reduced motion, the bar jumps to each value.
+
+## API Reference
+
+Every component takes exactly the props of [React Aria's ProgressBar](https://react-spectrum.adobe.com/react-aria/ProgressBar.html#props). Animate UI adds the animation props below.
+
+### ProgressBar
+
+[React Aria props](https://react-spectrum.adobe.com/react-aria/ProgressBar.html#props), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the bar moving to a new value.',
+      type: 'Transition',
+      default:
+        "{ type: 'spring', stiffness: 300, damping: 35, restDelta: 0.01, restSpeed: 0.1 }",
+    },
+  }}
+/>
+
+The bar is any element inside the ProgressBar with an inline percentage `width` and no child elements. `AnimateUIProvider`'s `tempo` scales these transitions with everything else.

@@ -1752,6 +1752,29 @@ def check_title_fallback_order(errors: list[str], root: Path) -> None:
             )
 
 
+def check_export_surface_parity(errors: list[str], root: Path) -> None:
+    """commands/export-diagram.md and prompts/export-diagram.md must both carry the mutual-exclusion rule."""
+    command_path = root / "commands/export-diagram.md"
+    prompt_path = root / "prompts/export-diagram.md"
+    if not command_path.is_file():
+        errors.append("export surface is missing: commands/export-diagram.md")
+        return
+    if not prompt_path.is_file():
+        errors.append("export surface is missing: prompts/export-diagram.md")
+        return
+    command_text = command_path.read_text(encoding="utf-8")
+    prompt_text = prompt_path.read_text(encoding="utf-8")
+    rule_re = re.compile(r"--svg-only.*--png-only.*mutually exclusive", re.IGNORECASE)
+    if not rule_re.search(command_text):
+        errors.append(
+            "commands/export-diagram.md missing `--svg-only` and `--png-only` mutual-exclusion rule"
+        )
+    if not rule_re.search(prompt_text):
+        errors.append(
+            "prompts/export-diagram.md missing `--svg-only` and `--png-only` mutual-exclusion rule"
+        )
+
+
 def main() -> int:
     errors: list[str] = []
     check_description(errors)
@@ -1797,6 +1820,7 @@ def main() -> int:
     check_size_preset_surfaces(errors, ROOT)
     check_export_font_parity(errors, ROOT)
     check_title_fallback_order(errors, ROOT)
+    check_export_surface_parity(errors, ROOT)
     if errors:
         print("FAIL docs sync")
         for error in errors:
@@ -1810,7 +1834,7 @@ def main() -> int:
         "High-Level invariants, onboarding trust boundary, Line dark-skin contract, "
         "Loop station origin, "
         "font-link parity, title fallback order, type-ramp contract, registered legacy "
-        "type sizes, split routing"
+        "type sizes, split routing, export surface parity"
     )
     return 0
 

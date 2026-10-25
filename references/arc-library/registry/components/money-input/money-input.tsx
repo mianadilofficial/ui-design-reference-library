@@ -62,9 +62,9 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = (2 * Math.PI) / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const GLIDE = physical(.28, .08);
+const GLIDE = physical(.28, 0);
 /** A sideways kick when a limit refuses the change: the amount strains toward the press and springs home. */
-const KICK = physical(.42, .3);
+const KICK = physical(.42, 0);
 const MAX_INTEGER_DIGITS = 12;
 
 const subscribe = () => () => {};

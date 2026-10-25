@@ -1,0 +1,81 @@
+---
+title: Toggle Group
+description: A set of two-state buttons that can be toggled on or off.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="react-aria/toggle-group" />
+
+## Installation
+
+<Installation name="toggle-group" />
+
+## Usage
+
+Import from Animate UI instead of `react-aria-components`: it re-exports all of React Aria, with the animated controls below. Everything else stays the same. shadcn/ui's Toggle Group is React Aria's `ToggleButtonGroup`, with `ToggleButton` items.
+
+```tsx
+import {
+  ToggleButton,
+  ToggleButtonGroup,
+} from '@animate-ui/react/primitives/react-aria';
+
+export function Formatting() {
+  return (
+    <ToggleButtonGroup selectionMode="multiple" aria-label="Text formatting">
+      <ToggleButton id="bold" aria-label="Bold">
+        <BoldIcon />
+      </ToggleButton>
+      <ToggleButton id="italic" aria-label="Italic">
+        <ItalicIcon />
+      </ToggleButton>
+      <ToggleButton id="underline" aria-label="Underline">
+        <UnderlineIcon />
+      </ToggleButton>
+    </ToggleButtonGroup>
+  );
+}
+```
+
+## Animation
+
+The motion of Animate UI v1's Radix UI toggle group (v1 had no React Aria one), made livelier:
+
+- **ToggleButton** (each item) scales to 0.97 while pressed, on Motion's default spring for scale (stiffness 550, damping 30); the selection changes on the press itself.
+- **ToggleButtonGroup** with `selectionMode="multiple"`: a selected item's surface grows in from 70% of its size, from its center, as it fades in, in 300ms (`cubic-bezier(0.4, 0, 0.2, 1)`, like the radio's fill), and shrinks back out as it fades when it's deselected.
+- Neighbours selected together join into one surface: on the same 300ms, each one stretches to the middle of the gap between them as its inner corners square off, so the item selected next to a selected one seems to flow out of it; deselecting one splits the surface again (the middle one shrinks out while its neighbours pull back). Items join when they touch (`spacing={0}`), or across a gap no wider than half their height when they have no border on the sides facing each other: bordered items apart (the outline variant with a gap) keep their own surfaces, since a band painted between two frames reads as a stray strip. Rows, columns and right to left alike.
+- **ToggleButtonGroup** with single selection (React Aria's default): one surface slides from the selected item to the newly selected one, on a spring (stiffness 300, damping 30), its size and corners following. Picked again on the way (quick clicks), it goes on from where it is with the speed it had, like the tabs' indicator. The first selection grows it in like a fill; clearing the selection shrinks it out.
+- Hovering an item lights a highlight that glides from item to item on a quick spring (stiffness 500, damping 40), like a menubar's triggers, fading in from nothing and out to nothing in 200ms (`ease`). It's lit only where the item's own hover style paints something its selection doesn't already: a selected item hovered keeps its surface alone. It's drawn above the selected surfaces; clicking a hovered item, it stays until the surface growing (or sliding) in under it has arrived, so the item never dims on the way.
+- The surfaces copy each item's own background and corners (shadcn/ui's `data-[state=on]:bg-muted`, `hover:bg-muted`) — the demo hovers lighter than it selects (`hover:bg-muted/50`), so the two read apart, drawn behind the items and under their borders, in the group's shadow root (so the items' `first:` / `last:` styles are untouched); a small stylesheet clears the items' own backgrounds. Borders, shadows, text colours and focus rings stay the items'. A pressed item's surface scales with it.
+- The arrow keys only move the focus between items: nothing animates. Space and Enter select like a click.
+- Nothing moves when the group mounts.
+- Under reduced motion, there is no press scale and nothing grows, slides or stretches: surfaces only fade (a single selection fades out on the item it leaves and in on the chosen one, a surface fading in next to a selected item covers the gap between them as it fades), and the highlight jumps from item to item.
+
+## API Reference
+
+`ToggleButtonGroup` takes exactly the props of [React Aria's ToggleButtonGroup](https://react-spectrum.adobe.com/react-aria/ToggleButtonGroup.html#props), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the surface sliding between items (single selection).',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 300, damping: 30 }",
+    },
+  }}
+/>
+
+Its items are [ToggleButtons](/docs/primitives/react-aria/toggle), which take React Aria's props, plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the press scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+  }}
+/>
+
+`AnimateUIProvider`'s `tempo` scales these transitions with everything else.

@@ -135,7 +135,7 @@ function TimelineRow({ row, last, expanded, onToggle, timeLabel, timeFull }: { r
   const [entering, setEntering] = useState(fresh);
   const shown = revealDelay !== null;
   const delay = (revealDelay ?? 0) + (fresh ? .12 : 0);
-  const pop: Transition = reduced ? { duration: 0, opacity: { duration: .15 } } : { ...motionTokens.spring.morph, visualDuration: .36, bounce: .32, delay, opacity: { duration: motionTokens.duration.fast, ease: enter, delay } };
+  const pop: Transition = reduced ? { duration: 0, opacity: { duration: .15 } } : { ...motionTokens.spring.morph, visualDuration: .36, bounce: 0, delay, opacity: { duration: motionTokens.duration.fast, ease: enter, delay } };
   const draw: Transition = reduced ? { duration: 0 } : { ...motionTokens.spring.smooth, visualDuration: .34, delay: delay + .1 };
   const tone = row.avatar ? undefined : row.tone ?? "neutral";
   const Trigger = row.detail ? "button" : "div";

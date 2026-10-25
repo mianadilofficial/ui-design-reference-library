@@ -9,14 +9,14 @@ export const motionTokens = {
     inOut: [0.65, 0, 0.35, 1],
   },
   spring: {
-    responsive: { type: "spring", stiffness: 520, damping: 38 },
+    responsive: { type: "spring", stiffness: 520, damping: 44 },
     gentle: { type: "spring", stiffness: 340, damping: 34 },
-    /** Presses, toggles, thumbs, and small indicators. Settles fast with a hint of life. */
-    snappy: { type: "spring", visualDuration: 0.26, bounce: 0.12 },
+    /** Presses, toggles, thumbs, and small indicators. Settles fast and never overshoots, so nothing jitters. */
+    snappy: { type: "spring", visualDuration: 0.26, bounce: 0 },
     /** Panels, height changes, and layout shifts. Critically damped, never overshoots. */
     smooth: { type: "spring", visualDuration: 0.4, bounce: 0 },
-    /** Shape morphs, shared layout highlights, and width changes that follow new content. */
-    morph: { type: "spring", visualDuration: 0.42, bounce: 0.16 },
+    /** Shape morphs, shared layout highlights, and width changes that follow new content. No bounce: sizes and positions settle without overshoot. */
+    morph: { type: "spring", visualDuration: 0.42, bounce: 0 },
   },
   /** Stagger steps in seconds. Keep total stagger under roughly 0.4s. */
   stagger: { char: 0.016, word: 0.04, line: 0.08, item: 0.035 },

@@ -5,6 +5,8 @@ description: >-
   from the current branch versus origin/dev (Tabler). Use when the
   user asks for an MR/PR description, GitLab merge request text, or a branch
   summary for reviewers.
+metadata:
+  internal: true
 ---
 
 # MR / PR description from branch
@@ -13,7 +15,7 @@ Produce a **short title** and a **markdown body**, each in its own fenced **`mar
 
 ## 1. Base branch (this repo)
 
-**Default integration branch:** `dev`. Compare against **`origin/dev`**.
+**Integration branch:** `dev` for fixes, docs and tooling; `next` for new features (a new component, plugin, class, option or page, anything with a `minor` changeset). Use the base of an existing PR when there is one (`gh pr view --json baseRefName`). The examples below use `origin/dev`; replace it with `origin/next` for a feature.
 
 If `origin/dev` is missing (offline clone, no remote), fall back to local `dev`, then ask the user. Only use another base (e.g. `develop`) if the user says so explicitly.
 

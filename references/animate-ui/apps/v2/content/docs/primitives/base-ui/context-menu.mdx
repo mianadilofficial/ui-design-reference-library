@@ -1,0 +1,162 @@
+---
+title: Context Menu
+description: A menu that appears at the pointer on right click or long press.
+releaseDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/context-menu" />
+
+## Installation
+
+<Installation name="context-menu" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same.
+
+```tsx
+import { ContextMenu } from '@animate-ui/react/primitives/base-ui/context-menu';
+
+export function CanvasMenu() {
+  return (
+    <ContextMenu.Root>
+      <ContextMenu.Trigger>Right click here</ContextMenu.Trigger>
+      <ContextMenu.Portal>
+        <ContextMenu.Positioner>
+          <ContextMenu.Popup>
+            <ContextMenu.Item>Undo</ContextMenu.Item>
+            <ContextMenu.Item>Duplicate</ContextMenu.Item>
+            <ContextMenu.Separator />
+            <ContextMenu.Item>Delete</ContextMenu.Item>
+          </ContextMenu.Popup>
+        </ContextMenu.Positioner>
+      </ContextMenu.Portal>
+    </ContextMenu.Root>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { ContextMenu } from '@animate-ui/react/primitives/base-ui'`.
+
+### Check animation
+
+Checkbox and radio items show their check in a `CheckboxItemIndicator` or a `RadioItemIndicator`: it draws itself when the item is checked, and erases itself when it's unchecked (a radio item's while the new one draws). With `animation="pop"`, it pops in from half its size and shrinks back out instead, and a radio item's check glides to the newly checked item:
+
+```tsx
+import { ContextMenu } from '@animate-ui/react/primitives/base-ui/context-menu';
+
+export function CanvasMenu() {
+  return (
+    <ContextMenu.Root>
+      <ContextMenu.Trigger>Right click here</ContextMenu.Trigger>
+      <ContextMenu.Portal>
+        <ContextMenu.Positioner>
+          <ContextMenu.Popup>
+            <ContextMenu.CheckboxItem defaultChecked>
+              <ContextMenu.CheckboxItemIndicator animation="pop">
+                <CheckIcon />
+              </ContextMenu.CheckboxItemIndicator>
+              Show grid
+            </ContextMenu.CheckboxItem>
+            <ContextMenu.Separator />
+            <ContextMenu.RadioGroup defaultValue="fit">
+              <ContextMenu.RadioItem value="fit">
+                <ContextMenu.RadioItemIndicator animation="pop">
+                  <CheckIcon />
+                </ContextMenu.RadioItemIndicator>
+                Zoom to fit
+              </ContextMenu.RadioItem>
+              <ContextMenu.RadioItem value="100">
+                <ContextMenu.RadioItemIndicator animation="pop">
+                  <CheckIcon />
+                </ContextMenu.RadioItemIndicator>
+                Zoom to 100%
+              </ContextMenu.RadioItem>
+            </ContextMenu.RadioGroup>
+          </ContextMenu.Popup>
+        </ContextMenu.Positioner>
+      </ContextMenu.Portal>
+    </ContextMenu.Root>
+  );
+}
+```
+
+The same demo with `checkAnimation="pop"` (its Controls switch it back to `draw`):
+
+<ComponentPreview
+  name="base-ui/context-menu"
+  values={{ checkAnimation: 'pop' }}
+  code={false}
+/>
+
+To pop every check of your app at once (checkboxes, menus, selects, comboboxes), set `checkAnimation="pop"` on an [`AnimateUIProvider`](/docs/installation#choose-how-checks-animate-optional) instead.
+
+## Animation
+
+Base UI's Context Menu has no Animate UI v1 counterpart: it moves like v1's Base UI Menu.
+
+- **Popup** fades and scales in from 0.9, from the pointer (`--transform-origin`, set inline so it works without styles), in 220ms (`{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }`, a soft ease-out), and closes the same way. Submenu popups grow from the side of their trigger the same way.
+- **Stagger**: opening from closed, the rows (items, labels, separators) come in one after another, 33ms apart (closer past 10 rows: 33ms × √(10 / rows), so a long list doesn't wait): each slides 8px in from the right and clears from a 4px blur as it fades in, in 0.3s on a soft ease-out (`{ duration: 0.3, ease: [0.215, 0.61, 0.355, 1] }`). The box itself is there at once (its opacity in 0.1s, its scale as before), so the rows bring the fade, and a disabled row comes in at its own opacity. An item highlighted as it opens (the chosen one) shows its highlight once its row has landed. Reopened while it closes it doesn't stagger again, closing shows every row at once, and under reduced motion nothing staggers.
+- Base UI keeps the popup mounted after it closes, and Animate UI unmounts it once the exit has played (`onOpenChangeComplete` fires then).
+- **The highlight**: one surface glides behind the highlighted item on a spring (stiffness 500, damping 40), following the pointer and the arrow keys alike, and into submenus. Moving to another item, it carries on from where it is, at its speed: however fast the pointer or the arrow keys go, there's one highlight on screen. It only fades in (200ms, on CSS's `ease`) when it appears from nothing, and its color changes the same way when the item's highlighted background differs from the previous one's. It glides on the compositor (a Web Animation of `transform`), so a busy main thread, a submenu opening for instance, doesn't stall it. Into a submenu or back out of it, each menu clips its own part, as in v1: the previous surface glides along with the new one, the same box on screen, so the two make one highlight crossing from one menu into the other; the entering part fades in as it glides. When the pointer leaves the menu, it stays on the last item. It wears the item's own highlighted background (`focus:bg-accent`, `data-highlighted:bg-accent`…), read from your styles: the item's background is cleared while it's highlighted (or still has the focus, or its submenu is open), and a `focus:` background is read again once the item has the focus; its text colors stay.
+- **CheckboxItemIndicator** and **RadioItemIndicator** draw themselves like a Checkbox's check (their stroke and opacity in 0.3s on Motion's easeOut, at once: there's no box to fill first) when the item is checked, and erase themselves in 0.3s when it's unchecked (Animate UI keeps them mounted for that). Checking another radio item erases the old check while the new one draws itself. Only checking and unchecking animate: opening the menu shows its checks at rest, and closing it leaves them as they are.
+- With `animation="pop"` on an indicator (or `checkAnimation="pop"` on an `AnimateUIProvider`), checks pop instead: in from half their size out of a 2px blur (a spring, stiffness 500, damping 24), and back into their blur in 0.15s. A radio item's check doesn't pop from one item to another: it glides from the item it leaves to the newly checked one, on the highlight's spring (stiffness 500, damping 40), like a select's. The demo's Controls switch between the two.
+- With `closeOnClick` on an item, choosing it closes the menu: when its check changes (a checkbox item's, or another radio item's than the checked one), the menu holds still first (250ms while a check draws itself, 150ms while it pops or glides), so the change is seen. Escape and outside clicks don't wait.
+- When the menu closes with focus inside, focus goes back to where it was before the menu opened at once instead of after the exit, and the leaving popup ignores the pointer.
+- With `keepMounted` on the Portal, the closed popup stays in the DOM and Base UI hides it after the exit.
+- Open from the start (`defaultOpen`), the menu plays its entrance on page load.
+- Under reduced motion, nothing scales or glides: the menu and the checks only fade, and the menu doesn't hold; the highlight jumps from item to item and only fades in when it appears.
+
+## API Reference
+
+Every part takes exactly the props of [Base UI's Context Menu](https://base-ui.com/react/components/context-menu#api-reference). Animate UI adds the animation props below. The Popup's `render` prop is used by the animation.
+
+### Root, Trigger, Portal, Positioner, Group, GroupLabel, RadioGroup, SubmenuRoot, Separator, Arrow, Backdrop
+
+[Base UI props](https://base-ui.com/react/components/context-menu#api-reference) only. They are not animated.
+
+### Item, LinkItem, CheckboxItem, RadioItem, SubmenuTrigger
+
+[Base UI props](https://base-ui.com/react/components/context-menu#api-reference) only. They take part in the highlight; it needs nothing more.
+
+### Popup
+
+[Base UI props](https://base-ui.com/react/components/context-menu#popup), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description:
+        'Transition of the opening, and of the closing unless `exitTransition` is set.',
+      type: 'Transition',
+      default: '{ duration: 0.22, ease: [0.215, 0.61, 0.355, 1] }',
+    },
+    exitTransition: {
+      description: 'Transition of the closing.',
+      type: 'Transition',
+      default: 'transition',
+    },
+  }}
+/>
+
+### CheckboxItemIndicator, RadioItemIndicator
+
+[Base UI props](https://base-ui.com/react/components/context-menu#checkbox-item-indicator), plus:
+
+<TypeTable
+  type={{
+    animation: {
+      description:
+        "How the check shows and hides: `draw` (it draws itself and erases itself) or `pop` (it pops in from half its size and shrinks back out; a radio item's check glides to the newly checked item).",
+      type: "'draw' | 'pop'",
+      default: "the closest AnimateUIProvider's checkAnimation, else 'draw'",
+    },
+    transition: {
+      description:
+        "Transition of the check showing and hiding itself, and of a radio item's check gliding (`pop`).",
+      type: 'Transition',
+      default:
+        "draw: 0.3s on Motion's easeOut both ways (a Checkbox's, without its delay); pop: a spring (stiffness 500, damping 24) in, 0.15s out, and the highlight's spring (stiffness 500, damping 40) for the glide",
+    },
+  }}
+/>

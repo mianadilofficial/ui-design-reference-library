@@ -179,7 +179,7 @@ const physical = (visualDuration: number, bounce: number): Transition => {
   const root = 2 * Math.PI / (visualDuration * 1.2);
   return { type: "spring", stiffness: root * root, damping: 2 * (1 - bounce) * root, mass: 1 };
 };
-const SETTLE = physical(.44, 0), GROW = physical(spring.smooth.visualDuration, 0), POP = physical(.3, .22), ARRIVE = physical(.46, .12);
+const SETTLE = physical(.44, 0), GROW = physical(spring.smooth.visualDuration, 0), POP = physical(.3, 0), ARRIVE = physical(.46, 0);
 const DEFAULT_REACTIONS = ["👍", "❤️", "😂", "🎉", "👀", "🙏"];
 const STICK_DISTANCE = 48, FAR_DISTANCE = 180;
 

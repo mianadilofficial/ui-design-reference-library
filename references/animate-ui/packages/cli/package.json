@@ -1,0 +1,59 @@
+{
+  "name": "@animate-ui/cli",
+  "version": "2.2.0",
+  "description": "Swap your shadcn/ui primitives for Animate UI's animated ones, and migrate from Animate UI v1.",
+  "keywords": [
+    "animate-ui",
+    "cli",
+    "shadcn",
+    "shadcn-ui",
+    "codemod",
+    "motion",
+    "animation",
+    "radix-ui",
+    "base-ui",
+    "react-aria"
+  ],
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/imskyleen/animate-ui.git",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://animate-ui.com",
+  "type": "module",
+  "bin": {
+    "animate-ui": "dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "prepublishOnly": "node ../../scripts/check-publish.mjs agent && pnpm build && node ../../scripts/check-publish.mjs dist",
+    "build": "node scripts/generate-primitives.mts && tsdown",
+    "dev": "tsdown --watch",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "node scripts/generate-primitives.mts && vitest run",
+    "gen": "node scripts/generate-primitives.mts"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@babel/types": "^7.29.8",
+    "@types/node": "catalog:",
+    "@workspace/eslint-config": "workspace:*",
+    "eslint": "catalog:",
+    "tsdown": "^0.23.0",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "vitest": "^5.0.3"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.29.9"
+  }
+}

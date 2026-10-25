@@ -1,0 +1,97 @@
+---
+title: Radio Group
+description: A set of checkable buttons, known as radio buttons, where no more than one of the buttons can be checked at a time.
+updatedDate: '2026-10-18'
+---
+
+<ComponentPreview name="base-ui/radio-group" />
+
+## Installation
+
+<Installation name="radio-group" />
+
+## Usage
+
+Import the primitive from Animate UI instead of Base UI. Everything else stays the same. shadcn/ui's Radio Group uses two Base UI modules, `radio-group` and `radio`: import both from Animate UI.
+
+```tsx
+import { Radio } from '@animate-ui/react/primitives/base-ui/radio';
+import { RadioGroup } from '@animate-ui/react/primitives/base-ui/radio-group';
+
+export function Density() {
+  return (
+    <RadioGroup defaultValue="comfortable" aria-label="Density">
+      {['default', 'comfortable', 'compact'].map((value) => (
+        <label key={value} className="flex items-center gap-2">
+          <Radio.Root value={value}>
+            <Radio.Indicator>
+              <span className="size-2 rounded-full bg-current" />
+            </Radio.Indicator>
+          </Radio.Root>
+          {value}
+        </label>
+      ))}
+    </RadioGroup>
+  );
+}
+```
+
+Using the `@base-ui/react` umbrella import instead? The barrel mirrors it: `import { Radio, RadioGroup } from '@animate-ui/react/primitives/base-ui'`.
+
+`RadioGroup.Props`, `Radio.Root.Props` and the other type namespaces are kept.
+
+## Animation
+
+The motion of Animate UI v1's radio group:
+
+- **Radio.Indicator**: the dot pops in when its radio is selected. Its scale and its opacity spring from 0 to 1 (stiffness 200, damping 16: it overshoots a little before settling), and back to 0 the same way when another radio is selected, then the indicator unmounts, as in Base UI. The indicator element itself never moves: its content (the dot) animates, so shadcn/ui's centered dot stays centered.
+- **Radio.Root** scales to 0.97 while pressed (no hover scale), on Motion's default spring for scale (stiffness 550, damping 30).
+- In the demo, a radio's fill is a layer of its own (`before:` in its classes) that grows from 70% while it fades in, in 300ms, and shrinks back as it fades out, like the [Checkbox](/docs/primitives/base-ui/checkbox)'s: the dot pops in over it. The layer covers the border (`before:-inset-px`) and the border keeps its color, so no outline rings the growing fill. It's CSS, so copy the classes for the same effect; under reduced motion the layer only fades.
+- A radio already selected when the group appears (the page loading, a dialog opening) shows its dot at rest, unlike v1's: only a change of selection animates a dot. On a server-rendered page, the dot is there before any script runs.
+- Selecting with the arrow keys animates like a click, as v1's did.
+- Selecting again mid-animation turns back from where the dot is.
+- Under reduced motion, the dot only fades and nothing scales.
+- With `keepMounted`, an unselected radio's indicator stays in the DOM with its dot hidden.
+
+## API Reference
+
+Every part takes exactly the props of [Base UI's Radio](https://base-ui.com/react/components/radio#api-reference) and [Radio Group](https://base-ui.com/react/components/radio). Animate UI adds the animation props below. A `render` element (or function) of your own gets Base UI's behaviour, without the animation.
+
+### RadioGroup
+
+[Base UI props](https://base-ui.com/react/components/radio) only: nothing animates on the group itself.
+
+### Radio.Root
+
+[Base UI props](https://base-ui.com/react/components/radio#root), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the press scale.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 550, damping: 30, restSpeed: 10 }",
+    },
+  }}
+/>
+
+### Radio.Indicator
+
+[Base UI props](https://base-ui.com/react/components/radio#indicator), plus:
+
+<TypeTable
+  type={{
+    transition: {
+      description: 'Transition of the dot appearing.',
+      type: 'Transition',
+      default: "{ type: 'spring', stiffness: 200, damping: 16 }",
+    },
+    exitTransition: {
+      description: 'Transition of the dot leaving.',
+      type: 'Transition',
+      default: 'the same spring as transition',
+    },
+  }}
+/>
+
+`AnimateUIProvider`'s `tempo` scales these transitions with everything else.
