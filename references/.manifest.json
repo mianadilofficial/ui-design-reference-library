@@ -1,5 +1,5 @@
 {
-  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand — sync-references.yml updates it.",
+  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand \u2014 sync-references.yml updates it.",
   "animate-ui": {
     "branch": "main",
     "commit": "c28163655493f98bff9dc0362301a6242f74a1fd",
@@ -227,5 +227,11 @@
     "branch": "dev",
     "commit": "600e268473dc5194a42891acb9d0298f204debc9",
     "date": "2026-10-25"
+  },
+  "spec-kit": {
+    "repo": "github/spec-kit",
+    "branch": "main",
+    "commit": "222a973f8b8794366680c043fb935a31f71902af",
+    "date": "2026-10-28"
   }
 }

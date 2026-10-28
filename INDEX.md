@@ -50,6 +50,12 @@ Every entry lives in `references/<name>/` with its original files plus an
 | [django-styleguide](references/django-styleguide) | HackSoft | Django / Python | MIT | Opinionated Django structure: services/selectors pattern, API conventions, testing, Celery (~6.3k stars) |
 | [angular-ngrx-starter](references/angular-ngrx-starter) | Tomas Trajan | Angular | MIT | Production Angular starter: feature modules + lazy loading, NgRx state, Material theming, testing (~2.9k stars) |
 
+## Workflow
+
+| Reference | Author | Stack | License | Notes |
+|---|---|---|---|---|
+| [spec-kit](references/spec-kit) | GitHub | Agnostic | MIT | Spec-Driven Development toolkit: constitution, spec, plan, and task templates plus agent commands — the spec-first workflow for any build |
+
 ## Backend
 
 | Reference | Author | Stack | License | Notes |

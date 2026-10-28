@@ -45,6 +45,18 @@ When the task includes scaffolding (frontend and/or backend), study the
   repo should understand the architecture from the folder tree alone.
 - Name the structure reference you followed, same as design decisions.
 
+## 2c. Work spec-first with spec-kit
+
+When the task is a full build (not a single component), start from the
+spec-driven workflow in [spec-kit](references/spec-kit) before writing code:
+
+- Read its `spec-driven.md` and the templates in `templates/`
+  (constitution, spec, plan, tasks).
+- Write the spec first — what to build, constraints, acceptance criteria —
+  then the plan, then the tasks. Only then ground each UI decision in a
+  design reference from section 2.
+- A build without a written spec is ad-hoc prompting: go back and write one.
+
 ## 3. The quality bar (non-negotiable)
 
 - **No generic AI look.** No purple/blue gradients on everything, no identical
