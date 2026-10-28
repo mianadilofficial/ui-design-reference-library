@@ -55,6 +55,7 @@ Every entry lives in `references/<name>/` with its original files plus an
 | Reference | Author | Stack | License | Notes |
 |---|---|---|---|---|
 | [spec-kit](references/spec-kit) | GitHub | Agnostic | MIT | Spec-Driven Development toolkit: constitution, spec, plan, and task templates plus agent commands — the spec-first workflow for any build |
+| [paperclip](references/paperclip) | Paperclip AI | Node + React | MIT | AI agent team orchestration: goals, agents, budgets, dashboard — the "company" for agent teams |
 
 ## Backend
 

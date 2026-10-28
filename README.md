@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/github/license/mianadilofficial/ui-design-reference-library?style=flat-square)](LICENSE)
 [![Last commit](https://img.shields.io/github/last-commit/mianadilofficial/ui-design-reference-library?style=flat-square)](https://github.com/mianadilofficial/ui-design-reference-library/commits/main)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](CONTRIBUTING.md)
-[![References](https://img.shields.io/badge/references-39-blue?style=flat-square)](INDEX.md)
+[![References](https://img.shields.io/badge/references-40-blue?style=flat-square)](INDEX.md)
 
 ![UI Design Reference Library](assets/banner.png)
 
@@ -50,6 +50,7 @@ AI-generated UI too often looks the same: generic gradients, predictable layouts
 | [django-saas-boilerplate](references/django-saas-boilerplate) | Backend | Django | MIT | SaaS boilerplate: HTMX + Tailwind, clean layout |
 | [go-clean-arch](references/go-clean-arch) | Backend | Go | MIT | Clean architecture: domain, use cases, handlers |
 | [spec-kit](references/spec-kit) | Workflow | Agnostic | MIT | Spec-driven development: constitution, spec, plan, tasks templates + agent commands |
+| [paperclip](references/paperclip) | Workflow | Node + React | MIT | AI agent team orchestration dashboard: goals, agents, budgets |
 
 Full details in **[INDEX.md](INDEX.md)**.
 

@@ -233,5 +233,11 @@
     "branch": "main",
     "commit": "222a973f8b8794366680c043fb935a31f71902af",
     "date": "2026-10-28"
+  },
+  "paperclip": {
+    "repo": "paperclipai/paperclip",
+    "branch": "master",
+    "commit": "cff331f6ca0a652b5e41641c68dfa5fa584c22ae",
+    "date": "2026-10-28"
   }
 }
