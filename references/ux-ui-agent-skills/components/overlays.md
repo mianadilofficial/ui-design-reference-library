@@ -52,4 +52,4 @@ Visually and semantically separate content groups.
 
 **Accessibility:**
 - Decorative: `role="presentation"` / `aria-hidden`. Semantic grouping: `role="separator"` (with `aria-orientation` for vertical).
-- Color from `semantic.border.default`/`subtle`; never rely on a divider alone to convey grouping for screen readers — use headings/landmarks too.
+- Color from `semantic.border.default`/`subtle`; never rely on a divider alone to convey grouping for screen readers. Use headings/landmarks too.

@@ -1,4 +1,4 @@
-# tests/ — the layer that checks the gates
+# tests/: the layer that checks the gates
 
 The kit's 51 objective gates all point at `examples/` that already pass. That
 proves a gate says yes to good work. It never proves the gate can still say no.
@@ -44,7 +44,7 @@ would otherwise look like a detection:
 
 `fixtures/bad/` contains an emoji, raw hex, and a failing contrast pair on
 purpose. None of the repo-wide default scans reach into `tests/`, and
-`meta/guards.test.mjs` holds that in place — if a default scan ever grows to
+`meta/guards.test.mjs` holds that in place: if a default scan ever grows to
 cover this directory, CI would go red for the wrong reason.
 
 ## Known blind spots
@@ -64,14 +64,20 @@ directory exists to prevent.
   `validate_instruction_surface.py`, `validate_template.py` - take `--root` now,
   and `meta/root-scoped.test.mjs` uses it to show each one refusing a broken
   copy. `accuracy_report.mjs` is the runner itself, so pointing it elsewhere is a
-  different feature; `design_systems.py` reads a library that only exists here.
+  different feature. `design_systems.py` reads the index an install carries;
+  its `catalog` and `index` output are generated from specs only the repo has.
+- **The library is tested from the tarball, not the repo.** The repo has every
+  spec on disk, so a test run from it passes whether or not fetching works.
+  `cli/library.test.mjs` unpacks `npm pack`, points the loader at a local server
+  that serves a spec intact, one byte off, or not at all, and checks the refusal
+  as hard as the success.
 - **`build_tokens.mjs` is a generator first.** Without `--check` it still writes
   what it can and exits 0, because that is what a generator should do; the gate
   runs it with `--check`, which turns a dropped reference into a failure. `unit/`
   covers both modes, plus the output contract: a directory build emits the whole
   system rather than colour alone, and no composite token reaches the CSS as
   `[object Object]` or a stray brace. Those last two exist because the bugs
-  shipped — the colour-only directory build stood for four releases while CI ran
+  shipped: the colour-only directory build stood for four releases while CI ran
   the command and checked only its exit status.
 - **Taste is still not covered.** `slop_tells` and `taste_audit` only fail on
   HIGH findings under `--strict`; MED and LOW never fail anything, by design.

@@ -6,7 +6,10 @@ import type {
     TransformProperties,
     Transition,
 } from "../animation/types"
-import type { DragElastic } from "../gestures/drag/types"
+import type {
+    DragConstraintsFunction,
+    DragElastic,
+} from "../gestures/drag/types"
 import { PanInfo } from "../gestures/pan/types"
 import type { MotionValue } from "../value"
 
@@ -646,12 +649,17 @@ export interface MotionNodeDraggableOptions {
      *   )
      * }
      * ```
+     *
+     * Or a function, called when each drag starts, that returns a
+     * `DragPointConstraint`. Drag then hands it the pointer's position and
+     * release velocity, and it moves the element itself.
      */
     dragConstraints?:
         | false
         | Partial<BoundingBox>
         | Element
         | { current: Element | null }
+        | DragConstraintsFunction
 
     /**
      * The degree of movement allowed outside constraints. 0 = no movement, 1 =
@@ -956,7 +964,9 @@ export interface MotionNodeLayoutOptions {
 
     /**
      * Whether an element should be considered a "layout root", where
-     * all children will be forced to resolve relatively to it.
+     * all children will be forced to resolve relatively to it. This
+     * includes shared `layoutId` elements, which animate within the root
+     * when the previous element was also inside it.
      * Currently used for `position: sticky` elements in Framer.
      */
     layoutRoot?: boolean

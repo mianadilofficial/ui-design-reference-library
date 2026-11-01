@@ -4,7 +4,7 @@ A structured process for evaluating UI designs against quality, consistency, acc
 
 ---
 
-## Review Rubric (Score 1–10)
+## Review Rubric (Score 1 to 10)
 
 Score every design across these six dimensions. Each dimension contributes to the overall quality score.
 
@@ -20,11 +20,11 @@ Score every design across these six dimensions. Each dimension contributes to th
 **Scoring Guide:**
 | Score | Meaning |
 |-------|---------|
-| 9–10 | Exemplary — ready to ship, reference-quality |
-| 7–8 | Good — minor polish needed |
-| 5–6 | Adequate — several issues to address before shipping |
-| 3–4 | Below standard — significant rework needed |
-| 1–2 | Critical — fundamental problems, back to drawing board |
+| 9-10 | Exemplary: ready to ship, reference-quality |
+| 7-8 | Good: minor polish needed |
+| 5-6 | Adequate: several issues to address before shipping |
+| 3-4 | Below standard: significant rework needed |
+| 1-2 | Critical: fundamental problems, back to drawing board |
 
 **Overall Score Formula:**
 ```
@@ -78,12 +78,12 @@ Walk through the primary user task:
 
 ### Step 4: Systematic Check
 Review against:
-- [ ] **Token Compliance** — Are colors, typography, spacing from the token system?
-- [ ] **Component Library** — Are standard components used correctly?
-- [ ] **Accessibility** — Run through `accessibility/wcag-checklist.md` P0 items
-- [ ] **Responsive** — Check mobile, tablet, desktop breakpoints
-- [ ] **States** — Empty, loading, error, populated, overflow, edge cases
-- [ ] **Content** — Real-ish content (not just "Lorem ipsum"), edge cases (long names, empty fields)
+- [ ] **Token Compliance**: Are colors, typography, spacing from the token system?
+- [ ] **Component Library**: Are standard components used correctly?
+- [ ] **Accessibility**: Run through `accessibility/wcag-checklist.md` P0 items
+- [ ] **Responsive**: Check mobile, tablet, desktop breakpoints
+- [ ] **States**: Empty, loading, error, populated, overflow, edge cases
+- [ ] **Content**: Real-ish content (not just "Lorem ipsum"), edge cases (long names, empty fields)
 
 ### Step 5: Document Findings
 
@@ -104,7 +104,7 @@ Prioritize every finding by severity:
 
 | # | Severity | Category | Location | Finding | Recommendation | Heuristic |
 |---|----------|----------|----------|---------|---------------|-----------|
-| 1 | Critical | A11y | Login form | Error messages only use red color | Add error icon + text description | — |
+| 1 | Critical | A11y | Login form | Error messages only use red color | Add error icon + text description | - |
 | 2 | Major | Usability | Dashboard | No empty state for new users | Add onboarding empty state with CTA | H6 |
 | 3 | Minor | Consistency | Settings | Save button alignment differs from other forms | Right-align to match pattern | H4 |
 | 4 | Enhancement | Efficiency | Data table | No keyboard shortcuts for bulk actions | Add Shift+Click for range select | H7 |
@@ -136,32 +136,32 @@ Map every gap to a severity:
 
 ### 4. Remediation Roadmap
 Group findings into actionable batches:
-1. **Quick wins** — Token swaps, contrast fixes (< 1 hour each)
-2. **Component standardization** — Replace one-offs with system components
-3. **Layout refactors** — Grid alignment, responsive fixes
-4. **New patterns** — Missing states, new components needed
+1. **Quick wins**: Token swaps, contrast fixes (< 1 hour each)
+2. **Component standardization**: Replace one-offs with system components
+3. **Layout refactors**: Grid alignment, responsive fixes
+4. **New patterns**: Missing states, new components needed
 
 ---
 
 ## Review Checklist (Quick Reference)
 
 ```
-□ Visual hierarchy — clear focal point and scanning path
-□ Typography — heading levels correct, body text readable
-□ Color — sufficient contrast, not only means of information
-□ Spacing — consistent rhythm, breathing room
-□ Alignment — grid-aligned, no visual drift
-□ Components — using established patterns correctly
-□ States — all 6 states defined for interactive elements
-□ Empty states — meaningful illustration + CTA
-□ Loading — skeleton or spinner for async content
-□ Errors — clear, actionable, accessible error messages
-□ Responsive — mobile, tablet, desktop considered
-□ Touch targets — 24px minimum (48px recommended)
-□ Focus indicators — visible on all interactive elements
-□ Keyboard — full flow completable without mouse
-□ Screen reader — meaningful landmarks, labels, live regions
-□ Motion — animations serve purpose, respect prefers-reduced-motion
-□ Content — real content, edge cases (long strings, empty, overflow)
-□ Dark mode — if supported, tested thoroughly
+□ Visual hierarchy: clear focal point and scanning path
+□ Typography: heading levels correct, body text readable
+□ Color: sufficient contrast, not only means of information
+□ Spacing: consistent rhythm, breathing room
+□ Alignment: grid-aligned, no visual drift
+□ Components: using established patterns correctly
+□ States: all 6 states defined for interactive elements
+□ Empty states: meaningful illustration + CTA
+□ Loading: skeleton or spinner for async content
+□ Errors: clear, actionable, accessible error messages
+□ Responsive: mobile, tablet, desktop considered
+□ Touch targets: 24px minimum (48px recommended)
+□ Focus indicators: visible on all interactive elements
+□ Keyboard: full flow completable without mouse
+□ Screen reader: meaningful landmarks, labels, live regions
+□ Motion: animations serve purpose, respect prefers-reduced-motion
+□ Content: real content, edge cases (long strings, empty, overflow)
+□ Dark mode: if supported, tested thoroughly
 ```

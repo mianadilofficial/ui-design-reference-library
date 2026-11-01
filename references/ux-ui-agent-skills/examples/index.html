@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>UX/UI Agent Skills</title>
-<meta name="description" content="Screens an agent built and a gate signed off: a trading terminal with ten chart types, twenty industry screens, 23 component harnesses. 51 objective checks, light and dark." />
+<meta name="description" content="Screens an agent built and a gate signed off: a trading terminal with ten chart types, twenty industry screens, 23 component harnesses. 52 objective checks, light and dark." />
 <link rel="stylesheet" href="./brandkit-demo/theme.css" />
 <link rel="stylesheet" href="./directions.css" />
 <style>
@@ -69,7 +69,7 @@
   .facts span{display:block;font-family:var(--font-mono);font-size:.625rem;letter-spacing:.12em;
     text-transform:uppercase;color:var(--lin-ink-3);margin-block-start:var(--space-2)}
   .btn{display:inline-flex;align-items:center;gap:var(--space-2);min-block-size:3rem;padding-inline:var(--space-6);
-    border-radius:var(--radius-pill);text-decoration:none;font:600 var(--text-base)/1 var(--font-sans);
+    border-radius:var(--radius-full);text-decoration:none;font:600 var(--text-base)/1 var(--font-sans);
     transition:translate var(--transition-micro),background var(--transition-micro)}
   .btn:hover{translate:0 calc(var(--space-1) * -0.5)}
   .btn:focus-visible{outline:var(--ring-w) solid var(--acc);outline-offset:var(--space-1)}
@@ -104,7 +104,7 @@
   .cmpEdge{position:absolute;inset-block:0;inset-inline-start:var(--x);inline-size:var(--border-width-medium);
     background:var(--acc);translate:-1px 0;pointer-events:none}
   .cmpTag{position:absolute;inset-block-start:var(--space-4);padding:var(--space-1) var(--space-3);
-    border-radius:var(--radius-pill);background:var(--lin-canvas);color:var(--lin-ink-2);
+    border-radius:var(--radius-full);background:var(--lin-canvas);color:var(--lin-ink-2);
     font-family:var(--font-mono);font-size:.625rem;letter-spacing:.1em;text-transform:uppercase;
     pointer-events:none}
   .cmpTagA{inset-inline-start:var(--space-4)} .cmpTagB{inset-inline-end:var(--space-4)}
@@ -171,7 +171,7 @@
     margin-block-start:var(--space-10);perspective:var(--perspective-gallery)}
   .card{display:block;border-radius:var(--radius-card);overflow:hidden;text-decoration:none;
     border:1px solid var(--lin-hairline);background:var(--lin-panel);
-    transition:transform var(--duration-normal) var(--ease-out),border-color var(--transition-micro);
+    transition:transform var(--duration-base) var(--ease-out),border-color var(--transition-micro);
     transform-style:preserve-3d}
   .card:hover{border-color:var(--acc)}
   .card:focus-visible{outline:var(--ring-w) solid var(--acc);outline-offset:var(--space-1)}
@@ -179,9 +179,22 @@
   .card strong{display:block;font-size:var(--text-lg);letter-spacing:-0.01em}
   .card span{display:block;color:var(--lin-ink-3);font-size:var(--text-sm);margin-block-start:var(--space-2)}
 
+  /* The five websites: two lead on the first row, three follow on the second, so
+     nothing is a hole and the eye has a first place to land. Cards in a row share
+     a width, so they share a height. */
+  .sites-cards{grid-template-columns:minmax(0,1fr)}
+  @media (min-width:40rem){
+    .sites-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .sites-cards > :last-child{grid-column:1 / -1}
+  }
+  @media (min-width:64rem){
+    .sites-cards{grid-template-columns:repeat(6,minmax(0,1fr))}
+    .sites-cards > *, .sites-cards > :last-child{grid-column:span 2}
+    .sites-cards > :nth-child(-n+2){grid-column:span 3}
+  }
   .rest{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-block-start:var(--space-8)}
   .rest a{display:inline-flex;align-items:center;min-block-size:2.5rem;padding-inline:var(--space-4);
-    border:1px solid var(--lin-hairline);border-radius:var(--radius-pill);text-decoration:none;
+    border:1px solid var(--lin-hairline);border-radius:var(--radius-full);text-decoration:none;
     font-size:var(--text-sm);color:var(--lin-ink-2);transition:border-color var(--transition-micro),color var(--transition-micro)}
   .rest a:hover{border-color:var(--acc);color:var(--lin-ink)}
   .rest a:focus-visible{outline:var(--ring-w) solid var(--acc);outline-offset:var(--space-1)}
@@ -257,7 +270,7 @@
         <div class="facts rise">
           <div><b>20</b><span>product screens</span></div>
           <div><b>51</b><span>objective checks</span></div>
-          <div><b>138</b><span>design systems</span></div>
+          <div><b>2144</b><span>design systems</span></div>
           <div><b>0</b><span>chart libraries</span></div>
         </div>
       </div>
@@ -277,7 +290,7 @@
 </header>
 
 <div class="marquee" aria-hidden="true"><p>agentic · airbnb · airtable · ant · apple · application · arc · artistic · atelier zero · bento · binance · bmw · bold · brutalism · bugatti · cafe · cal · canva · claude · clay · claymorphism · clean · clickhouse · cohere · coinbase · colorful · composio · contemporary · corporate · cosmic · creative · cursor · dashboard · default · discord · dithered · doodle · dramatic · duolingo · editorial · elegant · elevenlabs · energetic · enterprise · expo · expressive · fantasy · ferrari · figma · flat · framer · friendly · futuristic · github · glassmorphism · gradient · hashicorp · huggingface · ibm · intercom · kami · kraken · lamborghini · levels · linear app · lingo · lovable · luxury · mastercard · material · meta · minimal · minimax · mintlify · miro · mistral ai · modern · mongodb · mono · neobrutalism · neon · neumorphism · nike · notion · nvidia · ollama · openai · opencode ai · pacman · paper · perspective · pinterest · playstation · posthog · premium · professional · publication · raycast · refined · renault · replicate · resend · retro · revolut · runwayml · sanity · sentry · shadcn · shopify · simple · skeumorphism · sleek · spacex · spacious · spotify · starbucks · storytelling · stripe · supabase · superhuman · tesla · tetris · theverge · together ai · uber · vercel · vibrant · vintage · vodafone · voltagent · warm editorial · warp · webflow · wired · wise · x ai · xiaohongshu · zapier · agentic · airbnb · airtable · ant · apple · application · arc · artistic · atelier zero · bento · binance · bmw · bold · brutalism · bugatti · cafe · cal · canva · claude · clay · claymorphism · clean · clickhouse · cohere · coinbase · colorful · composio · contemporary · corporate · cosmic · creative · cursor · dashboard · default · discord · dithered · doodle · dramatic · duolingo · editorial · elegant · elevenlabs · energetic · enterprise · expo · expressive · fantasy · ferrari · figma · flat · framer · friendly · futuristic · github · glassmorphism · gradient · hashicorp · huggingface · ibm · intercom · kami · kraken · lamborghini · levels · linear app · lingo · lovable · luxury · mastercard · material · meta · minimal · minimax · mintlify · miro · mistral ai · modern · mongodb · mono · neobrutalism · neon · neumorphism · nike · notion · nvidia · ollama · openai · opencode ai · pacman · paper · perspective · pinterest · playstation · posthog · premium · professional · publication · raycast · refined · renault · replicate · resend · retro · revolut · runwayml · sanity · sentry · shadcn · shopify · simple · skeumorphism · sleek · spacex · spacious · spotify · starbucks · storytelling · stripe · supabase · superhuman · tesla · tetris · theverge · together ai · uber · vercel · vibrant · vintage · vodafone · voltagent · warm editorial · warp · webflow · wired · wise · x ai · xiaohongshu · zapier</p></div>
-<p class="sr-only">The kit ships 138 named design systems, each as a full written specification.</p>
+<p class="sr-only">The kit ships 2,144 named design systems, each as a full written specification.</p>
 
 <section class="compare" aria-labelledby="cmpTitle">
   <div class="wrap">
@@ -314,10 +327,38 @@
     <p class="kicker rise">Measured, not claimed</p>
     <div class="row" style="margin-block-start:var(--space-8)">
       <div class="rise"><b data-count="51">51</b><span>objective gates, all green</span></div>
-      <div class="rise"><b data-count="49">49</b><span>pages rendered here</span></div>
+      <div class="rise"><b data-count="56">56</b><span>pages rendered here</span></div>
       <div class="rise"><b data-count="26">26</b><span>runnable skills</span></div>
-      <div class="rise"><b data-count="138">138</b><span>design systems</span></div>
+      <div class="rise"><b data-count="2144">2144</b><span>design systems</span></div>
       <div class="rise"><b data-count="0">0</b><span>chart libraries</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="work" id="sites" aria-labelledby="sitesTitle">
+  <div class="wrap">
+    <p class="kicker rise">Five websites</p>
+    <h2 class="rise" id="sitesTitle">Not only dashboards.</h2>
+    <p class="rise">A product launch, a furniture shop, a long read in Thai, a neighbourhood
+      restaurant and a public service page. Each takes its visual language from one design
+      system in the library, and each passed the same gates as every screen below. The brands,
+      people and figures are fictional, and every page says so.</p>
+    <div class="cards sites-cards">
+      <a class="card rise tilt" href="./sites/launch/index.html">
+        <img src="./thumbs/site-launch.png" width="1200" height="760" loading="lazy" decoding="async" alt="Product launch page for a fictional desk speaker, a large light headline beside a drawing of the speaker" />
+        <span class="body"><strong>Product launch</strong><span>A desk speaker, in the bang-olufsen language. Pricing that recomputes</span></span></a>
+      <a class="card rise tilt" href="./sites/store/index.html">
+        <img src="./thumbs/site-store.png" width="1200" height="760" loading="lazy" decoding="async" alt="Online shop for a joinery workshop: a lead bookcase tile, filters and a grid of solid-wood pieces" />
+        <span class="body"><strong>Online shop</strong><span>Solid-wood pieces made to order, in the floyd language. A cart that remembers</span></span></a>
+      <a class="card rise tilt" href="./sites/journal/index.html">
+        <img src="./thumbs/site-journal.png" width="1200" height="760" loading="lazy" decoding="async" alt="Thai long-form article with a large Thai headline beside a cross-section of a raised house over a canal" />
+        <span class="body"><strong>Long read, in Thai</strong><span>A feature set for Thai type, in the financial-times language</span></span></a>
+      <a class="card rise tilt" href="./sites/local/index.html">
+        <img src="./thumbs/site-local.png" width="1200" height="760" loading="lazy" decoding="async" alt="Restaurant site with a large serif headline about khao soi and a card showing today's opening hours" />
+        <span class="body"><strong>Neighbourhood restaurant</strong><span>Hours from your clock and a booking form, in the savor language</span></span></a>
+      <a class="card rise tilt" href="./sites/gov/index.html">
+        <img src="./thumbs/site-gov.png" width="1200" height="760" loading="lazy" decoding="async" alt="Thai public service page for renewing a shop licence, a navy hero under a banner saying it is a fictional example" />
+        <span class="body"><strong>Public service, in Thai</strong><span>An eligibility checker in plain Thai, in the korea-gov language</span></span></a>
     </div>
   </div>
 </section>
@@ -396,10 +437,10 @@
 <section class="work" aria-label="Everything else">
   <div class="wrap">
     <p class="kicker rise">Everything else</p>
-    <h2 class="rise" style="font-size:clamp(1.75rem,4vw,2.5rem)">23 harnesses and five more screens</h2>
+    <h2 class="rise" style="font-size:clamp(1.75rem,4vw,2.5rem)">23 harnesses and six more screens</h2>
     <p class="rise">Every variant and state of each component, rendered so the gates can
-      measure them, plus the reference app, two aesthetic studies and the two dense
-      consoles. Twenty-eight links, twenty-eight files in this repo.</p>
+      measure them, plus the reference app, two aesthetic studies, the two dense
+      consoles and an iPhone Duo simulator. Twenty-nine links, twenty-nine files in this repo.</p>
     <nav class="rest rise" aria-label="Component harnesses and demos">
       <a href="./component-states/button.html">Button</a><a href="./component-states/input.html">Input</a>
       <a href="./component-states/form-controls.html">Checkbox, radio, switch</a><a href="./component-states/select.html">Select</a>
@@ -416,6 +457,7 @@
       <a href="./sample-app/preview.html">Reference app</a><a href="./apple-demo/index.html">Apple direction</a>
       <a href="./brandkit-demo/index.html">Brandkit foundation</a>
       <a href="./showcase/index.html">Atlas console</a><a href="./terminal/index.html">Meridian Terminal</a>
+      <a href="./foldable/index.html">iPhone Duo simulator</a>
     </nav>
   </div>
 </section>
@@ -435,7 +477,7 @@
 
 <footer>
   <div class="wrap row">
-    <span>Every page passes <code>node scripts/accuracy_report.mjs</code>, 51 checks, light and dark.</span>
+    <span>Every page passes <code>node scripts/accuracy_report.mjs</code>, 52 checks, light and dark.</span>
     <span>Built with <a href="https://github.com/plugin87/ux-ui-agent-skills"><strong>ux-ui-agent-skills</strong></a> by Thientan Soparat</span>
   </div>
 </footer>

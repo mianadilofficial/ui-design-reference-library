@@ -1,6 +1,6 @@
 # Rule: Taste
 
-Loaded when designing or building any page, screen or component — which is most
+Loaded when designing or building any page, screen or component, which is most
 of the work.
 
 Gates prove a screen is correct. They cannot prove it is good, and a screen can
@@ -68,5 +68,5 @@ container cap, and `max-width: 100%` on an image.)
 ## Before you call it done
 
 Screenshot the screen and look at it. Click every control and confirm something
-actually changed. Then ask for a critique — a reviewer that argues for rejection
+actually changed. Then ask for a critique. A reviewer that argues for rejection
 catches what a gate cannot see, and a passing gate is never evidence of taste.

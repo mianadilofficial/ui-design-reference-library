@@ -14,8 +14,8 @@
   .ruler-l{stroke:var(--lin-hairline)}
   .axis-t{fill:var(--lin-ink-3);font-family:var(--font-mono);font-size:9px} /* ds-allow-hardcode: SVG label size is geometry */
   .v line{stroke:var(--lin-ink-3);stroke-width:1}
-  .v.path circle{fill:var(--color-text-error)} .v.path line{stroke:var(--color-text-error)}
-  .v.vus circle{fill:var(--color-feedback-warning)}
+  .v.path circle{fill:var(--color-feedback-error-text)} .v.path line{stroke:var(--color-feedback-error-text)}
+  .v.vus circle{fill:var(--color-feedback-warning-icon)}
   .v.ben circle{fill:var(--trm-accent)}
   .cov rect{fill:var(--color-chart-1);opacity:.65}
   .legend{display:flex;gap:var(--space-4);flex-wrap:wrap;font-family:var(--font-mono);font-size:var(--text-xs);
@@ -27,7 +27,7 @@
   .seq{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.24em;color:var(--lin-ink-2);
     overflow-wrap:anywhere;word-break:break-all;line-height:1.9;min-inline-size:0}
   @media (max-width:46rem){.seq{letter-spacing:.08em}}
-  .seq b{color:var(--color-text-error);font-weight:700}
+  .seq b{color:var(--color-feedback-error-text);font-weight:700}
   /* a 3rem figure carries its own min-content width: on a phone it would widen
      the panel and push the page sideways */
   .big{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.04em;line-height:1;
@@ -82,8 +82,8 @@
       <text class="axis-t" x="880" y="146">32,400,266</text>
     </svg>
     <p class="legend">
-      <span><i class="sw" style="background:var(--color-text-error)"></i>Pathogenic</span>
-      <span><i class="sw" style="background:var(--color-feedback-warning)"></i>Uncertain</span>
+      <span><i class="sw" style="background:var(--color-feedback-error-text)"></i>Pathogenic</span>
+      <span><i class="sw" style="background:var(--color-feedback-warning-icon)"></i>Uncertain</span>
       <span><i class="sw" style="background:var(--trm-accent)"></i>Benign</span>
       <span><i class="sw" style="background:var(--lin-accent);border-radius:var(--radius-sm)"></i>Exon</span>
     </p>

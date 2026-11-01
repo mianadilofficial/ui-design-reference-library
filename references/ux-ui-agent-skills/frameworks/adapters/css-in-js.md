@@ -2,11 +2,11 @@
 
 Follows the [Framework Adapter Protocol](../adapter-protocol.md). For React (or any JS) apps that style via JS. Tokens become a typed `theme` object **and/or** CSS variables.
 
-## Token layer — two strategies
+## Token layer: two strategies
 1. **Runtime theme object** (styled-components / emotion): export a typed `theme`, pass via `<ThemeProvider>`, read `props.theme`. Dark mode = swap the theme object. Best for runtime brand/density switching.
 2. **Zero-runtime + CSS vars** (vanilla-extract / Panda): generate CSS custom properties at build time via `createGlobalTheme` / Panda tokens; components reference `vars.color.actionPrimary`. Dark mode via a theme contract / `[data-theme]`. Best for performance.
 
-> Prefer mapping to **CSS variables** under the hood even in runtime libs — it keeps dark mode and theming swap cheap and avoids re-render churn.
+> Prefer mapping to **CSS variables** under the hood even in runtime libs. It keeps dark mode and theming swap cheap and avoids re-render churn.
 
 ## Button (emotion example)
 ```tsx

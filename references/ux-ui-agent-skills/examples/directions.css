@@ -1,4 +1,4 @@
-/* directions.css — four aesthetic directions from design-systems/library/, resolved
+/* directions.css: four aesthetic directions from design-systems/library/, resolved
  * into scoped custom properties. Each band of the landing page renders in one of
  * them, which is the kit's central claim made visible: same rules, same gates,
  * different look. Values are token DEFINITIONS, not values typed into components.

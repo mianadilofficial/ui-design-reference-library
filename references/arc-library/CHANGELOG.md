@@ -2,6 +2,12 @@
 
 New free components and blocks ship regularly. Every entry links to its live preview on uiarc.dev.
 
+## 2026-10-25
+
+### Added
+
+- [Ruler slider](https://uiarc.dev/components/ruler-slider) (component): A tape of ticks that slides under a fixed needle, with momentum, snapping, and a rolling readout.
+
 ## 2026-10-24
 
 ### Added

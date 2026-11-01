@@ -3,12 +3,13 @@
  * ux-ui-agent-skills installer
  *
  * Copies the design-system skill kit into a target project.
- * Zero dependencies — Node built-ins only.
+ * Zero dependencies: Node built-ins only.
  *
  *   npx ux-ui-skills init [dest]        Install the full kit (default dest: cwd)
  *   npx ux-ui-skills new [dest]         Scaffold a NEW product repo from the starter template
  *   npx ux-ui-skills add <area>...      Install specific areas
  *   npx ux-ui-skills list               List available areas
+ *   npx ux-ui-skills library get <name> Fetch one design-system spec into this project
  *   npx ux-ui-skills version            Print the installed version
  *   npx ux-ui-skills help
  *
@@ -80,13 +81,30 @@ function skillCount() {
   }
 }
 
+// The library size was typed here as 138 while 2,144 shipped. Read from the
+// index, because an npm install carries no spec until one is fetched.
+function systemCount() {
+  try {
+    return Object.keys(JSON.parse(fs.readFileSync(
+      path.join(ROOT, 'design-systems', 'library.json'), 'utf8')).systems).length;
+  } catch {
+    return 0;
+  }
+}
+
+/* Never copied into a project. 2,144 specs are 26MB, and a project uses one or
+   two: `library get <name>` fetches those, `library pull` fetches the rest. A
+   clone carries the folder and the npm package does not; skipping it here means
+   init behaves the same from either. */
+const NEVER_COPIED = [path.join(ROOT, 'design-systems', 'library')];
+
 const DESC = {
-  claude: 'CLAUDE.md — agent persona & master instructions (+ Request Router)',
-  agentsmd: 'AGENTS.md — the same doctrine for Codex, Cursor, Copilot and ~25 more',
+  claude: 'CLAUDE.md: agent persona & master instructions (+ Request Router)',
+  agentsmd: 'AGENTS.md: the same doctrine for Codex, Cursor, Copilot and ~25 more',
   tokens: `${count('tokens', '.json')} DTCG token files (colors, type, spacing, motion, theming…)`,
   components: `${componentCount()} component specs (atoms → templates + nav/feedback/forms/overlays)`,
   taste: 'Anti-slop doctrine, aesthetic archetypes, motion choreography',
-  'design-systems': 'Interop protocol + crosswalk + 138-system library',
+  'design-systems': `Interop protocol + crosswalk + ${systemCount().toLocaleString('en-US')}-system library (index; specs fetched on use)`,
   frameworks: 'Adapter Protocol + React/Next/SwiftUI + 10 concise adapters',
   accessibility: 'WCAG 2.2 checklist + ARIA patterns',
   workflows: 'Design review, handoff, prototyping, redesign-audit',
@@ -94,7 +112,7 @@ const DESC = {
   scripts: 'validate_tokens · contrast · design_systems · scaffold_component',
   skills: `${skillCount()} runnable Claude skills (.claude/skills/)`,
   rules: 'Depth split out of CLAUDE.md, loaded on demand (.claude/rules/)',
-  agents: 'design-critic — the adversarial reviewer behind /critique',
+  agents: 'design-critic: the adversarial reviewer behind /critique',
   examples: 'The gated reference output every skill points at as the bar',
   templates: 'Starter layout /scaffold-project generates a new project from',
 };
@@ -109,6 +127,7 @@ function parseFlags(argv) {
   //   claude -> CLAUDE.md + .claude/ (skills, hooks: enforced, not requested)
   //   codex  -> AGENTS.md, read by Codex, Cursor, Copilot, Jules, Aider and more
   //   both   -> both files; they are held in step by validate_agents_surface.py
+  //   gemini -> GEMINI.md + .agents/skills/, read by Gemini CLI and Antigravity
   const flags = { force: false, dry: false, noOpen: false, agent: 'claude' };
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
@@ -118,12 +137,12 @@ function parseFlags(argv) {
     else if (a === '--no-open') flags.noOpen = true;
     else if (a === '--agent' || a.startsWith('--agent=')) {
       const v = a.includes('=') ? a.split('=')[1] : argv[++i];
-      const ok = ['claude', 'codex', 'agents', 'both'];
+      const ok = ['claude', 'codex', 'agents', 'both', 'gemini', 'antigravity'];
       if (!ok.includes(v)) {
         console.error(`${C.red}--agent must be one of:${C.reset} ${ok.join(', ')}\n`);
         process.exit(1);
       }
-      flags.agent = v === 'agents' ? 'codex' : v;
+      flags.agent = v === 'agents' ? 'codex' : v === 'antigravity' ? 'gemini' : v;
     }
     /* An unrecognised flag used to fall through into `rest` and be read as a
        destination path, so a typo like --forse silently created a directory
@@ -141,7 +160,39 @@ function parseFlags(argv) {
 let copied = 0;
 let skipped = 0;
 
+/* Write one generated file under the same rules a copy follows. */
+function writeGenerated(dest, text, flags) {
+  if (fs.existsSync(dest) && !flags.force) {
+    skipped++;
+    console.log(`  ${C.yellow}skip${C.reset} ${path.relative(process.cwd(), dest)} ${C.dim}(exists, use --force)${C.reset}`);
+    return;
+  }
+  if (!flags.dry) {
+    fs.mkdirSync(path.dirname(dest), { recursive: true });
+    fs.writeFileSync(dest, text);
+  }
+  copied++;
+  console.log(`  ${C.green}+${C.reset} ${path.relative(process.cwd(), dest)}`);
+}
+
+/* Gemini CLI and Antigravity read GEMINI.md and .agents/skills/, and expand no
+   ${CLAUDE_SKILL_DIR}, so the brief and each skill are ported on the way out:
+   paths made relative to the project root, Claude-only skills left behind. */
+function installGemini(destRoot, flags) {
+  const { portSkill, geminiBrief, CLAUDE_ONLY } = require('./port-skills.js');
+  writeGenerated(path.join(destRoot, 'GEMINI.md'),
+    geminiBrief(fs.readFileSync(path.join(ROOT, 'AGENTS.md'), 'utf8'), 'workspace'), flags);
+  const src = path.join(ROOT, '.claude', 'skills');
+  for (const name of fs.readdirSync(src).sort()) {
+    const file = path.join(src, name, 'SKILL.md');
+    if (name in CLAUDE_ONLY || !fs.existsSync(file)) continue;
+    writeGenerated(path.join(destRoot, '.agents', 'skills', name, 'SKILL.md'),
+      portSkill(fs.readFileSync(file, 'utf8'), ''), flags);
+  }
+}
+
 function copyRecursive(src, dest, flags) {
+  if (NEVER_COPIED.includes(src)) return;
   const stat = fs.statSync(src);
   if (stat.isDirectory()) {
     if (!flags.dry) fs.mkdirSync(dest, { recursive: true });
@@ -151,7 +202,7 @@ function copyRecursive(src, dest, flags) {
   } else {
     if (fs.existsSync(dest) && !flags.force) {
       skipped++;
-      console.log(`  ${C.yellow}skip${C.reset} ${path.relative(process.cwd(), dest)} ${C.dim}(exists — use --force)${C.reset}`);
+      console.log(`  ${C.yellow}skip${C.reset} ${path.relative(process.cwd(), dest)} ${C.dim}(exists, use --force)${C.reset}`);
       return;
     }
     if (!flags.dry) {
@@ -180,7 +231,7 @@ function installAreas(areaKeys, destRoot, flags) {
   }
 }
 
-// `new` — scaffold a product repo: the starter layout + the engine areas it needs.
+// `new` scaffolds a product repo: the starter layout + the engine areas it needs.
 // The template ships CLAUDE.local.md as *.template so this repo's own gitignore
 // cannot swallow it; the suffix is dropped on the way out.
 const TEMPLATE = path.join('templates', 'product-design');
@@ -254,7 +305,7 @@ function cmdList() {
 
 function help() {
   console.log(`
-${C.bold}ux-ui-agent-skills${C.reset} — install the design-system skill kit
+${C.bold}ux-ui-agent-skills${C.reset}: install the design-system skill kit
 
 ${C.bold}Usage${C.reset}
   npx ux-ui-skills ${C.cyan}init${C.reset} [dest]        Install the full kit (default: current dir)
@@ -262,6 +313,8 @@ ${C.bold}Usage${C.reset}
   npx ux-ui-skills ${C.cyan}add${C.reset} <area>...      Install specific areas
   npx ux-ui-skills ${C.cyan}demo${C.reset} [dest]        Copy the rendered examples and open them (default: ./ux-ui-demo)
   npx ux-ui-skills ${C.cyan}list${C.reset}               List available areas
+  npx ux-ui-skills ${C.cyan}library get${C.reset} <name> Fetch a design-system spec into this project (sha256-checked)
+  npx ux-ui-skills ${C.cyan}library pull${C.reset}       Fetch every spec, for offline use
   npx ux-ui-skills ${C.cyan}observe${C.reset}            Did the agent follow the rules? (--last, --html, --help)
   npx ux-ui-skills ${C.cyan}version${C.reset}            Print the installed version
   npx ux-ui-skills ${C.cyan}help${C.reset}
@@ -269,8 +322,9 @@ ${C.bold}Usage${C.reset}
 ${C.bold}Flags${C.reset}
   --agent <which> init only: which instruction surface to install
                   ${C.cyan}claude${C.reset} (default)  CLAUDE.md + .claude/ skills, rules, hooks
-                  ${C.cyan}codex${C.reset}             AGENTS.md — Codex, Cursor, Copilot, Aider, +more
+                  ${C.cyan}codex${C.reset}             AGENTS.md (Codex, Cursor, Copilot, Aider, +more)
                   ${C.cyan}both${C.reset}              both files, held in step by a gate
+                  ${C.cyan}gemini${C.reset}            GEMINI.md + .agents/skills/ (Gemini CLI, Antigravity)
   --force, -f     Overwrite existing files
   --dry           Show what would be copied, change nothing
   --no-open       demo only: copy the examples but do not launch a browser
@@ -280,8 +334,10 @@ ${C.bold}Examples${C.reset}
   npx ux-ui-skills init
   npx ux-ui-skills init ./my-app
   npx ux-ui-skills init --agent codex        ${C.dim}# for Codex / Cursor / Copilot${C.reset}
+  npx ux-ui-skills init --agent gemini       ${C.dim}# for Gemini CLI / Antigravity${C.reset}
   npx ux-ui-skills new ./my-product
   npx ux-ui-skills add tokens taste design-systems
+  npx ux-ui-skills library get stripe linear-app
   npx ux-ui-skills add skills --force
 `);
 }
@@ -291,10 +347,13 @@ ${C.bold}Examples${C.reset}
    mechanism their agent does not implement. */
 function summary(destRoot, agent) {
   console.log(`\n${C.bold}Done.${C.reset} ${C.green}${copied} copied${C.reset}, ${C.yellow}${skipped} skipped${C.reset} → ${path.relative(process.cwd(), destRoot) || '.'}`);
-  if (agent === 'codex') {
-    console.log(`${C.dim}Open the folder in Codex, Cursor, Copilot or Aider — AGENTS.md is read automatically. Ask for a screen; the gates live in scripts/.${C.reset}\n`);
+  console.log(`${C.dim}Design systems arrive when used: npx ux-ui-agent-skills library get <name> (the agent runs scripts/library.mjs itself).${C.reset}`);
+  if (agent === 'gemini') {
+    console.log(`${C.dim}Open the folder in Gemini CLI or Antigravity: GEMINI.md loads automatically. Gemini CLI reads .agents/skills/ only in a trusted folder: trust it when asked, then \`gemini skills list\` shows them.${C.reset}\n`);
+  } else if (agent === 'codex') {
+    console.log(`${C.dim}Open the folder in Codex, Cursor, Copilot or Aider: AGENTS.md is read automatically. Ask for a screen; the gates live in scripts/.${C.reset}\n`);
   } else {
-    console.log(`${C.dim}Open the folder in Claude Code — CLAUDE.md loads automatically. Try /design-tokens, /design-code, /apply-aesthetic.${C.reset}\n`);
+    console.log(`${C.dim}Open the folder in Claude Code: CLAUDE.md loads automatically. Try /design-tokens, /design-code, /apply-aesthetic.${C.reset}\n`);
   }
 }
 
@@ -307,6 +366,17 @@ function main() {
   if (cmd === 'observe') {
     const r = require('child_process').spawnSync(process.execPath,
       [path.join(ROOT, 'scripts/observe.mjs'), ...argv.slice(1)], { stdio: 'inherit' });
+    process.exitCode = r.status === null ? 1 : r.status;
+    return;
+  }
+
+  /* library has its own flags and fetches into the directory it is run from,
+     not into the package, which under npx is a cache nobody looks in. */
+  if (cmd === 'library') {
+    const args = argv.slice(1);
+    if (!args.some(a => a === '--into' || a.startsWith('--into='))) args.push('--into', process.cwd());
+    const r = require('child_process').spawnSync(process.execPath,
+      [path.join(ROOT, 'scripts/library.mjs'), ...args], { stdio: 'inherit' });
     process.exitCode = r.status === null ? 1 : r.status;
     return;
   }
@@ -331,7 +401,7 @@ function main() {
     // --agent decides which instruction surface lands. Everything else - tokens,
     // components, taste, and the 50 gates - is the same either way, because none
     // of it depends on which agent is reading.
-    const surfaces = { claude: ['claude'], codex: ['agentsmd'], both: ['claude', 'agentsmd'] };
+    const surfaces = { claude: ['claude'], codex: ['agentsmd'], both: ['claude', 'agentsmd'], gemini: [] };
     const keep = surfaces[flags.agent];
     // skills, rules, agents (the critic) and commands are Claude Code mechanisms.
     // On the codex surface they would be dead files, so they stay out.
@@ -340,9 +410,13 @@ function main() {
       Object.keys(AREAS).filter(k => {
         if (k === 'claude' || k === 'agentsmd') return keep.includes(k);
         if (flags.agent === 'codex' && claudeOnly.includes(k)) return false;
+        // The ported skills read .claude/rules/; the skills and critic themselves
+        // arrive ported, or not at all.
+        if (flags.agent === 'gemini' && (k === 'skills' || k === 'agents')) return false;
         return true;
       }),
       destRoot, flags);
+    if (flags.agent === 'gemini') installGemini(destRoot, flags);
     if (flags.agent === 'codex') {
       console.log(`\n  ${C.dim}AGENTS.md installed. Codex, Cursor, Copilot, Jules and ~25 more read it.${C.reset}`);
       console.log(`  ${C.dim}The .claude/ skills and hooks were not installed - they are Claude Code only.${C.reset}`);

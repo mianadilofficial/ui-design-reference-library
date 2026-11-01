@@ -1,7 +1,7 @@
 /**
  * Meta-gate: the render gates must still REJECT a broken page.
  *
- * These are the gates whose verdict nobody can eyeball — real computed contrast,
+ * These are the gates whose verdict nobody can eyeball: real computed contrast,
  * real Tab order, real overflow. Each one gets a page built to break exactly the
  * thing it claims to measure, plus a clean page it must accept, so "passing"
  * cannot mean "no longer looking".
@@ -25,6 +25,23 @@ test('measure_render rejects text below 4.5:1 on the real render', () => {
   rejects(gate('measure_render.mjs', [F('bad/low-contrast.html')]), /2\.07:1|need 4\.5/);
 });
 
+test('measure_render reads an oklch colour as the colour it is', () => {
+  // The old parser read oklch(0.78 0 0) as rgb(0.78, 0, 0): every line 1.00:1,
+  // the heading included. The real grey is 2.01:1, and the black heading passes.
+  const r = rejects(gate('measure_render.mjs', [F('bad/oklch.html')]), /2\.0\d:1 \(need 4\.5\)/);
+  if (/<h1>/.test(r.out)) throw new Error(`the heading passes AA and was reported:\n${r.out}`);
+});
+
+for (const args of [[], ['--dark']]) {
+  const mode = args.length ? ' (dark)' : '';
+  test(`measure_render accepts a theme written in oklch${mode}`, () => {
+    accepts(gate('measure_render.mjs', [...args, F('good/oklch.html')]));
+  });
+  test(`verify_states accepts a theme written in oklch${mode}`, () => {
+    accepts(gate('verify_states.mjs', [...args, F('good/oklch.html')]));
+  });
+}
+
 test('verify_states rejects a button that only fails on hover', () => {
   // The specificity trap: fine at rest, broken on hover. measure_render alone misses it.
   const r = rejects(gate('verify_states.mjs', [F('bad/hover-fail.html')]), /hover/);
@@ -47,6 +64,30 @@ test('verify_responsive rejects horizontal overflow at 280px', () => {
   rejects(gate('verify_responsive.mjs', [F('bad/overflow-280.html')]), /@280px overflow/);
 });
 
+test('verify_responsive rejects a fold-aware page that puts text and a control on the hinge', () => {
+  // iPhone Duo half closed: the page splits into three columns when it sees two
+  // viewport segments, and the middle one lands on the 455-495px hinge.
+  const r = rejects(gate('verify_responsive.mjs', [F('bad/fold-hinge.html')]), /fold-aware, yet \d+ thing\(s\) sit on the hinge/);
+  if (!/control button/.test(r.out)) throw new Error(`the button on the hinge was not named\n${r.out}`);
+});
+
+test('verify_responsive accepts one pane per viewport segment, and counts the page as fold-aware', () => {
+  accepts(gate('verify_responsive.mjs', [F('good/fold-aware.html')]), /1 fold-aware page\(s\), hinge clear/);
+});
+
+test('verify_responsive leaves a page that does not answer the fold alone there', () => {
+  // One layout across the hinge is what Safari shows by default, so it is not a
+  // finding. clean-panel.html is that page; it must pass and count as 0.
+  accepts(gate('verify_responsive.mjs', [F('good/clean-panel.html')]), /0 fold-aware page\(s\)/);
+});
+
+test('verify_responsive checks the five iPhone Duo widths by default', () => {
+  const r = accepts(gate('verify_responsive.mjs', [F('good/clean-panel.html')]), /no horizontal overflow/);
+  for (const w of [382, 385, 594, 669, 951]) {
+    if (!new RegExp(`(?<!\\d)${w}(?!\\d)`).test(r.out)) throw new Error(`${w}px is not in the default widths\n${r.out}`);
+  }
+});
+
 test('verify_keyboard rejects a stateful control Enter and Space cannot operate', () => {
   rejects(gate('verify_keyboard.mjs', [F('bad/dead-key-toggle.html')]), /verify_keyboard: FAIL/);
 });
@@ -57,6 +98,32 @@ test('verify_keyboard rejects an interactive role Tab can never reach', () => {
   // bug there is, and the fixture pairs it with a correct one so a gate that
   // flagged the role itself would fail for the wrong reason.
   rejects(gate('verify_keyboard.mjs', [F('bad/div-button-no-tabindex.html')]), /A0 no tab stop/);
+});
+
+test('verify_spacing rejects unequal cards in a row, text on its buttons, buttons 4px apart, and a boxed tile short of its product row', () => {
+  const r = rejects(gate('verify_spacing.mjs', [F('bad/spacing.html')]), /verify_spacing: FAIL/);
+  // Each of the four defects, not whichever one still happens to be caught.
+  for (const want of [/\[A unequal row\]  div\.row/, /\[B touching\]  stacked .*p\.address/, /\[B touching\]  side by side 4\.0px/, /\[A unequal row\]  ul\.shop .*> li .*li\.tile .*in the same row/]) {
+    if (!want.test(r.out)) throw new Error(`missed ${want}\n${r.out}`);
+  }
+});
+
+test('verify_spacing accepts the deliberate exceptions: a label 4px from its field, joined segments, a lead tile spanning rows, a text or sticky column beside a card', () => {
+  accepts(gate('verify_spacing.mjs', [F('good/spacing.html')]), /rows of cards share a height, nothing touches/);
+});
+
+test('verify_thai rejects a split compound, a prefix left at a line end, a count cut from its classifier, a word cut inside itself, and Thai lines set too close', () => {
+  const r = rejects(gate('verify_thai.mjs', [F('bad/thai.html')]), /verify_thai: FAIL/);
+  // Each of the five defects, not whichever one still happens to be caught.
+  for (const want of [/\[A compound split\]  p\.narrow: "ใบอนุญาต"/, /\[A compound split\]  p\.narrow: "ความ" left at a line end/, /\[A compound split\]  p\.cut: a word cut inside itself/,
+                      /\[B number split\]  p\.narrow: "คน"/, /\[C mark collision\]  h1: the Thai bands/]) {
+    if (!want.test(r.out)) throw new Error(`missed ${want}\n${r.out}`);
+  }
+});
+
+test('verify_thai accepts the same text kept whole and led for Thai, and breaks that only look like defects', () => {
+  // หนึ่ง after a classifier, and วัน / ที่ as "the day that": neither is a split.
+  accepts(gate('verify_thai.mjs', [F('good/thai.html')]), /no two Thai lines too close/);
 });
 
 test('verify_overflow rejects silently clipped text', () => {
@@ -126,6 +193,8 @@ const ACCEPTS = [
   ['verify_keyboard',             'verify_keyboard.mjs',     [CLEAN]],
   ['verify_reduced_motion',       'verify_reduced_motion.mjs', [CLEAN]],
   ['verify_overflow',             'verify_overflow.mjs',     [CLEAN]],
+  ['verify_spacing',              'verify_spacing.mjs',      [CLEAN]],
+  ['verify_thai',                 'verify_thai.mjs',         [CLEAN]],
   ['lint_intent',                 'lint_intent.mjs',         [CLEAN]],
   ['verify_interactive',          'verify_interactive.mjs',  [CLEAN]],
   ['verify_rtl',                  'verify_rtl.mjs',          [CLEAN]],

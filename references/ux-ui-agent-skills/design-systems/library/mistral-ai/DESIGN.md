@@ -1,264 +1,290 @@
-# Design System Inspired by Mistral AI
+---
+version: alpha
+name: Mistral AI
+category: "AI & LLM Platforms"
+description: >-
+  Mistral AI's homepage is a warm-cream (#fbfbf8 and #f5f4ef) page ruled into cells by thin #e4e3de lines, with ALTMistral display type at 96px/500 and -1.92px tracking over Inter 16px UI text, square-cornered black buttons (#09090b, 48px tall) beside 6px-radius gray buttons, a dark #151524 testimonial band, and pixel-art illustrations in orange, amber and red blocks echoing the pixel-cat logo.
 
-> Category: AI & LLM
-> Open-weight LLM provider. French-engineered minimalism, purple-toned.
+colors:
+  canvas: "#f5f4ef"
+  page-body: "#fbfbf8"
+  ink: "#18181b"
+  primary: "#09090b"
+  on-primary: "#ffffff"
+  surface-invert: "#151524"
+  ink-secondary: "#27272a"
+  ink-light: "#e4e4e7"
+  ink-muted: "#71717b"
+  ink-tertiary: "#3f3f47"
+  hairline: "#e4e3de"
+  button-secondary-bg: "#f4f4f5"
+  brand-orange: "#ff5229"
+  brand-amber: "#ff8204"
+  brand-red: "#e51300"
+  brand-crimson: "#c4001d"
+typography:
+  display:
+    fontFamily: ALTMistral, sans-serif
+    fontSize: 96px
+    fontWeight: 500
+    lineHeight: 96px
+    letterSpacing: "-1.92px"
+  display-mobile:
+    fontFamily: ALTMistral, sans-serif
+    fontSize: 40px
+    fontWeight: 500
+    lineHeight: 48px
+    letterSpacing: "-0.8px"
+  heading:
+    fontFamily: ALTMistral, sans-serif
+    fontSize: 56px
+    fontWeight: 500
+    lineHeight: 60px
+    letterSpacing: "-0.56px"
+  subheading:
+    fontFamily: Inter, sans-serif
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  body:
+    fontFamily: ALTMistral, sans-serif
+    fontSize: 32px
+    fontWeight: 500
+    lineHeight: 40px
+  button:
+    fontFamily: Inter, sans-serif
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 24px
+    letterSpacing: 0.16px
+rounded:
+  xs: 4px
+  sm: 6px
+  md: 8px
+  lg: 12px
+  none: 0px
+  pill: 9999px
+spacing:
+  s1: 4px
+  s2: 8px
+  s3: 12px
+  s4: 16px
+  s5: 24px
+  s6: 40px
+  s7: 48px
+  s8: 80px
+  s9: 128px
+  s10: 160px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.none}"
+    padding: 0px 16px
+    height: 48px
+  button-secondary:
+    backgroundColor: "{colors.button-secondary-bg}"
+    textColor: "{colors.ink}"
+    typography: "{typography.subheading}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    height: 48px
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.subheading}"
+    rounded: "{rounded.none}"
+    padding: 8px
+  nav:
+    backgroundColor: "{colors.page-body}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.subheading}"
+    rounded: "{rounded.none}"
+  card:
+    backgroundColor: "{colors.page-body}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.lg}"
+    borderColor: "{colors.hairline}"
+  footer:
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    borderColor: "{colors.hairline}"
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-Mistral AI's interface is a sun-drenched landscape rendered in code — a warm, bold, unapologetically European design that trades the typical blue-screen AI aesthetic for golden amber, burnt orange, and the feeling of late-afternoon light in southern France. Every surface glows with warmth: backgrounds fade from pale cream to deep amber, shadows carry golden undertones (`rgba(127, 99, 21, ...)`), and the brand's signature orange (`#fa520f`) burns through the page like a signal fire.
+Mistral AI's homepage (`https://mistral.ai/`, measured at 1280px desktop and 390px mobile) reads like a printed grid: a warm off-white page divided by hairlines into cells, giant tightly tracked headlines, small Inter UI text, and playful pixel-art illustrations that stand out against the otherwise austere layout. The brand page says the emblem is an abstract pixel cat and that model illustrations are "pixelated illustrations rendered in vibrant colors," which matches the capture.
 
-The design language is maximalist in its warmth but minimalist in its structure. Huge display headlines (82px) crash into the viewport with aggressive negative tracking (-2.05px), creating text blocks that feel like billboards or protest posters — declarations rather than descriptions. The typography uses Arial (likely a custom font with Arial as fallback) at extreme sizes, creating a raw, unadorned voice that says "we build frontier AI" with no decoration needed.
+What the capture shows:
 
-What makes Mistral distinctive is the complete commitment to a warm color temperature. The signature "block" identity — a gradient system flowing from bright yellow (`#ffd900`) through amber (`#ffa110`) to burnt orange (`#fa520f`) — creates a visual identity that's immediately recognizable. Even the shadows are warm, using amber-tinted blacks instead of cool grays. Combined with dramatic landscape photography in golden tones, the design feels less like a tech company and more like a European luxury brand that happens to build language models.
+- A 49px cream header split into bordered cells: the pixel `M` mark with `Mistral` wordmark at the left, cells for `Research`, `Sovereign AI`, `Cloud`, `Customers`, `Company`, and at the right a `Get in touch` cell and a flush black `Login` block with a chevron (`Login`, `Studio`, `Vibe` are in the same measured button element).
+- The headline `Mistral is #1 in Sovereign AI.` in two lines at 96px, with a small pixel-art flag icon inline between words. Pixel-art figures and large solid blocks in orange, amber and red sit at the right edge, one block turned into a diamond. A cookie-consent dialog from a third-party widget (Axeptio) covers the left part of the capture; it is not part of Mistral's design system and its amber color is not tokenized.
+- A bordered chip `Introducing Mistral Large 4 ›` with a small orange pixel icon.
+- A row of customer logos in a grid of ruled cells (`snowflake`, `CMA CGM`, `HSBC`, `Ericsson` and others).
+- A band on a slightly darker cream (`{colors.canvas}`) with the line `No one else should hold the strings to your` and faint diagonal line art that looks like wires or strings (the sentence is cut in the capture).
+- A centered headline `Mistral lets you decide how AI works in your organization.` and below it a three-column module: a left list of tabs (`Frontier open models` selected with an arrow, then `Proprietary intelligence`, `AI operations`, `Flexible compute`), a center text block (`We make the models. You keep them.` plus a paragraph and a `Discover Research` button), and at the right a large pixel-art panel in green with floating sticker-like icons.
+- Further down the DOM (measured, not visible in the capture) there is a dark band (`{colors.surface-invert}`) with white testimonial text at 32px and a footer with links `Build with us`, `Customers`, `Partners`, `Brand`, `Pricing`.
 
-**Key Characteristics:**
-- Golden-amber color universe: every tone from pale cream (#fffaeb) to burnt orange (#fa520f)
-- Massive display typography (82px) with aggressive negative letter-spacing (-2.05px)
-- Warm golden shadow system using amber-tinted rgba values
-- The Mistral "M" block identity — a gradient from yellow to orange
-- Dramatic landscape photography in warm golden tones
-- Uppercase typography used strategically for section labels and CTAs
-- Near-zero border-radius — sharp, architectural geometry
-- French-European confidence: bold, warm, declarative
+Character: confident, engineering-minded and a little retro. The grid is strict; the illustrations are playful.
 
-## 2. Color Palette & Roles
+**Key characteristics**
+- Cream page `{colors.page-body}` with `{colors.canvas}` bands and hairline rules (`{colors.hairline}`, 79 measured borders).
+- Square-cornered primary button (`{rounded.none}`), 48px tall, black `{colors.primary}`.
+- Secondary buttons at 6px radius on `{colors.button-secondary-bg}`.
+- ALTMistral for headings and large text, Inter for UI, weights 400 and 500 only.
+- Hot-color blocks: `{colors.brand-orange}`, `{colors.brand-amber}`, `{colors.brand-red}`, `{colors.brand-crimson}`.
+- No shadows.
 
-### Primary
-- **Mistral Orange** (`#fa520f`): The core brand color — a vivid, saturated orange-red that anchors the entire identity. Used for primary emphasis, the brand block, and the highest-signal moments.
-- **Mistral Flame** (`#fb6424`): A slightly warmer, lighter variant of the brand orange used for secondary brand moments and hover states.
-- **Block Orange** (`#ff8105`): A pure orange used in the gradient block system — warmer and less red than Mistral Orange.
+## Colors
 
-### Secondary & Accent
-- **Sunshine 900** (`#ff8a00`): Deep golden amber — the darkest sunshine tone, used for strong accent moments.
-- **Sunshine 700** (`#ffa110`): Warm amber-gold — the core sunshine accent for backgrounds and interactive elements.
-- **Sunshine 500** (`#ffb83e`): Medium golden — balanced warmth for mid-level emphasis.
-- **Sunshine 300** (`#ffd06a`): Light golden — for subtle warm tints and secondary backgrounds.
-- **Block Gold** (`#ffe295`): Pale gold — soft background accents and gentle warmth.
-- **Bright Yellow** (`#ffd900`): The brightest tone in the gradient — used at the "top" of the block identity.
+### Measured
+- **Page body** `{colors.page-body}` (#fbfbf8): the largest background area, the header and card fill.
+- **Canvas** `{colors.canvas}` (#f5f4ef): the slightly darker cream bands (and the on-screen dominant tint in the capture).
+- **Ink** `{colors.ink}` (#18181b): headings and most text (1537 characters).
+- **Ink secondary** `{colors.ink-secondary}` (#27272a): 542 characters; the CSS names this tone `--color-text-secondary` (given there as an oklch value).
+- **Ink tertiary** `{colors.ink-tertiary}` (#3f3f47): footer headings (`Build with us`); CSS `--color-text-tertiary`.
+- **Ink muted** `{colors.ink-muted}` (#71717b): 186 characters.
+- **Ink light** `{colors.ink-light}` (#e4e4e7): 322 characters, light text on the dark band.
+- **Primary** `{colors.primary}` (#09090b): the black button fill; **on primary** `{colors.on-primary}` (#ffffff). Hover (measured on the `Login` button) lightens the fill to an oklch near #27272a, which is close to `{colors.ink-secondary}`.
+- **Surface invert** `{colors.surface-invert}` (#151524): the dark band; the CSS names it `--color-surface-invert`.
+- **Hairline** `{colors.hairline}` (#e4e3de): borders, 79 occurrences.
+- **Button secondary** `{colors.button-secondary-bg}` (#f4f4f5): fill of `Discover Inference`, `Discover Compute`, `Discover Research`, `Discover Vibe`.
 
-### Surface & Background
-- **Warm Ivory** (`#fffaeb`): The lightest page background — barely tinted with warmth, the foundation canvas.
-- **Cream** (`#fff0c2`): The primary warm surface and secondary button background — noticeably golden.
-- **Pure White** (`#ffffff`): Used for maximum contrast elements and popover surfaces.
-- **Mistral Black** (`#1f1f1f`): The primary dark surface for buttons, text, and dark sections.
-- **Accent Orange** (defined as `hsl(17, 96%, 52%)`): The functional accent color for interactive states.
+### Brand blocks
+The largest saturated fills measured are `{colors.brand-orange}` (#ff5229), `{colors.brand-amber}` (#ff8204), `{colors.brand-red}` (#e51300) and `{colors.brand-crimson}` (#c4001d); they match the orange, amber and red blocks and the diamond at the top-right of the capture. The root CSS variables also contain a named orange (`--color-orange-600` #fa500f), a tangerine (`--color-tangerine-500` #ff8204), a yellow (`--color-yellow-400` #fec63a), a green (`--color-green-500` #44ba82), a blue (`--color-blue-700` #0262bf), plus steel and navy neutrals (`--color-steel-600` #55555e, `--color-navy-800` #343446) and a cream (`--color-cream-300` #e4e2d6). These show the shipped palette but I did not see each applied, so only the measured block fills are tokens.
 
-### Neutrals & Text
-- **Mistral Black** (`#1f1f1f`): Primary text color and dark button backgrounds — a near-black that's warmer than pure #000.
-- **Black Tint** (defined as `hsl(0, 0%, 24%)`): A medium dark gray for secondary text on light backgrounds.
-- **Pure White** (`#ffffff`): Text on dark surfaces and CTA labels.
+The [brand page](https://mistral.ai/brand) states no hex values or typefaces, so no colors are taken from it.
 
-### Semantic & Accent
-- **Input Border** (defined as `hsl(240, 5.9%, 90%)`): A cool-tinted light gray for form borders — one of the few cool tones in the system.
-- **White Overlay** (`oklab(1, 0, 0 / 0.088–0.1)`): Semi-transparent white for frosted glass effects and button overlays.
+### Usage in practice
+Color is rare and spatial: neutrals for almost all UI, hot colors for illustration blocks, never for text or buttons.
 
-### Gradient System
-- **Mistral Block Gradient**: The signature identity — a multi-step gradient flowing through Yellow (`#ffd900`) → Gold (`#ffe295`) → Amber (`#ffa110`) → Orange (`#ff8105`) → Flame (`#fb6424`) → Mistral Orange (`#fa520f`). This gradient appears in the logo blocks, section backgrounds, and decorative elements.
-- **Golden Landscape Wash**: Photography and backgrounds use warm amber overlays creating a consistent golden temperature across the page.
-- **Warm Shadow Cascade**: Multi-layered golden shadows that build depth with amber-tinted transparency rather than gray.
+## Typography
 
-## 3. Typography Rules
+Loaded fonts: ALTMistral (400, 500, 600), Inter (variable 100-900), and several Axeptio font names that belong to the cookie widget. By character count ALTMistral carries 2560 and Inter 1052.
 
-### Font Family
-- **Primary**: Likely a custom font (Font Source detected) with `Arial` as fallback, and extended stack: `ui-sans-serif, system-ui, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji`
+| Role | Family | Size / line | Weight | Tracking |
+|---|---|---|---|---|
+| Display (h1) | ALTMistral | 96px / 96px | 500 | -1.92px |
+| Display, mobile (390px) | ALTMistral | 40px / 48px | 500 | -0.8px |
+| Heading (h2) | ALTMistral | 56px / 60px | 500 | -0.56px |
+| Body (large quote) | ALTMistral | 32px / 40px | 500 | normal |
+| Subheading, nav, links | Inter | 16px / 24px | 400 | normal |
+| Button | Inter | 16px / 24px | 500 | 0.16px |
 
-### Hierarchy
+Notes:
+- Display tracking is -2% of the size (-1.92px at 96px); the 56px heading uses -1% and the 44px runs use -0.44px.
+- Other sizes measured: 24px (672 characters), 20px (152, -0.4px), 14px (40, +0.28px), 13px and 44px.
+- Weights are only 500 (2633 characters) and 400 (979); there is no bold.
+- Small UI text carries slight positive tracking (16px at +0.16px, 14px at +0.28px) while 16px body text elsewhere uses -0.16px.
+- The CSS defines semantic type steps (`--text-display` 6rem, `--text-h1--letter-spacing` -.02em, `--text-h3--letter-spacing` -.01em, `--text-eyebrow`, `--text-body-small`, `--text-button-small`) and a mono family `Space Mono` (`--font-mono`).
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display / Hero | Arial (custom) | 82px (5.13rem) | 400 | 1.00 (tight) | -2.05px | Maximum impact, billboard scale |
-| Section Heading | Arial (custom) | 56px (3.5rem) | 400 | 0.95 (ultra-tight) | normal | Feature section anchors |
-| Sub-heading Large | Arial (custom) | 48px (3rem) | 400 | 0.95 (ultra-tight) | normal | Secondary section titles |
-| Sub-heading | Arial (custom) | 32px (2rem) | 400 | 1.15 (tight) | normal | Card headings, feature names |
-| Card Title | Arial (custom) | 30px (1.88rem) | 400 | 1.20 (tight) | normal | Mid-level headings |
-| Feature Title | Arial (custom) | 24px (1.5rem) | 400 | 1.33 | normal | Small headings |
-| Body / Button | Arial (custom) | 16px (1rem) | 400 | 1.50 | normal | Standard body, button text |
-| Button Uppercase | Arial (custom) | 16px (1rem) | 400 | 1.50 | normal | Uppercase CTA labels |
-| Caption / Link | Arial (custom) | 14px (0.88rem) | 400 | 1.43 | normal | Metadata, secondary links |
+### Note on font substitutes
+ALTMistral is a custom face loaded by the site; I found no public description of it, so no claims are made about its design or license. A substitute is a grotesque with tight spacing such as Inter at weight 500 with the same tracking.
 
-### Principles
-- **Single weight, maximum impact**: The entire system uses weight 400 (regular) — even at 82px. This creates a surprisingly elegant effect where the size alone carries authority without needing bold weight.
-- **Ultra-tight at scale**: Line-heights of 0.95–1.00 at display sizes create text blocks where ascenders nearly touch descenders from the line above — creating dense, poster-like composition.
-- **Aggressive tracking on display**: -2.05px letter-spacing at 82px compresses the hero text into a monolithic block.
-- **Uppercase as emphasis**: Strategic `text-transform: uppercase` on button labels and section markers creates a formal, European signage quality.
-- **No weight variation**: Unlike most systems that use 300–700 weight range, Mistral uses 400 everywhere. Hierarchy comes from size and color, never weight.
+## Layout
 
-## 4. Component Stylings
+- The header is 49px tall and the full 1280px wide, divided into bordered cells.
+- The page is organized as a ruled grid: the logo wall is a row of equal bordered cells, and vertical rules run down the page edges (visible as thin lines at left and right in the capture).
+- Headlines are centered and wide (the h2 box is 1024px wide, the h1 628px).
+- The product module is three columns: tab list (about 200px), copy, and a large square-ish illustration.
+- Gaps: 8px (82 occurrences), 16px (68), 40px (42), 24px, 4px, 12px, 128px (8). Paddings: 16px (81), 40px (39), 24px (35), 8px (27), 160px (3).
+- Spacing tokens `{spacing.s1}`..`{spacing.s10}`: 4, 8, 12, 16, 24, 40, 48, 80, 128 and 160px.
+- Sections are separated by a change of cream tone or a hairline, with 128-160px vertical bands in the largest spots.
 
-### Buttons
+## Elevation & Depth
 
-**Cream Surface**
-- Background: Cream (`#fff0c2`)
-- Text: Mistral Black (`#1f1f1f`)
-- No visible border
-- The warm, inviting secondary CTA
+No box shadows were measured. Depth is created with:
+1. Cell borders `{colors.hairline}` instead of drop shadows.
+2. Tone steps between `{colors.page-body}`, `{colors.canvas}` and the dark `{colors.surface-invert}` band.
+3. Pixel-art illustrations that overlap cell borders.
 
-**Dark Solid**
-- Background: Mistral Black (`#1f1f1f`)
-- Text: Pure White (`#ffffff`)
-- Padding: 12px (all sides)
-- No visible border
-- The primary action button — dark on warm
+The only hover behavior recorded is a fill change on the black `Login` button.
 
-**Ghost / Transparent**
-- Background: transparent with slight dark overlay (`oklab(0, 0, 0 / 0.1)`)
-- Text: Mistral Black (`#1f1f1f`)
-- Opacity: 0.4
-- For secondary/de-emphasized actions
+## Shapes
 
-**Text / Underline**
-- Background: transparent
-- Text: Mistral Black (`#1f1f1f`)
-- Padding: 8px 0px 0px (top-only)
-- Minimal styling — text link as button
-- For tertiary navigation actions
+Radii measured by frequency: 6px (15), 4px (3), 8px (2), a bottom-only 8px, a very large value (a fully round control), 12px (1) and a `50% 0 0` shape on a 512px art element.
 
-### Cards & Containers
-- Background: Warm Ivory (`#fffaeb`), Cream (`#fff0c2`), or Pure White
-- Border: minimal to none — containers defined by background color
-- Radius: near-zero — sharp, architectural corners
-- Shadow: warm golden multi-layer (`rgba(127, 99, 21, 0.12) -8px 16px 39px, rgba(127, 99, 21, 0.1) -33px 64px 72px, rgba(127, 99, 21, 0.06) -73px 144px 97px, ...`) — a dramatic, cascading warm shadow
-- Distinctive: the golden shadow creates a "golden hour" lighting effect
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.none}` | 0px | primary button, nav, links, footer |
+| `{rounded.xs}` | 4px | |
+| `{rounded.sm}` | 6px | secondary buttons, language selector |
+| `{rounded.md}` | 8px | |
+| `{rounded.lg}` | 12px | the module card |
+| `{rounded.pill}` | 9999px | fully round control |
 
-### Inputs & Forms
-- Border: `hsl(240, 5.9%, 90%)` — the sole cool-toned element
-- Focus: accent color ring
-- Minimal styling consistent with sparse aesthetic
+The main shape language is square and gridded; the 6px corner is the softest everyday radius.
 
-### Navigation
-- Transparent nav overlaying the warm hero
-- Logo: Mistral "M" wordmark
-- Links: Dark text (white on dark sections)
-- CTA: Dark solid button or cream surface button
-- Minimal, wide-spaced layout
+## Components
 
-### Image Treatment
-- Dramatic landscape photography in warm golden tones
-- The winding road through golden hills — a recurring visual motif
-- The Mistral "M" rendered at large scale on golden backgrounds
-- Warm color grading on all photography
-- Full-bleed sections with photography
+### Primary button (`button-primary`)
+`{colors.primary}` fill, white text, Inter 16px/500 with 0.16px tracking, 0 radius, padding `0px 16px`, 48px tall. The measured element holds `Login`, `Studio` and `Vibe` (a menu-like block flush to the right edge of the header).
 
-### Distinctive Components
+### Secondary button (`button-secondary`)
+`{colors.button-secondary-bg}` fill, `{colors.ink}` text, Inter 16px/400, `{rounded.sm}`, padding `8px 16px`, 48px tall (`Discover Inference`, `Discover Compute`, `Discover Research`, `Discover Vibe`). One variant (`Learn about our customers`) uses a 5%-alpha black fill instead (`#07070b0d`). Each carries a small right-pointing arrow in the capture.
 
-**Mistral Block Identity**
-- A row of colored blocks forming the gradient: yellow → amber → orange → burnt orange
-- Each block gets progressively more orange/red
-- The visual DNA of the brand — recognizable at any size
+### Language select
+Outlined with a 1px `{colors.hairline}` border, 6px radius, 38px tall (`English`).
 
-**Golden Shadow Cards**
-- Cards elevated with warm amber multi-layered shadows
-- 5 layers of shadow from 16px to 400px offset
-- Creates a "floating in golden light" effect unique to Mistral
+### Navigation (`nav`, `nav-link`)
+Cream bar (`{colors.page-body}`), Inter 16px/400, `{colors.ink}` text, square cells with ruled dividers.
 
-**Dark Footer Gradient**
-- Footer transitions from warm amber to dark through a dramatic gradient
-- Creates a "sunset" effect as the page ends
+### Announcement chip (`link`)
+`Introducing Mistral Large 4`: Inter 16px, `{colors.ink}`, padding 8px, 48px tall, with a small orange icon and a chevron; bordered.
 
-## 5. Layout Principles
+### Tab list
+Stacked rows in a rounded bordered container; the selected row has an arrow and darker text, the others use `{colors.ink-muted}`-like gray.
 
-### Spacing System
-- Base unit: 8px
-- Scale: 2px, 4px, 8px, 10px, 12px, 16px, 20px, 24px, 32px, 40px, 48px, 64px, 80px, 98px, 100px
-- Button padding: 12px or 8px 0px (compact)
-- Section vertical spacing: very generous (80px–100px)
+### Card (`card`)
+`{colors.page-body}` fill, `{rounded.lg}`, 1px `{colors.hairline}` border, no shadow; the measured module was 228px wide and 213px tall.
 
-### Grid & Container
-- Max container width: approximately 1280px, centered
-- Hero: full-width with massive typography overlaying warm backgrounds
-- Feature sections: wide-format layouts with dramatic imagery
-- Card grids: 2–3 column layouts
+### Footer (`footer`)
+Top border `{colors.hairline}`, Inter 16px links, a 611px-tall block with columns (`Build with us`, `Customers`, `Partners`, `Brand`, `Pricing`, `Dive deeper`...).
 
-### Whitespace Philosophy
-- **Bold declarations**: Huge headlines surrounded by generous whitespace create billboard-like impact — each statement gets its own breathing space.
-- **Warm void**: Empty space itself feels warm because the backgrounds are tinted ivory/cream rather than pure white.
-- **Photography as space-filler**: Large landscape images serve double duty as content and decorative whitespace.
+### Illustrations
+Pixel-art sprites (a flag, lifebuoy figure, castle, hot-air balloon, stickers, a green board with `M`-marked icons) and big solid color blocks. They are the main use of the brand colors.
 
-### Border Radius Scale
-- Near-zero: The dominant radius — sharp, architectural corners on most elements
-- This extreme sharpness contrasts with the warmth of the colors, creating a tension between soft color and hard geometry.
+## Design System Architecture
 
-## 6. Depth & Elevation
+Sources opened:
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Page backgrounds, text blocks |
-| Golden Float (Level 1) | Multi-layer warm shadow (5 layers, 12%→0% opacity, amber-tinted) | Feature cards, product showcases, elevated content |
+- [Mistral brand page](https://mistral.ai/brand): logo rules (respect clearspace, prefer the gradient version, use monochrome on busy backgrounds; do not stretch, deform, rotate, recolor, frame or place on colored backgrounds), logo variants (gradient, inverted gradient, black, white), the pixel-cat emblem description, model icons as pixelated illustrations "designed to shine at small scale," and downloadable brand-kit and wallpapers. It gives no hex values or typefaces.
+- No public design-token package, component library or GitHub design system for the marketing site was found. Searches for a Mistral design system returned only third-party aggregator pages, which are not used here.
 
-**Shadow Philosophy**: Mistral uses a single but extraordinarily complex shadow — **five cascading layers** of amber-tinted shadow (`rgba(127, 99, 21, ...)`) that build from a close 16px offset to a distant 400px offset. The result is a rich, warm, "golden hour" lighting effect that makes elevated elements look like they're bathed in afternoon sunlight. This is the most distinctive shadow system in any major AI brand.
+The de-facto system is visible in the shipped CSS: a Tailwind-based custom-property palette with named hues (`steel`, `navy`, `cream`, `tangerine`, `orange`, `yellow`, `green`, `blue`) and semantic names (`--color-text-secondary`, `--color-text-tertiary`, `--color-surface-invert`, `--color-text-brand-9` #0082e6), type tokens (`--text-display`, `--text-h1`..`--text-h6`, `--text-eyebrow`, `--text-body-small`, `--text-button-small`) and radii (`--radius-4xl` 2rem), plus `Space Mono` as a mono font.
 
-## 7. Do's and Don'ts
+## Do's and Don'ts
 
 ### Do
-- Use the warm color spectrum exclusively: ivory, cream, amber, gold, orange
-- Keep display typography at 82px+ with -2.05px letter-spacing for hero sections
-- Use the Mistral block gradient (yellow → amber → orange) for brand moments
-- Apply warm golden shadows (amber-tinted rgba) for elevated elements
-- Use Mistral Black (#1f1f1f) for text — never pure #000000
-- Keep font weight at 400 throughout — let size and color carry hierarchy
-- Use sharp, architectural corners — near-zero border-radius
-- Apply uppercase on button labels and section markers for European formality
-- Use warm landscape photography with golden color grading
+- Keep the page cream and divide it with hairlines; let borders do the work shadows would.
+- Use square-cornered black for the primary action and 6px-radius light gray for secondary links.
+- Set headlines in the display face at weight 500 with -2% tracking.
+- Put the hot colors into pixel-art blocks and illustrations.
+- Follow the logo rules on the brand page (clearspace, no recoloring, no framing).
 
 ### Don't
-- Don't introduce cool colors (blue, green, purple) — the palette is exclusively warm
-- Don't use bold (700+) weight — 400 is the only weight
-- Don't round corners — the sharp geometry is intentional
-- Don't use cool-toned shadows — shadows must carry amber warmth
-- Don't use pure white as a page background — always warm-tinted (#fffaeb minimum)
-- Don't reduce hero text below 48px on desktop — the billboard scale is core
-- Don't use more than 2 font weights — size variation replaces weight variation
-- Don't add gradients outside the warm spectrum — no blue-to-purple, no cool transitions
-- Don't use generic gray for text — even neutrals should be warm-tinted
+- Do not add shadows; none are measured.
+- Do not use bold; the page uses only 400 and 500.
+- Do not use orange for buttons or text; it appears only in illustration blocks.
+- Do not round the primary button.
+- Do not put the logo on colored backgrounds (brand page rule).
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <640px | Single column, stacked everything, hero text reduces to ~32px |
-| Tablet | 640–768px | Minor layout adjustments |
-| Small Desktop | 768–1024px | 2-column layouts begin |
-| Desktop | 1024–1280px | Full layout with maximum typography scale |
+Measured at 390px: the h1 drops from 96px/96px (-1.92px) to 40px/48px (-0.8px), still weight 500. Other mobile layout behavior (header collapse, grid reflow) was not recorded, so none is claimed. The desktop DOM had 1928 visible elements.
 
-### Touch Targets
-- Buttons use generous padding (12px minimum)
-- Navigation elements adequately spaced
-- Cards serve as large touch targets
+### Touch targets
+Buttons are 48px tall; the language selector is 38px tall.
 
-### Collapsing Strategy
-- **Navigation**: Collapses to hamburger on mobile
-- **Hero text**: 82px → 56px → 48px → 32px progressive scaling
-- **Feature sections**: Multi-column → stacked
-- **Photography**: Scales proportionally, may crop on mobile
-- **Block identity**: Scales down proportionally
+## Iteration Guide
 
-### Image Behavior
-- Landscape photography scales proportionally
-- Warm color grading maintained at all sizes
-- Block gradient elements resize fluidly
-- No art direction changes — same warm composition at all sizes
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Brand Orange: "Mistral Orange (#fa520f)"
-- Page Background: "Warm Ivory (#fffaeb)"
-- Warm Surface: "Cream (#fff0c2)"
-- Primary Text: "Mistral Black (#1f1f1f)"
-- Sunshine Amber: "Sunshine 700 (#ffa110)"
-- Bright Gold: "Bright Yellow (#ffd900)"
-- Text on Dark: "Pure White (#ffffff)"
-
-### Example Component Prompts
-- "Create a hero section on Warm Ivory (#fffaeb) with a massive headline at 82px Arial weight 400, line-height 1.0, letter-spacing -2.05px. Mistral Black (#1f1f1f) text. Add a dark solid CTA button (#1f1f1f bg, white text, 12px padding, sharp corners) and a cream secondary button (#fff0c2 bg)."
-- "Design a feature card on Cream (#fff0c2) with sharp corners (no border-radius). Apply the golden shadow system: rgba(127, 99, 21, 0.12) -8px 16px 39px as the primary layer. Title at 32px weight 400, body at 16px."
-- "Build the Mistral block identity: a row of colored blocks from Bright Yellow (#ffd900) through Sunshine 700 (#ffa110) to Mistral Orange (#fa520f). Sharp corners, no gaps."
-- "Create a dark footer section on Mistral Black (#1f1f1f) with Pure White (#ffffff) text. Footer links at 14px. Add a warm gradient from Sunshine 700 (#ffa110) at the top fading to Mistral Black."
-
-### Iteration Guide
-1. Keep the warm temperature — "shift toward amber" not "shift toward gray"
-2. Use size for hierarchy — 82px → 56px → 48px → 32px → 24px → 16px
-3. Never add border-radius — sharp corners only
-4. Shadows are always warm: "golden shadow with amber tones"
-5. Font weight is always 400 — describe emphasis through size and color
+1. Start with `{colors.page-body}` and draw the structure with 1px `{colors.hairline}` cells.
+2. Put a 96px/500 headline at -2% tracking at the top, with one pixel-art accent beside it.
+3. Add a bordered announcement chip, then a ruled logo row.
+4. Alternate cream bands (`{colors.canvas}`) with one dark `{colors.surface-invert}` band for testimonials.
+5. Use black square buttons for primary actions; 6px light-gray buttons with arrows for `Discover ...` links.
+6. Keep Inter for UI at 16px and use ALTMistral for anything 24px or larger.
+7. Use `{colors.brand-orange}`, `{colors.brand-amber}`, `{colors.brand-red}` only in illustration.

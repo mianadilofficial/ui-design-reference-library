@@ -48,7 +48,7 @@ Custom-styled selection from a list (single or multi), groups, custom rendering.
 
 Select a value (or range) along a continuum.
 
-**Anatomy:** `track [filled] ●(thumb)` single or `●——●` dual-thumb.
+**Anatomy:** `track [filled] ●(thumb)` single or `●──●` dual-thumb.
 
 **Variants:** single value, range (two thumbs), stepped/ticks, vertical.
 
@@ -74,7 +74,7 @@ Pick a date, range, or time.
 **States (8):** default, hover (day cells), focus (focused day), selected (day/range endpoints + in-range fill), today marker, disabled days, loading, error (invalid input).
 
 **Accessibility:**
-- Text input accepts typed dates (don't force the calendar) — supports password managers / autofill where relevant.
+- Text input accepts typed dates (don't force the calendar) and supports password managers / autofill where relevant.
 - Calendar = grid (`role="grid"`, `gridcell`); `←/→/↑/↓` by day/week, `PageUp/Down` month, `Home/End` week. Announce focused date; `aria-selected` on chosen.
 - Localized format; respect locale first-day-of-week.
 
@@ -88,7 +88,7 @@ Add files via button or drag-and-drop.
 
 **Variants:** single/multiple, drag-drop + click, image preview, with type/size constraints.
 
-**States (8):** default, hover, focus (keyboard), drag-over (active dropzone), uploading (per-file progress), success, disabled, error (rejected type/size — say which + the limit).
+**States (8):** default, hover, focus (keyboard), drag-over (active dropzone), uploading (per-file progress), success, disabled, error (rejected type/size: say which + the limit).
 
 **Accessibility:**
 - Real `<input type="file">` reachable by keyboard (drag-drop is an enhancement, never the only path).

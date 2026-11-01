@@ -1,9 +1,9 @@
 # Adapter: Chakra UI
 
-Follows the [Framework Adapter Protocol](../adapter-protocol.md). Chakra (v3) is a React library themed via a **system** created from token definitions; style props + recipes consume them. Also an interop target — see `design-systems/crosswalk.md`.
+Follows the [Framework Adapter Protocol](../adapter-protocol.md). Chakra (v3) is a React library themed via a **system** created from token definitions; style props + recipes consume them. Also an interop target (see `design-systems/crosswalk.md`).
 
 ## Token layer
-Define our 3-tier tokens as Chakra **tokens** (primitives) + **semantic tokens** (roles that switch on color mode) — a near-1:1 fit with our architecture.
+Define our 3-tier tokens as Chakra **tokens** (primitives) + **semantic tokens** (roles that switch on color mode), a near-1:1 fit with our architecture.
 
 ```tsx
 import { createSystem, defaultConfig, defineConfig } from '@chakra-ui/react'
@@ -39,9 +39,9 @@ import { Button } from '@chakra-ui/react'
 ```
 
 ## States & a11y
-- Semantic tokens auto-swap for dark mode — wire Chakra's color-mode to our `[data-theme]`.
+- Semantic tokens auto-swap for dark mode; wire Chakra's color-mode to our `[data-theme]`.
 - Chakra handles hover/active/disabled/loading; keep its focus-ring (`_focusVisible`) and verify 3:1. Build remaining states (error/selected) with semantic tokens.
-- Components are built on Ark UI (accessible primitives) — still validate against `accessibility/aria-patterns.md`.
+- Components are built on Ark UI (accessible primitives), but still validate against `accessibility/aria-patterns.md`.
 
 ## Motion
 Chakra exposes transition tokens + a `Collapse`/animation layer. Map durations/easings to `tokens/motion.json`; honor `prefers-reduced-motion`.

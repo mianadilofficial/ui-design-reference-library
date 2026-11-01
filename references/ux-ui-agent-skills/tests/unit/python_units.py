@@ -57,9 +57,51 @@ check("WCAG boundary grey on white", round(c.ratio("#767676", "#ffffff"), 2), 4.
 check("one step darker still passes AA", c.ratio("#767676", "#ffffff") >= 4.5, True)
 check("one step lighter fails AA", c.ratio("#777777", "#ffffff") >= 4.5, False)
 
+# --- design_systems.scalar: the four YAML string shapes the library uses.
+# Expected values are what the YAML spec says each form means.
+ds = load("design_systems")
+check("double-quoted, with an escaped quote",
+      ds.scalar(['description: "Sets \\"The Future\\" at 56px"'], 0), 'Sets "The Future" at 56px')
+check("single-quoted, '' is one quote",
+      ds.scalar(["description: 'Lay''s yellow canvas'"], 0), "Lay's yellow canvas")
+check("folded block joins its lines with spaces",
+      ds.scalar(["description: >-", "  Google's Material", "  documentation site", "colors:"], 0),
+      "Google's Material documentation site")
+check("plain scalar continues on indented lines",
+      ds.scalar(["description: Linear's site", "  on linear.app", "colors:"], 0), "Linear's site on linear.app")
+check("the next top-level key ends the value",
+      ds.scalar(["name: Stripe", "category: \"Fintech & Crypto\""], 0), "Stripe")
+
+# --- design_systems.meta on every shipped spec: a spec the index cannot place
+# or describe is one `list` and `search` cannot find.
+unplaced = [d.name for d in sorted((ROOT / "design-systems" / "library").iterdir())
+            if (d / "DESIGN.md").is_file()
+            and ("Uncategorized" == ds.meta(d / "DESIGN.md")[0] or not ds.meta(d / "DESIGN.md")[1])]
+check("every library spec has a category and a description", unplaced, [])
+
+# --- import_library: the two mechanical changes it is allowed to make
+il = load("import_library")
+emoji = il.banned_pattern()
+check("a glyph becomes its code point", il.encode_glyphs("Best Seller ★", emoji), ("Best Seller [U+2605]", 1))
+check("a joined sequence stays one run",
+      il.encode_glyphs("\U0001F469‍\U0001F3A4 mascot", emoji)[0], "[U+1F469 U+200D U+1F3A4] mascot")
+check("a lone zero-width joiner is left alone", il.encode_glyphs("a‍b", emoji), ("a‍b", 0))
+check("arrows are not glyphs", il.encode_glyphs("Read more →", emoji), ("Read more →", 0))
+check("category lands on the line after name",
+      il.with_category("---\nversion: alpha\nname: Stripe\ncolors: {}\n---\nbody\n", "Fintech & Crypto"),
+      '---\nversion: alpha\nname: Stripe\ncategory: "Fintech & Crypto"\ncolors: {}\n---\nbody\n')
+for label, bad in (("no frontmatter", "# Title\n"),
+                   ("frontmatter never closed", "---\nname: X\n"),
+                   ("category already present", "---\nname: X\ncategory: \"Y\"\n---\n")):
+    try:
+        il.with_category(bad, "Z")
+        failures.append(f"with_category should refuse: {label}")
+    except ValueError:
+        pass
+
 if failures:
     print(f"FAIL: {len(failures)} unit check(s):")
     for f in failures:
         print("  x " + f)
     sys.exit(1)
-print("OK: contrast unit checks pass.")
+print("OK: contrast, library index and importer unit checks pass.")

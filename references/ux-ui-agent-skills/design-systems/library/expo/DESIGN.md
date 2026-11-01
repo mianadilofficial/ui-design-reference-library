@@ -1,284 +1,365 @@
-# Design System Inspired by Expo
+---
+version: alpha
+name: Expo
+category: "Developer Tools & IDEs"
+description: "Expo's site is a white and cool-grey canvas (#ffffff, #f9f9fb) with near-black #1c2024 text set in Inter 600 at -2px tracking, pure #000000 pill buttons, 40px-radius cards and a JetBrains Mono eyebrow."
 
-> Category: Developer Tools
-> React Native platform. Dark theme, tight letter-spacing, code-centric.
+colors:
+  canvas: "#ffffff"
+  ink: "#1c2024"
+  primary: "#000000"
+  on-primary: "#ffffff"
+  surface-subtle: "#f9f9fb"
+  surface-element: "#f0f0f3"
+  surface-hover: "#e8e8ec"
+  ink-secondary: "#60646c"
+  ink-quaternary: "#8b8d98"
+  link: "#0d74ce"
+  accent-blue: "#0090ff"
+  hairline: "#e0e1e6"
+  border-default: "#d9d9e0"
 
-## 1. Visual Theme & Atmosphere
+typography:
+  display:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 48px
+    fontWeight: 600
+    lineHeight: 52.8px
+    letterSpacing: "-1.2px"
+  display-section:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 48px
+    fontWeight: 600
+    lineHeight: 52.8px
+    letterSpacing: "-2px"
+  heading:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 32px
+    fontWeight: 600
+    lineHeight: 35.2px
+    letterSpacing: "-0.5px"
+  title:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 24px
+    fontWeight: 600
+    lineHeight: 31.2px
+    letterSpacing: "-0.5px"
+  body:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 22.4px
+  body-regular:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 22.4px
+  button:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 19.6px
+  nav:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 14px
+    fontWeight: 500
+    lineHeight: 19.6px
+  button-small:
+    fontFamily: Inter, -apple-system, "system-ui", sans-serif
+    fontSize: 12px
+    fontWeight: 600
+    lineHeight: 19.2px
+  eyebrow:
+    fontFamily: "\"JetBrains Mono\", monospace"
+    fontSize: 12px
+    fontWeight: 400
+    lineHeight: 19.2px
 
-Expo's interface is a luminous, confidence-radiating developer platform built on the premise that tools for building apps should feel as polished as the apps themselves. The entire experience lives on a bright, airy canvas — a cool-tinted off-white (`#f0f0f3`) that gives the page a subtle technological coolness without the starkness of pure white. This is a site that breathes: enormous vertical spacing between sections creates a gallery-like pace where each feature gets its own "room."
+rounded:
+  xs: 12px
+  sm: 16px
+  lg: 20px
+  3xl: 24px
+  4xl: 32px
+  nav-cta: 36px
+  cta: 40px
+  pill: 9999px
 
-The design language is decisively monochromatic — pure black (`#000000`) headlines against the lightest possible backgrounds, with a spectrum of cool blue-grays (`#60646c`, `#b0b4ba`, `#555860`) handling all secondary communication. Color is almost entirely absent from the interface itself; when it appears, it's reserved for product screenshots, app icons, and the React universe illustration — making the actual content burst with life against the neutral canvas.
+spacing:
+  s1: 1px
+  s2: 2px
+  s3: 4px
+  s4: 6px
+  s5: 8px
+  s6: 10px
+  s7: 12px
+  s8: 16px
+  s9: 24px
+  s10: 32px
+  s11: 40px
 
-What makes Expo distinctive is its pill-shaped geometry. Buttons, tabs, video containers, and even images use generously rounded or fully pill-shaped corners (24px–9999px), creating an organic, approachable feel that contradicts the typical sharp-edged developer tool aesthetic. Combined with tight letter-spacing on massive headlines (-1.6px to -3px at 64px), the result is a design that's simultaneously premium and friendly — like an Apple product page reimagined for developers.
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.cta}"
+    padding: 0px 16px
+    height: 40px
+  button-primary-hover:
+    backgroundColor: "{colors.ink}"
+  button-primary-nav:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.nav-cta}"
+    padding: 0px 16px
+    height: 36px
+  button-primary-large:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.pill}"
+    padding: 0px 24px
+    height: 48px
+  button-secondary:
+    backgroundColor: "{colors.surface-element}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.cta}"
+    padding: 0px 16px
+    height: 40px
+  button-accent:
+    backgroundColor: "{colors.accent-blue}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button-small}"
+    rounded: "{rounded.4xl}"
+    padding: 0px 12px
+    height: 32px
+    borderColor: "{colors.accent-blue}"
+  link:
+    textColor: "{colors.link}"
+    typography: "{typography.body}"
+  nav:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+  nav-link:
+    textColor: "{colors.ink-secondary}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.3xl}"
+    padding: 0px 12px
+    height: 36px
+  card:
+    backgroundColor: "{colors.surface-subtle}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.cta}"
+    padding: 40px
+  eyebrow:
+    textColor: "{colors.ink-secondary}"
+    typography: "{typography.eyebrow}"
+  footer:
+    textColor: "{colors.ink}"
+---
+
+## Overview
+
+Expo's home page positions the company as "Mobile AI infrastructure." It is a restrained, monochrome, near-product-less layout: a large white field (`{colors.canvas}`), cool off-white cards (`{colors.surface-subtle}` `#f9f9fb`), near-black text (`{colors.ink}` `#1c2024`) and pure black (`{colors.primary}` `#000000`) pills. The official brand page states the philosophy directly: "a neutral, reliable foundation that empowers developers to bring their ideas to life", emphasizing "simplicity, spaciousness, and consistency." The page behaves accordingly — wide margins, big cards, few colors, the only saturated areas being app icons, gradient washes inside a promo card and diagrams.
+
+The hero pairs a two-line Inter headline ("Mobile AI infrastructure", `{typography.display}` 48px/52.8px, weight 600, -1.2px) with a black "Get started →" pill and a grey "Talk to our team" pill, a small "New · Try Observe →" announcement chip, and a three-line paragraph. On the right, a starburst of dotted rays surrounds the white Expo logo tile. Below, a mono eyebrow line ("3M+ developers. 50K+ GitHub stars. Trusted in production by:") sits above a row of customer app icons, then rounded grey panels carry the rest of the story.
 
 **Key Characteristics:**
-- Luminous cool-white canvas (`#f0f0f3`) with gallery-like vertical spacing
-- Strictly monochromatic: pure black headlines, cool blue-gray body text, no decorative color
-- Pill-shaped geometry everywhere — buttons, tabs, containers, images (24px–9999px radius)
-- Massive display headlines (64px) with extreme negative letter-spacing (-1.6px to -3px)
-- Inter as the sole typeface, used at weights 400–900 for full expressive range
-- Whisper-soft shadows that barely lift elements from the surface
-- Product screenshots as the only source of color in the interface
+- Pill geometry: buttons are 40px- or fully-rounded; cards use a 40px radius (`{rounded.cta}`), so large containers also read as soft pills.
+- Black is the action color (`{colors.primary}`); hover moves the primary fill to `{colors.ink}`.
+- Cool-grey surface family: `{colors.surface-subtle}` `#f9f9fb`, `{colors.surface-element}` `#f0f0f3`, `{colors.surface-hover}` `#e8e8ec`, `{colors.hairline}` `#e0e1e6`.
+- Inter at weights 500–600 with strongly negative tracking on large headings (-2px at 48px, -0.5px at 24-32px).
+- A JetBrains Mono uppercase eyebrow for proof points.
+- Link blue (`{colors.link}` `#0d74ce`) reserved for text links such as "Learn more".
+- Bento-style card grid: one full-width card, a tall card beside a stack, then three-up and two-up rows.
 
-## 2. Color Palette & Roles
+### Imagery and Voice
 
-### Primary
-- **Expo Black** (`#000000`): The absolute anchor — used for primary headlines, CTA buttons, and the brand identity. Pure black on cool white creates maximum contrast without feeling aggressive.
-- **Near Black** (`#1c2024`): The primary text color for body content — a barely perceptible blue-black that's softer than pure #000 for extended reading.
+- **Hero art.** A dotted-ray starburst radiating from a white rounded tile with the Expo caret logo, in light grey on white.
+- **Customer app icons.** A single row of colorful rounded-square app icons trusted in production, fading out at the right edge.
+- **Isometric diagram.** An outlined isometric cube with blue translucent planes and dashed lines inside the "Building blocks for agentic workflows" card, switching with the tabs Develop, Test and Monitor.
+- **Card art.** A chrome/glass 3D Expo caret on "The Expo SDK"; a phone screenshot with a photo grid on "100+ production APIs"; floating language tiles (Swift, Java, TypeScript, Objective-C, Kotlin) on "All native code welcome"; a blue-to-orange blurred gradient behind the AI-connector card.
+- **Voice.** Short, confident developer copy: "Build with our CLI and dev tools. Test on simulators made for agents. Ship with the best CI/CD for mobile and learn from every release.", "10+ years in the making. Powering thousands of apps.", "Infrastructure for your apps."
+- **Naming.** Product names are capitalized single words (Expo, Expo SDK, Expo Go); the brand page forbids using the marks in product or domain names without written permission.
 
-### Secondary & Accent
-- **Link Cobalt** (`#0d74ce`): The standard link color — a trustworthy, saturated blue that signals interactivity without competing with the monochrome hierarchy.
-- **Legal Blue** (`#476cff`): A brighter, more saturated blue for legal/footer links — slightly more attention-grabbing than Link Cobalt.
-- **Widget Sky** (`#47c2ff`): A light, friendly cyan-blue for widget branding elements — the brightest accent in the system.
-- **Preview Purple** (`#8145b5`): A rich violet used for "preview" or beta feature indicators — creating clear visual distinction from standard content.
+### Capture Observations
 
-### Surface & Background
-- **Cloud Gray** (`#f0f0f3`): The primary page background — a cool off-white with the faintest blue-violet tint. Not warm, not sterile — precisely technological.
-- **Pure White** (`#ffffff`): Card surfaces, button backgrounds, and elevated content containers. Creates a clear "lifted" distinction from Cloud Gray.
-- **Widget Dark** (`#1a1a1a`): Dark surface for dark-theme widgets and overlay elements.
-- **Banner Dark** (`#171717`): The darkest surface variant, used for promotional banners and high-contrast containers.
+- The page is overwhelmingly `{colors.canvas}` and `{colors.surface-subtle}`, so cards separate from the page by a subtle value shift rather than borders or shadows.
+- The sticky header (white, bottom border in `{colors.hairline}`) reads: Expo logo, Docs ↗, Product ▾, Solutions ▾, Enterprise, Pricing, Blog; right side GitHub star count (50K), a white outlined "Log in" pill and a black "Sign up" pill.
+- Headings inside cards are large and centered ("The Expo SDK" at 48px); body lines beneath are 16px.
+- Black pill buttons recur at three sizes: 36px in the header, 40px in the hero and 48px in card/section CTAs ("expo/expo", "Learn more").
 
-### Neutrals & Text
-- **Slate Gray** (`#60646c`): The workhorse secondary text color (305 instances). A cool blue-gray that's authoritative without being heavy.
-- **Mid Slate** (`#555860`): Slightly darker than Slate, used for emphasized secondary text.
-- **Silver** (`#b0b4ba`): Tertiary text, placeholders, and de-emphasized metadata. Comfortably readable but clearly receded.
-- **Pewter** (`#999999`): Accordion icons and deeply de-emphasized UI elements in dark contexts.
-- **Light Silver** (`#cccccc`): Arrow icons and decorative elements in dark contexts.
-- **Dark Slate** (`#363a3f`): Borders on dark surfaces, switch tracks, and emphasized containment.
-- **Charcoal** (`#333333`): Dark mode switch backgrounds and deep secondary surfaces.
+### Page Anatomy (top to bottom, from the capture)
 
-### Semantic & Accent
-- **Warning Amber** (`#ab6400`): A warm, deep amber for warning states — deliberately not bright yellow, conveying seriousness.
-- **Destructive Rose** (`#eb8e90`): A soft pink-coral for disabled destructive actions — gentler than typical red, reducing alarm fatigue.
-- **Border Lavender** (`#e0e1e6`): Standard card/container borders — a cool lavender-gray that's visible without being heavy.
-- **Input Border** (`#d9d9e0`): Button and form element borders — slightly warmer/darker than card borders for interactive elements.
-- **Dark Focus Ring** (`#2547d0`): Deep blue for keyboard focus indicators in dark theme contexts.
+1. **Announcement chip.** "New · Try Observe →" in a small outlined pill under the hero buttons, 12px/500 `{colors.ink-secondary}` text.
+2. **Hero.** Headline left, starburst graphic right; the paragraph sits below the chip.
+3. **Proof line.** "3M+ developers. 50K+ GitHub stars. Trusted in production by:" in the uppercase mono eyebrow, centered.
+4. **App-icon row.** A row of rounded-square app icons, the last ones fading into the page.
+5. **Building blocks card.** Full-width `{colors.surface-subtle}` card: a two-line `{typography.heading}` title, then a vertical list of tabs (Develop with a play icon, Test, Monitor) at `{typography.title}`; the active tab expands to show a four-line description, and the isometric cube illustration sits on the right.
+6. **Bento grid.** "The Expo SDK" (tall card with the 3D caret and a black "expo/expo" pill), "Powering AI-native app devs" (gradient card with a "Try the Expo Claude Code connector" grey pill), "100+ production APIs one `install` away" (phone mockup; `install` set in an inline mono chip) and "All native code welcome" (floating language tiles).
+7. **Closing section.** "Infrastructure for your apps" at `{typography.display-section}`, a row of platform names with icons (Expo, React Native, Swift, Jetpack Compose, Kotlin) and a black "Learn more" pill.
 
-### Gradient System
-- The design is notably **gradient-free** in the interface layer. Visual richness comes from product screenshots, the React universe illustration, and careful shadow layering rather than color gradients. This absence IS the design decision — gradients would undermine the clinical precision.
+### Interaction States (measured)
 
-## 3. Typography Rules
+| Element | Default | Hover / other |
+|---|---|---|
+| Primary pill | `{colors.primary}` fill | `{colors.ink}` fill |
+| Secondary pill | `{colors.surface-element}` | theme hover `#e0e1e6` |
+| Nav link | `{colors.ink-secondary}` | not recorded |
+| Text link | `{colors.link}` | not recorded |
+
+### Accessibility Notes
+
+- `{colors.ink}` on `{colors.canvas}` and white on `{colors.primary}` are high-contrast pairs.
+- `{colors.ink-secondary}` (`#60646c`) on white is used for 12-14px text; keep it at weight 500 or above at those sizes.
+- Button labels are 14-16px at weight 500-600 and do not rely on color alone; arrows and icons accompany key actions.
+
+## Colors
+
+> **Source pages:** home (`/`), measured with the extractor and computed-style probes. Token names and values for the theme variables (`--expo-theme-*`) come from the site's own root variables; their structure is documented in the official `@expo/styleguide` package.
+
+### Brand & Accent
+- **Primary** (`{colors.primary}` — `#000000`): All primary buttons (`--expo-theme-button-primary-background: #000`).
+- **On Primary** (`{colors.on-primary}` — `#ffffff`): Text on black pills.
+- **Link** (`{colors.link}` — `#0d74ce`): Text links, info text (`--expo-theme-text-link`).
+- **Accent Blue** (`{colors.accent-blue}` — `#0090ff`): The "Subscribe" button (a 32px filled blue pill); the only saturated filled control measured.
+
+### Surface
+- **Canvas** (`{colors.canvas}` — `#ffffff`): Page and header (`--expo-theme-background-default`).
+- **Surface Subtle** (`{colors.surface-subtle}` — `#f9f9fb`): Large cards (`--expo-theme-background-subtle`).
+- **Surface Element** (`{colors.surface-element}` — `#f0f0f3`): Secondary pills such as "Talk to our team" (`--expo-theme-background-element`).
+- **Surface Hover** (`{colors.surface-hover}` — `#e8e8ec`): Hover background in the theme (`--expo-theme-background-hover`).
+- **Hairline** (`{colors.hairline}` — `#e0e1e6`): Dividers and the selected-state background (`--expo-theme-background-selected`).
+- **Border Default** (`{colors.border-default}` — `#d9d9e0`): `--expo-theme-border-default`.
+
+### Text
+- **Ink** (`{colors.ink}` — `#1c2024`): Headings and body (`--expo-theme-text-default`).
+- **Ink Secondary** (`{colors.ink-secondary}` — `#60646c`): Nav links, eyebrow, secondary copy.
+- **Ink Quaternary** (`{colors.ink-quaternary}` — `#8b8d98`): Disabled and tertiary text.
+
+### Theme semantics (from the site's root variables)
+The theme defines paired backgrounds, borders and text for status: danger (`#feebec`, `#f4a9aa`, text `#ce2c31`), success (`#e6f6eb`, `#8eceaa`), warning (`#fff7c2`, `#e9c162`, text `#ab6400`), info (`#e6f4fe`, `#8ec8f6`, text `#0d74ce`) and preview (`#f7edfe`, `#d1afec`, text `#8145b5`). These are not used on the marketing page capture and are not tokenized here beyond the link blue.
+
+## Typography
 
 ### Font Family
-- **Primary**: `Inter`, with fallbacks: `-apple-system, system-ui`
-- **Monospace**: `JetBrains Mono`, with fallback: `ui-monospace`
-- **System Fallback**: `system-ui, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji`
+- **Inter** (variable, weights 100–900) loaded as a web font; fallback `-apple-system, system-ui, sans-serif`.
+- **JetBrains Mono** (weights 100–800) loaded for eyebrow and code text.
+- The theme's default stack (`--default-font-family`) lists `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif`; the mono stack is `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`.
 
 ### Hierarchy
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display / Hero | Inter | 64px (4rem) | 700–900 | 1.10 (tight) | -1.6px to -3px | Maximum impact, extreme tracking |
-| Section Heading | Inter | 48px (3rem) | 600 | 1.10 (tight) | -2px | Feature section anchors |
-| Sub-heading | Inter | 20px (1.25rem) | 600 | 1.20 (tight) | -0.25px | Card titles, feature names |
-| Body Large | Inter | 18px (1.13rem) | 400–500 | 1.40 | normal | Intro paragraphs, section descriptions |
-| Body / Button | Inter | 16px (1rem) | 400–700 | 1.25–1.40 | normal | Standard text, nav links, buttons |
-| Caption / Label | Inter | 14px (0.88rem) | 400–600 | 1.00–1.40 | normal | Descriptions, metadata, badge text |
-| Tag / Small | Inter | 12px (0.75rem) | 500 | 1.00–1.60 | normal | Smallest sans-serif text, badges |
-| Code Body | JetBrains Mono | 16px (1rem) | 400–600 | 1.40 | normal | Inline code, terminal commands |
-| Code Caption | JetBrains Mono | 14px (0.88rem) | 400–600 | 1.40 | normal | Code snippets, technical labels |
-| Code Small | JetBrains Mono | 12px (0.75rem) | 400 | 1.60 | normal | Uppercase tech tags |
+| Token | Size | Weight | Line height | Tracking | Use |
+|---|---|---|---|---|---|
+| `{typography.display}` | 48px | 600 | 52.8px | -1.2px | Hero h1 |
+| `{typography.display-section}` | 48px | 600 | 52.8px | -2px | Card and section headlines ("The Expo SDK", "Infrastructure for your apps") |
+| `{typography.heading}` | 32px | 600 | 35.2px | -0.5px | "Building blocks for agentic workflows" |
+| `{typography.title}` | 24px | 600 | 31.2px | -0.5px | Card titles and tab labels |
+| `{typography.body}` | 16px | 500 | 22.4px | normal | Paragraphs, large buttons, links |
+| `{typography.body-regular}` | 16px | 400 | 22.4px | normal | Card body text |
+| `{typography.button}` | 14px | 600 | 19.6px | normal | Hero and secondary buttons |
+| `{typography.nav}` | 14px | 500 | 19.6px | normal | Nav links, header buttons |
+| `{typography.button-small}` | 12px | 600 | 19.2px | normal | Subscribe button |
+| `{typography.eyebrow}` | 12px | 400 | 19.2px | normal | Uppercase proof line (JetBrains Mono) |
+
+### Official scale
+The `@expo/styleguide` Tailwind configuration defines heading classes: 5xl 64px, 4xl 48px, 3xl 32px, 2xl 24px, xl 20px, lg 18px, base 16px, sm 14px, xs 12px, all at weight 600 with letter spacing of -3px at 64px, -2px at 48px, -0.5px at 32px and 24px, -0.25px at 20px, and 0 below. Its text scale runs 24px (weight 500), 20px (500), 18px, 16px, 14px, 12px (400) and 10px (500), and an `.eyebrow` component sets JetBrains Mono at 12px, weight 500, line height 1.0, letter spacing -0.5px, uppercase. The live page's 48px / -2px section headings and 32px / -0.5px heading match those steps.
 
 ### Principles
-- **One typeface, full expression**: Inter is the only sans-serif, used from weight 400 (regular) through 900 (black). This gives the design a unified voice while still achieving dramatic contrast between whisper-light body text and thundering display headlines.
-- **Extreme negative tracking at scale**: Headlines at 64px use -1.6px to -3px letter-spacing, creating ultra-dense text blocks that feel like logotypes. This aggressive compression is the signature typographic move.
-- **Weight as hierarchy**: 700–900 for display, 600 for headings, 500 for emphasis, 400 for body. The jumps are decisive — no ambiguous in-between weights.
-- **Consistent 1.40 body line-height**: Nearly all body and UI text shares 1.40 line-height, creating a rhythmic vertical consistency.
+- **Tight, heavy headlines.** Weight 600 with negative tracking proportional to size.
+- **Weight 500 body.** The measured hero paragraph and large buttons use 500, a touch heavier than the 400 in the styleguide's text scale.
+- **Mono as a label.** JetBrains Mono appears only in uppercase eyebrows and code fragments.
 
-## 4. Component Stylings
+### Note on Font Substitutes
+Inter and JetBrains Mono are open-source; no substitute is needed.
+
+## Layout
+
+- **Container.** Content runs nearly edge to edge with an outer margin of about 24px at 1280px (read from the capture); cards span up to about 1221px wide.
+- **Bento grid.** One full-width card (1221px wide, ~555px tall), a two-column row (591px each) with a tall left card (~612px) and a right column of a wide card above two half cards, then a centered closing section.
+- **Card padding.** 40px (some cards `40px 40px 0px` with imagery bleeding off the bottom).
+- **Header.** About 36px-high controls; links at 14px with 12px horizontal padding and a 24px radius.
+- **Spacing scale.** `{spacing.s3}` 4px, `{spacing.s5}` 8px, `{spacing.s7}` 12px, `{spacing.s8}` 16px, `{spacing.s9}` 24px, `{spacing.s10}` 32px, `{spacing.s11}` 40px. The styleguide declares max widths 420, 740, 960, 1200 and 1524px (`screen-sm` to `screen-2xl`).
+- **Section rhythm.** Large vertical gaps between hero, logo row, cards and closing section.
+
+## Elevation & Depth
+
+Flat. Cards sit directly on the canvas with no border and no shadow; separation is purely tonal (`{colors.surface-subtle}` on `{colors.canvas}`). Buttons carry an empty multi-layer shadow stack that resolves to nothing. The theme defines shadow steps, of which the larger ones are `lg` (`0 15px 25px #0000001f, 0 5px 10px #0000000d`) and `xl` (`0 20px 40px #00000026`), and `none` (`0 0 transparent`); these are for overlays such as menus and dialogs, which do not appear in the home capture. The marketing gradient card (blue to orange blurred wash) is the only place where color creates depth.
+
+## Shapes
+
+Measured radii: 12px (most common, 42 elements), 9999px (28), 16px (19), 40px (13), 36px (6), 25% (6, avatar-like tiles), 32px (5), 24px (4), 20px (2), 48px (1).
+- `{rounded.pill}` — large "Get started" / "Learn more" buttons (48px high) and chips.
+- `{rounded.cta}` 40px — hero buttons (40px high) and every large card.
+- `{rounded.nav-cta}` 36px — "Sign up" in the header.
+- `{rounded.4xl}` 32px — the blue Subscribe pill.
+- `{rounded.3xl}` 24px — header link hover areas.
+- `{rounded.lg}` 20px, `{rounded.sm}` 16px, `{rounded.xs}` 12px — inner tiles, thumbnails and chips.
+- The official styleguide radii are 2, 4, 6, 8, 16, 20, 24px and full; the marketing site goes beyond them with 32-40px.
+
+## Components
 
 ### Buttons
+- **button-primary** — `{colors.primary}` fill, `{colors.on-primary}` text, `{typography.button}`, `{rounded.cta}`, 40px high, padding `0px 16px`; hover fill `{colors.ink}` and a trailing arrow icon on "Get started".
+- **button-primary-nav** — header "Sign up": 36px high, 14px/500, `{rounded.nav-cta}`.
+- **button-primary-large** — 48px high, 16px/500, padding `0px 24px`, `{rounded.pill}`. "Learn more", "expo/expo" (with GitHub icon).
+- **button-secondary** — `{colors.surface-element}` fill, `{colors.ink}` text, 40px, `{rounded.cta}` ("Talk to our team"). The header "Log in" is a white outlined pill.
+- **button-accent** — `{colors.accent-blue}` fill and border, white 12px/600, 32px high, `{rounded.4xl}`; "Subscribe".
+- Theme variants (not seen on the capture): secondary `#f0f0f3` with hover `#e0e1e6`, tertiary with a `#cdced6` border, quaternary text-only with hover `#f0f0f3`, each with destructive and disabled states.
 
-**Primary (White on border)**
-- Background: Pure White (`#ffffff`)
-- Text: Near Black (`#1c2024`)
-- Padding: 0px 12px (compact, content-driven height)
-- Border: thin solid Input Border (`1px solid #d9d9e0`)
-- Radius: subtly rounded (6px)
-- Shadow: subtle combined shadow on hover
-- The understated default — clean, professional, unheroic
+### Cards
+- **card** — `{colors.surface-subtle}`, `{rounded.cta}` 40px, padding 40px, centered illustration and heading, one pill CTA. The AI-connector card replaces the fill with a blue/orange blurred gradient.
 
-**Primary Pill**
-- Same as Primary but with pill-shaped radius (9999px)
-- Used for hero CTAs and high-emphasis actions
-- The extra roundness signals "start here"
+### Navigation and Links
+- **nav-link** — `{colors.ink-secondary}` 14px/500, 36px high, 12px side padding.
+- **link** — `{colors.link}` at `{typography.body}` ("Learn more").
+- **eyebrow** — uppercase JetBrains Mono 12px in `{colors.ink-secondary}`.
+- **Chip** — "New" label plus "Try Observe →": 12px/500 `{colors.ink-secondary}` text in an outlined pill.
 
-**Dark Primary**
-- Background: Expo Black (`#000000`)
-- Text: Pure White (`#ffffff`)
-- Pill-shaped (9999px) or generously rounded (32–36px)
-- No border (black IS the border)
-- The maximum-emphasis CTA — reserved for primary conversion actions
+## Design System Architecture
 
-### Cards & Containers
-- Background: Pure White (`#ffffff`) — clearly lifted from Cloud Gray page
-- Border: thin solid Border Lavender (`1px solid #e0e1e6`) for standard cards
-- Radius: comfortably rounded (8px) for standard cards; generously rounded (16–24px) for featured containers
-- Shadow Level 1: Whisper (`rgba(0,0,0,0.08) 0px 3px 6px, rgba(0,0,0,0.07) 0px 2px 4px`) — barely perceptible lift
-- Shadow Level 2: Standard (`rgba(0,0,0,0.1) 0px 10px 20px, rgba(0,0,0,0.05) 0px 3px 6px`) — clear floating elevation
-- Hover: likely subtle shadow deepening or background shift
+Expo publishes the styleguide used across its sites and documents its brand rules.
 
-### Inputs & Forms
-- Background: Pure White (`#ffffff`)
-- Text: Near Black (`#1c2024`)
-- Border: thin solid Input Border (`1px solid #d9d9e0`)
-- Padding: 0px 12px (inline with button sizing)
-- Radius: subtly rounded (6px)
-- Focus: blue ring shadow via CSS custom property
+- **Brand rules.** [expo.dev/brand](https://expo.dev/brand) states the brand philosophy ("simplicity, spaciousness, and consistency"), that the logo and wordmark are registered trademarks of 650 Industries, Inc., and the permitted and prohibited uses. It contains no colors or typography. Logos are in the [expo/logos](https://github.com/expo/logos) repository (SVG and PNG).
+- **Styleguide package.** [`@expo/styleguide`](https://cdn.jsdelivr.net/npm/@expo/styleguide/README.md) (listed up to v14.4.0 on jsDelivr) ships a Tailwind theme (`tailwind.js`), global CSS and a `dist` folder. The README describes custom media scopes (`xs:`, `sm:`, `md:`, `lg:`, `xl:`), a `hocus:` variant that combines hover and focus, `heading-[size]` typography classes, `icon-[size]` classes and the Tailwind typography plugin.
+- **Token layers.** In its `tailwind.js`, colors are semantic CSS variables: `--expo-theme-background-*` (default, screen, subtle, element, hover, selected, overlay, success, warning, danger, info, preview), `--expo-theme-text-*` (default, secondary, tertiary, quaternary, link, status colors), `--expo-theme-border-*`, `--expo-theme-icon-*`, and per-variant button variables (`--expo-theme-button-primary-*`, `-secondary-*`, `-tertiary-*`, `-quaternary-*`, each with destructive and disabled states). Below them sits a 12-step palette per hue (green, purple, pink, orange, yellow/amber, blue, red, gray/slate) exposed as `palette-<hue><1-12>`. Dark mode is toggled through a `dark-theme` class.
+- **Live site.** The same `--expo-theme-*` variables are present in the home page's root variables with their light values (for example `--expo-theme-text-default: #1c2024`, `--expo-theme-background-subtle: #f9f9fb`), plus Tailwind variables (`--tw-*`, `--font-weight-*`) and component variables for accordion, dialog, banner and widgets.
 
-### Navigation
-- Sticky top nav on transparent/blurred background
-- Logo: Expo wordmark in black
-- Links: Near Black (`#1c2024`) or Slate Gray (`#60646c`) at 14–16px Inter weight 500
-- CTA: Black pill button ("Sign Up") on the right
-- GitHub star badge as social proof
-- Status indicator ("All Systems Operational") with green dot
+## Do's and Don'ts
 
-### Image Treatment
-- Product screenshots and device mockups are the visual heroes
-- Generously rounded corners (24px) on video and image containers
-- Screenshots shown in realistic device frames
-- Dark UI screenshots provide contrast against the light canvas
-- Full-bleed within rounded containers
+**Do**
+- Make the primary action a black pill and keep it the highest-contrast object in its band.
+- Use `{colors.surface-subtle}` cards at `{rounded.cta}` with 40px padding and one centered illustration each.
+- Set headlines in Inter 600 with negative tracking scaled to size (`{typography.display-section}` -2px at 48px).
+- Use `{colors.ink-secondary}` for supporting text, nav links and eyebrows; use `{colors.link}` only for text links.
+- Let imagery (app icons, 3D marks, gradients) provide the page's color.
+- Keep generous whitespace between sections.
 
-### Distinctive Components
+**Don't**
+- Do not add borders or drop shadows to cards; the system separates them by tone.
+- Do not use the blue `{colors.accent-blue}` for primary actions; it appears only on the Subscribe pill.
+- Do not modify, recolor or combine the Expo logo (brand rules).
+- Do not set display text at weight 400 or with zero tracking.
+- Do not mix square-cornered elements into the pill/rounded system.
+- Do not put body copy in `{colors.ink-quaternary}`; it is reserved for disabled/tertiary text.
 
-**Universe React Logo**
-- Animated/illustrated React logo as the visual centerpiece
-- Connects Expo's identity to the React ecosystem
-- The only illustrative element on an otherwise photographic page
+## Responsive Behavior
 
-**Device Preview Grid**
-- Multiple device types (phone, tablet, web) shown simultaneously
-- Demonstrates cross-platform capability visually
-- Each device uses realistic device chrome
+- **Breakpoints.** The styleguide declares media scopes `xs`, `sm`, `md`, `lg` and `xl`, and Tailwind screen max-widths of 420, 740, 960, 1200 and 1524px; the exact breakpoint widths used by the marketing site were not measured.
+- **Mobile type.** The extractor records the h1 at the 390px mobile viewport; see `{typography.display}` for the desktop value.
+- **Cards.** On desktop the bento grid uses one, two and three columns; the stacking order on mobile was not measured.
+- **Touch size.** Primary buttons are 36px, 40px and 48px high; the 48px size is used for stand-alone calls to action.
+- **Header.** The measured desktop header shows all links; the mobile header was not measured.
 
-**Status Badge**
-- "All Systems Operational" pill in the nav
-- Green dot + text — compact trust signal
-- Pill-shaped (36px radius)
+## Iteration Guide
 
-## 5. Layout Principles
-
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 4px, 8px, 12px, 16px, 24px, 32px, 40px, 48px, 64px, 80px, 96px, 144px
-- Button padding: 0px 12px (unusually compact — height driven by line-height)
-- Card internal padding: approximately 24–32px
-- Section vertical spacing: enormous (estimated 96–144px between major sections)
-- Component gap: 16–24px between sibling elements
-
-### Grid & Container
-- Max container width: approximately 1200–1400px, centered
-- Hero: centered single-column with massive breathing room
-- Feature sections: alternating layouts (image left/right, full-width showcases)
-- Card grids: 2–3 column for feature highlights
-- Full-width sections with contained inner content
-
-### Whitespace Philosophy
-- **Gallery-like pacing**: Each section feels like its own exhibit, surrounded by vast empty space. This creates a premium, unhurried browsing experience.
-- **Breathing room is the design**: The generous whitespace IS the primary design element — it communicates confidence, quality, and that each feature deserves individual attention.
-- **Content islands**: Sections float as isolated "islands" in the white space, connected by scrolling rather than visual continuation.
-
-### Border Radius Scale
-- Nearly squared (4px): Small inline elements, tags
-- Subtly rounded (6px): Buttons, form inputs, combo boxes — the functional interactive radius
-- Comfortably rounded (8px): Standard content cards, containers
-- Generously rounded (16px): Feature tabs, content panels
-- Very rounded (24px): Buttons, video/image containers, tabpanels — the signature softness
-- Highly rounded (32–36px): Hero CTAs, status badges, nav buttons
-- Pill-shaped (9999px): Primary action buttons, tags, avatars — maximum friendliness
-
-## 6. Depth & Elevation
-
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Cloud Gray page background, inline text |
-| Surface (Level 1) | White bg, no shadow | Standard white cards on Cloud Gray |
-| Whisper (Level 2) | `rgba(0,0,0,0.08) 0px 3px 6px` + `rgba(0,0,0,0.07) 0px 2px 4px` | Subtle card lift, hover states |
-| Elevated (Level 3) | `rgba(0,0,0,0.1) 0px 10px 20px` + `rgba(0,0,0,0.05) 0px 3px 6px` | Feature showcases, product screenshots |
-| Modal (Level 4) | Dark overlay (`--dialog-overlay-background-color`) + heavy shadow | Dialogs, overlays |
-
-**Shadow Philosophy**: Expo uses shadows as gentle whispers rather than architectural statements. The primary depth mechanism is **background color contrast** — white cards floating on Cloud Gray — rather than shadow casting. When shadows appear, they're soft, diffused, and directional (downward), creating the feeling of paper hovering millimeters above a desk.
-
-## 7. Do's and Don'ts
-
-### Do
-- Use Cloud Gray (`#f0f0f3`) as the page background and Pure White (`#ffffff`) for elevated cards — the two-tone light system is essential
-- Keep display headlines at extreme negative letter-spacing (-1.6px to -3px at 64px) for the signature compressed look
-- Use pill-shaped (9999px) radius for primary CTA buttons — the organic shape is core to the identity
-- Reserve black (`#000000`) for headlines and primary CTAs — it carries maximum authority on the light canvas
-- Use Slate Gray (`#60646c`) for secondary text — it's the precise balance between readable and receded
-- Maintain enormous vertical spacing between sections (96px+) — the gallery pacing defines the premium feel
-- Use product screenshots as the primary visual content — the interface stays monochrome, the products bring color
-- Apply Inter at the full weight range (400–900) — weight contrast IS the hierarchy
-
-### Don't
-- Don't introduce decorative colors into the interface chrome — the monochromatic palette is intentional
-- Don't use sharp corners (border-radius < 6px) on interactive elements — the pill/rounded geometry is the signature
-- Don't reduce section spacing below 64px — the breathing room is the design
-- Don't use heavy drop shadows — depth comes from background contrast and whisper-soft shadows
-- Don't mix in additional typefaces — Inter handles everything from display to caption
-- Don't use letter-spacing wider than -0.25px on body text — extreme tracking is reserved for display only
-- Don't use borders heavier than 2px — containment is subtle, achieved through background color and gentle borders
-- Don't add gradients to the interface — visual richness comes from content, not decoration
-- Don't use saturated colors outside of semantic contexts — the palette is strictly grayscale + functional blue
-
-## 8. Responsive Behavior
-
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <640px | Single column, hamburger nav, stacked cards, hero text scales to ~36px |
-| Tablet | 640–1024px | 2-column grids, condensed nav, medium hero text |
-| Desktop | >1024px | Full multi-column layout, expanded nav, massive hero (64px) |
-
-*Only one explicit breakpoint detected (640px), suggesting a fluid, container-query or min()/clamp()-based responsive system rather than fixed breakpoint snapping.*
-
-### Touch Targets
-- Buttons use generous radius (24–36px) creating large, finger-friendly surfaces
-- Navigation links spaced with adequate gap
-- Status badge sized for touch (36px radius)
-- Minimum recommended: 44x44px
-
-### Collapsing Strategy
-- **Navigation**: Full horizontal nav with CTA collapses to hamburger on mobile
-- **Feature sections**: Multi-column → stacked single column
-- **Hero text**: 64px → ~36px progressive scaling
-- **Device previews**: Grid → stacked/carousel
-- **Cards**: Side-by-side → vertical stacking
-- **Spacing**: Reduces proportionally but maintains generous rhythm
-
-### Image Behavior
-- Product screenshots scale proportionally
-- Device mockups may simplify or show fewer devices on mobile
-- Rounded corners maintained at all sizes
-- Lazy loading for below-fold content
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary CTA / Headlines: "Expo Black (#000000)"
-- Page Background: "Cloud Gray (#f0f0f3)"
-- Card Surface: "Pure White (#ffffff)"
-- Body Text: "Near Black (#1c2024)"
-- Secondary Text: "Slate Gray (#60646c)"
-- Borders: "Border Lavender (#e0e1e6)"
-- Links: "Link Cobalt (#0d74ce)"
-- Tertiary Text: "Silver (#b0b4ba)"
-
-### Example Component Prompts
-- "Create a hero section on Cloud Gray (#f0f0f3) with a massive headline at 64px Inter weight 700, line-height 1.10, letter-spacing -3px. Text in Expo Black (#000000). Below, add a subtitle in Slate Gray (#60646c) at 18px. Place a black pill-shaped CTA button (9999px radius) beneath."
-- "Design a feature card on Pure White (#ffffff) with a 1px solid Border Lavender (#e0e1e6) border and comfortably rounded corners (8px). Title in Near Black (#1c2024) at 20px Inter weight 600, description in Slate Gray (#60646c) at 16px. Add a whisper shadow (rgba(0,0,0,0.08) 0px 3px 6px)."
-- "Build a navigation bar with Expo logo on the left, text links in Near Black (#1c2024) at 14px Inter weight 500, and a black pill CTA button on the right. Background: transparent with blur backdrop. Bottom border: 1px solid Border Lavender (#e0e1e6)."
-- "Create a code block using JetBrains Mono at 14px on a Pure White surface with Border Lavender border and 8px radius. Code in Near Black, keywords in Link Cobalt (#0d74ce)."
-- "Design a status badge pill (9999px radius) with a green dot and 'All Systems Operational' text in Inter 12px weight 500. Background: Pure White, border: 1px solid Input Border (#d9d9e0)."
-
-### Iteration Guide
-1. Focus on ONE component at a time
-2. Reference specific color names and hex codes — "use Slate Gray (#60646c)" not "make it gray"
-3. Use radius values deliberately — 6px for buttons, 8px for cards, 24px for images, 9999px for pills
-4. Describe the "feel" alongside measurements — "enormous breathing room with 96px section spacing"
-5. Always specify Inter and the exact weight — weight contrast IS the hierarchy
-6. For shadows, specify "whisper shadow" or "standard elevation" from the elevation table
-7. Keep the interface monochrome — let product content be the color
+1. Start with `{colors.canvas}`, `{colors.ink}` text and Inter; add `{colors.surface-subtle}` for cards.
+2. Build the hero: `{typography.display}` headline, a black `button-primary` and a `button-secondary`, then a one-line eyebrow.
+3. Use 40px-radius cards with 40px padding and a centered heading in `{typography.display-section}` or `{typography.title}`.
+4. Reserve black for actions; use `{colors.link}` for inline links and `{colors.ink-secondary}` for support text.
+5. Add one visual per card (3D mark, screenshot, tiles, gradient) rather than icons or borders.
+6. For overlays and menus use the theme shadow steps; keep everything else flat.
+7. Check that nothing besides imagery introduces a hue, and that black pills keep their white text.

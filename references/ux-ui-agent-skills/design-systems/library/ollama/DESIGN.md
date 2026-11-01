@@ -1,270 +1,336 @@
-# Design System Inspired by Ollama
+---
+version: alpha
+name: Ollama
+category: "AI & LLM Platforms"
+description: "Ollama's marketing site is a near-monochrome, text-first page - white canvas (#ffffff), neutral-900 ink (#171717), muted neutral-500 captions (#737373), the system ui-sans-serif stack with a tight 22px/500 headline at -0.55px tracking, and a single pill-shaped (9999px) near-black \"Get started\" button that darkens to #000000 on hover."
 
-> Category: AI & LLM
-> Run LLMs locally. Terminal-first, monochrome simplicity.
+colors:
+  canvas: "#ffffff"
+  ink: "#171717"
+  primary: "#171717"
+  on-primary: "#ffffff"
+  ink-muted: "#737373"
+  ink-black: "#000000"
+  ink-soft: "#262626"
+  ink-faint: "#a3a3a3"
+  hairline: "#e5e5e5"
+  code-surface: "#0000000a"
+  tag-blue-bg: "#ddf4ff"
+  tag-blue-text: "#2563eb"
+  tag-indigo-bg: "#eef2ff"
+  tag-indigo-text: "#4f46e5"
 
-## 1. Visual Theme & Atmosphere
+typography:
+  display:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 22px
+    fontWeight: 500
+    lineHeight: 30.25px
+    letterSpacing: "-0.55px"
+  display-mobile:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 20px
+    fontWeight: 500
+    lineHeight: 27.5px
+    letterSpacing: "-0.5px"
+  body:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 20px
+    fontWeight: 400
+    lineHeight: 28px
+  button:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 28px
+  display-pricing:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 48px
+    fontWeight: 600
+    lineHeight: 48px
+    letterSpacing: "-1.2px"
+  display-download:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 38.4px
+    fontWeight: 450
+    lineHeight: 48px
+    letterSpacing: "-0.768px"
+  heading-library:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 28px
+    fontWeight: 500
+    lineHeight: 42px
+    letterSpacing: "-0.7px"
+  heading-card:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 20px
+    fontWeight: 500
+    lineHeight: 28px
+  heading-model:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 24px
+    fontWeight: 500
+    lineHeight: 32px
+  body-small:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 20px
+  body-list:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  tag:
+    fontFamily: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 13px
+    fontWeight: 500
+    lineHeight: 20px
 
-Ollama's interface is radical minimalism taken to its logical conclusion — a pure-white void where content floats without decoration, shadow, or color. The design philosophy mirrors the product itself: strip away everything unnecessary until only the essential tool remains. This is the digital equivalent of a Dieter Rams object — every pixel earns its place, and the absence of design IS the design.
+rounded:
+  pill: 9999px
+  chip: 6px
+  code: 12px
+  card: 16px
 
-The entire page exists in pure grayscale. There is zero chromatic color in the interface — no brand blue, no accent green, no semantic red. The only colors that exist are shades between pure black (`#000000`) and pure white (`#ffffff`), creating a monochrome environment that lets the user's mental model of "open models" remain uncolored by brand opinion. The Ollama llama mascot, rendered in simple black line art, is the only illustration — and even it's monochrome.
+spacing:
+  s1: 6px
+  s2: 8px
+  s3: 12px
+  s4: 14px
+  s5: 24px
+  s6: 28px
+  s7: 32px
+  s8: 96px
 
-What makes Ollama distinctive is the combination of SF Pro Rounded (Apple's rounded system font) with an exclusively pill-shaped geometry (9999px radius on everything interactive). The rounded letterforms + rounded buttons + rounded containers create a cohesive "softness language" that makes a developer CLI tool feel approachable and friendly rather than intimidating. This is minimalism with warmth — not cold Swiss-style grid minimalism, but the kind where the edges are literally softened.
+components:
+  button-primary:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 8px 24px
+    height: 44px
+  button-primary-hover:
+    backgroundColor: "{colors.ink-black}"
+  button-pricing:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.body-list}"
+    rounded: "{rounded.pill}"
+    padding: 10px 24px
+    height: 44px
+  pricing-card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink-black}"
+    typography: "{typography.body-list}"
+    rounded: "{rounded.card}"
+    padding: 24px
+  model-tag:
+    backgroundColor: "{colors.tag-blue-bg}"
+    textColor: "{colors.tag-blue-text}"
+    typography: "{typography.tag}"
+    rounded: "{rounded.chip}"
+    padding: 2px 8px
+  model-tag-indigo:
+    backgroundColor: "{colors.tag-indigo-bg}"
+    textColor: "{colors.tag-indigo-text}"
+    typography: "{typography.tag}"
+    rounded: "{rounded.chip}"
+    padding: 2px 8px
+  filter-input:
+    textColor: "{colors.ink-black}"
+    typography: "{typography.body-small}"
+    rounded: "{rounded.pill}"
+    padding: 0px 12px
+    height: 32px
+  nav:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink-black}"
+    padding: 0px 32px
+  nav-link:
+    textColor: "{colors.ink-black}"
+    typography: "{typography.button}"
+  footer:
+    textColor: "{colors.ink-black}"
+---
+
+## Overview
+
+Ollama's public site (ollama.com) is a quiet, near-monochrome, text-first product site. The home page, Pricing, Download and Library (model list) pages were captured at a 1280px viewport and measured. All four share one header (llama line-drawing logo at left; GitHub star count, Download, Models, Docs, Pricing, Sign in at right) and one footer line, on a white canvas with black and gray text. The only chromatic color measured anywhere is on the model library's capability and size tags.
+
+The home page is a single screen: headline "Ollama is the most popular way to build with open models." at `{typography.display}` (22px, weight 500, -0.55px tracking), a larger intro paragraph at `{typography.body}` (20px/400), one pill button, three stats (9M+ installs a month, 1B+ model downloads, 200T+ tokens served) and a grid of twelve grayscale partner logos. Hierarchy comes from weight and spacing, not size.
 
 **Key Characteristics:**
-- Pure white canvas with zero chromatic color — completely grayscale
-- SF Pro Rounded headlines creating a distinctively Apple-like softness
-- Binary border-radius system: 12px (containers) or 9999px (everything interactive)
-- Zero shadows — depth comes exclusively from background color shifts and borders
-- Pill-shaped geometry on all interactive elements (buttons, tabs, inputs, tags)
-- The Ollama llama as the sole illustration — black line art, no color
-- Extreme content restraint — the homepage is short, focused, and uncluttered
+- Neutral palette: `{colors.ink}` (#171717), `{colors.ink-black}` (#000000), `{colors.ink-soft}` (#262626), `{colors.ink-muted}` (#737373), `{colors.ink-faint}` (#a3a3a3), borders `{colors.hairline}` (#e5e5e5) on `{colors.canvas}` (#ffffff).
+- One button shape: a filled `{colors.ink}` pill with a white label (`{rounded.pill}`), 44px tall, in every measured context (home, Pricing cards).
+- System font stack (`ui-sans-serif, system-ui, sans-serif` plus emoji fallbacks) for nearly all text; headlines use negative letter-spacing.
+- Flat surfaces: no box shadows measured on any of the four pages; separation is 1px `{colors.hairline}` borders and 4%-black fills.
+- Cards use a generous `{rounded.card}` (16px) radius; inputs, segmented controls and buttons use pills; small tags use `{rounded.chip}` (6px).
+- Left-aligned narrow column on the home and Download pages; centered title and four-up card row on Pricing; a centered single column list on Library.
+- Content-first microcopy: plain statements, numbers with plus signs, prices in dollars, and a copy-paste `curl` command on Download.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary
-- **Pure Black** (`#000000`): Primary headlines, primary links, and the darkest text. The only "color" that demands attention.
-- **Near Black** (`#262626`): Button text on light surfaces, secondary headline weight.
-- **Darkest Surface** (`#090909`): The darkest possible surface — barely distinguishable from pure black, used for footer or dark containers.
+> Sources: measured on https://ollama.com, /pricing, /library and /download (SOURCES.json), plus class names read from the homepage and library HTML.
 
-### Surface & Background
-- **Pure White** (`#ffffff`): The primary page background — not off-white, not cream, pure white. Button surfaces for secondary actions.
-- **Snow** (`#fafafa`): The subtlest possible surface distinction from white — used for section backgrounds and barely-elevated containers.
-- **Light Gray** (`#e5e5e5`): Button backgrounds, borders, and the primary containment color. The workhorse neutral.
+### Brand & Accent
+- **Ink / Primary** (`{colors.ink}` / `{colors.primary}` - `#171717`): Tailwind `neutral-900`. Fill of every measured primary button (home "Get started", Pricing "Download" / "Get Pro" / "Get Team" / "Contact us") and the home headline and paragraph color.
+- **Ink Black** (`{colors.ink-black}` - `#000000`): header, nav, footer container text, Pricing body text and the button hover fill.
+- There is no brand hue on these pages; the llama logo is black line art.
 
-### Neutrals & Text
-- **Stone** (`#737373`): Secondary body text, footer links, and de-emphasized content. The primary "muted" tone.
-- **Mid Gray** (`#525252`): Emphasized secondary text, slightly darker than Stone.
-- **Silver** (`#a3a3a3`): Tertiary text, placeholders, and deeply de-emphasized metadata.
-- **Button Text Dark** (`#404040`): Specific to white-surface button text.
+### Surface
+- **Canvas** (`{colors.canvas}` - `#ffffff`): page, header and pricing-card background.
+- **Code Surface** (`{colors.code-surface}` - `#0000000a`, i.e. black at about 4%): the install command block and the agent-prompt block on Download (markup: `bg-black/[0.04]`), also the segmented OS switcher.
+- **Hairline** (`{colors.hairline}` - `#e5e5e5`): the 1px border on Pricing cards and table cells.
 
-### Semantic & Accent
-- **Ring Blue** (`#3b82f6` at 50%): The ONLY non-gray color in the entire system — Tailwind's default focus ring, used exclusively for keyboard accessibility. Never visible in normal interaction flow.
-- **Border Light** (`#d4d4d4`): A slightly darker gray for white-surface button borders.
+### Text
+- **Ink Soft** (`{colors.ink-soft}` - `#262626`): model descriptions on Library (the most-read color on that page).
+- **Ink Muted** (`{colors.ink-muted}` - `#737373`, `neutral-500`): stat captions, footer, Pricing helper text, Library metadata.
+- **Ink Faint** (`{colors.ink-faint}` - `#a3a3a3`): the underlined "annually" link on Pricing and other tertiary text.
+- **On Primary** (`{colors.on-primary}` - `#ffffff`): button labels.
 
-### Gradient System
-- **None.** Ollama uses absolutely no gradients. Visual separation comes from flat color blocks and single-pixel borders. This is a deliberate, almost philosophical design choice.
+### Model tags (Library page only)
+- **Tag Blue** background `{colors.tag-blue-bg}` (`#ddf4ff`) with text `{colors.tag-blue-text}` (`#2563eb`, Tailwind `blue-600`): parameter-size tags such as 8b, 70b, 405b.
+- **Tag Indigo** background `{colors.tag-indigo-bg}` (`#eef2ff`, `indigo-50`) with text `{colors.tag-indigo-text}` (`#4f46e5`, `indigo-600`): capability tags such as tools, thinking, embedding.
+- A cyan text color (`#06b6d4`) and `#ecfeff` background were also measured on Library, applied to the "cloud" tag; they are not promoted to tokens here.
 
-## 3. Typography Rules
+### Semantic
+No success/warning/error colors were measured. The Pricing feature lists use dark check icons, not green.
+
+### Logo grid treatment
+The twelve partner logos on the home page (Apple, NVIDIA, Microsoft, Meta, Adobe, Intel, NASA, Netflix, IBM, Nike, Visa, Mercedes-Benz) carry `opacity-50 grayscale`, flattening third-party brand colors into the neutral palette.
+
+## Typography
 
 ### Font Family
-- **Display**: `SF Pro Rounded`, with fallbacks: `system-ui, -apple-system, system-ui`
-- **Body / UI**: `ui-sans-serif`, with fallbacks: `system-ui, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji`
-- **Monospace**: `ui-monospace`, with fallbacks: `SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New`
-
-*Note: SF Pro Rounded is Apple's system font — it renders with rounded terminals on macOS/iOS and falls back to the system sans-serif on other platforms.*
+Measured text resolves to the Tailwind `font-sans` stack: `ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"`. On the macOS capture machine this renders as the system UI font. The site CSS also defines `.font-rounded` (`SF Pro Rounded, system-ui, -apple-system, BlinkMacSystemFont, sans-serif`), which was measured on one Pricing link ("annually"), and `.font-mono` (`ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, ...`) used for the install command on Download.
 
 ### Hierarchy
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display / Hero | SF Pro Rounded | 48px (3rem) | 500 | 1.00 (tight) | normal | Maximum impact, rounded letterforms |
-| Section Heading | SF Pro Rounded | 36px (2.25rem) | 500 | 1.11 (tight) | normal | Feature section titles |
-| Sub-heading | SF Pro Rounded / ui-sans-serif | 30px (1.88rem) | 400–500 | 1.20 (tight) | normal | Card headings, feature names |
-| Card Title | ui-sans-serif | 24px (1.5rem) | 400 | 1.33 | normal | Medium emphasis headings |
-| Body Large | ui-sans-serif | 18px (1.13rem) | 400–500 | 1.56 | normal | Hero descriptions, button text |
-| Body / Link | ui-sans-serif | 16px (1rem) | 400–500 | 1.50 | normal | Standard body text, navigation |
-| Caption | ui-sans-serif | 14px (0.88rem) | 400 | 1.43 | normal | Metadata, descriptions |
-| Small | ui-sans-serif | 12px (0.75rem) | 400 | 1.33 | normal | Smallest sans-serif text |
-| Code Body | ui-monospace | 16px (1rem) | 400 | 1.50 | normal | Inline code, commands |
-| Code Caption | ui-monospace | 14px (0.88rem) | 400 | 1.43 | normal | Code snippets, secondary |
-| Code Small | ui-monospace | 12px (0.75rem) | 400–700 | 1.63 | normal | Tags, labels |
+| Token | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---|---|---|---|
+| `{typography.display}` | 22px | 500 | 30.25px | -0.55px | Home h1 (desktop) |
+| `{typography.display-mobile}` | 20px | 500 | 27.5px | -0.5px | Home h1 at 390px |
+| `{typography.display-pricing}` | 48px | 600 | 48px | -1.2px | "Pricing" page title |
+| `{typography.display-download}` | 38.4px | 450 | 48px | -0.768px | "Download Ollama" title |
+| `{typography.heading-library}` | 28px | 500 | 42px | -0.7px | "Library" title (capitalized) |
+| `{typography.heading-model}` | 24px | 500 | 32px | normal | Model names in the list |
+| `{typography.heading-card}` | 20px | 500 | 28px | normal | Plan names, section h2 on Download |
+| `{typography.body}` | 20px | 400 | 28px | normal | Home intro paragraph |
+| `{typography.button}` | 18px | 400 | 28px | normal | Home button, nav links |
+| `{typography.body-list}` | 16px | 400 | 24px | normal | Pricing button labels (weight 500 in practice on those buttons), model descriptions |
+| `{typography.body-small}` | 14px | 400 | 20px | normal | Pricing body, table, filter input |
+| `{typography.tag}` | 13px | 500 | 20px | normal | Library tags (`text-xs sm:text-[13px] font-medium`) |
+
+The Pricing buttons were measured at 16px with weight 500; the `{typography.body-list}` token records the 16px/400 body size, so button labels there are 16px at weight 500.
 
 ### Principles
-- **Rounded display, standard body**: SF Pro Rounded carries display headlines with its distinctive rounded terminals, while the standard system sans handles all body text. The rounded font IS the brand expression.
-- **Weight restraint**: Only two weights matter — 400 (regular) for body and 500 (medium) for headings. No bold, no light, no black weight. This extreme restraint reinforces the minimal philosophy.
-- **Tight display, comfortable body**: Headlines compress to 1.0 line-height, while body text relaxes to 1.43–1.56. The contrast creates clear hierarchy without needing weight contrast.
-- **Monospace for developer identity**: Code blocks and terminal commands appear throughout as primary content, using the system monospace stack.
+- Weights measured across pages: 400, 450 (Download title), 500, and 600 (Pricing title and table headers). No 700.
+- Large titles carry negative tracking that scales with size (-1.2px at 48px, -0.768px at 38.4px, -0.7px at 28px, -0.55px at 22px).
+- Numerals in stats use tabular figures (`tabular-nums`).
 
-## 4. Component Stylings
+### Font substitutes
+No proprietary web font is loaded; the system stack is the design. For a consistent cross-platform match, Inter is a reasonable open-source stand-in, but that is a suggestion, not an Ollama specification.
 
-### Buttons
+## Layout
 
-**Gray Pill (Primary)**
-- Background: Light Gray (`#e5e5e5`)
-- Text: Near Black (`#262626`)
-- Padding: 10px 24px
-- Border: thin solid Light Gray (`1px solid #e5e5e5`)
-- Radius: pill-shaped (9999px)
-- The primary action button — understated, grayscale, always pill-shaped
+- **Header.** 80px tall flex bar with 32px horizontal padding at desktop; sticky below the `lg` breakpoint. Logo left, nav right; the nav uses `text-lg leading-6 tracking-tight`. A hairline border (12% black) appears once scrolled.
+- **Home.** `<main>` with `pt-20 md:pt-24`, side padding from the site's `px-gutter` clamp utility; content capped at `max-w-xl`, left-aligned. Spacing: `mt-4` under the headline, `mt-12` before the button, `mt-16 md:mt-20` before stats and the logo grid. The logo grid is `grid-cols-3 sm:grid-cols-6` with `h-8` cells.
+- **Pricing.** Centered 48px title, then a four-column card row (Free, Pro, Team, Enterprise) with 24px card padding; each card measured 296px wide. Below: a "Model pricing" table (columns Model, Input, Cached input, Output) in a rounded bordered container, then an FAQ column. The table and FAQ sit in a narrower centered column than the cards.
+- **Library.** Single centered column: logo mark and title, a pill filter input (32px tall, 440px wide) with a "Popular" sort select, then a list of models separated by hairline rules.
+- **Download.** Left-aligned column: title, one-line intro, "Install" row with an OS switcher (macOS / Linux / Windows), a command block, a "Download manually" link and a "Building with an agent?" prompt block with a "Show full prompt" disclosure.
+- **Footer.** Copyright left, nine small links right (Blog, Docs, GitHub, Discord, X (Twitter), Support, Careers, Privacy, Terms).
 
-**White Pill (Secondary)**
-- Background: Pure White (`#ffffff`)
-- Text: Button Text Dark (`#404040`)
-- Padding: 10px 24px
-- Border: thin solid Border Light (`1px solid #d4d4d4`)
-- Radius: pill-shaped (9999px)
-- Secondary action — visually lighter than Gray Pill
+### Spacing scale
+Measured gaps and paddings: `{spacing.s1}` 6px, `{spacing.s2}` 8px, `{spacing.s3}` 12px, `{spacing.s4}` 14px, `{spacing.s5}` 24px, `{spacing.s6}` 28px, `{spacing.s7}` 32px, `{spacing.s8}` 96px. On Pricing the most frequent gap is 8px and the most frequent paddings are 16px and 12px (table cells and list rows).
 
-**Black Pill (CTA)**
-- Background: Pure Black (`#000000`)
-- Text: Pure White (`#ffffff`)
-- Radius: pill-shaped (9999px)
-- Inferred from "Create account" and "Explore" buttons
-- Maximum emphasis — black on white
+## Elevation & Depth
 
-### Cards & Containers
-- Background: Pure White or Snow (`#fafafa`)
-- Border: thin solid Light Gray (`1px solid #e5e5e5`) when needed
-- Radius: comfortably rounded (12px) — the ONLY non-pill radius in the system
-- Shadow: **none** — zero shadows on any element
-- Hover: likely subtle background shift or border darkening
+Depth is carried by borders and tints, not shadows. No `box-shadow` was measured on any of the four pages. Pricing cards have a 1px `{colors.hairline}` border and `{rounded.card}` radius on the white canvas. Code and prompt blocks on Download use `{colors.code-surface}` (a 4% black fill) with no border. The sticky header gains a faint hairline only when scrolled. Focus rings come from Tailwind's `--tw-ring-color` variable, which resolves to `#3b82f680` by default; it is a framework default rather than a measured brand color.
 
-### Inputs & Forms
-- Background: Pure White
-- Border: `1px solid #e5e5e5`
-- Radius: pill-shaped (9999px) — search inputs and form fields are pill-shaped
-- Focus: Ring Blue (`#3b82f6` at 50%) ring
-- Placeholder: Silver (`#a3a3a3`)
+## Shapes
 
-### Navigation
-- Clean horizontal nav with minimal elements
-- Logo: Ollama llama icon + wordmark in black
-- Links: "Models", "Docs", "Pricing" in black at 16px, weight 400
-- Search bar: pill-shaped with placeholder text
-- Right side: "Sign in" link + "Download" black pill CTA
-- No borders, no background — transparent nav on white page
+- **Pill** (`{rounded.pill}`, 9999px): buttons, the Library filter input, the OS switcher and its inner segments.
+- **Card** (`{rounded.card}`, 16px): the Pricing plan cards (measured with 24px padding and a 1px `{colors.hairline}` border).
+- **Code** (`{rounded.code}`, 12px): the Download command and prompt blocks (markup `rounded-xl`).
+- **Chip** (`{rounded.chip}`, 6px): Library tags (markup `rounded-md`, padding `px-2 py-0.5`).
+- Other radii in the stylesheet (2px, 4px, 5px, 24px) were not measured on the captured pages and are not tokens.
 
-### Image Treatment
-- The Ollama llama mascot is the only illustration — black line art on white
-- Code screenshots/terminal outputs shown in bordered containers (12px radius)
-- Integration logos displayed as simple icons in a grid
-- No photographs, no gradients, no decorative imagery
+## Components
 
-### Distinctive Components
+### Primary button
+`{components.button-primary}`: `{colors.ink}` fill, `{colors.canvas}` label, 18px/400, `{rounded.pill}`, padding 8px 24px, 44px tall (139px wide for "Get started"; links to `/signup`). Hover changes the fill to `{colors.ink-black}` (`{components.button-primary-hover}`); the measured hover leaves radius, border and shadow unchanged.
 
-**Tab Pills**
-- Pill-shaped tab selectors (e.g., "Coding" | "OpenClaw")
-- Active: Light Gray bg; Inactive: transparent
-- All pill-shaped (9999px)
+### Pricing button
+`{components.button-pricing}`: same fill and pill, 16px at weight 500, padding 10px 24px, 44px tall. Seen on "Contact us" (129px wide) and "Download" (122px wide); the Pro and Team cards show equivalent "Get Pro" and "Get Team" buttons.
 
-**Model Tags**
-- Small pill-shaped tags (e.g., "ollama", "launch", "claude")
-- Light Gray background, dark text
-- The primary way to browse models
+### Pricing card
+`{components.pricing-card}`: white, 1px `{colors.hairline}` border, `{rounded.card}`, 24px padding. Layout inside: plan name (`{typography.heading-card}`), a large price (for example "$0", "$20 / mo. or $200/yr billed annually", "$500 / mo.", "Custom"), a muted description, an "Includes:" / "Everything in X, plus:" label, a check-marked feature list, and the button pinned to the bottom. The Pro card holds a two-segment Pro/Max toggle; the Team card has an "Early access" outlined pill label.
 
-**Terminal Command Block**
-- Monospace code showing `ollama run` commands
-- Minimal styling — just a bordered 12px-radius container
-- Copy button integrated
+### Model tag
+`{components.model-tag}` (blue) and `{components.model-tag-indigo}` (indigo): 13px/500, 2px 8px padding, `{rounded.chip}`. Tags appear in a wrapping row under each model description, followed by a metadata line (Pulls, Tags, Updated) with small icons in `{colors.ink-muted}`.
 
-**Integration Grid**
-- Grid of integration logos (Codex, Claude Code, OpenCode, LangChain, etc.)
-- Each in a bordered pill or card with icon + name
-- Tabbed by category (Coding, Documents & RAG, Automation, Chat)
+### Filter input
+`{components.filter-input}`: pill, 32px tall, 14px text, 12px horizontal padding, with a search icon and "Filter models" placeholder, beside a "Popular" sort select.
 
-## 5. Layout Principles
+### Install block
+A `{colors.code-surface}` rounded block with a monospace command (`curl -fsSL https://ollama.com/install.sh | sh` for macOS in the capture) and a copy icon at the right; above it a segmented pill switcher for macOS / Linux / Windows with the active segment on white.
 
-### Spacing System
-- Base unit: 8px
-- Scale: 4px, 6px, 8px, 9px, 10px, 12px, 14px, 16px, 20px, 24px, 32px, 40px, 48px, 88px, 112px
-- Button padding: 10px 24px (consistent across all buttons)
-- Card internal padding: approximately 24–32px
-- Section vertical spacing: very generous (88px–112px)
+### Nav
+`{components.nav}`: white, 32px side padding; links use `{typography.button}` and underline on hover (measured).
 
-### Grid & Container
-- Max container width: approximately 1024–1280px, centered
-- Hero: centered single-column with llama illustration
-- Feature sections: 2-column layout (text left, code right)
-- Integration grid: responsive multi-column
-- Footer: clean single-row
+### Footer
+`{components.footer}`: small muted links (`text-sm`, `md:text-xs`, `text-neutral-500`), underline on hover.
 
-### Whitespace Philosophy
-- **Emptiness as luxury**: The page is remarkably short and sparse — no feature section overstays its welcome. Each concept gets minimal but sufficient space.
-- **Content density is low by design**: Where other AI companies pack feature after feature, Ollama presents three ideas (run models, use with apps, integrations) and stops.
-- **The white space IS the brand**: Pure white space with zero decoration communicates "this tool gets out of your way."
+### Stat item
+Number (`font-medium tabular-nums`, `text-2xl md:text-3xl`) over a `{colors.ink-muted}` caption.
 
-### Border Radius Scale
-- Comfortably rounded (12px): The sole container radius — code blocks, cards, panels
-- Pill-shaped (9999px): Everything interactive — buttons, tabs, inputs, tags, badges
+### Data table
+The Model pricing table on Pricing has bordered rounded container, header row at weight 600, 14px cells, row dividers in `{colors.hairline}`, and right-aligned numeric columns. No component token is declared for it because no table role was extracted.
 
-*This binary system is extreme and distinctive. There is no 4px, no 8px, no gradient of roundness. Elements are either containers (12px) or interactive (pill).*
+## Design System Architecture
 
-## 6. Depth & Elevation
+No public Ollama design system, brand guideline or website token package was found; the searches are listed in SOURCES.json and returned only third-party logo hosts and aggregator pages, which are not used. What the shipped site shows:
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow, no border | Page background, most content |
-| Bordered (Level 1) | `1px solid #e5e5e5` | Cards, code blocks, buttons |
+- Server-rendered HTML styled with **Tailwind CSS**: the pages link https://ollama.com/public/tailwind.css, and elements carry Tailwind utilities (`bg-neutral-900`, `rounded-full`, `text-neutral-500`, `rounded-md bg-indigo-50`). Interactivity uses htmx (`/public/vendor/htmx/bundle.js`) and code highlighting uses Prism (`/public/vendor/prism/prism.css`), both visible in the homepage source at https://ollama.com.
+- Custom CSS on top of Tailwind: a `px-gutter` utility defined with `clamp()`, a `.font-rounded` utility and typography-plugin variables for prose and `kbd`.
+- No named brand custom properties on `:root`; only Tailwind's internal `--tw-*` variables were measured. The palette therefore follows Tailwind's neutral, blue and indigo scales plus one arbitrary value (`#ddf4ff`, written `bg-[#ddf4ff]` in the Library markup).
+- The Ollama software repository is https://github.com/ollama/ollama; a repository for the website itself was not found.
 
-**Shadow Philosophy**: Ollama uses **zero shadows**. This is not an oversight — it's a deliberate design decision. Every other major AI product site uses at least subtle shadows. Ollama's flat, shadowless approach creates a paper-like experience where elements are distinguished purely by background color and single-pixel borders. Depth is communicated through **content hierarchy and typography weight**, not visual layering.
-
-## 7. Do's and Don'ts
+## Do's and Don'ts
 
 ### Do
-- Use pure white (`#ffffff`) as the page background — never off-white or cream
-- Use pill-shaped (9999px) radius on all interactive elements — buttons, tabs, inputs, tags
-- Use 12px radius on all non-interactive containers — code blocks, cards, panels
-- Keep the palette strictly grayscale — no chromatic colors except the blue focus ring
-- Use SF Pro Rounded at weight 500 for display headings — the rounded terminals are the brand expression
-- Maintain zero shadows — depth comes from borders and background shifts only
-- Keep content density low — each section should present one clear idea
-- Use monospace for terminal commands and code — it's primary content, not decoration
-- Keep all buttons at 10px 24px padding with pill shape — consistency is absolute
+- Do keep the base neutral: `{colors.ink}` on `{colors.canvas}`, with `{colors.ink-muted}` for secondary text.
+- Do make the primary action a filled `{colors.ink}` pill and darken to `{colors.ink-black}` on hover.
+- Do separate content with 1px `{colors.hairline}` borders and `{colors.code-surface}` fills instead of shadows.
+- Do reserve color for functional metadata (model-size and capability tags).
+- Do show the install command as copyable monospace text.
+- Do render partner logos grayscale at reduced opacity.
 
 ### Don't
-- Don't introduce any chromatic color — no brand blue, no accent green, no warm tones
-- Don't use border-radius between 12px and 9999px — the system is binary
-- Don't add shadows to any element — the flat aesthetic is intentional
-- Don't use font weights above 500 — no bold, no black weight
-- Don't add decorative illustrations beyond the llama mascot
-- Don't use gradients anywhere — flat blocks and borders only
-- Don't overcomplicate the layout — two columns maximum, no complex grids
-- Don't use borders heavier than 1px — containment is always the lightest possible touch
-- Don't add hover animations or transitions — interactions should feel instant and direct
+- Don't add a brand hue or gradient; none was measured.
+- Don't use shadows; none were measured on any page.
+- Don't use weights above 600, and keep headline tracking negative.
+- Don't use square or small-radius buttons; the button radius is the pill.
+- Don't describe the SF Pro Rounded utility as the body face; the dominant family is the system stack.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <640px | Single column, stacked everything, hamburger nav |
-| Small Tablet | 640–768px | Minor adjustments to spacing |
-| Tablet | 768–850px | 2-column layouts begin |
-| Desktop | 850–1024px | Standard layout, expanded features |
-| Large Desktop | 1024–1280px | Maximum content width |
+- **Breakpoints.** The markup uses `sm:`, `md:` and `lg:`. The home headline moves from 20px (`{typography.display-mobile}`) to 22px (`{typography.display}`) at `md`; the paragraph from 18px to 20px.
+- **Header.** Below `lg` the header is `sticky top-0` and the markup includes a full-screen white menu overlay with links at `text-3xl`.
+- **Logo grid.** Three columns on mobile, six from `sm`.
+- **Stats.** Numerals `text-2xl` on mobile, `md:text-3xl` from `md`; captions `text-xs` then `sm:text-sm`.
+- **Library tags.** `text-xs` on mobile, 13px from `sm`.
+- **Footer.** Stacks and centers below `md`; copyright moves below the links on mobile (`order-2`).
+- **Touch targets.** Buttons are 44px tall at every measured size.
 
-### Touch Targets
-- All buttons are pill-shaped with generous padding (10px 24px)
-- Navigation links at comfortable 16px size
-- Minimum touch area easily exceeds 44x44px
+## Iteration Guide
 
-### Collapsing Strategy
-- **Navigation**: Collapses to hamburger menu on mobile
-- **Feature sections**: 2-column → stacked single column
-- **Hero text**: 48px → 36px → 30px progressive scaling
-- **Integration grid**: Multi-column → 2-column → single column
-- **Code blocks**: Horizontal scroll maintained
-
-### Image Behavior
-- Llama mascot scales proportionally
-- Code blocks maintain monospace formatting
-- Integration icons reflow to fewer columns
-- No art direction changes
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary Text: "Pure Black (#000000)"
-- Page Background: "Pure White (#ffffff)"
-- Secondary Text: "Stone (#737373)"
-- Button Background: "Light Gray (#e5e5e5)"
-- Borders: "Light Gray (#e5e5e5)"
-- Muted Text: "Silver (#a3a3a3)"
-- Dark Text: "Near Black (#262626)"
-- Subtle Surface: "Snow (#fafafa)"
-
-### Example Component Prompts
-- "Create a hero section on pure white (#ffffff) with an illustration centered above a headline at 48px SF Pro Rounded weight 500, line-height 1.0. Use Pure Black (#000000) text. Below, add a black pill-shaped CTA button (9999px radius, 10px 24px padding) and a gray pill button."
-- "Design a code block with a 12px border-radius, 1px solid Light Gray (#e5e5e5) border on white background. Use ui-monospace at 16px for the terminal command. No shadow."
-- "Build a tab bar with pill-shaped tabs (9999px radius). Active tab: Light Gray (#e5e5e5) background, Near Black (#262626) text. Inactive: transparent background, Stone (#737373) text."
-- "Create an integration card grid. Each card is a bordered pill (9999px radius) or a 12px-radius card with 1px solid #e5e5e5 border. Icon + name inside. Grid of 4 columns on desktop."
-- "Design a navigation bar: transparent background, no border. Ollama logo on the left, 3 text links (Pure Black, 16px, weight 400), pill search input in the center, 'Sign in' text link and black pill 'Download' button on the right."
-
-### Iteration Guide
-1. Focus on ONE component at a time
-2. Keep all values grayscale — "Stone (#737373)" not "use a light color"
-3. Always specify pill (9999px) or container (12px) radius — nothing in between
-4. Shadows are always zero — never add them
-5. Weight is always 400 or 500 — never bold
-6. If something feels too decorated, remove it — less is always more for Ollama
+1. Begin with `{colors.canvas}` and `{colors.ink}`; add `{colors.ink-muted}` for captions.
+2. Build the action as `{components.button-primary}` (or `{components.button-pricing}` inside cards); hover to `{colors.ink-black}`.
+3. Titles: `{typography.display}` for the home headline; larger page titles use `{typography.display-pricing}`, `{typography.display-download}` or `{typography.heading-library}`.
+4. Cards: `{components.pricing-card}`; no shadows.
+5. Tags only for model metadata, using `{components.model-tag}` and `{components.model-tag-indigo}`.
+6. Verify: pill radius on buttons, 16px on cards, 6px on tags, no shadows, no extra hues.
+7. Voice: plain declarative sentences ("Your prompts are never stored or trained on."), numbers with plus signs, dollar prices stated directly, no exclamation marks.

@@ -27,7 +27,7 @@
   .clock{margin-inline-start:auto;font-family:var(--font-mono);font-size:var(--text-2xl);letter-spacing:.04em;
     color:var(--trm-accent);font-variant-numeric:tabular-nums}
   .chip{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
-    border-radius:var(--radius-pill);border:1px solid var(--lin-hairline);font-size:var(--text-xs);
+    border-radius:var(--radius-full);border:1px solid var(--lin-hairline);font-size:var(--text-xs);
     font-family:var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--lin-ink-2)}
   /* A chip that takes you to what it reports. The console put a status in the
      top bar and drew it as a span, so on a phone there was nothing to act on
@@ -37,7 +37,7 @@
   a.chip:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
   :target{scroll-margin-block-start:var(--space-6)}
   .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
-  .c-ok{--dot:var(--trm-accent)} .c-warn{--dot:var(--color-feedback-warning)} .c-bad{--dot:var(--color-text-error)}
+  .c-ok{--dot:var(--trm-accent)} .c-warn{--dot:var(--color-feedback-warning-icon)} .c-bad{--dot:var(--color-feedback-error-text)}
 
   /* Mobile first: the base IS the phone layout. This was a 12-column grid
      stepped down by two max-width queries, so stripping the queries left a
@@ -63,8 +63,8 @@
   .trk polyline{fill:none;stroke-width:1.75;stroke-linecap:round}
   .trk.a polyline{stroke:var(--trm-accent)}
   .trk.b polyline{stroke:var(--lin-accent)}
-  .gs circle{fill:var(--color-feedback-warning)}
-  .gs .halo{fill:none;stroke:var(--color-feedback-warning);stroke-width:1;opacity:.45}
+  .gs circle{fill:var(--color-feedback-warning-icon)}
+  .gs .halo{fill:none;stroke:var(--color-feedback-warning-icon);stroke-width:1;opacity:.45}
   .gs text{fill:var(--lin-ink-3);font-size:9px;font-family:var(--font-mono);letter-spacing:.06em} /* ds-allow-hardcode: SVG label sizing is geometry, scaled by the viewBox */
   .sat{fill:var(--lin-ink)}
   @media (prefers-reduced-motion:no-preference){
@@ -86,7 +86,7 @@
     border:1px solid var(--lin-hairline-soft);overflow:hidden}
   .pass{position:absolute;inset-block:2px;inset-inline-start:var(--l);inline-size:var(--w); /* ds-allow-hardcode: the inset is the lane gutter that keeps a bar off its track edge - below the 4px spacing step on purpose */
     border-radius:var(--radius-sm);background:var(--trm-accent);opacity:.85}
-  .pass.warn{background:var(--color-feedback-warning)}
+  .pass.warn{background:var(--color-feedback-warning-icon)}
   /* five nowrap labels in a row have a min-content width of their own; on a
      phone they wrap instead of pushing the panel past the viewport */
   .ruler{display:flex;justify-content:space-between;gap:var(--space-2);flex-wrap:wrap;
@@ -107,7 +107,7 @@
     padding-block-end:var(--space-3);border-block-end:1px solid var(--lin-hairline-soft)}
   .alarms li:last-child{border-block-end:0;padding-block-end:0}
   .alarms .pip{display:grid;place-items:center;inline-size:1.5rem;block-size:1.5rem;border-radius:var(--radius-full);
-    background:var(--lin-raised);color:var(--color-feedback-warning)}
+    background:var(--lin-raised);color:var(--color-feedback-warning-icon)}
   .alarms .pip .ico{inline-size:.75rem;block-size:.75rem}
   .alarms p{overflow-wrap:anywhere}
   .alarms time{display:block;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);
@@ -216,7 +216,7 @@
       <div class="row"><p class="top"><span>Payload temp</span><span class="v num">-18.4 C</span></p>
         <svg viewBox="0 0 200 26" role="img" aria-label="Payload temperature oscillating within limits"><polyline fill="none" stroke="var(--lin-accent)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="0.0,22.2 5.1,22.5 10.3,22.6 15.4,23.3 20.5,23.9 25.6,23.6 30.8,23.4 35.9,22.7 41.0,22.7 46.2,20.7 51.3,20.0 56.4,20.9 61.5,19.6 66.7,18.8 71.8,17.8 76.9,17.2 82.1,17.0 87.2,14.9 92.3,15.4 97.4,13.0 102.6,12.6 107.7,13.4 112.8,11.5 117.9,11.3 123.1,11.0 128.2,10.8 133.3,11.0 138.5,10.9 143.6,11.9 148.7,11.9 153.8,12.4 159.0,11.5 164.1,13.9 169.2,13.3 174.4,14.4 179.5,14.4 184.6,16.7 189.7,17.7 194.9,17.1 200.0,17.7"/></svg></div>
       <div class="row"><p class="top"><span>Downlink margin</span><span class="v num">4.2 dB</span></p>
-        <svg viewBox="0 0 200 26" role="img" aria-label="Downlink margin falling as the pass reaches its horizon"><polyline fill="none" stroke="var(--color-feedback-warning)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="0.0,21.2 5.1,20.6 10.3,20.1 15.4,16.5 20.5,14.2 25.6,12.6 30.8,13.0 35.9,12.3 41.0,10.4 46.2,9.1 51.3,8.6 56.4,8.8 61.5,7.0 66.7,5.7 71.8,6.1 76.9,6.4 82.1,5.5 87.2,6.8 92.3,8.7 97.4,8.0 102.6,10.1 107.7,11.7 112.8,12.5 117.9,12.8 123.1,13.7 128.2,18.2 133.3,19.0 138.5,21.3 143.6,21.7 148.7,22.5 153.8,19.7 159.0,19.2 164.1,16.7 169.2,14.5 174.4,13.5 179.5,13.0 184.6,11.2 189.7,10.0 194.9,9.7 200.0,7.5"/></svg></div>
+        <svg viewBox="0 0 200 26" role="img" aria-label="Downlink margin falling as the pass reaches its horizon"><polyline fill="none" stroke="var(--color-feedback-warning-icon)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" points="0.0,21.2 5.1,20.6 10.3,20.1 15.4,16.5 20.5,14.2 25.6,12.6 30.8,13.0 35.9,12.3 41.0,10.4 46.2,9.1 51.3,8.6 56.4,8.8 61.5,7.0 66.7,5.7 71.8,6.1 76.9,6.4 82.1,5.5 87.2,6.8 92.3,8.7 97.4,8.0 102.6,10.1 107.7,11.7 112.8,12.5 117.9,12.8 123.1,13.7 128.2,18.2 133.3,19.0 138.5,21.3 143.6,21.7 148.7,22.5 153.8,19.7 159.0,19.2 164.1,16.7 169.2,14.5 174.4,13.5 179.5,13.0 184.6,11.2 189.7,10.0 194.9,9.7 200.0,7.5"/></svg></div>
     </div>
   </section>
 

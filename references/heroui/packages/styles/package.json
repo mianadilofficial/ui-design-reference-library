@@ -1,6 +1,6 @@
 {
   "name": "@heroui/styles",
-  "version": "3.2.6",
+  "version": "3.2.7",
   "description": "HeroUI core styles and Tailwind plugin",
   "author": "HeroUI <support@heroui.com>",
   "homepage": "https://heroui.com",
@@ -9,7 +9,7 @@
     "url": "https://github.com/heroui-inc/heroui.git",
     "directory": "packages/styles"
   },
-  "license": "MIT",
+  "license": "Apache-2.0",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

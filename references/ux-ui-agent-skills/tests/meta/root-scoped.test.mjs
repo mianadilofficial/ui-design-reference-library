@@ -3,7 +3,7 @@
  *
  * A gate pointed only at its own repo can be shown passing and never shown
  * refusing, which makes it a claim rather than a check. `--root` points each one
- * at a copy, so the refusal is demonstrable — and these tests are the
+ * at a copy, so the refusal is demonstrable, and these tests are the
  * demonstration.
  */
 import { test } from 'node:test';
@@ -60,6 +60,61 @@ test('validate_instruction_surface refuses SKILL.md frontmatter a YAML loader re
     assert.match(r.stdout, /frontmatter: .*data-dashboard/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('validate_instruction_surface refuses a skill that names a kit file by a repo-root path', () => {
+  // On a plugin install the kit is not the cwd, so `.claude/rules/x.md` or
+  // `tokens/` opens nothing. Measured on 2026-10-20: design-tokens opened none
+  // of the 15 files its steps name (#9). Each form is put back on its own.
+  const forms = [
+    ['design-tokens', '`${CLAUDE_SKILL_DIR}/../../../.claude/rules/tokens-and-color.md`', '`.claude/rules/tokens-and-color.md`'],
+    ['design-tokens', '`${CLAUDE_SKILL_DIR}/../../../tokens/`', '`tokens/`'],
+    ['redesign', '`${CLAUDE_SKILL_DIR}/../../../frameworks/`', '`frameworks/`'],
+    ['a11y-audit', '`python3 ${CLAUDE_SKILL_DIR}/../../../scripts/contrast.py', '`python3 scripts/contrast.py'],
+  ];
+  for (const [name, good, bad] of forms) {
+    const dir = mkdtempSync(join(tmpdir(), 'ds-root-'));
+    try {
+      for (const p of ['CLAUDE.md', '.claude', '.claude-plugin', 'package.json']) {
+        cpSync(join(ROOT, p), join(dir, p), { recursive: true });
+      }
+      const skill = join(dir, `.claude/skills/${name}/SKILL.md`);
+      const src = readFileSync(skill, 'utf8');
+      assert.ok(src.includes(good), `setup: ${name} no longer contains ${good}`);
+      writeFileSync(skill, src.replace(good, bad));
+      const r = py('validate_instruction_surface.py', ['--root', dir]);
+      assert.equal(r.status, 1, `${name} with ${bad} was accepted:\n${r.stdout}${r.stderr}`);
+      assert.match(r.stdout, new RegExp(`plugin path: .*${name}`));
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  }
+});
+
+test('validate_instruction_surface refuses a skill that runs a browser gate bare', () => {
+  // Run bare on a machine with no browser, a gate prints SKIPPED and exits 0,
+  // and an agent reading the exit code takes it as a pass (#10).
+  const forms = [
+    ['a11y-audit', 'node ${CLAUDE_SKILL_DIR}/../../../scripts/gate.mjs measure_render.mjs', 'node ${CLAUDE_SKILL_DIR}/../../../scripts/measure_render.mjs'],
+    ['critique', 'DS_REQUIRE_BROWSER=1 node $KIT/scripts/slop_tells.mjs', 'node $KIT/scripts/slop_tells.mjs'],
+  ];
+  for (const [name, good, bad] of forms) {
+    const dir = mkdtempSync(join(tmpdir(), 'ds-root-'));
+    try {
+      for (const p of ['CLAUDE.md', '.claude', '.claude-plugin', 'package.json', 'scripts']) {
+        cpSync(join(ROOT, p), join(dir, p), { recursive: true });
+      }
+      const skill = join(dir, `.claude/skills/${name}/SKILL.md`);
+      const src = readFileSync(skill, 'utf8');
+      assert.ok(src.includes(good), `setup: ${name} no longer contains ${good}`);
+      writeFileSync(skill, src.replace(good, bad));
+      const r = py('validate_instruction_surface.py', ['--root', dir]);
+      assert.equal(r.status, 1, `${name} with a bare gate was accepted:\n${r.stdout}${r.stderr}`);
+      assert.match(r.stdout, new RegExp(`browser gate: .*${name}`));
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   }
 });
 

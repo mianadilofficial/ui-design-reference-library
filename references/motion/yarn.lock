@@ -2255,65 +2255,65 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@next/env@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/env@npm:15.5.27"
-  checksum: 2fe6c066c98a1b6940f98f245c088a8102191f1bb6bce6b20085f43e11af08847f58dd7416c29685427bd948a2dcfc9216dc0ce4fb3d988a7782fdf85b9cb0d6
+"@next/env@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/env@npm:15.5.28"
+  checksum: e6ab19d58195775295bb39b2a193f370a455a3d0a43017dd9b99712d61885f2363ac5b627245e25c59405afa9dee462156d8fd175b634f433501d91193ae978c
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-arm64@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-darwin-arm64@npm:15.5.27"
+"@next/swc-darwin-arm64@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-darwin-arm64@npm:15.5.28"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-darwin-x64@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-darwin-x64@npm:15.5.27"
+"@next/swc-darwin-x64@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-darwin-x64@npm:15.5.28"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-gnu@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-linux-arm64-gnu@npm:15.5.27"
+"@next/swc-linux-arm64-gnu@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-linux-arm64-gnu@npm:15.5.28"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-arm64-musl@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-linux-arm64-musl@npm:15.5.27"
+"@next/swc-linux-arm64-musl@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-linux-arm64-musl@npm:15.5.28"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-gnu@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-linux-x64-gnu@npm:15.5.27"
+"@next/swc-linux-x64-gnu@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-linux-x64-gnu@npm:15.5.28"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@next/swc-linux-x64-musl@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-linux-x64-musl@npm:15.5.27"
+"@next/swc-linux-x64-musl@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-linux-x64-musl@npm:15.5.28"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@next/swc-win32-arm64-msvc@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-win32-arm64-msvc@npm:15.5.27"
+"@next/swc-win32-arm64-msvc@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-win32-arm64-msvc@npm:15.5.28"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@next/swc-win32-x64-msvc@npm:15.5.27":
-  version: 15.5.27
-  resolution: "@next/swc-win32-x64-msvc@npm:15.5.27"
+"@next/swc-win32-x64-msvc@npm:15.5.28":
+  version: 15.5.28
+  resolution: "@next/swc-win32-x64-msvc@npm:15.5.28"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -2886,6 +2886,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: bad2ba4f206e6255263582bedfb7868773c400836f9a1b423c0b464ffe4a17e13d3f306d1ce19cf7a19a492e9d0e49747464f2656451bb7c6a99f5a57bd34de2
+  languageName: node
+  linkType: hard
+
+"@remix-run/component@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@remix-run/component@npm:1.1.0"
+  dependencies:
+    "@types/dom-navigation": ^1.0.7
+  checksum: 1f5d875154dace5cf3d32e5685b3c88a3e7d59aece4e41e952d6d08fb3e937e8cee997cf91559823a17ac9f2048ff864f169e0639a4c0fe1d4ffc029ffc912b8
   languageName: node
   linkType: hard
 
@@ -3717,6 +3726,13 @@ __metadata:
   dependencies:
     "@babel/types": ^7.20.7
   checksum: 2a2e5ad29c34a8b776162b0fe81c9ccb6459b2b46bf230f756ba0276a0258fcae1cbcfdccbb93a1e8b1df44f4939784ee8a1a269f95afe0c78b24b9cb6d50dd1
+  languageName: node
+  linkType: hard
+
+"@types/dom-navigation@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "@types/dom-navigation@npm:1.0.7"
+  checksum: 96e630423a16143e50faf71a7a93f1d660fb743a30fbb093b567a1c2deafe54254c88f95b5498904fc2225c7ab625d1fedd2481d65f65212d6e8f0c6e620b24f
   languageName: node
   linkType: hard
 
@@ -6896,17 +6912,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"framer-motion@14.6.0, framer-motion@workspace:packages/framer-motion":
+"framer-motion@14.9.0, framer-motion@workspace:packages/framer-motion":
   version: 0.0.0-use.local
   resolution: "framer-motion@workspace:packages/framer-motion"
   dependencies:
     "@radix-ui/react-dialog": ^1.1.15
+    "@remix-run/component": 1.1.0
     "@thednp/dommatrix": ^2.0.11
     "@types/three": 0.137.0
     concurrently: ^7.3.0
     jest: ^29.7.0
-    motion-dom: 14.6.0
-    motion-utils: 14.6.0
+    motion-dom: 14.9.0
+    motion-utils: 14.7.0
     rollup: 4.59.0
     three: 0.137.0
     tslib: ^2.4.0
@@ -6914,10 +6931,13 @@ __metadata:
   peerDependencies:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
+    remix: ^3.1.0
   peerDependenciesMeta:
     react:
       optional: true
     react-dom:
+      optional: true
+    remix:
       optional: true
   languageName: unknown
   linkType: soft
@@ -7544,9 +7564,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "html-env@workspace:dev/html"
   dependencies:
-    framer-motion: 14.6.0
-    motion: 14.6.0
-    motion-dom: 14.6.0
+    framer-motion: 14.9.0
+    motion: 14.9.0
+    motion-dom: 14.9.0
     react: ^18.3.1
     react-dom: ^18.3.1
     three: ^0.185.1
@@ -9929,13 +9949,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"motion-dom@14.6.0, motion-dom@workspace:packages/motion-dom":
+"motion-dom@14.9.0, motion-dom@workspace:packages/motion-dom":
   version: 0.0.0-use.local
   resolution: "motion-dom@workspace:packages/motion-dom"
   dependencies:
     concurrently: ^7.3.0
     jest: ^29.7.0
-    motion-utils: 14.6.0
+    motion-utils: 14.7.0
     rollup: 4.59.0
     typescript: 5.4.3
   languageName: unknown
@@ -9993,7 +10013,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"motion-utils@14.6.0, motion-utils@workspace:packages/motion-utils":
+"motion-utils@14.7.0, motion-utils@workspace:packages/motion-utils":
   version: 0.0.0-use.local
   resolution: "motion-utils@workspace:packages/motion-utils"
   dependencies:
@@ -10004,12 +10024,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"motion@14.6.0, motion@workspace:packages/motion":
+"motion@14.9.0, motion@workspace:packages/motion":
   version: 0.0.0-use.local
   resolution: "motion@workspace:packages/motion"
   dependencies:
+    "@remix-run/component": 1.1.0
     concurrently: ^7.3.0
-    framer-motion: 14.6.0
+    framer-motion: 14.9.0
     jest: ^29.7.0
     rollup: 4.59.0
     tslib: ^2.4.0
@@ -10017,10 +10038,13 @@ __metadata:
   peerDependencies:
     react: ^18.0.0 || ^19.0.0
     react-dom: ^18.0.0 || ^19.0.0
+    remix: ^3.1.0
   peerDependenciesMeta:
     react:
       optional: true
     react-dom:
+      optional: true
+    remix:
       optional: true
   languageName: unknown
   linkType: soft
@@ -10107,30 +10131,30 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "next-env@workspace:dev/next"
   dependencies:
-    motion: 14.6.0
-    next: 15.5.27
+    motion: 14.9.0
+    next: 15.5.28
     react: 19.0.0
     react-dom: 19.0.0
   languageName: unknown
   linkType: soft
 
-"next@npm:15.5.27":
-  version: 15.5.27
-  resolution: "next@npm:15.5.27"
+"next@npm:15.5.28":
+  version: 15.5.28
+  resolution: "next@npm:15.5.28"
   dependencies:
-    "@next/env": 15.5.27
-    "@next/swc-darwin-arm64": 15.5.27
-    "@next/swc-darwin-x64": 15.5.27
-    "@next/swc-linux-arm64-gnu": 15.5.27
-    "@next/swc-linux-arm64-musl": 15.5.27
-    "@next/swc-linux-x64-gnu": 15.5.27
-    "@next/swc-linux-x64-musl": 15.5.27
-    "@next/swc-win32-arm64-msvc": 15.5.27
-    "@next/swc-win32-x64-msvc": 15.5.27
+    "@next/env": 15.5.28
+    "@next/swc-darwin-arm64": 15.5.28
+    "@next/swc-darwin-x64": 15.5.28
+    "@next/swc-linux-arm64-gnu": 15.5.28
+    "@next/swc-linux-arm64-musl": 15.5.28
+    "@next/swc-linux-x64-gnu": 15.5.28
+    "@next/swc-linux-x64-musl": 15.5.28
+    "@next/swc-win32-arm64-msvc": 15.5.28
+    "@next/swc-win32-x64-msvc": 15.5.28
     "@swc/helpers": 0.5.15
     caniuse-lite: ^1.0.30001579
     postcss: 8.4.31
-    sharp: ^0.34.3 || ^0.35.4
+    sharp: ^0.34.3 || ^0.35.5
     styled-jsx: 5.1.6
   peerDependencies:
     "@opentelemetry/api": ^1.1.0
@@ -10169,7 +10193,7 @@ __metadata:
       optional: true
   bin:
     next: dist/bin/next
-  checksum: 79334f6fb2d3f7512919f7dd087453b74debd116ba343a5c2b7dca13673f180439623b404f6210b1ca75dec4df68cbe231f03a377cdbd9ce3864af3302fee423
+  checksum: de5053e364634b92a441a9e4c577b63b1304bd3e80f64e3db7d75e7351e5d2d190f01c5281affb3248a8851237b5690693046f39489fd1c0b6f39f302e6511b5
   languageName: node
   linkType: hard
 
@@ -11403,7 +11427,7 @@ __metadata:
     "@types/react": ^19.0.0
     "@types/react-dom": ^19.0.0
     "@vitejs/plugin-react-swc": ^3.5.0
-    motion: 14.6.0
+    motion: 14.9.0
     react: ^19.3.0
     react-dom: ^19.3.0
     vite: ^6.4.2
@@ -11486,8 +11510,8 @@ __metadata:
     "@types/react": ^18.2.66
     "@types/react-dom": ^18.2.22
     "@vitejs/plugin-react-swc": ^3.5.0
-    framer-motion: 14.6.0
-    motion: 14.6.0
+    framer-motion: 14.9.0
+    motion: 14.9.0
     react: ^18.3.1
     react-dom: ^18.3.1
     vite: ^6.4.2
@@ -11808,6 +11832,16 @@ __metadata:
   checksum: 18cb667e56cb328d2dda569d7f04e3ea78f2683135b866d606538cf7b1d4271f7f749f09608c877527799e6cf350e531368f3c7a20ccd1bb41048a48926bdeeb
   languageName: node
   linkType: hard
+
+"remix-env@workspace:dev/remix":
+  version: 0.0.0-use.local
+  resolution: "remix-env@workspace:dev/remix"
+  dependencies:
+    "@remix-run/component": 1.1.0
+    motion: 14.9.0
+    vite: ^6.4.2
+  languageName: unknown
+  linkType: soft
 
 "request-progress@npm:^3.0.0":
   version: 3.0.0
@@ -12472,7 +12506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sharp@npm:^0.34.3 || ^0.35.4":
+"sharp@npm:^0.34.3 || ^0.35.5":
   version: 0.35.5
   resolution: "sharp@npm:0.35.5"
   dependencies:
@@ -14144,8 +14178,8 @@ __metadata:
   linkType: hard
 
 "vite@npm:^6.4.2":
-  version: 6.4.4
-  resolution: "vite@npm:6.4.4"
+  version: 6.4.5
+  resolution: "vite@npm:6.4.5"
   dependencies:
     esbuild: ^0.25.0
     fdir: ^6.4.4
@@ -14194,7 +14228,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 1b14d9f99e925bb77dddc2ad6586060bf93aea67f827cf8859bcd9cb75ca030beaaf9311dc8dce2ec0b8b9150c3bea28ce177af34732ed639ccd52388ffb7afa
+  checksum: 3bdbf216cd6eddce130e5f8aada0f7c44c2bd5143c4f626a2e3fef67fc779393cd5e11fca1f3b46a7b743b2ed910d6faa952f2c76f675ee698c45edb43ab255f
   languageName: node
   linkType: hard
 
@@ -14706,8 +14740,8 @@ __metadata:
   linkType: hard
 
 "zod@npm:^4.2.0, zod@npm:^4.4.3":
-  version: 4.5.4
-  resolution: "zod@npm:4.5.4"
-  checksum: cc9cb1892c3e79b2cc6af4ea0ff44a544895b3793db09055bdeb21e5ac41a48137f02a0a07828c7d50d71c55d9e376b137df710ca5c7631eb9a4e96c40e2af68
+  version: 4.6.7
+  resolution: "zod@npm:4.6.7"
+  checksum: 6801f5067dd43204d5ed2b4f2f0d09f891365ecfdd385877901e42f6f6ebf67e8943b385c71eaba53081029dd21f4740f16c91497a06f95195e209bffef92056
   languageName: node
   linkType: hard

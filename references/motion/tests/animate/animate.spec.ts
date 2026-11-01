@@ -540,6 +540,68 @@ test.describe("animate() options", () => {
         }
     })
 
+    test("SVG path d is written as an attribute", async ({ page }) => {
+        await waitForAnimation("animate/animate-svg-path-d.html", page, 1000)
+
+        for (const id of ["single", "sequence", "css"]) {
+            const path = page.locator(`#${id}`)
+
+            const { d, styleD, width } = await path.evaluate((element) => ({
+                d: element.getAttribute("d")!,
+                styleD: element.style.getPropertyValue("d"),
+                width: (element as SVGPathElement).getBBox().width,
+            }))
+
+            // The third point travels from (90, 90) to (10, 90)
+            const x = parseFloat(d.split(/[ML Z]+/).filter(Boolean)[4])
+            expect(styleD).toBe("")
+            expect(d.startsWith("M")).toBe(true)
+            expect(width).toBeGreaterThan(0)
+            expect(x).toBeLessThan(90)
+            expect(x).toBeGreaterThan(10)
+        }
+    })
+
+    test("transition.mixer mixes values the default mixer can't", async ({
+        page,
+    }) => {
+        await waitForAnimation("animate/animate-mixer.html", page, 1000)
+
+        for (const id of ["single", "sequence"]) {
+            const d = await page.locator(`#${id}`).getAttribute("d")
+
+            // The square's last corner travels from (90, 90) to (10, 90)
+            const x = parseFloat(d!.split(/[ML Z]+/).filter(Boolean)[6])
+            expect(x).toBeLessThan(90)
+            expect(x).toBeGreaterThan(10)
+        }
+
+        // A mixer can't run on WAAPI, so filter animates on the main thread
+        const filter = await page.locator("#filter").evaluate((element) => ({
+            animations: element.getAnimations().length,
+            filter: getComputedStyle(element).filter,
+        }))
+        expect(filter.animations).toBe(0)
+        expect(filter.filter).toBe("blur(5px)")
+
+        // Numbers blend as usual, so opacity runs on WAAPI without the mixer
+        const opacity = await page
+            .locator("#opacity")
+            .evaluate((element) => element.getAnimations().length)
+        expect(opacity).toBe(1)
+        expect(await page.evaluate(() => (window as any).opacityMixed)).toBe(
+            false
+        )
+
+        // A mixer that declines a color only the browser can blend leaves it to WAAPI
+        const oklch = await page.locator("#oklch").evaluate((element) => ({
+            animations: element.getAnimations().length,
+            color: getComputedStyle(element).backgroundColor,
+        }))
+        expect(oklch.animations).toBe(1)
+        expect(oklch.color).not.toBe("oklch(0.7 0.1 200)")
+    })
+
     test("spring velocity", async ({ page }) => {
         await waitForAnimation("animate/animate-spring-velocity.html", page)
         const box = page.locator(".box")
@@ -548,8 +610,8 @@ test.describe("animate() options", () => {
     })
 })
 
-test.describe("animate() color acceleration", () => {
-    test("backgroundColor runs as an accelerated WAAPI animation", async ({
+test.describe("animate() backgroundColor", () => {
+    test("backgroundColor runs as a JS animation, not WAAPI", async ({
         page,
     }) => {
         await waitForAnimation(
@@ -560,12 +622,14 @@ test.describe("animate() color acceleration", () => {
 
         const box = page.locator("#color")
 
-        // backgroundColor is now in the accelerated set, so it should be
-        // driven by a WAAPI animation rather than the per-frame JS path.
+        // backgroundColor isn't accelerated: WAAPI mixes colors in sRGB but
+        // Motion's JS (including its interrupt sampling) mixes in linear
+        // space, so an interrupted WAAPI color jumped. It runs on the
+        // per-frame JS path instead.
         const animationCount = await box.evaluate(
             (el) => el.getAnimations().length
         )
-        expect(animationCount).toBeGreaterThan(0)
+        expect(animationCount).toBe(0)
 
         // Mid-animation (500ms into a 10s linear red -> blue tween) the colour
         // must be strictly between the endpoints: red fading down, blue rising.

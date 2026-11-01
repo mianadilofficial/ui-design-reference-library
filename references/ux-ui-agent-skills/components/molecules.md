@@ -22,8 +22,8 @@ A complete form input unit: label + input + help text + error message.
 ```
 
 **Layout:**
-- Stack: vertical (default) — label on top
-- Inline: horizontal — label left, input right (forms with short labels)
+- Stack: vertical (default), label on top
+- Inline: horizontal, label left, input right (forms with short labels)
 - Label-input gap: `spacing.stack.xs` (4px)
 - Input-help gap: `spacing.stack.xs` (4px)
 - Field-to-field gap: `spacing.stack.lg` (16px)
@@ -217,7 +217,7 @@ A contextual message communicating feedback, status, or important information.
 - Inline informational alerts: no ARIA role needed (static content)
 - Dismiss button: `aria-label="Dismiss alert"`
 - Icon: `aria-hidden="true"` (role is communicated by color/text, not icon alone)
-- Never rely solely on color — icon + text + border all convey the variant
+- Never rely solely on color: icon + text + border all convey the variant
 
 ---
 

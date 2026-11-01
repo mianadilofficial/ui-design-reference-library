@@ -14,9 +14,9 @@ built the output, and whether they could see the kit's internals while doing it.
 | 2026-09-15 | `data-density` | **BLIND** subagent, scaffolded project | **14/14** first submission | 5/5 by hand | First blind run on this brief. Clean first pass; keyboard sort verified to actually reorder |
 | 2026-09-15 | `notification-center` | **BLIND** subagent, scaffolded project | **14/14** first submission | 5/5 by hand | First blind run on this brief. Needed a `5xl` type step the seeded scale lacked |
 
-| 2026-10-08 | `first-run-empty` | **BLIND**, **plugin route**, `claude -p` in an empty dir | **14/14**, files unedited — but see below: 13/14 on first scoring, and the one failure was the gate's | not scored | First blind run through the plugin route at all. Ten files, no kit files in the project. |
+| 2026-10-08 | `first-run-empty` | **BLIND**, **plugin route**, `claude -p` in an empty dir | **14/14**, files unedited, but see below: 13/14 on first scoring, and the one failure was the gate's | not scored | First blind run through the plugin route at all. Ten files, no kit files in the project. |
 
-## 2026-10-08 — first-run-empty, through the plugin route
+## 2026-10-08: first-run-empty, through the plugin route
 
 **The route the README recommends first had never been tested blind.** Every
 previous blind run came from a project scaffolded with `npx ux-ui-agent-skills
@@ -87,7 +87,7 @@ plugin route had never had.
 
 ---
 
-## 2026-08-25 — billing-settings
+## 2026-08-25: billing-settings
 
 **Provenance, stated plainly.** This output was written inside the session that
 built the kit, not by a blind cold-start agent. It is therefore the weaker of the
@@ -100,16 +100,16 @@ a gate being fussy:
 
 | Gate | What was actually wrong |
 |---|---|
-| No hardcoded values | `1ms` in the reduced-motion reset. The reset *is* the near-zero duration, so it cannot come from a motion token — it needed the documented `ds-allow-hardcode` exception, on the offending line. |
+| No hardcoded values | `1ms` in the reduced-motion reset. The reset *is* the near-zero duration, so it cannot come from a motion token; it needed the documented `ds-allow-hardcode` exception, on the offending line. |
 | REAL-render WCAG | A "Current plan" pill used `--color-surface-brand` (a tinted surface) behind `--color-text-on-action` (white): **1.15:1**. A white pill needs an action background, not a surface. |
 | axe | Same pill, reported as a serious colour-contrast violation. Two gates, one bug. |
 | Responsive 280/320/414 | The billing table's scroller sat in an implicit `auto` grid column, which grows to its content's max-content and takes the page with it. `grid-template-columns: minmax(0,1fr)` pins it. |
-| Responsive @1.25x | Two separate causes: `.sr-only` spans (see below), then an email address — one unbreakable token — widening a card until `overflow-wrap: anywhere` let it break. |
+| Responsive @1.25x | Two separate causes: `.sr-only` spans (see below), then an email address (one unbreakable token) widening a card until `overflow-wrap: anywhere` let it break. |
 
 **The finding worth keeping.** An absolutely positioned `.sr-only` span with no
 positioned ancestor resolves against the *initial containing block*. Inside a
 horizontally scrolled table it therefore lands outside the viewport and inflates
-`document.documentElement.scrollWidth` — the page reports an overflow of hundreds
+`document.documentElement.scrollWidth`: the page reports an overflow of hundreds
 of pixels while every visible element is inside the viewport and nothing looks
 wrong in a screenshot. Give the span a positioned ancestor (`td`, `th`, the button)
 and it stays put. This is now in `.claude/rules/components.md`.
@@ -132,7 +132,7 @@ repo reaches for `action.danger` on its own, remembers the confirm dialog at all
 and writes an empty state that says something useful rather than "No data".
 
 
-## 2026-08-25 — the other three briefs
+## 2026-08-25: the other three briefs
 
 Same provenance caveat as above, and it matters more here: by the time these were
 written the five traps from `billing-settings` were known, so `first-run-empty`
@@ -144,7 +144,7 @@ The two that did fail failed on the *same* pair, which makes it a system finding
 rather than two mistakes:
 
 **`--color-text-secondary` on `--color-surface-raised` is 4.24:1 in the dark theme
-of `examples/brandkit-demo/theme.css`** — the theme every component harness and every
+of `examples/brandkit-demo/theme.css`**, the theme every component harness and every
 eval output links to. It hit twice: the sortable column labels sitting on a raised
 table header (`data-density`), then the metadata inside a raised "unread" row
 (`notification-center`). Secondary text on a raised surface is one of the most common
@@ -170,12 +170,12 @@ Four briefs, four 13/13 results, one contaminated author. The honest reading:
   real defects (nine across the four runs), and do not fire falsely on correct code.
   The suite is usable.
 - **Not proven:** that the kit transfers. Every one of these was written by someone
-  who had just read the rules. A blind cold-start run — fresh session, brief pasted
-  verbatim, no coaching — is still the only thing that answers the question the suite
+  who had just read the rules. A blind cold-start run (fresh session, brief pasted
+  verbatim, no coaching) is still the only thing that answers the question the suite
   was built for.
 
 
-## 2026-08-25 (later) — the gate that came out of the critique
+## 2026-08-25 (later): the gate that came out of the critique
 
 `/critique` reviewed the kit's own `examples/` and its Critical finding was a header
 in `data-table.html` that declared `aria-sort="ascending"`, drew a chevron, lit up on
@@ -186,7 +186,7 @@ the state it advertises ever changes.
 `scripts/verify_interactive.mjs` now checks exactly that, and it is gate 37 in the
 kit and gate 14 in this suite. Signal [A] fails a control that declares `aria-sort`,
 `aria-pressed`, `aria-expanded`, `aria-checked`, `aria-selected`, or a state-bearing
-role, and changes nothing on a real click — no attribute anywhere, no DOM mutation,
+role, and changes nothing on a real click: no attribute anywhere, no DOM mutation,
 no focus landing elsewhere. Signal [B] reports an inert plain button as advisory,
 because a states harness legitimately ships static demo buttons. `data-demo-state`
 opts a deliberate state *rendering* out, and has to be written by hand so the
@@ -194,17 +194,17 @@ exemption is a claim on the record.
 
 What it found on its first run:
 
-- `data-table.html` — the critique's Critical finding, now wired to really sort.
-- `datepicker.html` — a day drawn as selected that never moved when clicked. Now
+- `data-table.html`: the critique's Critical finding, now wired to really sort.
+- `datepicker.html`: a day drawn as selected that never moved when clicked. Now
   selects on click and on Enter/Space.
-- `button.html`, `card.html` — genuine state renderings, marked `data-demo-state`.
-- **`evals/out/data-density/index.html` — my own fixture, written hours after reading
+- `button.html`, `card.html`: genuine state renderings, marked `data-demo-state`.
+- **`evals/out/data-density/index.html`: my own fixture, written hours after reading
   the critique that named this exact bug.** The affordance got written, the behaviour
   did not. That is the most useful result in this file: the gate caught the author who
   already knew about the failure mode, which is precisely what a gate is for.
 
 
-## 2026-08-25 (evening) — the blind runs, and what they cost the kit
+## 2026-08-25 (evening): the blind runs, and what they cost the kit
 
 Two subagents, each given a scaffolded project (`ux-ui-skills new`, which installs
 the kit and ships **no example screens**), the brief verbatim, and nothing else. No
@@ -212,7 +212,7 @@ design hints, no trap warnings, no mention that anything would be scored. Neithe
 could see the conversation that built the kit; both met `CLAUDE.md` and
 `.claude/rules/` the way a new user's agent does.
 
-**Both scored 14/14 on an independent run of `evals/run.mjs`** — scored by this
+**Both scored 14/14 on an independent run of `evals/run.mjs`**, scored by this
 session, not by the agents' own claims. That is the transfer result the suite was
 built for, and it is the first evidence in this file that is not a memory result.
 
@@ -247,7 +247,7 @@ linking a finished demo theme instead of starting from the template.
   screenshot; neither has been through `/critique`.
 
 
-## 2026-08-26 — `/critique` on the blind outputs: **rework**
+## 2026-08-26: `/critique` on the blind outputs, **rework**
 
 The two blind screens pass all fourteen gates. A critic that rendered them, clicked
 through them, and tried to reject them came back with `rework` and eight findings,
@@ -284,7 +284,7 @@ opening that file - because nothing pointed there until someone asked for a revi
 A rule that only loads during a review is a rule that arrives after the work.
 
 
-## 2026-09-15 — two blind runs, the briefs that had never had one
+## 2026-09-15: two blind runs, the briefs that had never had one
 
 Until today the four briefs had six runs between them and only **two** were
 blind, both on 2026-08-25 and both on the same two briefs. `data-density` and

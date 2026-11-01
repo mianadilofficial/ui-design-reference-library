@@ -6,17 +6,17 @@
     "sans": {
       "$type": "fontFamily",
       "$value": ["Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
-      "$description": "Primary — UI text, body copy"
+      "$description": "Primary: UI text, body copy"
     },
     "serif": {
       "$type": "fontFamily",
       "$value": ["Lora", "Georgia", "Cambria", "Times New Roman", "serif"],
-      "$description": "Editorial — long-form content, marketing"
+      "$description": "Editorial: long-form content, marketing"
     },
     "mono": {
       "$type": "fontFamily",
       "$value": ["JetBrains Mono", "Fira Code", "SF Mono", "Consolas", "Liberation Mono", "Menlo", "monospace"],
-      "$description": "Code — snippets, data, technical values"
+      "$description": "Code: snippets, data, technical values"
     }
   },
 
@@ -61,7 +61,7 @@
   },
 
   "textStyle": {
-    "$description": "Composite text styles — use these in components",
+    "$description": "Composite text styles. Use these in components",
 
     "heading-1": {
       "$type": "typography",
@@ -72,7 +72,7 @@
         "lineHeight": "{lineHeight.none}",
         "letterSpacing": "{letterSpacing.tighter}"
       },
-      "$description": "Page titles — 48px/1/bold"
+      "$description": "Page titles: 48px/1/bold"
     },
     "heading-2": {
       "$type": "typography",
@@ -83,7 +83,7 @@
         "lineHeight": "{lineHeight.tight}",
         "letterSpacing": "{letterSpacing.tight}"
       },
-      "$description": "Section titles — 36px/1.25/bold"
+      "$description": "Section titles: 36px/1.25/bold"
     },
     "heading-3": {
       "$type": "typography",
@@ -94,7 +94,7 @@
         "lineHeight": "{lineHeight.tight}",
         "letterSpacing": "{letterSpacing.tight}"
       },
-      "$description": "Sub-sections — 30px/1.25/semibold"
+      "$description": "Sub-sections: 30px/1.25/semibold"
     },
     "heading-4": {
       "$type": "typography",
@@ -105,7 +105,7 @@
         "lineHeight": "{lineHeight.snug}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Card titles — 24px/1.375/semibold"
+      "$description": "Card titles: 24px/1.375/semibold"
     },
     "heading-5": {
       "$type": "typography",
@@ -116,7 +116,7 @@
         "lineHeight": "{lineHeight.snug}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Widget titles — 20px/1.375/semibold"
+      "$description": "Widget titles: 20px/1.375/semibold"
     },
     "heading-6": {
       "$type": "typography",
@@ -127,7 +127,7 @@
         "lineHeight": "{lineHeight.snug}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Smallest heading — 18px/1.375/semibold"
+      "$description": "Smallest heading: 18px/1.375/semibold"
     },
     "body-lg": {
       "$type": "typography",
@@ -138,7 +138,7 @@
         "lineHeight": "{lineHeight.relaxed}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Lead paragraphs — 18px/1.625/regular"
+      "$description": "Lead paragraphs: 18px/1.625/regular"
     },
     "body-base": {
       "$type": "typography",
@@ -149,7 +149,7 @@
         "lineHeight": "{lineHeight.normal}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Default body text — 16px/1.5/regular"
+      "$description": "Default body text: 16px/1.5/regular"
     },
     "body-sm": {
       "$type": "typography",
@@ -160,7 +160,7 @@
         "lineHeight": "{lineHeight.normal}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Secondary body text — 14px/1.5/regular"
+      "$description": "Secondary body text: 14px/1.5/regular"
     },
     "caption": {
       "$type": "typography",
@@ -171,7 +171,7 @@
         "lineHeight": "{lineHeight.normal}",
         "letterSpacing": "{letterSpacing.wide}"
       },
-      "$description": "Captions, timestamps — 12px/1.5/regular"
+      "$description": "Captions, timestamps: 12px/1.5/regular"
     },
     "label": {
       "$type": "typography",
@@ -182,7 +182,7 @@
         "lineHeight": "{lineHeight.normal}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Form labels, table headers — 14px/1.5/medium"
+      "$description": "Form labels, table headers: 14px/1.5/medium"
     },
     "overline": {
       "$type": "typography",
@@ -193,7 +193,7 @@
         "lineHeight": "{lineHeight.normal}",
         "letterSpacing": "{letterSpacing.widest}"
       },
-      "$description": "Category labels, all-caps — 12px/1.5/semibold/0.1em"
+      "$description": "Category labels, all-caps: 12px/1.5/semibold/0.1em"
     },
     "code": {
       "$type": "typography",
@@ -204,7 +204,7 @@
         "lineHeight": "{lineHeight.relaxed}",
         "letterSpacing": "{letterSpacing.normal}"
       },
-      "$description": "Inline and block code — 14px/1.625/regular"
+      "$description": "Inline and block code: 14px/1.625/regular"
     }
   }
 }

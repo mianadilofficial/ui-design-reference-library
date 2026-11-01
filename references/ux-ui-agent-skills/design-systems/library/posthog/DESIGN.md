@@ -1,259 +1,282 @@
-# Design System Inspired by PostHog
+---
+version: alpha
+name: PostHog
+category: "Backend, Database & DevOps"
+description: 'PostHog.com as measured: an operating-system-style desktop of translucent windows over a grass wallpaper, set in the RoundHog typeface (500 body, 800 headlines at 36px), on a sage cream #eeefe9 canvas with #fdfdf8 cards, amber #cd8407 call-to-action buttons with a 1px #b17816 border and 8px radius, and the brand red-orange #f54e00 reserved for active tabs and frames.'
 
-> Category: Backend & Data
-> Product analytics. Playful hedgehog branding, developer-friendly dark UI.
+colors:
+  canvas: "#eeefe9"
+  page-largest: "#ffffff"
+  ink: "#374151"
+  primary: "#cd8407"
+  primary-border: "#b17816"
+  primary-soft: "#eb9d2a"
+  on-primary: "#111111"
+  brand-red: "#f54e00"
+  on-brand-red: "#ffffff"
+  brand-yellow: "#dc9300"
+  brand-blue: "#1d4aff"
+  surface-accent: "#e5e7e0"
+  surface-card: "#fdfdf8"
+  ink-muted: "#65675e"
+  ink-strong: "#111111"
+  ink-link: "#111827"
+  ink-black: "#000000"
+  hairline: "#bfc1b7"
+  accent-blue: "#2f80fa"
+  accent-blue-bg: "#2f80fa1a"
+typography:
+  display:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 36px
+    fontWeight: 800
+    lineHeight: 40px
+    letterSpacing: "-0.9px"
+  display-mobile:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 30px
+    fontWeight: 800
+    lineHeight: 36px
+    letterSpacing: "-0.75px"
+  heading:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 24px
+    fontWeight: 700
+    lineHeight: 32px
+    letterSpacing: "-0.6px"
+  subheading:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 18px
+    fontWeight: 700
+    lineHeight: 28px
+  body:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 18px
+    fontWeight: 500
+    lineHeight: 27px
+  button:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 20px
+  nav:
+    fontFamily: RoundHog, sans-serif
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 24px
+rounded:
+  xs: 2px
+  sm: 4px
+  md: 6px
+  lg: 8px
+  xl: 20px
+  pill: 9999px
+spacing:
+  s1: 1px
+  s2: 2px
+  s3: 4px
+  s4: 4.39px
+  s5: 5.26px
+  s6: 6px
+  s7: 6.22px
+  s8: 7.89px
+  s9: 8px
+  s10: 10px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.lg}"
+    height: 47px
+    borderColor: "{colors.primary-border}"
+  button-primary-soft:
+    backgroundColor: "{colors.primary-soft}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.lg}"
+  tab-orange:
+    backgroundColor: "{colors.brand-red}"
+    textColor: "{colors.on-brand-red}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"
+    padding: 10px 12px
+    height: 40px
+  tab-blue:
+    backgroundColor: "{colors.accent-blue}"
+    textColor: "{colors.on-brand-red}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"
+    height: 40px
+  link:
+    textColor: "{colors.ink-link}"
+    typography: "{typography.button}"
+  nav:
+    textColor: "{colors.ink-black}"
+    padding: 66px 4px 0px
+  nav-link:
+    textColor: "{colors.page-largest}"
+    typography: "{typography.nav}"
+  card:
+    backgroundColor: "{colors.surface-card}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.md}"
+    borderColor: "{colors.hairline}"
+    boxShadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.25) 0px 25px 50px -12px
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-PostHog's website feels like a startup's internal wiki that escaped into the wild — warm, irreverent, and deliberately anti-corporate. The background isn't the expected crisp white or dark void of developer tools; it's a warm, sage-tinted cream (`#fdfdf8`) that gives every surface a handmade, paper-like quality. Colors lean into earthy olive greens and muted sage rather than the conventional blues and purples of the SaaS world. It's as if someone designed a developer analytics platform inside a cozy garden shed.
+This file describes the PostHog home page (`https://posthog.com`, titled "PostHog - your product's context layer") as captured and measured at 1280px and 390px. Values come from the live page; brand statements come from PostHog's own handbook pages cited in `SOURCES.json` and in the architecture section.
 
-The personality is the star: hand-drawn hedgehog illustrations, quirky action figures, and playful imagery replace the stock photography and abstract gradients typical of B2B SaaS. IBM Plex Sans Variable serves as the typographic foundation — a font with genuine technical credibility (created by IBM, widely used in developer contexts) deployed here with bold weights (700, 800) on headings and generous line-heights on body text. The typography says "we're serious engineers" while everything around it says "but we don't take ourselves too seriously."
+The site is built like an operating system, and the capture shows it. A grass-green photographic wallpaper fills the viewport. A thin menu bar runs along the top (logo, Products, Pricing, Docs, Community, Company, More, an amber "Get started - free" button and three small icons). Desktop icons stand in two columns on the left (Home, Self-driving product, Context warehouse, Pricing, Docs, Demo, Talk to a human) and the right (About us, Changelog, Company handbook, Store, Careers, Trash). In the center, a translucent window holds the page: the PostHog logo, a headline "Your product's context layer" with the last two words highlighted in blue, a card titled "Set up PostHog for free" with two buttons, a tabbed product panel, a "Social proof" section with two logo grids, and further text sections. A cookie notice at the bottom right is a window with a cartoon illustration and the headline "Legally-required cookie banner".
 
-The interaction design carries the same spirit: hover states flash PostHog Orange (`#F54E00`) text — a hidden brand color that doesn't appear at rest but surprises on interaction. Dark near-black buttons (`#1e1f23`) use opacity reduction on hover rather than color shifts, and active states scale slightly. The border system uses sage-tinted grays (`#bfc1b7`) that harmonize with the olive text palette. Built on Tailwind CSS with Radix UI and shadcn/ui primitives, the technical foundation is modern and component-driven, but the visual output is stubbornly unique.
+**Key Characteristics**
+- A warm, sage-tinted neutral set: `{colors.canvas}` (`#eeefe9`), `{colors.surface-accent}` (`#e5e7e0`), `{colors.surface-card}` (`#fdfdf8`), with olive-grey text.
+- One proprietary typeface, RoundHog, in weights 500 (body), 600 (buttons), 700 (headings) and 800 (the hero headline).
+- Amber buttons with a darker 1px border and 8px radius as the visible call to action.
+- The brand red-orange `{colors.brand-red}` (`#f54e00`) is used sparingly (a frame, a tab fill, a pagination color).
+- Playful, irreverent microcopy and illustration (a cartoon in the cookie window, "Talk to a human" and "Trash" icons).
+- Layered window chrome: translucent fills (`#e5e7e0bf`), hairlines and heavy soft shadows.
 
-**Key Characteristics:**
-- Warm sage/olive color palette instead of conventional blues — earthy and approachable
-- IBM Plex Sans Variable font at bold weights (700/800) for headings with generous 1.50+ line-heights
-- Hidden brand orange (`#F54E00`) that only appears on hover interactions — a delightful surprise
-- Hand-drawn hedgehog illustrations and playful imagery — deliberately anti-corporate
-- Sage-tinted borders (`#bfc1b7`) and backgrounds (`#eeefe9`) creating a unified warm-green system
-- Dark near-black CTAs (`#1e1f23`) with opacity-based hover states
-- Content-heavy editorial layout — the site reads like a magazine, not a typical landing page
-- Tailwind CSS + Radix UI + shadcn/ui component architecture
+## Colors
 
-## 2. Color Palette & Roles
+### Official palette (PostHog brand assets page)
+The handbook page https://posthog.com/handbook/brand/assets lists these colors; the ones used here are noted:
+- Background, light mode `#EEEFE9` (the page's measured canvas); accent, light mode `#E5E7E0` (measured as a surface); dashed divider `#D0D1C9`; text color `#151515` at 90% opacity; gray `#BFBFBC`.
+- Red `#F54E00` (`{colors.brand-red}`), yellow for light mode `#DC9300` (`{colors.brand-yellow}`) and blue `#1D4AFF` (`{colors.brand-blue}`). These three are published values; on the captured page the red appears as measured, but the published yellow and blue were not observed on the page, so they are cited tokens only. The page's own amber `#cd8407` and blue `#2f80fa` are different values.
+- Dark-mode values (background `#151515`, accent `#2C2C2C`, yellow `#F1A82C`) are published but not captured and not tokenized.
+- The visual-identity page (https://posthog.com/handbook/brand/visual-identity) says the palette is deliberately limited, that color guides attention instead of decorating, that there are no gradient backgrounds by default, and that red `#F54E00` is a brand color only, not to be used for warnings.
 
-### Primary
-- **Olive Ink** (`#4d4f46`): Primary text color — a distinctive olive-gray that gives all text a warm, earthy tone
-- **Deep Olive** (`#23251d`): Link text and high-emphasis headings — near-black with green undertone
-- **PostHog Orange** (`#F54E00`): Hidden brand accent — appears only on hover states, a vibrant orange that surprises
+### Measured on the page
+- **Primary (amber)** (`{colors.primary}`, `#cd8407`): fill of the "Get started" and "Get started - free" buttons, with border `{colors.primary-border}` (`#b17816`) on the first, 18px/500 `{colors.on-primary}` (`#111111`) text and an 8px radius. This is why the extractor's first candidate was overridden (see below).
+- **Primary soft** (`{colors.primary-soft}`, `#eb9d2a`): fill of "Install with AI" and "Open Customers" buttons (extractor candidates 2 and 5).
+- **Brand red-orange** (`{colors.brand-red}`, `#f54e00`): measured as the fill of the tab "Give agents product context" (6px 6px 0 0 radius, white text `{colors.on-brand-red}`), and appears in the root variables as `--squeak-button-color: 245,78,0` and `--swiper-pagination-color`. In the capture it also reads as the thick frame around the product panel.
+- **Accent blue** (`{colors.accent-blue}`, `#2f80fa`): measured as the fill of the mobile tab "Ship with PostHog" (white text), as the text color of the highlighted words "context layer" and "working together" in the capture (34 characters carry it), and, at 10% alpha (`{colors.accent-blue-bg}`, `#2f80fa1a`), as the highlight behind them. The capture's desktop tab strip shows "Ship with PostHog" in this blue; the extractor measured "Give agents product context" as the orange tab. Why the two measurements differ (the panel may rotate through tabs) was not investigated.
 
-### Secondary & Accent
-- **Amber Gold** (`#F7A501`): Secondary hover accent on dark buttons — warm gold that pairs with the orange
-- **Gold Border** (`#b17816`): Special button borders — an amber-gold for featured CTAs
-- **Focus Blue** (`#3b82f6`): Focus ring color (Tailwind default) — the only blue in the system, reserved for accessibility
+### Text
+- **Ink** (`{colors.ink}`, `#374151`): the most-read text color (2236 characters).
+- **Ink muted** (`{colors.ink-muted}`, `#65675e`): 546 characters; the extractor's body-text sample.
+- **Ink strong** (`{colors.ink-strong}`, `#111111`), **ink link** (`{colors.ink-link}`, `#111827`, color of h1 and h2) and **ink black** (`{colors.ink-black}`, `#000000`, navigation).
+- White (`{colors.page-largest}`, `#ffffff`) on colored fills; `#23251d` on the "Get started - free" button.
 
-### Surface & Background
-- **Warm Parchment** (`#fdfdf8`): Primary page background — warm near-white with yellow-green undertone
-- **Sage Cream** (`#eeefe9`): Input backgrounds, secondary surfaces — light sage tint
-- **Light Sage** (`#e5e7e0`): Button backgrounds, tertiary surfaces — muted sage-green
-- **Warm Tan** (`#d4c9b8`): Featured button backgrounds — warm tan/khaki for emphasis
-- **Hover White** (`#f4f4f4`): Universal hover background state
+### Surfaces
+- **Canvas** (`{colors.canvas}`, `#eeefe9`): the body background; translucent `#e5e7e0bf` (weight 2252) is the largest measured area, which in the capture is the window panel.
+- **Surface accent** (`{colors.surface-accent}`, `#e5e7e0`), **surface card** (`{colors.surface-card}`, `#fdfdf8`) and white `#ffffff`.
+- **Hairline** (`{colors.hairline}`, `#bfc1b7`): the most common border color (34 elements).
 
-### Neutrals & Text
-- **Olive Ink** (`#4d4f46`): Primary body and UI text
-- **Muted Olive** (`#65675e`): Secondary text, button labels on light backgrounds
-- **Sage Placeholder** (`#9ea096`): Placeholder text, disabled states — warm sage-green
-- **Sage Border** (`#bfc1b7`): Primary border color — olive-tinted gray for all borders
-- **Light Border** (`#b6b7af`): Secondary border, toolbar borders — slightly darker sage
+## Typography
 
-### Semantic & Accent
-- **PostHog Orange** (`#F54E00`): Hover text accent — signals interactivity and brand personality
-- **Amber Gold** (`#F7A501`): Dark button hover accent — warmth signal
-- **Focus Blue** (`#3b82f6` at 50% opacity): Keyboard focus rings — accessibility-only color
-- **Dark Text** (`#111827`): High-contrast link text — near-black for important links
+### Font family
+**RoundHog** carries 4073 characters; **Source Code Pro** (56) is used for code. Loaded faces: RoundHog 400, 500, 500 italic, 700, 700 italic and 800; Source Code Pro 400. The brand-identity page describes RoundHog as the primary typeface used for all text on posthog.com, with Bold for titles and section headers, Semibold for large-header paragraphs and links, and Regular for body text. It also describes a display face called Squeak (always uppercase, marketing and hedgehog contexts, never body text) and Loud Noises (quotes in hedgehog artwork only). The fonts measured on this page are RoundHog and Source Code Pro only; Squeak and Loud Noises are not among the loaded faces on this capture.
 
-### Gradient System
-- No gradients on the marketing site — PostHog's visual language is deliberately flat and warm
-- Depth is achieved through layered surfaces and border containment, not color transitions
-
-## 3. Typography Rules
-
-### Font Family
-- **Display & Body**: `IBM Plex Sans Variable` — variable font (100–700+ weight range). Fallbacks: `IBM Plex Sans, -apple-system, system-ui, Avenir Next, Avenir, Segoe UI, Helvetica Neue, Helvetica, Ubuntu, Roboto, Noto, Arial`
-- **Monospace**: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New` — system monospace stack
-- **Code Display**: `Source Code Pro` — with fallbacks: `Menlo, Consolas, Monaco`
+### Font substitutes
+The computed stack is `RoundHog, sans-serif`. RoundHog is a PostHog brand typeface; the sources opened do not offer a public download link on the pages read, so use `sans-serif`. No open-source lookalike is claimed.
 
 ### Hierarchy
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | IBM Plex Sans Variable | 30px | 800 | 1.20 | -0.75px | Extra-bold, tight, maximum impact |
-| Section Heading | IBM Plex Sans Variable | 36px | 700 | 1.50 | 0px | Large but generous line-height |
-| Feature Heading | IBM Plex Sans Variable | 24px | 700 | 1.33 | 0px | Feature section titles |
-| Card Heading | IBM Plex Sans Variable | 21.4px | 700 | 1.40 | -0.54px | Slightly unusual size (scaled) |
-| Sub-heading | IBM Plex Sans Variable | 20px | 700 | 1.40 | -0.5px | Content sub-sections |
-| Sub-heading Uppercase | IBM Plex Sans Variable | 20px | 700 | 1.40 | 0px | Uppercase transform for labels |
-| Body Emphasis | IBM Plex Sans Variable | 19.3px | 600 | 1.56 | -0.48px | Semi-bold callout text |
-| Label Uppercase | IBM Plex Sans Variable | 18px | 700 | 1.50 | 0px | Uppercase category labels |
-| Body Semi | IBM Plex Sans Variable | 18px | 600 | 1.56 | 0px | Semi-bold body text |
-| Body | IBM Plex Sans Variable | 16px | 400 | 1.50 | 0px | Standard reading text |
-| Body Medium | IBM Plex Sans Variable | 16px | 500 | 1.50 | 0px | Medium-weight body |
-| Body Relaxed | IBM Plex Sans Variable | 15px | 400 | 1.71 | 0px | Relaxed line-height for long reads |
-| Nav / UI | IBM Plex Sans Variable | 15px | 600 | 1.50 | 0px | Navigation and UI labels |
-| Caption | IBM Plex Sans Variable | 14px | 400–700 | 1.43 | 0px | Small text, various weights |
-| Small Label | IBM Plex Sans Variable | 13px | 500–700 | 1.00–1.50 | 0px | Tags, badges, micro labels |
-| Micro | IBM Plex Sans Variable | 12px | 400–700 | 1.33 | 0px | Smallest text, some uppercase |
-| Code | Source Code Pro | 14px | 500 | 1.43 | 0px | Code snippets and terminal |
+| Token | Size | Weight | Line height | Tracking | Where measured |
+|---|---|---|---|---|---|
+| `{typography.display}` | 36px | 800 | 40px | -0.9px | h1 "Your product's context layer" |
+| `{typography.display-mobile}` | 30px | 800 | 36px | -0.75px | h1 at 390px |
+| `{typography.heading}` | 24px | 700 | 32px | -0.6px | h2 |
+| `{typography.subheading}` | 18px | 700 | 28px | normal | h3 "Set up PostHog for free" |
+| `{typography.body}` | 18px | 500 | 27px | normal | paragraphs and the amber buttons |
+| `{typography.button}` | 14px | 600 | 20px | normal | tabs, links |
+| `{typography.nav}` | 16px | 500 | 24px | normal | menu bar |
 
-### Principles
-- **Bold heading dominance**: Headings use 700–800 weight — PostHog's typography is confident and assertive, not whispery
-- **Generous body line-heights**: Body text at 1.50–1.71 line-height creates extremely comfortable reading — the site is content-heavy and optimized for long sessions
-- **Fractional sizes**: Several sizes (21.4px, 19.3px, 13.7px) suggest a fluid/scaled type system rather than fixed stops — likely computed from Tailwind's rem scale at non-standard base
-- **Uppercase as category signal**: Bold uppercase labels (18px–20px weight 700) are used for product category headings — a magazine-editorial convention
-- **Selective negative tracking**: Letter-spacing tightens on display text (-0.75px at 30px) but relaxes to 0px on body — headlines compress, body breathes
+Other measured sizes: 14px (1096 chars), 15px (255), 13px (248), 12px (180), 17px (121), 30px (101), 12.2784px (86), 16px (23), 20px (6). Weights: 500 (2669 chars), 600 (897), 700 (387), 400 (149), 800 (27). Negative tracking appears only on 24, 30 and 36px headings.
 
-## 4. Component Stylings
+### Principles seen on the page
+- Headings are heavy and slightly tracked in; body is medium weight at a generous 18px/27px.
+- Highlighted words are marked with a tinted background and a colored text, not with bold.
+- Desktop icon labels are small and set in light text over the wallpaper.
 
-### Buttons
-- **Dark Primary**: `#1e1f23` background, white text, 6px radius, `10px 12px` padding. Hover: opacity 0.7 with Amber Gold text. Active: opacity 0.8 with slight scale transform. The main CTA — dark and confident
-- **Sage Light**: `#e5e7e0` background, Olive Ink (`#4d4f46`) text, 4px radius, `4px` padding. Hover: `#f4f4f4` bg with PostHog Orange text. Compact utility button
-- **Warm Tan Featured**: `#d4c9b8` background, black text, no visible radius. Hover: same orange text flash. Featured/premium actions
-- **Input-style**: `#eeefe9` background, Sage Placeholder (`#9ea096`) text, 4px radius, 1px `#b6b7af` border. Looks like a search/filter control
-- **Near-white Ghost**: `#fdfdf8` background, Olive Ink text, 4px radius, transparent 1px border. Minimal presence
-- **Hover pattern**: All buttons flash PostHog Orange (`#F54E00`) or Amber Gold (`#F7A501`) text on hover — the brand's signature interaction surprise
+## Layout
 
-### Cards & Containers
-- **Bordered Card**: Warm Parchment (`#fdfdf8`) or white background, 1px `#bfc1b7` border, 4px–6px radius — clean and minimal
-- **Sage Surface Card**: `#eeefe9` background for secondary content containers
-- **Shadow Card**: `0px 25px 50px -12px rgba(0, 0, 0, 0.25)` — a single deep shadow for elevated content (modals, dropdowns)
-- **Hover**: Orange text flash on interactive cards — consistent with button behavior
+- **Desktop shell**: menu bar across the top, icon columns left and right, and a central window about 760px wide in the 960px-wide capture, with a close/maximize control at its top right. The page content scrolls inside the window (measured inner scroll height 4751px against a 2400px capture).
+- **Hero**: logo, then a two-column area: headline and paragraph on the left, "Set up PostHog for free" card on the right with a checklist ("97% of users pay us $0", "No credit card required", "Setup wizard installs PostHog for you") and two buttons.
+- **Tab strip**: three tabs ("Ask PostHog anything", "Give agents product context", "Ship with PostHog") above a framed product panel.
+- **Social proof**: two side-by-side logo grids labeled "Colorful logos" and "Sleek logos" with a circular toggle between them.
+- **Spacing**: gaps of 6px (80 uses), 4px (46), 2px (20), 8px (16); paddings of 8px (104), 6px (29), 2px (28), 4px (20). Fractional values such as 5.26px and 4.39px also appear.
+- **Mobile**: nav height 486px at 390px, hero h1 342px wide.
 
-### Inputs & Forms
-- **Default**: `#eeefe9` background, `#9ea096` placeholder text, 1px `#b6b7af` border, 4px radius, `2px 0px 2px 8px` padding
-- **Focus**: `#3b82f6` ring at 50% opacity (Tailwind blue focus ring)
-- **Text color**: `#374151` for input values — darker than primary text for readability
-- **Border variations**: Multiple border patterns — some inputs use compound borders (top, left, bottom-only)
+## Elevation & Depth
 
-### Navigation
-- **Top nav**: Warm background, IBM Plex Sans at 15px weight 600
-- **Dropdown menus**: Rich mega-menu structure with product categories
-- **Link color**: Deep Olive (`#23251d`) for nav links, underline on hover
-- **CTA**: Dark Primary button (#1e1f23) in the nav — "Get started - free"
-- **Mobile**: Collapses to hamburger with simplified menu
-
-### Image Treatment
-- **Hand-drawn illustrations**: Hedgehog mascot and quirky illustrations — the signature visual element
-- **Product screenshots**: UI screenshots embedded in device frames or clean containers
-- **Action figures**: Playful product photography of hedgehog figurines — anti-corporate
-- **Trust logos**: Enterprise logos (Airbus, GOV.UK) displayed in a muted trust bar
-- **Aspect ratios**: Mixed — illustrations are irregular, screenshots are 16:9 or widescreen
-
-### AI Chat Widget
-- Floating PostHog AI assistant with speech bubble — an interactive product demo embedded in the marketing site
-
-## 5. Layout Principles
-
-### Spacing System
-- **Base unit**: 8px
-- **Scale**: 2px, 4px, 6px, 8px, 10px, 12px, 16px, 18px, 24px, 32px, 34px
-- **Section padding**: 32px–48px vertical between sections (compact for a content-heavy site)
-- **Card padding**: 4px–12px internal (notably compact)
-- **Component gaps**: 4px–8px between related elements
-
-### Grid & Container
-- **Max width**: 1536px (largest breakpoint), with content containers likely 1200px–1280px
-- **Column patterns**: Varied — single column for text content, 2-3 column grids for feature cards, asymmetric layouts for product demos
-- **Breakpoints**: 13 defined — 1px, 425px, 482px, 640px, 768px, 767px, 800px, 900px, 1024px, 1076px, 1160px, 1280px, 1536px
-
-### Whitespace Philosophy
-- **Content-dense by design**: PostHog's site is information-rich — whitespace is measured, not lavish
-- **Editorial pacing**: Content sections flow like a magazine with varied layouts keeping the eye moving
-- **Illustrations as breathing room**: Hand-drawn hedgehog art breaks up dense content sections naturally
-
-### Border Radius Scale
-- **2px**: Small inline elements, tags (`span`)
-- **4px**: Primary UI components — buttons, inputs, dropdowns, menu items (`button`, `div`, `combobox`)
-- **6px**: Secondary containers — larger buttons, list items, card variants (`button`, `div`, `li`)
-- **9999px**: Pill shape — badges, status indicators, rounded tags (`span`, `div`)
-
-## 6. Depth & Elevation
+Measured shadows: `rgba(0,0,0,0.25) 0 25px 50px -12px` (3 elements, the large window and card shadow), `rgba(0,0,0,0.1) 0 4px 6px -1px, rgba(0,0,0,0.1) 0 2px 4px -2px` (1), `rgba(255,255,255,0.4) 0 0 6px 2px` (1) and a heavier `rgba(14,18,22,0.35) 0 10px 38px -10px` family for a popover. Layering also comes from translucent fills (`#e5e7e0bf`, `#e5e7e033`, `#fdfdf880`) letting the wallpaper show through.
 
 | Level | Treatment | Use |
-|-------|-----------|-----|
-| Level 0 (Flat) | No shadow, warm parchment background | Page canvas, most surfaces |
-| Level 1 (Border) | `1px solid #bfc1b7` (Sage Border) | Card containment, input borders, section dividers |
-| Level 2 (Compound Border) | Multiple 1px borders on different sides | Input groupings, toolbar elements |
-| Level 3 (Deep Shadow) | `0px 25px 50px -12px rgba(0, 0, 0, 0.25)` | Modals, floating elements, mega-menu dropdowns |
+|---|---|---|
+| 0 | flat fill with hairline | cards |
+| 1 | `0 4px 6px -1px / 0 2px 4px -2px` | small controls |
+| 2 | `0 25px 50px -12px rgba(0,0,0,.25)` | windows, set-up card |
+| 3 | `0 10px 38px -10px rgba(14,18,22,.35)` | popovers |
 
-### Shadow Philosophy
-PostHog's elevation system is remarkably minimal — only one shadow definition exists in the entire system. Depth is communicated through:
-- **Border containment**: Sage-tinted borders (`#bfc1b7`) at 1px create gentle warm separation
-- **Surface color shifts**: Moving from `#fdfdf8` to `#eeefe9` to `#e5e7e0` creates layered depth without shadows
-- **The single shadow**: The one defined shadow (`0 25px 50px -12px`) is reserved for floating elements — modals, dropdowns, popovers. It's a deep, dramatic shadow that creates clear separation when needed
+## Shapes
 
-### Decorative Depth
-- **Illustration layering**: Hand-drawn hedgehog art creates visual depth naturally
-- **No gradients or glow**: The flat, warm surface system relies entirely on border and surface-color differentiation
-- **No glassmorphism**: Fully opaque surfaces throughout
+Measured radii: 4px (39 elements), 6px (18), 2px (13), 9999px (13), 8px (6), `6px 6px 0 0` (3, tabs), 20px (2) and a few single-corner values.
 
-## 7. Do's and Don'ts
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.xs}` | 2px | small chips |
+| `{rounded.sm}` | 4px | most common |
+| `{rounded.md}` | 6px | cards, tabs, "Get started - free" |
+| `{rounded.lg}` | 8px | amber buttons |
+| `{rounded.xl}` | 20px | large panels |
+| `{rounded.pill}` | 9999px | round icon buttons |
 
-### Do
-- Use the olive/sage color family (#4d4f46, #23251d, #bfc1b7) for text and borders — the warm green undertone is essential to the brand
-- Flash PostHog Orange (#F54E00) on hover states — it's the hidden brand signature
-- Use IBM Plex Sans at bold weights (700/800) for headings — the font carries technical credibility
-- Keep body text at generous line-heights (1.50–1.71) — the content-heavy site demands readability
-- Maintain the warm parchment background (#fdfdf8) — not pure white, never cold
-- Use 4px border-radius for most UI elements — keep corners subtle and functional
-- Include playful, hand-drawn illustration elements — the personality is the differentiator
-- Apply opacity-based hover states (0.7 opacity) on dark buttons rather than color shifts
+## Components
 
-### Don't
-- Use blue, purple, or typical tech-SaaS colors — PostHog's palette is deliberately olive/sage
-- Add heavy shadows — the system uses one shadow for floating elements only; everything else uses borders
-- Make the design look "polished" or "premium" in a conventional sense — PostHog's charm is its irreverent, scrappy energy
-- Use tight line-heights on body text — the generous 1.50+ spacing is essential for the content-heavy layout
-- Apply large border-radius (12px+) on cards — PostHog uses 4px–6px, keeping things tight and functional
-- Remove the orange hover flash — it's a core interaction pattern, not decoration
-- Replace illustrations with stock photography — the hand-drawn hedgehog art is the brand
-- Use pure white (#ffffff) as page background — the warm sage-cream (#fdfdf8) tint is foundational
+### Buttons
+- **`button-primary`**: amber `{colors.primary}`, text `{colors.on-primary}`, 18px/500 (`{typography.body}`), radius `{rounded.lg}`, height 47px, 1px `{colors.primary-border}`. In the capture it has a thicker darker lower edge, which suggests a bottom border or shadow that was not separately measured.
+- **`button-primary-soft`**: `{colors.primary-soft}` fill, same text.
+- Header button "Get started - free": `#cd8407`, text `#23251d`, radius 6px.
+- White outline button "Install with AI" in the capture sits beside the amber one; its measured candidate fill is `#eb9d2a` in the extraction, so how the white fill in the capture relates is not established here.
 
-## 8. Responsive Behavior
+### Tabs
+- **`tab-orange`** (measured): fill `{colors.brand-red}`, white 14px/600 text, `6px 6px 0 0` radius, padding `10px 12px`, 40px tall. **`tab-blue`**: fill `{colors.accent-blue}` as measured on the mobile tab. In the desktop capture the inactive tabs are plain text on the window.
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <425px | Single column, compact padding, stacked cards |
-| Mobile | 425px–640px | Slight layout adjustments, larger touch targets |
-| Tablet | 640px–768px | 2-column grids begin, nav partially visible |
-| Tablet Large | 768px–1024px | Multi-column layouts, expanded navigation |
-| Desktop | 1024px–1280px | Full layout, 3-column feature grids, expanded mega-menu |
-| Large Desktop | 1280px–1536px | Max-width container, generous margins |
-| Extra Large | >1536px | Centered container at max-width |
+### Cards and windows
+- **`card`**: fill `{colors.surface-card}`, radius `{rounded.md}`, 1px `{colors.hairline}`, large soft shadow. Cards in the capture hold product mockups (a ticket list with tags like "fix(auth)") or logo grids.
 
-### Touch Targets
-- Buttons: 4px–6px radius with `4px–12px` padding — compact but usable
-- Nav links: 15px text at weight 600 with adequate padding
-- Mobile: Hamburger menu with simplified navigation
-- Inputs: Generous vertical padding for thumb-friendly forms
+### Navigation
+- **`nav`** (text `{colors.ink-black}`) and **`nav-link`** (white text, 16px/500) are the extractor's records; the menu bar in the capture is dark text on the translucent bar and the desktop icon labels are light text on the wallpaper.
+- **`link`**: `{colors.ink-link}`, 14px/600, underlined with a colored line in the capture.
 
-### Collapsing Strategy
-- **Navigation**: Full mega-menu with dropdowns → hamburger menu on mobile
-- **Feature grids**: 3-column → 2-column → single column stacked
-- **Typography**: Display sizes reduce across breakpoints (30px → smaller)
-- **Illustrations**: Scale within containers, some may hide on mobile for space
-- **Section spacing**: Reduces proportionally while maintaining readability
+## Design System Architecture
 
-### Image Behavior
-- Illustrations scale responsively within containers
-- Product screenshots maintain aspect ratios
-- Trust logos reflow into multi-row grids on mobile
-- AI chat widget may reposition or simplify on small screens
+PostHog documents its brand publicly:
+- **Visual identity**: https://posthog.com/handbook/brand/visual-identity (limited palette, no default gradients, three typefaces, sentence-case headings, left-aligned body text).
+- **Brand assets**: https://posthog.com/handbook/brand/assets (hex values above; the `@posthog/brand` library is named as the single source of truth for the mark, with a `<Logo>` component).
+- **In practice**: https://posthog.com/handbook/brand/in-practice (website as the primary brand expression; product UI prioritizes "Clarity > cleverness"; "Don't use Squeak in product UI"; paragraphs ideally not above five lines).
+- **Website engineering**: https://posthog.com/handbook/engineering/posthog-com/how-posthog-website-works says the site is built with Gatsby.js and an operating-system-like wrapper (`<Wrapper />` rendering a menu bar, desktop background and app windows, with `<ReaderView />`, `<Editor />`, `<Explorer />` and `<Presentation />` apps). The page opened did not specify the CSS system.
 
-## 9. Agent Prompt Guide
+What the page's own CSS shows: Tailwind-style custom properties (`--tw-ring-color`, `--tw-shadow`) in the root variables, Swiper (`--swiper-theme-color`, `--swiper-pagination-color: #f54e00`) and a `--squeak-*` set (`--squeak-button-color: 245,78,0`, `--squeak-primary-color: 0,0,0`), which suggests utility-class styling plus a community widget; this is an inference from variable names.
 
-### Quick Color Reference
-- Primary Text: Olive Ink (`#4d4f46`)
-- Dark Text: Deep Olive (`#23251d`)
-- Hover Accent: PostHog Orange (`#F54E00`)
-- Dark CTA: Near-Black (`#1e1f23`)
-- Button Surface: Light Sage (`#e5e7e0`)
-- Page Background: Warm Parchment (`#fdfdf8`)
-- Border: Sage Border (`#bfc1b7`)
-- Placeholder: Sage Placeholder (`#9ea096`)
+## Do's and Don'ts
 
-### Example Component Prompts
-- "Create a hero section on warm parchment background (#fdfdf8) with 30px IBM Plex Sans heading at weight 800, line-height 1.20, letter-spacing -0.75px, olive ink text (#4d4f46), and a dark CTA button (#1e1f23, 6px radius, white text, opacity 0.7 on hover)"
-- "Design a feature card with #fdfdf8 background, 1px #bfc1b7 border, 4px radius, IBM Plex Sans heading at 20px weight 700, and 16px body text at weight 400 with 1.50 line-height in olive ink (#4d4f46)"
-- "Build a navigation bar with warm background, IBM Plex Sans links at 15px weight 600 in deep olive (#23251d), underline on hover, and a dark CTA button (#1e1f23) at the right"
-- "Create a button group: primary dark (#1e1f23, white text, 6px radius), secondary sage (#e5e7e0, #4d4f46 text, 4px radius), and ghost/text button — all flash #F54E00 orange text on hover"
-- "Design an input field with #eeefe9 background, 1px #b6b7af border, 4px radius, #9ea096 placeholder text, focus ring in #3b82f6 at 50% opacity"
+**Do**
+- Keep the palette small: sage neutrals, one amber action color, the red-orange brand color in small doses.
+- Use RoundHog at 500 for body and 700/800 for headings.
+- Give windows and cards a hairline and a large soft shadow.
+- Use sentence case for headings and left-aligned body text, as the brand pages direct.
+- Keep microcopy plainspoken and a little irreverent, matching the page.
 
-### Iteration Guide
-When refining existing screens generated with this design system:
-1. Verify the background is warm parchment (#fdfdf8) not pure white — the sage-cream warmth is essential
-2. Check that all text uses the olive family (#4d4f46, #23251d) not pure black or neutral gray
-3. Ensure hover states flash PostHog Orange (#F54E00) — if hovering feels bland, you're missing this
-4. Confirm borders use sage-tinted gray (#bfc1b7) not neutral gray — warmth runs through every element
-5. The overall tone should feel like a fun, scrappy startup wiki — never corporate-polished or sterile
+**Don't**
+- Do not use `{colors.brand-red}` for warnings or errors; the visual-identity page reserves it as brand color only.
+- Do not use gradient backgrounds by default (the brand page says none are used by default).
+- Do not set Squeak in product UI or for body text.
+- Do not use hedgehog artwork in marketing without permission; the brand-assets page restricts it.
+
+## Responsive Behavior
+
+Two viewports were measured. At 390px: h1 30px/800 (`{typography.display-mobile}`), h2 24px/700, body 18px/500 in `{colors.ink-muted}`, the tab "Ship with PostHog" 342px wide by 40px tall in `{colors.accent-blue}`, and a 486px-tall navigation list headed by Home, Self-driving product, Context warehouse, Pricing and Docs. How the desktop icon columns and the window collapse at that width is not documented in the sources opened and not described further.
+
+## Iteration Guide
+
+1. Set the canvas to `{colors.canvas}` and put content in `{colors.surface-card}` panels with a hairline and the large soft shadow.
+2. Use amber `{colors.primary}` for the main button, with the darker border, 8px radius and 18px/500 text.
+3. Reserve `{colors.brand-red}` for a frame, an active tab or a small accent.
+4. Highlight key words with `{colors.accent-blue}` text over `{colors.accent-blue-bg}`.
+5. Before adding a color, check it against the brand assets page and measure it on the live page.
+6. Do not introduce gradients or extra typefaces.

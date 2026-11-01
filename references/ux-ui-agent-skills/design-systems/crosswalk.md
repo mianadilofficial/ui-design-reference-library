@@ -21,7 +21,7 @@ Concrete role mappings for the most-requested systems, applying the [Interop Pro
 | `feedback.success` | `tertiary`/custom | systemGreen | `successForeground` | `$support-success` | custom | `green` step `9` |
 | `focus-ring` | `primary` outline | focusRing/keyboard | `strokeFocus` | `$focus` | `--ring` | step `8` (focus) |
 
-> Material 3 conveys hover/press via **state layers** (opacity overlays), not separate hex — map our `-hover`/`-active` tokens to the equivalent state-layer opacity (`tokens/opacity.json`). Radius/elevation differ per system — see below.
+> Material 3 conveys hover/press via **state layers** (opacity overlays), not separate hex. Map our `-hover`/`-active` tokens to the equivalent state-layer opacity (`tokens/opacity.json`). Radius/elevation differ per system; see below.
 
 ---
 
@@ -31,27 +31,27 @@ Concrete role mappings for the most-requested systems, applying the [Interop Pro
 |------|-----------|-----------|----------|--------|-----------|
 | **Base grid** | 4dp | 8pt (4pt half-steps) | 4px | 8px (2x grid) | 4px (Tailwind) |
 | **Type ramp** | Display/Headline/Title/Body/Label | Large Title→Caption (SF) | Display→Caption | Productive/Expressive | Tailwind text-* |
-| **Radius** | xs–xl (`shape`) | continuous-corner, ~`8–14pt` | `borderRadius` 2–8px | `0–8px` (sharp-leaning) | `--radius` (0.5rem default) |
-| **Elevation** | dp tonal + shadow (0–5) | thin shadows / materials | depth 4/8/16/64 | `01–05` boxshadow | `shadow-sm…lg` |
+| **Radius** | xs-xl (`shape`) | continuous-corner, ~`8-14pt` | `borderRadius` 2-8px | `0-8px` (sharp-leaning) | `--radius` (0.5rem default) |
+| **Elevation** | dp tonal + shadow (0-5) | thin shadows / materials | depth 4/8/16/64 | `01-05` boxshadow | `shadow-sm…lg` |
 
 ---
 
 ## Per-system notes
 
 ### Material Design 3 (Google)
-Tokens are role-based and dynamic-color-driven. Map our semantics → MD3 roles above; for **dynamic color**, treat MD3's generated tonal palette as primitives and our semantics as the role layer. Use `tokens/opacity.json` for state layers. Built-in motion → our `tokens/motion.json`. For the **React implementation (MUI)**, theme via `createTheme` — see `frameworks/adapters/mui.md`.
+Tokens are role-based and dynamic-color-driven. Map our semantics → MD3 roles above; for **dynamic color**, treat MD3's generated tonal palette as primitives and our semantics as the role layer. Use `tokens/opacity.json` for state layers. Built-in motion → our `tokens/motion.json`. For the **React implementation (MUI)**, theme via `createTheme` (see `frameworks/adapters/mui.md`).
 
 ### Apple HIG (iOS/macOS)
-No hex token file — uses semantic system colors that adapt to light/dark/accessibility automatically. Map our semantics → system colors; let the OS handle dark mode. See `frameworks/swiftui.md` for the asset-catalog mechanism. Respect Dynamic Type (our type scale → `@ScaledMetric`).
+No hex token file: uses semantic system colors that adapt to light/dark/accessibility automatically. Map our semantics → system colors; let the OS handle dark mode. See `frameworks/swiftui.md` for the asset-catalog mechanism. Respect Dynamic Type (our type scale → `@ScaledMetric`).
 
 ### Fluent 2 (Microsoft)
-Neutral-heavy with `brand` ramp + depth tokens. Map via the table; Fluent's `neutralBackground1..6` ladder → our `surface.*` elevation. Strong high-contrast-mode story — verify against our `accessibility` rules.
+Neutral-heavy with `brand` ramp + depth tokens. Map via the table; Fluent's `neutralBackground1..6` ladder → our `surface.*` elevation. Strong high-contrast-mode story; verify against our `accessibility` rules.
 
 ### Carbon (IBM)
-Sharp, grid-strict, enterprise. 2x grid (8px), restrained radius. Map `$layer`/`$field`/`$border-*` tokens; Carbon's token names are role-based already — near-1:1 with our semantics.
+Sharp, grid-strict, enterprise. 2x grid (8px), restrained radius. Map `$layer`/`$field`/`$border-*` tokens; Carbon's token names are role-based already, near-1:1 with our semantics.
 
 ### shadcn/ui
-Copy-in components using CSS variables (`--primary`, `--background`, …) — the **closest match to our model**. Re-point shadcn's `:root` variables to our token values and components inherit instantly. Built on Radix primitives (behavior + a11y). Best low-friction target for web.
+Copy-in components using CSS variables (`--primary`, `--background`, …): the **closest match to our model**. Re-point shadcn's `:root` variables to our token values and components inherit instantly. Built on Radix primitives (behavior + a11y). Best low-friction target for web.
 
 ### Radix (Primitives + Colors)
 Primitives = unstyled behavior/a11y; Colors = 12-step scales. Map roles to steps (table). Style entirely from our tokens. Ideal headless foundation.
@@ -63,7 +63,7 @@ Theme via their config (`createSystem` / `createTheme`). Both mirror our 3-tier 
 
 ## Extended crosswalks (Ant · Polaris · Primer · Atlassian · Bootstrap)
 
-### Color-role crosswalk — extended
+### Color-role crosswalk (extended)
 
 | Our semantic role | Ant Design 5 | Shopify Polaris | GitHub Primer | Atlassian (ADS) | Bootstrap 5 |
 |-------------------|--------------|-----------------|---------------|-----------------|-------------|
@@ -80,12 +80,12 @@ Theme via their config (`createSystem` / `createTheme`). Both mirror our 3-tier 
 | `feedback.success` | `colorSuccess` | `--p-color-text-success` | `--fgColor-success` / `success.fg` | `color.text.success` | `--bs-success` |
 | `focus-ring` | `colorPrimaryBorder` (+ outline) | `--p-color-border-focus` | `--focus-outlineColor` / `accent.emphasis` | `color.border.focused` | `--bs-focus-ring-color` |
 
-> Bootstrap also exposes `--bs-border-radius`, `--bs-body-font-family`, `$spacer`. Primer ships **both** functional vars (`--fgColor-*`, `--bgColor-*`) and the older `@primer/primitives` scale names (`fg.default`, `accent.emphasis`) — prefer the functional vars.
+> Bootstrap also exposes `--bs-border-radius`, `--bs-body-font-family`, `$spacer`. Primer ships **both** functional vars (`--fgColor-*`, `--bgColor-*`) and the older `@primer/primitives` scale names (`fg.default`, `accent.emphasis`). Prefer the functional vars.
 
 ### Per-system notes
 
-- **Ant Design 5 (`theme.token` + algorithm):** token-based theming via `ConfigProvider theme={{ token, algorithm }}`. Set `colorPrimary`, `borderRadius`, `fontFamily`, `controlHeight` from our tokens; `algorithm: theme.darkAlgorithm` for dark mode (align with `[data-theme]`). Component-level overrides under `theme.components`. Very opinionated motion/shadows — map to our `tokens/motion.json` + `tokens/shadows.json`.
-- **Shopify Polaris (CSS custom properties):** consumes a fixed set of `--p-color-*` / `--p-space-*` / `--p-border-radius-*` design tokens. You theme by re-pointing those vars to our values within an `AppProvider`. Polaris is purpose-built for admin/commerce density — respect its spacing rhythm. Strong a11y baseline; still validate against our checklist.
-- **GitHub Primer (`@primer/primitives`):** ships CSS variables + a React lib. Map roles to the **functional** layer (`--fgColor-*`, `--bgColor-*`, `--borderColor-*`); `data-color-mode="dark"` + `data-dark-theme` drive theming — align with our `[data-theme]`. Primer's scale is GitHub-flavored; expect to override accent + radius.
-- **Atlassian Design System (`@atlaskit/tokens`):** role/intent token names (`color.background.brand.bold`, `color.text.subtle`) — near-1:1 with our semantics. Themed via the token package + `setGlobalTheme({ colorMode })`. Migration is mostly a name remap; keep the 8-state coverage where ADS components are sparse.
+- **Ant Design 5 (`theme.token` + algorithm):** token-based theming via `ConfigProvider theme={{ token, algorithm }}`. Set `colorPrimary`, `borderRadius`, `fontFamily`, `controlHeight` from our tokens; `algorithm: theme.darkAlgorithm` for dark mode (align with `[data-theme]`). Component-level overrides under `theme.components`. Very opinionated motion/shadows: map to our `tokens/motion.json` + `tokens/shadows.json`.
+- **Shopify Polaris (CSS custom properties):** consumes a fixed set of `--p-color-*` / `--p-space-*` / `--p-border-radius-*` design tokens. You theme by re-pointing those vars to our values within an `AppProvider`. Polaris is purpose-built for admin/commerce density, so respect its spacing rhythm. Strong a11y baseline; still validate against our checklist.
+- **GitHub Primer (`@primer/primitives`):** ships CSS variables + a React lib. Map roles to the **functional** layer (`--fgColor-*`, `--bgColor-*`, `--borderColor-*`); `data-color-mode="dark"` + `data-dark-theme` drive theming; align with our `[data-theme]`. Primer's scale is GitHub-flavored; expect to override accent + radius.
+- **Atlassian Design System (`@atlaskit/tokens`):** role/intent token names (`color.background.brand.bold`, `color.text.subtle`), near-1:1 with our semantics. Themed via the token package + `setGlobalTheme({ colorMode })`. Migration is mostly a name remap; keep the 8-state coverage where ADS components are sparse.
 - **Bootstrap 5:** override Sass `$variables` (build-time) or `--bs-*` CSS vars (runtime); `data-bs-theme="dark"` for dark mode. Map base spacing (`$spacer`), `$border-radius`, `$primary`/`$danger`/etc., and `$font-family-base`. **Supplement focus-visible contrast and the error/loading/selected states** Bootstrap leaves thin. Full worked example: `frameworks/adapters/bootstrap.md`.

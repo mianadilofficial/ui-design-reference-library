@@ -2,7 +2,7 @@
 """Validate that every component spec in components/ meets the house quality bar.
 
 Each spec should document (per CLAUDE.md Component Quality Bar): anatomy, variants,
-the states, token mapping, and accessibility. This checks the spec docs themselves —
+the states, token mapping, and accessibility. This checks the spec docs themselves,
 not generated code.
 
 Usage:
@@ -54,7 +54,7 @@ def main():
     files = sorted(COMPONENTS.glob("*.md"))
     problems = []
     for f in files:
-        text = f.read_text().lower()
+        text = f.read_text(encoding="utf-8").lower()
         req = RELAXED_REQUIRED if f.name in RELAXED else REQUIRED
         missing = [name for name, pat in req.items() if not re.search(pat, text, re.I)]
         status = "OK  " if not missing else "MISS"
@@ -71,4 +71,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # Findings quote what they found (an arrow, an emoji, a Thai name), and a
+    # Windows console in a legacy code page cannot print it.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main())

@@ -16,13 +16,13 @@ export async function browserPreflight() {
   const problems = [];
   let chromium;
   try { ({ chromium } = await import('playwright')); }
-  catch { problems.push('playwright is not installed — run `npm install`'); }
+  catch { problems.push('playwright is not installed: run `npm install`'); }
 
   if (chromium) {
     try { const b = await chromium.launch(); await b.close(); }
-    catch (e) { problems.push(`bundled chromium will not launch (${e.message.split('\n')[0]}) — run \`npx playwright install chromium\``); }
+    catch (e) { problems.push(`bundled chromium will not launch (${e.message.split('\n')[0]}): run \`npx playwright install chromium\``); }
     try { const b = await chromium.launch({ channel: 'chrome' }); await b.close(); }
-    catch (e) { problems.push(`the "chrome" channel will not launch (${e.message.split('\n')[0]}) — six gates require real Chrome`); }
+    catch (e) { problems.push(`the "chrome" channel will not launch (${e.message.split('\n')[0]}): six gates require real Chrome`); }
   }
 
   cached = problems;
@@ -34,7 +34,7 @@ export async function requireBrowser() {
   const problems = await browserPreflight();
   if (problems.length) {
     throw new Error(
-      'browser preflight failed — the meta-gate suite cannot prove anything without a browser:\n  - ' +
+      'browser preflight failed: the meta-gate suite cannot prove anything without a browser:\n  - ' +
       problems.join('\n  - '));
   }
 }

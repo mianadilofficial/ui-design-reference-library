@@ -2,7 +2,7 @@
  * The hardcode gate must not report clean on a file it could not open.
  *
  * It used to catch UnicodeDecodeError and OSError, count the file in "Scanned N",
- * and exit 0 — the same shape as the missing-path case the script already guards,
+ * and exit 0: the same shape as the missing-path case the script already guards,
  * where the comment reads "scanning nothing must not read as clean".
  */
 import { test } from 'node:test';

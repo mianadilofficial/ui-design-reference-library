@@ -19,14 +19,14 @@ Build from small to large: **Atoms → Molecules → Organisms → Templates →
 
 ### Design Thinking
 Follow the double diamond: **Discover → Define → Develop → Deliver**
-- Diverge before converging — explore multiple solutions before committing
+- Diverge before converging: explore multiple solutions before committing
 - Validate at every fidelity level (see `workflows/prototyping.md`)
-- User research is not optional — see the usability testing script in `workflows/prototyping.md`
+- User research is not optional. See the usability testing script in `workflows/prototyping.md`
 
 ### Inclusive Design
 Design for the edges, and the center benefits:
-- WCAG 2.2 AA is the **minimum**, not the goal — see `accessibility/wcag-checklist.md`
-- Keyboard navigation is not an afterthought — it's designed first
+- WCAG 2.2 AA is the **minimum**, not the goal (see `accessibility/wcag-checklist.md`)
+- Keyboard navigation is not an afterthought: it's designed first
 - Color is never the only way to convey information
 - Target sizes: 24×24px minimum (WCAG 2.5.8), 44×44px recommended for primary actions
 - See ARIA implementation patterns in `accessibility/aria-patterns.md`
@@ -97,6 +97,36 @@ same height in the rendered page.
 
 ---
 
+## Spacing: rows, gaps and gutters
+
+Three rules a reviewer sees at a glance and no colour or contrast gate measures.
+`node scripts/verify_spacing.mjs <file|dir>` measures the first two on the render.
+
+1. **Cards that share a row share a height.** Two channel cards, three plan tiles,
+   a pipeline of columns: if they sit side by side, they end on the same line. A
+   grid or flex row stretches its items by default, so the bug is almost always an
+   `align-items:start` someone added. Remove it, and push a card's last line (a
+   note, an action) to its bottom edge so the endings align too. An item that
+   deliberately spans two rows (a bento lead tile) is the exception. The rule holds
+   when only one of them draws a box: a repairs tile at the end of a row of product
+   cards ends where the cards end. A plain text column beside a card is copy, not a
+   card, and a sticky column has to sit at the top to stick.
+2. **Nothing touches.** A button, a field, a badge or a card keeps at least
+   `--space-2` (8px) from the thing next to it, stacked or side by side, and that
+   includes what happens when a row wraps on a phone: a badge that drops under its
+   heading needs a `row-gap`, not luck. Two exceptions, both deliberate: a label sits
+   `--space-1` (4px) from its own control, and the segments of one control (a
+   segmented button, a stepper's minus, value and plus) may join inside the box that
+   draws them as one thing.
+3. **Gaps and gutters are consistent.** Every gap comes from the spacing scale, and
+   one relationship gets one gap: if two cards in this grid are 24px apart, every card
+   in every grid like it is 24px apart, and a label sits the same distance from its
+   field on every form. The page has one gutter: section content starts on the same
+   left edge from the masthead to the footer, and a band that breaks out to full
+   width brings its content back to that edge.
+
+---
+
 ## Narrow-width defences (the four causes that actually bite)
 
 A layout that fits at 280px on one machine can overflow on another, because font
@@ -108,7 +138,7 @@ metrics differ per platform. Prove it with `node scripts/verify_responsive.mjs
 2. **A grid or flex item keeps `min-width:auto`**, so a child that refuses to shrink
    widens its own track. Fix: `min-inline-size:0` on the item, or pin the track with
    `grid-template-columns:minmax(0,1fr)`.
-3. **One unbreakable token** — an email, a URL, an API key — sets the element's
+3. **One unbreakable token** (an email, a URL, an API key) sets the element's
    min-content width. Fix: `overflow-wrap:anywhere`, which shrinks min-content too;
    `break-word` alone does not.
 4. **A `white-space:nowrap` tooltip or pill has no upper bound.** Fix:
@@ -122,16 +152,68 @@ everything visible sits inside it. Give the span a positioned ancestor.
 
 ---
 
+## Foldables: iPhone Duo
+
+A page on iPhone Duo gets one of five viewports. WebKit published them for
+Safari 27.1, in CSS px:
+
+| Screen and pose | Width |
+|---|---|
+| Outer screen, upright | 382 |
+| Inner screen, two windows side by side (each) | 385 |
+| Outer screen, on its side | 594 |
+| Inner screen, upright | 669 |
+| Inner screen, on its side | 951 |
+
+1. **382 and 385 are phone widths.** A mobile-first base already covers them.
+   594 to 951 is where a layout grows from one column to two, and where it breaks
+   when a breakpoint lands between them. Test all five.
+2. **One layout across the hinge is the default, and it is fine.** Safari 27.1
+   ships the Device Posture and Viewport Segments APIs behind feature flags, so
+   most visitors see one viewport across the fold. Never make the fold a
+   requirement for the page to work.
+3. **If you answer the fold, answer it all the way.** Once the layout changes
+   when the screen folds, the page has claimed to know where the hinge is.
+   Then give each pane exactly one segment, make the gap between them the hinge,
+   and put nothing readable or tappable on it. Every `env()` keeps a fallback
+   that is the unfolded layout:
+
+```css
+@media (horizontal-viewport-segments: 2) {
+  .split {
+    grid-template-columns: env(viewport-segment-width 0 0, 1fr) env(viewport-segment-width 1 0, 1fr);
+    column-gap: calc(env(viewport-segment-left 1 0, 0px) - env(viewport-segment-right 0 0, 0px));
+  }
+}
+```
+
+4. **Detect the feature, never the device.** The media query and
+   `window.viewport.segments` say what the screen is doing; a user agent string
+   does not.
+5. **List and detail is the natural split.** The list on one segment, the
+   selected item on the other. A three-column layout spread over two segments
+   puts its middle column on the hinge.
+
+`node scripts/verify_responsive.mjs <file|dir>` tests the five widths by default,
+then renders the page at 951x620 half closed, with a 40px hinge at 455 to 495px
+(the band a third party measured in Apple's simulator; Apple does not publish
+it). A page that does not react to the fold passes that step untouched. A page
+that does react fails if any text or control sits on the hinge. The fold is
+emulated in Chrome, not Safari, and only the book pose on its side is tested:
+check a real device when you can.
+
+---
+
 ## Component Guidelines
 
 ### Component Quality Bar
 Every component must have:
-1. **Anatomy diagram** — Visual structure breakdown
-2. **Variants** — All visual variants (primary, secondary, ghost, etc.)
-3. **Sizes** — sm, md, lg with exact dimensions
-4. **States** — Default, Hover, Focus, Active, Disabled, Loading (minimum 6)
-5. **Token mapping** — Every value traced to a design token
-6. **Accessibility** — ARIA pattern, keyboard model, screen reader behavior
+1. **Anatomy diagram**: Visual structure breakdown
+2. **Variants**: All visual variants (primary, secondary, ghost, etc.)
+3. **Sizes**: sm, md, lg with exact dimensions
+4. **States**: Default, Hover, Focus, Active, Disabled, Loading (minimum 6)
+5. **Token mapping**: Every value traced to a design token
+6. **Accessibility**: ARIA pattern, keyboard model, screen reader behavior
 
 ### Component References
 | Level | File | Contents |

@@ -1,6 +1,6 @@
 # Templates
 
-Page-level layout patterns that define content zones, grid structure, and handle empty/loading/error states. Templates are framework-agnostic blueprints — implement using your framework's layout system.
+Page-level layout patterns that define content zones, grid structure, and handle empty/loading/error states. Templates are framework-agnostic blueprints: implement using your framework's layout system.
 
 ---
 
@@ -39,7 +39,7 @@ The primary data overview and monitoring layout.
 
 **Responsive Behavior:**
 - **Desktop (≥ lg):** Sidebar + 12-col content grid
-- **Tablet (md–lg):** Collapsed sidebar + 8-col grid; secondary panel moves below primary
+- **Tablet (md-lg):** Collapsed sidebar + 8-col grid; secondary panel moves below primary
 - **Mobile (< md):** No sidebar + single column; KPIs become 2×2 grid, charts stack
 
 **States:**
@@ -116,7 +116,7 @@ Alternative: Split layout
 - Card padding: `spacing.card.padding` (24px)
 - Field gap: `spacing.stack.lg` (16px)
 
-**Responsive:** Card becomes full-width on mobile with `spacing.page.inline-padding`. Split layout collapses — brand panel hidden below `md`.
+**Responsive:** Card becomes full-width on mobile with `spacing.page.inline-padding`. Split layout collapses, with the brand panel hidden below `md`.
 
 **States:**
 | State | Behavior |
@@ -191,7 +191,7 @@ User or application settings with grouped sections.
 **Responsive:**
 - **Desktop:** Side nav + content
 - **Tablet:** Top tabs + content
-- **Mobile:** Stack — nav list as full page, content as drill-down page with back button
+- **Mobile:** Stack, with the nav list as full page, content as drill-down page with back button
 
 **States:**
 | State | Behavior |
@@ -252,8 +252,8 @@ A master-detail layout for browsing collections and viewing individual items.
 
 **Responsive:**
 - **Desktop (≥ lg):** Side-by-side list + detail
-- **Tablet (md–lg):** List panel narrows (3-col); detail expands
-- **Mobile (< md):** Stack — list as page 1, detail as page 2 with back navigation
+- **Tablet (md-lg):** List panel narrows (3-col); detail expands
+- **Mobile (< md):** Stack, with the list as page 1, detail as page 2 with back navigation
 
 **States:**
 | State | List Panel | Detail Panel |

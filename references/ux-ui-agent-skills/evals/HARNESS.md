@@ -1,4 +1,4 @@
-# Harness score — what the kit enforces, measured
+# Harness score: what the kit enforces, measured
 
 `RESULTS.md` records how well an agent does with the kit. This file records
 something different and less flattering: how much of the kit **reaches** the
@@ -15,7 +15,7 @@ whether a number in a final answer was ever measured.
 Each indicator is normalised to 0..1 and the Harness Score is their mean.
 
 An indicator that **cannot** be measured scores 0, and says so in its own words.
-That zero means "there was no instrument", not "it was tested and failed" — and
+That zero means "there was no instrument", not "it was tested and failed", and
 not "it passed". Reading an unmeasured indicator as a pass is the exact failure
 this repo's doctrine exists to prevent, so the distinction is kept in the table
 rather than in a footnote.
@@ -25,23 +25,23 @@ produced it is not a score.
 
 ---
 
-## Baseline — 2026-10-05, commit `f2e2f7f`
+## Baseline: 2026-10-05, commit `f2e2f7f`
 
 | ID | Indicator | Score | Measured by |
 |---|---|---|---|
 | H1 | Install-path parity | **0.265** | `python3 scripts/measure_install_paths.py` |
 | H2 | Invocation correctness | **0** (no instrument) | needs `claude plugin eval` |
 | H3 | Enforcement coverage | **0.000** | counted below |
-| H4 | Verification receipts | **0** (no instrument) | needs `scripts/gate.mjs` — built in Phase 3.1 |
+| H4 | Verification receipts | **0** (no instrument) | needs `scripts/gate.mjs`, built in Phase 3.1 |
 | H5 | Blind first-pass, per route | **0.333** | `evals/RESULTS.md` |
-| H6 | Critic catch rate | **0** (no instrument) | needs `tests/fixtures/critic/` — built in Phase 3.3 |
+| H6 | Critic catch rate | **0** (no instrument) | needs `tests/fixtures/critic/`, built in Phase 3.3 |
 | H7 | Taste applied on page/app work | **0** (no instrument) | needs the page-and-app prompt set |
 | | **Harness Score** | **0.086** | mean of H1..H7 |
 
 Four of the seven are zero for want of an instrument. The score is therefore
 mostly a statement about what has never been looked at.
 
-### H1 — install-path parity: 0.265
+### H1: install-path parity, 0.265
 
 ```
 Plugin surface: 25 file(s), 156 kit-file reference(s), 0 already variable-guarded.
@@ -56,8 +56,8 @@ Plugin surface: 25 file(s), 156 kit-file reference(s), 0 already variable-guarde
 ```
 
 The 19 skills, 5 commands and 1 agent name 156 kit files between them. Not one
-reference carries a path variable, so on the plugin route — the one the README
-recommends first — every single one resolves against the user's own project,
+reference carries a path variable, so on the plugin route (the one the README
+recommends first) every single one resolves against the user's own project,
 where the kit is not. `npx skills add` copies the skill folders alone, so the
 same references are missing there too.
 
@@ -76,7 +76,7 @@ is pointing at nothing in an initialised project.
 > improvement look larger than it was. Both numbers in the table below come from
 > the instrument as it stands now, run against both trees.
 
-### H3 — enforcement coverage: 0.000
+### H3: enforcement coverage, 0.000
 
 `validate_instruction_surface.py` counts **11 always-on rules** in `CLAUDE.md`.
 The repo has no `hooks/` directory and no `hooks` key in `.claude/settings.json`,
@@ -91,7 +91,7 @@ no hooks/ dir
 Every gate in the repo runs because a human typed a command or a skill told the
 model to. That is the gap this indicator exists to close.
 
-### H5 — blind first-pass, per route: 0.333
+### H5: blind first-pass, per route, 0.333
 
 `evals/RESULTS.md` records four blind runs, all **14/14 on first submission**,
 and every one of them scaffolded with `npx ux-ui-agent-skills new`. Zero blind
@@ -102,7 +102,7 @@ Scored as routes-with-a-passing-blind-run over routes: 1 of 3.
 The init route is already at its ceiling, so a harder brief is needed before
 this indicator can move for the right reason rather than by adding routes alone.
 
-### H2, H4, H6, H7 — no instrument exists
+### H2, H4, H6, H7: no instrument exists
 
 | ID | What is missing | Why it is 0 and not "pass" |
 |---|---|---|
@@ -113,7 +113,7 @@ this indicator can move for the right reason rather than by adding routes alone.
 
 ---
 
-## After 1.1 — skills carry the kit root
+## After 1.1: skills carry the kit root
 
 The 19 skills now express every kit-file reference as
 `${CLAUDE_SKILL_DIR}/../../../<path>`.
@@ -121,7 +121,7 @@ The 19 skills now express every kit-file reference as
 **Verified before applying it**, as the plan requires, with a throwaway probe
 skill asked to copy one line back verbatim. On both routes it reported an
 absolute path, not the variable, which is the only proof that Claude Code
-substitutes it in skill *content* rather than leaving it to the shell — the
+substitutes it in skill *content* rather than leaving it to the shell. The
 shell environment has it unset on both:
 
 | route | what the model received | probe |
@@ -179,7 +179,7 @@ got back.
 >    `../../../scripts` points at nothing there no matter how it is spelled.
 >    That alone had the whole exercise reading 1.0.
 > 2. `$KIT` was not in the pattern, so the four agent references disappeared from
->    the denominator the moment they were fixed — the same class of fault as the
+>    the denominator the moment they were fixed: the same class of fault as the
 >    one already recorded above, in a new spelling.
 >
 > `skills-add` stays at 0.0% and will until the kit is actually reachable on that
@@ -187,7 +187,7 @@ got back.
 
 ---
 
-## After 1.2 and 1.3 — the kit notices when it is missing, and user-only is real
+## After 1.2 and 1.3: the kit notices when it is missing, and user-only is real
 
 **1.2.** `npx skills add` copies the skill folders alone: no `scripts/`, no
 `tokens/`, no `taste/`. Every skill that reads a kit file now opens with a check:
@@ -196,7 +196,7 @@ got back.
 ls ${CLAUDE_SKILL_DIR}/../../../tokens >/dev/null 2>&1 && echo KIT_OK || echo KIT_MISSING
 ```
 
-Verified both ways — `KIT_OK` in a normal install, `KIT_MISSING` against a tree
+Verified both ways: `KIT_OK` in a normal install, `KIT_MISSING` against a tree
 holding `.claude/skills/` and nothing else. On `KIT_MISSING` the skill names the
 install that fixes it and stops, rather than proceeding from files it never
 opened.
@@ -218,7 +218,7 @@ marked user-only had been auto-invocable for as long as the field existed, and
 | skills in the model's listing | 24 | 13 |
 
 Confirmed live: after the change the session's skill listing dropped the eleven
-user-started skills and showed thirteen, which is also the Cause 4 saving — the
+user-started skills and showed thirteen, which is also the Cause 4 saving: the
 listing budget no longer carries entries the model must never pick.
 
 `tests/meta/skill-frontmatter.test.mjs` pins the allowed frontmatter keys, so a
@@ -227,7 +227,7 @@ design skill accidentally hidden from the model is a skill that never runs.
 
 ---
 
-## After Phase 1A — a skill owns the most common request, and taste is in context
+## After Phase 1A: a skill owns the most common request, and taste is in context
 
 **Cause 1.** "Design a page / screen / landing page / app" is the most common
 request there is, and no skill claimed it: `design-code` wanted a stack named,
@@ -251,13 +251,13 @@ on a file read: the brief block to fill in, and the banned defaults to break.
 
 The product template gained `.claude/rules/taste.md` and a design-work router in
 its `CLAUDE.md`, because `new` deliberately skips the engine's own `CLAUDE.md`
-and rules — which is where taste was routed from.
+and rules, which is where taste was routed from.
 
 **Cause 5.** `AREAS` had no entry for `.claude/agents`, `examples/` or
 `templates/`, so an initialised project had no critic to delegate to, no
 reference output, and nothing for `/scaffold-project` to scaffold from.
 `tests/cli/installed-references.test.mjs` now scaffolds a real project and opens
-every file the installed skills name — 177 references — which caught three the
+every file the installed skills name (177 references), which caught three the
 inferential measurement was reporting as fine.
 
 | | before | after |
@@ -273,13 +273,13 @@ one would be the same mistake this file already documents three times.
 
 ---
 
-## After 3.1 and 3.2 — the first things that run without being asked
+## After 3.1 and 3.2: the first things that run without being asked
 
 Every gate in this repo ran because a human typed a command or a skill told the
 model to. H3 was 0.000 for that reason: eleven always-on rules, nothing enforcing
 any of them.
 
-**3.1 — receipts.** `scripts/gate.mjs` runs any gate with `DS_REQUIRE_BROWSER=1`
+**3.1: receipts.** `scripts/gate.mjs` runs any gate with `DS_REQUIRE_BROWSER=1`
 always set and writes one JSON line per run: the gate, the file, the **SHA-256 of
 that file at the moment it was measured**, the exit code, the numbers printed,
 and when.
@@ -299,7 +299,7 @@ EXPIRED: it was measured, then edited. The old numbers no longer describe it.
 That is exactly the moment a remembered number becomes a lie, and now it is
 detectable rather than a matter of trust.
 
-**3.2 — three hooks**, shipped to both routes: `hooks/hooks.json` with
+**3.2: three hooks**, shipped to both routes: `hooks/hooks.json` with
 `${CLAUDE_PLUGIN_ROOT}` for the plugin, the same scripts in
 `.claude/settings.json` with `$CLAUDE_PROJECT_DIR` for `init`.
 
@@ -321,14 +321,14 @@ did not measure. The other eight still depend on a gate somebody runs.
 
 H4 stays 0 on purpose. The wrapper exists, but no session has yet been scored on
 how many of its stated numbers carry a live receipt, and scoring an indicator the
-day its tooling lands — using the tooling's own existence as the evidence — is
+day its tooling lands, using the tooling's own existence as the evidence, is
 the circularity this file keeps catching.
 
 ### The hook that did nothing
 
 The first PostToolUse hook called `require` in an ES module. The
 `ReferenceError` landed in a `catch`, the payload stayed empty, and it exited 0
-on every edit — including a file with 63 hardcoded values and 12 emoji. A hook
+on every edit, including a file with 63 hardcoded values and 12 emoji. A hook
 that never fires is indistinguishable from a codebase with no findings, which
 makes it the worst failure available to a mechanism whose entire job is to be
 unskippable. `tests/meta/hooks.test.mjs` drives all three with real JSON on
@@ -336,7 +336,7 @@ stdin and asserts the exit codes, including that one.
 
 ---
 
-## After 3.7 and 3.8 — three house rules, each with a gate
+## After 3.7 and 3.8: three house rules, each with a gate
 
 **3.7** is recorded in the commit; both rules now have a gate and a fixture.
 
@@ -374,7 +374,7 @@ must reject.
 **The refactor broke something, and the existing gates caught it.**
 `verify_responsive` failed `trial.html` at 280px under a 1.25x root font, +26px.
 The forest-plot axis centres each label on its tick, so the outermost hung half a
-label past the edge — invisible until the layout stopped being wide enough to
+label past the edge, invisible until the layout stopped being wide enough to
 hide it. The end labels anchor to the edge now. That failure is the argument for
 running the whole suite rather than only the gate you just wrote.
 
@@ -382,7 +382,7 @@ Registry 47 -> 48.
 
 ---
 
-## After 3.3 — the critic runs in a fork, and is scored for the first time
+## After 3.3: the critic runs in a fork, and is scored for the first time
 
 **The critic is a forked subagent now.** `/critique` carries `context: fork` and
 `background: false`, so it runs in a context that never saw the conversation
@@ -413,7 +413,7 @@ and dark. A defect a gate can catch would measure the gate.
 `tests/meta/critic-fixtures.test.mjs` re-proves that on every run, with
 `DS_REQUIRE_BROWSER=1` so a missing browser fails instead of printing SKIPPED.
 
-### The first run — H6: 0 -> 1.000
+### The first run: H6, 0 -> 1.000
 
 Four critics, one per page, each given only the page and the brief.
 

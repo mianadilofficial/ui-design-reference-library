@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>spacing defects</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; display:grid; gap:32px; }
+  /* Three defects verify_spacing.mjs must reject:
+     1. two cards side by side that end on different lines (align-items:start);
+     2. a line of text sitting 2px above the buttons under it;
+     3. two separate buttons 4px apart;
+     4. a list of product cards, where the boxed tile at the end of the row is
+        held at the top (align-self:start) beside a card that draws no box of its
+        own but carries a picture: the row ends on two lines. */
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .card { border:1px solid #d0d5d9; border-radius:12px; padding:16px; }
+  .address { margin:0 0 2px; }
+  .actions { display:flex; gap:4px; }
+  .shop { list-style:none; margin:0; padding:0; display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .picture { block-size:160px; background:#e8e2d8; border-radius:8px; }
+  .tile { border:1px solid #d0d5d9; border-radius:12px; padding:16px; align-self:start; }
+  button { font:inherit; padding:8px 16px; border:1px solid #868d93; border-radius:8px; background:#ffffff; }
+</style></head>
+<body><main>
+  <div class="row">
+    <article class="card"><h2>At the office</h2><p>Monday to Friday, 08:30 to 16:30.</p><p>Saturday, 09:00 to 12:00.</p><p>Closed on Sundays.</p></article>
+    <article class="card"><h2>By post</h2><p>Send the form and copies.</p></article>
+  </div>
+  <section>
+    <p class="address">27 Tamarind Lane</p>
+    <div class="actions"><button type="button">Copy address</button><button type="button">Email us</button></div>
+  </section>
+  <ul class="shop">
+    <li><div class="picture"></div><h2>Cord Stool</h2><p>Oak and paper cord.</p></li>
+    <li class="tile"><h2>Repairs</h2><p>Send it back and we mend it.</p></li>
+  </ul>
+</main></body></html>

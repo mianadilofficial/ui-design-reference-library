@@ -3,7 +3,7 @@
 Follows the [Framework Adapter Protocol](../adapter-protocol.md). Framework-agnostic custom elements via Lit. Works inside any framework or none.
 
 ## Token layer
-Define CSS custom properties on `:root` in light DOM (global). They **pierce shadow DOM**, so components inside the shadow root can read `var(--color-action-primary)` directly — this is the key to theming web components. Dark mode via `[data-theme="dark"]` on the host page. Expose per-component overrides as documented custom properties.
+Define CSS custom properties on `:root` in light DOM (global). They **pierce shadow DOM**, so components inside the shadow root can read `var(--color-action-primary)` directly. This is the key to theming web components. Dark mode via `[data-theme="dark"]` on the host page. Expose per-component overrides as documented custom properties.
 
 ## Button (worked example)
 ```ts
@@ -40,7 +40,7 @@ export class DsButton extends LitElement {
 ```
 
 ## States & a11y
-- Focus ring via `:focus-visible` inside shadow root. For composite widgets, manage `delegatesFocus: true` or forward ARIA; remember the accessibility tree crosses shadow boundaries — label with `aria-label`/`aria-labelledby` carefully.
+- Focus ring via `:focus-visible` inside shadow root. For composite widgets, manage `delegatesFocus: true` or forward ARIA; remember the accessibility tree crosses shadow boundaries, so label with `aria-label`/`aria-labelledby` carefully.
 
 ## Motion
-Token CSS `transition`/Web Animations API; honor `prefers-reduced-motion`. See `frameworks/adapters/css-in-js.md` is not needed — styles are encapsulated CSS.
+Token CSS `transition`/Web Animations API; honor `prefers-reduced-motion`. See `frameworks/adapters/css-in-js.md` is not needed: styles are encapsulated CSS.

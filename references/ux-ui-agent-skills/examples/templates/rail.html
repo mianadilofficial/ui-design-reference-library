@@ -45,7 +45,7 @@
   .tr.exp{stroke:var(--trm-accent);stroke-width:2.25}
   .tr.stp{stroke:var(--lin-accent)}
   .tr.frt{stroke:var(--lin-ink-3);stroke-dasharray:5 4}
-  .tr.late{stroke:var(--color-feedback-warning)}
+  .tr.late{stroke:var(--color-feedback-warning-icon)}
   .legend{display:flex;flex-wrap:wrap;gap:var(--space-2) var(--space-4);font-size:var(--text-xs);
     color:var(--lin-ink-3)}
   .legend span{display:inline-flex;align-items:center;gap:var(--space-2);min-inline-size:0}
@@ -59,7 +59,7 @@
     min-inline-size:0}
   .ptrack i{position:absolute;inset-block:0;inset-inline-start:var(--x);inline-size:var(--w);
     background:var(--lin-accent);border-radius:var(--radius-sm)}
-  .ptrack i.long{background:var(--color-feedback-warning)}
+  .ptrack i.long{background:var(--color-feedback-warning-icon)}
   /* A percentage block-size needs a definite containing block. The bar row is
      minmax(0,1fr) inside a fixed-height grid, which is definite; an auto row is
      not, and the bars silently flatten to a line. */
@@ -120,7 +120,7 @@
       <span><i style="--c:var(--trm-accent)"></i>Express</span>
       <span><i style="--c:var(--lin-accent)"></i>Stopping</span>
       <span><i style="--c:var(--lin-ink-3)"></i>Freight</span>
-      <span><i style="--c:var(--color-feedback-warning)"></i>Running late</span>
+      <span><i style="--c:var(--color-feedback-warning-icon)"></i>Running late</span>
       <span style="margin-inline-start:auto">A line that crosses another is a meet. A flat segment is a station dwell.</span>
     </p>
   </section>

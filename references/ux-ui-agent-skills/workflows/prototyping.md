@@ -10,7 +10,7 @@ Move up the ladder as confidence increases. Never jump to high fidelity before v
 
 ### Level 1: Content-First (Text Only)
 **Output:** Plain text outline, bullet points, content hierarchy
-**Time:** 15–30 minutes
+**Time:** 15 to 30 minutes
 **Tools:** Text editor, markdown
 **Purpose:** Validate information architecture and content strategy before any visual work
 
@@ -35,7 +35,7 @@ Move up the ladder as confidence increases. Never jump to high fidelity before v
 
 ### Level 2: Wireframe (Layout)
 **Output:** Box-and-line layout, grayscale, no visual design
-**Time:** 1–2 hours
+**Time:** 1 to 2 hours
 **Tools:** Figma (wireframe), Excalidraw, paper sketches
 **Purpose:** Validate layout, information hierarchy, and navigation flow
 
@@ -54,7 +54,7 @@ Move up the ladder as confidence increases. Never jump to high fidelity before v
 
 ### Level 3: Low-Fidelity Prototype (Interactive)
 **Output:** Clickable wireframes with basic navigation flow
-**Time:** 2–4 hours
+**Time:** 2 to 4 hours
 **Tools:** Figma prototyping, HTML/CSS rough prototype
 **Purpose:** Validate user flows and task completion
 
@@ -69,7 +69,7 @@ Move up the ladder as confidence increases. Never jump to high fidelity before v
 
 ### Level 4: High-Fidelity Mockup (Visual Design)
 **Output:** Pixel-perfect designs with design tokens applied
-**Time:** 4–8 hours per page
+**Time:** 4 to 8 hours per page
 **Tools:** Figma with design system components
 **Purpose:** Validate visual design, brand alignment, and design system compliance
 
@@ -84,7 +84,7 @@ Move up the ladder as confidence increases. Never jump to high fidelity before v
 
 ### Level 5: Production Prototype (Code)
 **Output:** Working code with real interactions, fake data
-**Time:** 1–3 days
+**Time:** 1 to 3 days
 **Tools:** React/Next.js with design system components
 **Purpose:** Validate technical feasibility, real-device behavior, performance, and accessibility
 
@@ -104,9 +104,9 @@ Move up the ladder as confidence increases. Never jump to high fidelity before v
 ### Template
 
 ```
-Journey: [User Goal — e.g., "Purchase a subscription"]
-Persona: [Who — e.g., "Small business owner, non-technical"]
-Context: [Where/When — e.g., "Mobile, during commute"]
+Journey: [User Goal, e.g., "Purchase a subscription"]
+Persona: [Who, e.g., "Small business owner, non-technical"]
+Context: [Where/When, e.g., "Mobile, during commute"]
 
 Phase 1: Awareness
 ├── Action: Sees ad / lands on homepage
@@ -155,13 +155,13 @@ Phase 5: Retention
 
 ### Card Sorting (Discover Mental Models)
 
-**Open Card Sort** — Users group and label content themselves
-1. Write each content item / feature on a card (30–60 cards)
-2. Ask 5–15 users to group cards into categories they define
+**Open Card Sort**: Users group and label content themselves
+1. Write each content item / feature on a card (30 to 60 cards)
+2. Ask 5 to 15 users to group cards into categories they define
 3. Analyze: Look for common groupings and label patterns
 4. Use findings to inform navigation structure
 
-**Closed Card Sort** — Users sort content into predefined categories
+**Closed Card Sort**: Users sort content into predefined categories
 1. Define your proposed categories (navigation labels)
 2. Give users the same cards
 3. Ask them to place each card in the most appropriate category
@@ -186,7 +186,7 @@ Phase 5: Retention
 ```
 "Hi [Name], thanks for joining today. I'm [Your Name].
 
-We're testing [product/feature], not testing you — there are no wrong answers.
+We're testing [product/feature], not testing you. There are no wrong answers.
 
 I'll ask you to complete some tasks while thinking out loud. Tell me what you're
 looking at, what you're thinking, and what you expect to happen.
@@ -237,7 +237,7 @@ Time limit: 2 minutes
 
 ### Post-Task Questions
 After each task:
-1. "How easy or difficult was that?" (1–5 scale)
+1. "How easy or difficult was that?" (1 to 5 scale)
 2. "Was there anything confusing?"
 3. "What did you expect to happen when you clicked [X]?"
 
@@ -272,11 +272,11 @@ After each task:
 
 | Method | When | Sample Size | Time | Output |
 |--------|------|-------------|------|--------|
-| Stakeholder interviews | Project kickoff | 3–5 | 30 min each | Requirements, constraints |
-| Competitive analysis | Discovery | 3–5 competitors | 2–4 hours | Feature matrix, patterns |
-| Card sorting | IA design | 15–30 users | 15 min each | Navigation structure |
-| Tree testing | IA validation | 30–50 users | 10 min each | Findability scores |
-| Usability testing | Any fidelity | 5 users | 30–45 min each | Task success, pain points |
-| A/B testing | Optimization | 1000+ users | 1–2 weeks | Conversion data |
+| Stakeholder interviews | Project kickoff | 3-5 | 30 min each | Requirements, constraints |
+| Competitive analysis | Discovery | 3-5 competitors | 2-4 hours | Feature matrix, patterns |
+| Card sorting | IA design | 15-30 users | 15 min each | Navigation structure |
+| Tree testing | IA validation | 30-50 users | 10 min each | Findability scores |
+| Usability testing | Any fidelity | 5 users | 30-45 min each | Task success, pain points |
+| A/B testing | Optimization | 1000+ users | 1-2 weeks | Conversion data |
 | Surveys | Broad feedback | 100+ users | 5 min each | Quantitative satisfaction |
-| Diary studies | Usage patterns | 10–15 users | 1–2 weeks | Behavioral insights |
+| Diary studies | Usage patterns | 10-15 users | 1-2 weeks | Behavioral insights |

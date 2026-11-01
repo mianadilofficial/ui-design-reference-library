@@ -20,7 +20,7 @@
   @media (max-width:46rem){h1{font-size:var(--text-2xl)}}
   .sub{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.1em;color:var(--lin-ink-3)}
   .chip{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
-    border-radius:var(--radius-pill);border:1px solid var(--lin-hairline);font-family:var(--font-mono);
+    border-radius:var(--radius-full);border:1px solid var(--lin-hairline);font-family:var(--font-mono);
     font-size:var(--text-xs);letter-spacing:.08em;text-transform:uppercase;color:var(--lin-ink-2)}
   /* A chip that takes you to what it reports. The console put a status in the
      top bar and drew it as a span, so on a phone there was nothing to act on
@@ -30,7 +30,7 @@
   a.chip:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
   :target{scroll-margin-block-start:var(--space-6)}
   .chip .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot)}
-  .c-bad{--dot:var(--color-text-error)} .c-ok{--dot:var(--trm-accent)}
+  .c-bad{--dot:var(--color-feedback-error-text)} .c-ok{--dot:var(--trm-accent)}
   /* Mobile first: the base IS the phone layout. This was a 12-column grid
      stepped down by two max-width queries, so stripping the queries left a
      wide layout that overflowed a phone. */
@@ -75,7 +75,7 @@
      sharing the name painted an entire panel pink */
   .b1{background:var(--color-chart-1)} .b2{background:var(--color-chart-2)} .b3{background:var(--color-chart-3)}
   .b4{background:var(--color-chart-4)} .b5{background:var(--color-chart-5)} .b6{background:var(--color-chart-6)}
-  .bar.err{background:var(--color-text-error)}
+  .bar.err{background:var(--color-feedback-error-text)}
   .s1{color:var(--color-chart-1)} .s2{color:var(--color-chart-2)} .s3{color:var(--color-chart-3)}
   .s4{color:var(--color-chart-4)} .s5{color:var(--color-chart-5)} .s6{color:var(--color-chart-6)}
 
@@ -184,7 +184,7 @@
     <header><h2>Error budget</h2><span class="note">30 days, 99.9% target</span></header>
     <svg viewBox="0 0 300 100" role="img" aria-label="Error budget burn-down: steady consumption until day 19, then a sharp drop leaving 12 percent" style="inline-size:100%;block-size:auto;display:block">
       <line x1="0" y1="90" x2="300" y2="90" stroke="var(--lin-hairline)"/>
-      <polyline points="0.0,10.8 10.3,12.9 20.7,14.0 31.0,16.4 41.4,18.1 51.7,20.7 62.1,21.8 72.4,24.3 82.8,25.9 93.1,27.5 103.4,30.2 113.8,31.8 124.1,33.5 134.5,35.4 144.8,37.8 155.2,39.2 165.5,41.3 175.9,43.1 186.2,45.7 196.6,49.0 206.9,54.4 217.2,57.9 227.6,63.0 237.9,66.6 248.3,71.2 258.6,76.5 269.0,80.3 279.3,85.2 289.7,89.7 300.0,93.6" fill="none" stroke="var(--color-text-error)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <polyline points="0.0,10.8 10.3,12.9 20.7,14.0 31.0,16.4 41.4,18.1 51.7,20.7 62.1,21.8 72.4,24.3 82.8,25.9 93.1,27.5 103.4,30.2 113.8,31.8 124.1,33.5 134.5,35.4 144.8,37.8 155.2,39.2 165.5,41.3 175.9,43.1 186.2,45.7 196.6,49.0 206.9,54.4 217.2,57.9 227.6,63.0 237.9,66.6 248.3,71.2 258.6,76.5 269.0,80.3 279.3,85.2 289.7,89.7 300.0,93.6" fill="none" stroke="var(--color-feedback-error-text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     <dl class="kv">
       <dt>Remaining</dt><dd>12%</dd>

@@ -17,7 +17,7 @@ over POUR.
 | Reduced motion | motion stops under `prefers-reduced-motion`, and no content disappears with it | `verify_reduced_motion.mjs` |
 | Roles and names | correct role, accessible name, state announced | `axe_audit.mjs` |
 | Focus trap | modals keep Tab inside, Escape closes, focus returns to the trigger | `verify_focustrap.mjs` |
-| Responsive | no horizontal overflow at 280 / 320 / 414 | `verify_responsive.mjs` |
+| Responsive | no horizontal overflow from 280 to 951px, iPhone Duo included; a page that answers the fold keeps the hinge clear | `verify_responsive.mjs` |
 | Overflow | no silently clipped text, no overlapping controls | `verify_overflow.mjs` |
 | RTL | logical properties, mirrors without breaking | `verify_rtl.mjs` |
 

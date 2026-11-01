@@ -1,14 +1,14 @@
-# How It Works — End-to-End Workflow
+# How It Works: End-to-End Workflow
 
 This document explains how the kit operates from both sides: the **consumer** (a designer/developer who installs it into a project and uses it through Claude) and the **maintainer** (who edits the knowledge files and ships releases).
 
-> TL;DR — **Easy to use, smart on the inside, automated on release.** There is no runtime, no build step, and no dependency. The kit is a pure knowledge + instruction layer that Claude loads on demand.
+> TL;DR: **Easy to use, smart on the inside, automated on release.** There is no runtime, no build step, and no dependency. The kit is a pure knowledge + instruction layer that Claude loads on demand.
 
 ---
 
 ## 1. What it actually is
 
-This is **not a library you import or build** — it's a "brain" you plug into Claude (knowledge files + an instruction router). Once installed in a project, Claude in that project behaves like a Senior Design Architect: it answers design-system questions with real principles — design tokens, accessibility, and taste — and generates production-ready output.
+This is **not a library you import or build**. It's a "brain" you plug into Claude (knowledge files + an instruction router). Once installed in a project, Claude in that project behaves like a Senior Design Architect: it answers design-system questions with real principles (design tokens, accessibility, and taste) and generates production-ready output.
 
 ```
 A normal UI library          This kit
@@ -56,7 +56,7 @@ ships JS/CSS to the browser   ships KNOWLEDGE to the model
 
 ### The Request Router is the core
 
-Claude does **not** read every file on every request (that would waste context). Instead, `CLAUDE.md` contains a routing table — Claude reads it and pulls only what the task needs:
+Claude does **not** read every file on every request (that would waste context). Instead, `CLAUDE.md` contains a routing table. Claude reads it and pulls only what the task needs:
 
 | You ask for… | Claude loads |
 |--------------|--------------|
@@ -65,9 +65,9 @@ Claude does **not** read every file on every request (that would waste context).
 | Code in any framework | `frameworks/adapter-protocol.md` → the matching adapter |
 | A design review / audit | `workflows/design-review.md` + `taste/` |
 | An accessibility check | `accessibility/*` + `scripts/contrast.py` |
-| A specific look / vibe | `taste/` + one of 138 design systems |
+| A specific look / vibe | `taste/` + one of 2,144 design systems |
 
-This is what makes the kit feel "intelligent" — it self-routes instead of dumping a flat file list into context.
+This is what makes the kit feel "intelligent": it self-routes instead of dumping a flat file list into context.
 
 ---
 
@@ -134,7 +134,7 @@ Edit knowledge files → commit
 └──────────────────────────────────────────────┘
         │
         ▼
-  GitHub Release is live   +   npm is updated   — automatically.
+  GitHub Release is live   +   npm is updated, automatically.
 ```
 
 ### Setup (one-time)
@@ -160,7 +160,7 @@ Edit knowledge files → commit
 npm version patch          # or minor / major
 git push origin main --follow-tags
 ```
-That's the entire release. CI creates the GitHub Release and publishes to npm — no manual `gh` or `npm login`, no 2FA prompts.
+That's the entire release. CI creates the GitHub Release and publishes to npm, with no manual `gh` or `npm login`, no 2FA prompts.
 
 > Before this pipeline existed, each of these steps was manual (npm login, 2FA, hand-writing release notes, creating the Release page). Now it's two commands.
 

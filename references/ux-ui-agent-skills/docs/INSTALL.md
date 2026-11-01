@@ -15,13 +15,15 @@ forward. Re-run the commands and you should get the same ones.
 |---|---|---|
 | **Claude Code** | `/plugin marketplace add plugin87/ux-ui-agent-skills` | 26 skills, hooks, the critic |
 | **Codex, Cursor, Copilot, Aider** | `npx ux-ui-agent-skills init --agent codex` | `AGENTS.md` + every gate |
+| **Gemini CLI** | `gemini extensions install https://github.com/plugin87/ux-ui-agent-skills` | `GEMINI.md`, 23 ported skills, the MCP server |
+| **Antigravity** (or Gemini CLI, per project) | `npx ux-ui-agent-skills init --agent gemini` | `GEMINI.md` + `.agents/skills/` + every gate |
 | **Any MCP client** | `claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp` | 6 tools that run the gates |
 | **A terminal, any project** | `brew install plugin87/tap/ux-ui-agent-skills` | the CLI and the MCP binary |
 | **Just looking** | `npx ux-ui-agent-skills demo` | the rendered examples, nothing installed |
 
 ---
 
-## 1. Claude Code plugin — the most complete
+## 1. Claude Code plugin: the most complete
 
 ```
 /plugin marketplace add plugin87/ux-ui-agent-skills
@@ -47,16 +49,21 @@ a new session.
 
 ---
 
-## 2. Codex, Cursor, Copilot, Aider — the open convention
+## 2. Codex, Cursor, Copilot, Aider: the open convention
 
 ```bash
 cd your-project
 npx ux-ui-agent-skills init --agent codex
 ```
 
-Writes `AGENTS.md` at the repository root — an open convention roughly 25 tools
-read without any setup — plus the tokens, component specs, taste doctrine, the
-138 design systems and **all 52 gates**.
+Writes `AGENTS.md` at the repository root (an open convention roughly 25 tools
+read without any setup), plus the tokens, component specs, taste doctrine, the
+index of the 2,144 design systems and **all 52 gates**.
+
+The specs themselves are fetched when used, not copied: `node scripts/library.mjs
+get <name>` writes one to `design-systems/library/<name>/DESIGN.md` and refuses
+it unless its sha256 matches the index. `npx ux-ui-agent-skills library pull`
+fetches every spec, for a machine that will work offline.
 
 It deliberately does **not** write `.claude/`. Skills, rules and the critic are
 Claude Code mechanisms; on this route they would be dead files.
@@ -72,7 +79,38 @@ npx ux-ui-agent-skills init --agent both   # both surfaces, held in step by a ga
 
 ---
 
-## 3. MCP — any client can run the gates
+## 2b. Gemini CLI and Antigravity
+
+Two routes. Both were run against Gemini CLI 0.65.0.
+
+```bash
+gemini extensions install https://github.com/plugin87/ux-ui-agent-skills   # every project
+npx ux-ui-agent-skills init --agent gemini                                  # this project
+```
+
+**The extension** is an archive attached to each release, which is what
+`gemini extensions install` fetches from a GitHub URL. It carries `GEMINI.md`,
+23 ported skills whose paths Gemini CLI resolves to the extension, and the kit's
+MCP server. Installed into a clean home, `gemini extensions list` showed all 23
+skills and `gemini mcp list` showed the server `Connected`.
+
+**`init --agent gemini`** writes the kit, `GEMINI.md` and the same skills to
+`.agents/skills/`, at the project root, with every path relative to it.
+`--agent antigravity` writes exactly the same. Gemini CLI reads workspace skills
+only in a **trusted folder**: untrusted, `gemini skills list` showed none of
+them; trusted, all 23. Antigravity reads `GEMINI.md` and `.agents/skills/` from
+the same place. That side follows Antigravity's own documentation; it has not
+been driven end to end here.
+
+Three skills stay in Claude Code, because they need it: `critique` runs the
+critic as a forked subagent, `observe` reports what the Claude Code hooks
+recorded, and `scaffold-project` lays out a Claude Code project. There are no
+hooks on this route: as on the `AGENTS.md` surface, every rule is a request and
+the gates run when you run them.
+
+---
+
+## 3. MCP: any client can run the gates
 
 ```bash
 claude mcp add ux-ui-gates -- npx -y --package=ux-ui-agent-skills ux-ui-mcp
@@ -93,7 +131,7 @@ Or in any MCP client's config:
 
 > `--package=` is load-bearing. This package's name is also one of its bin
 > names, so `npx -y ux-ui-agent-skills ux-ui-mcp` runs the installer CLI and
-> hands it `ux-ui-mcp` as an argument — you get a help screen and a client that
+> hands it `ux-ui-mcp` as an argument: you get a help screen and a client that
 > never completes a handshake.
 
 Six tools:
@@ -104,7 +142,7 @@ Six tools:
 | `run_gate` | Run one gate, get its output and exit code unedited |
 | `review_ui` | Run every applicable gate, per-gate verdict |
 | `get_doctrine` | The written rules, by topic |
-| `get_design_system` | One of the 138 specs |
+| `get_design_system` | One of the 2,144 specs, fetched on first use and cached |
 | `get_tokens` | The DTCG token source |
 
 `AGENTS.md` lets an agent **read** the doctrine. This lets it **run the gates**,
@@ -112,17 +150,17 @@ which reading cannot do. Plenty of things describe good UI; very little tells
 you afterwards that the contrast you shipped is 3.9:1 on hover.
 
 It returns what the gates printed, with their exit codes: **0** looked and found
-nothing, **1** found something, **2** could not look — never a pass.
+nothing, **1** found something, **2** could not look. None of them is a pass.
 
 ---
 
-## 4. Homebrew — the CLI on your machine
+## 4. Homebrew: the CLI on your machine
 
 ```bash
 brew install plugin87/tap/ux-ui-agent-skills
 ```
 
-One line. No `brew tap` first — Homebrew sees `owner/tap/name` and clones the
+One line. No `brew tap` first: Homebrew sees `owner/tap/name` and clones the
 tap itself, and installs Node if you do not have it.
 
 You get two commands on your `PATH`:
@@ -144,7 +182,7 @@ updates itself within a minute of a release.
 
 ---
 
-## 5. npx — nothing installed
+## 5. npx: nothing installed
 
 ```bash
 npx ux-ui-agent-skills demo        # copy the rendered examples and open them
@@ -162,12 +200,12 @@ installed.
 
 The half that does the work never depended on which agent is reading:
 
-- **14 token files** in DTCG format — colour, typography, spacing, motion,
+- **14 token files** in DTCG format: colour, typography, spacing, motion,
   theming, sizing, data-viz
 - **52 component specs** with anatomy, variants, the eight states, token mapping
   and ARIA
-- **138 named design systems**, each a complete spec
-- **52 objective gates** — 34 open a real browser, 18 read files
+- **2,144 named design systems**, each a complete spec
+- **52 objective gates**: 34 open a real browser, 18 read files
 
 Everything in the gate layer is plain Node and Python. Nothing in it knows which
 agent called it.
@@ -194,12 +232,12 @@ node scripts/verify_screen_economy.mjs <your page>
 npm install && npx playwright install chrome
 ```
 
-Without it a render gate prints `SKIPPED` and exits 0. That is not a pass — it
+Without it a render gate prints `SKIPPED` and exits 0. That is not a pass. It
 is a run that measured nothing. Set `DS_REQUIRE_BROWSER=1` when you intend to
 trust the exit code, and it fails loudly instead.
 
 > `node scripts/accuracy_report.mjs` is the kit's **own** self-test. It points at
-> the kit's examples and will report a low score anywhere else — a real Codex run
+> the kit's examples and will report a low score anywhere else. A real Codex run
 > scored 17/50 in a freshly installed project, which means nothing about that
 > project. Run it only inside a clone of the kit.
 
@@ -210,7 +248,7 @@ trust the exit code, and it fails loudly instead.
 Objective correctness: tokens, contrast, accessibility, drift. Not whether the
 work is any good.
 
-For the half no script can score there is `/critique` — an adversarial reviewer
+For the half no script can score there is `/critique`, an adversarial reviewer
 that renders the work, argues for rejection, and cites evidence per finding. It
 runs in a forked context so it never sees the reasoning that produced the work,
 because a critic holding the maker's argument reviews the argument instead of

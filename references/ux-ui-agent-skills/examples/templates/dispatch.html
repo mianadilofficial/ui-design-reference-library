@@ -11,22 +11,22 @@
 <style>
   .heat{display:grid;grid-template-columns:repeat(14,minmax(0,1fr));gap:2px;min-inline-size:0} /* ds-allow-hardcode: the 2px gutter is the grid line */
   .dc{aspect-ratio:1;border-radius:var(--radius-sm);
-    background:color-mix(in oklab,var(--color-feedback-warning) var(--i),var(--lin-raised))}
+    background:color-mix(in oklab,var(--color-feedback-warning-icon) var(--i),var(--lin-raised))}
   .legend{display:flex;align-items:center;gap:var(--space-2);font-family:var(--font-mono);font-size:var(--text-xs);
     color:var(--lin-ink-3);flex-wrap:wrap}
   .legend i{display:block;block-size:.5rem;inline-size:6rem;border-radius:var(--radius-full);
-    background:linear-gradient(90deg,var(--lin-raised),var(--color-feedback-warning))}
+    background:linear-gradient(90deg,var(--lin-raised),var(--color-feedback-warning-icon))}
   .big{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.04em;line-height:1;
     font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-inline-size:0}
   @media (max-width:46rem){.big{font-size:var(--text-3xl)}}
   .sd polyline.s{fill:none;stroke:var(--trm-accent);stroke-width:2}
-  .sd polyline.d{fill:none;stroke:var(--color-feedback-warning);stroke-width:2}
+  .sd polyline.d{fill:none;stroke:var(--color-feedback-warning-icon);stroke-width:2}
   .zones{display:grid;gap:var(--space-2)}
   .zrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:var(--space-3);align-items:center;
     font-size:var(--text-xs);padding-block:var(--space-2);border-block-start:1px solid var(--lin-hairline-soft)}
   .zrow:first-child{border-block-start:0}
   .zn{overflow-wrap:anywhere}
-  .mult{font-family:var(--font-mono);font-weight:700;color:var(--color-feedback-warning)}
+  .mult{font-family:var(--font-mono);font-weight:700;color:var(--color-feedback-warning-icon)}
   .split{display:flex;block-size:.625rem;border-radius:var(--radius-full);overflow:hidden;background:var(--lin-raised)}
   .split i{display:block;inline-size:var(--w)}
   .split i.t{background:var(--trm-accent)} .split i.p{background:var(--lin-accent)}
@@ -102,7 +102,7 @@
       <polyline class="d" points="0.0,25.9 7.5,26.3 15.0,26.1 22.5,29.5 30.0,31.7 37.5,35.0 45.0,38.9 52.5,42.1 60.0,43.4 67.5,48.4 75.0,53.8 82.5,54.4 90.0,63.1 97.5,61.8 105.0,66.6 112.5,73.0 120.0,73.8 127.5,73.9 135.0,75.1 142.5,74.0 150.0,72.2 157.5,73.7 165.0,72.2 172.5,69.8 180.0,63.5 187.5,62.7 195.0,58.9 202.5,57.0 210.0,52.3 217.5,48.4 225.0,42.5 232.5,36.3 240.0,36.1 247.5,34.9 255.0,29.2 262.5,31.3 270.0,25.3 277.5,24.1 285.0,24.3 292.5,28.4"/>
     </svg>
     <p class="legend"><span><i style="inline-size:1.5rem;background:var(--trm-accent)" aria-hidden="true"></i>Supply</span>
-      <span><i style="inline-size:1.5rem;background:var(--color-feedback-warning)" aria-hidden="true"></i>Demand</span></p>
+      <span><i style="inline-size:1.5rem;background:var(--color-feedback-warning-icon)" aria-hidden="true"></i>Demand</span></p>
   </section>
 
   <section class="panel s6">

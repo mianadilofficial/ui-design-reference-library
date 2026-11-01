@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>fold-aware, one pane per segment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { display:grid; grid-template-columns:minmax(0,1fr); }
+  .pane { padding:24px; min-inline-size:0; }
+  /* The other half of the fixture pair. When the screen folds, each pane takes
+     exactly one viewport segment and the gap between them is the hinge, so
+     nothing readable or tappable sits on it. The fallback in each env() is the
+     single-column layout every other browser gets. verify_responsive.mjs must
+     accept this and count it as fold-aware. */
+  @media (horizontal-viewport-segments: 2) {
+    main {
+      grid-template-columns:env(viewport-segment-width 0 0, 1fr) env(viewport-segment-width 1 0, 1fr);
+      column-gap:calc(env(viewport-segment-left 1 0, 0px) - env(viewport-segment-right 0 0, 0px));
+    }
+  }
+  button { font:inherit; padding:8px 16px; }
+  /* A row of tabs that scrolls sideways inside the first pane. Its text runs on
+     past the pane, across the hinge, but the nav cuts it off at its own edge, so
+     on screen nothing is there. The gate must measure where it is cut. */
+  .tabs { display:flex; gap:16px; overflow-x:auto; white-space:nowrap; }
+</style></head>
+<body><main>
+  <section class="pane"><nav class="tabs" aria-label="Folders"><a href="#">Inbox</a><a href="#">Flagged</a><a href="#">Drafts</a><a href="#">Sent</a><a href="#">Archive</a><a href="#">Newsletters</a><a href="#">Receipts</a><a href="#">Travel</a></nav><h2>Inbox</h2><p>Twelve unread messages from three people.</p></section>
+  <section class="pane"><h2>Selected thread</h2><p>Quarterly numbers, final draft attached.</p><button type="button">Reply to the thread</button></section>
+</main></body></html>

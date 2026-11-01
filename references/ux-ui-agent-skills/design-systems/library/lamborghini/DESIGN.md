@@ -1,291 +1,298 @@
-# Design System Inspired by Lamborghini
+---
+version: alpha
+name: Lamborghini
+category: "Automotive"
+description: "Automobili Lamborghini's website as measured on lamborghini.com — a square-cornered, uppercase-display system set in the proprietary LamboType (fallbacks Roboto, Helvetica Neue, Arial), with a 120px / 110px display headline, 72px-tall zero-radius buttons, a white canvas alternating with full-bleed near-black photographic bands (#181818, #000000), and a muted gold (#917300) filled button."
+colors:
+  canvas: "#ffffff"
+  ink: "#000000"
+  primary: "#917300"
+  on-primary: "#ffffff"
+  accent-yellow: "#ffc000"
+  surface-dark: "#181818"
+  ink-secondary: "#f5f5f5"
+  ink-muted: "#494949"
+  ink-faint: "#dcdcdc"
+  ink-subtle: "#969696"
+  nav-text: "#202020"
+  canvas-hover: "#c4c4c4"
+typography:
+  display:
+    fontFamily: LamboType, Roboto, "Helvetica Neue", Arial
+    fontSize: 120px
+    fontWeight: 400
+    lineHeight: 110px
+    textTransform: uppercase
+  display-mobile:
+    fontFamily: LamboType, Roboto, "Helvetica Neue", Arial
+    fontSize: 80px
+    fontWeight: 400
+    lineHeight: 70px
+    textTransform: uppercase
+  heading:
+    fontFamily: LamboType, Roboto, "Helvetica Neue", Arial
+    fontSize: 27px
+    fontWeight: 400
+    lineHeight: 37px
+    textTransform: uppercase
+  body:
+    fontFamily: LamboType, Roboto, "Helvetica Neue", Arial
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 26px
+rounded:
+  none: 0px
+spacing:
+  s1: 4px
+  s2: 8px
+  s3: 12px
+  s4: 16px
+  s5: 24px
+  s6: 32px
+  s7: 40px
+  s8: 48px
+  s9: 56px
+  s10: 64px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.none}"
+    padding: 24px
+    height: 72px
+  button-secondary:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.none}"
+    padding: 24px
+    height: 72px
+  button-secondary-hover:
+    backgroundColor: "{colors.canvas-hover}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.none}"
+    padding: 24px
+    height: 72px
+  button-outlined-on-dark:
+    textColor: "{colors.canvas}"
+    typography: "{typography.body}"
+    rounded: "{rounded.none}"
+    padding: 24px
+    height: 72px
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.none}"
+    padding: 24px 0px
+  nav:
+    textColor: "{colors.nav-text}"
+    rounded: "{rounded.none}"
+  nav-link:
+    textColor: "{colors.canvas}"
+    typography: "{typography.body}"
+    rounded: "{rounded.none}"
+    padding: 8px
+  footer:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ink-secondary}"
+    rounded: "{rounded.none}"
+---
 
-> Category: Automotive
-> Supercar brand. True black surfaces, gold accents, dramatic uppercase typography.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+Lamborghini's homepage is built from two kinds of surface: **full-bleed photographic bands** that run edge to edge (the capture opens on a dark, blurred track shot with the headline `REVUELTO SV` in white), and **plain white bands** that carry the model carousel. The two are separated by a hard edge, not a rounded card or a shadow. Everything with a box — buttons, nav, footer — has a radius of `{rounded.none}` (0px). The only soft shapes in the capture are inside imagery.
 
-Lamborghini's website is a cathedral of darkness — a digital stage where jet-black surfaces stretch infinitely and every element emerges from the void like a machine under a spotlight. The page is almost entirely black. Not dark gray, not near-black — true, uncompromising black (`#000000`) that saturates the viewport and refuses to yield. Into this abyss, white type and Lamborghini Gold (`#FFC000`) are deployed with surgical precision, creating a visual language that feels like walking through a nighttime motorsport event where every surface absorbs light except the things that matter.
+The interface is almost entirely typographic. One family, LamboType (declared as `LamboType, Roboto, "Helvetica Neue", Arial`), is the only font family measured on the page; it is used at a single weight, 400. All hierarchy comes from size, case and the width of the face rather than from weight changes. In the capture the headlines render in a visibly condensed cut, while the body copy and tab labels render in a normal-width cut; the site's CSS variables name several variable-font cuts (see Typography), but which exact cut each heading uses was not measured, so this document does not assign them.
 
-The hero is a full-viewport video — dark, cinematic, immersive — showing event footage or vehicle reveals with the Lamborghini bull logo floating ethereally above. The navigation is minimal: a centered bull logo, a "MENU" hamburger on the left, and search/bookmark icons on the right, all rendered in white against the black canvas. There are no borders, no visible nav containers, no background color on the header — just white marks floating in darkness. The overall mood is nocturnal luxury: exclusive, theatrical, and deliberately intimidating. Each section transition is a scroll through darkness into the next revelation.
-
-Typography is the voice of this darkness. LamboType — a custom Neo-Grotesk typeface created by Character Type and design agency Strichpunkt — is used for everything from 120px uppercase display headlines to 10px micro labels. Its distinctive 12° angled terminals are inspired by the aerodynamic lines of Lamborghini's super sports cars, and its proportions range from Normal to Ultracompressed width. Headlines SHOUT in uppercase at enormous scales with tight line-heights (0.92 at 120px), creating dense blocks of text that feel stamped from steel. The typeface carries hexagonal geometric DNA — constructed from hexagons, three-armed stars, and circles — that echoes throughout the interface in the hexagonal pause button and UI icons. Built on Bootstrap grid with 68 Element Plus/UI components, the technical infrastructure is substantial beneath the theatrical surface.
+Colour is restrained: white (`{colors.canvas}`), black (`{colors.ink}`), a near-black `{colors.surface-dark}`, and greys. The accents measured in the site's own CSS are two yellows. `{colors.primary}` (#917300), a dark muted gold, is the fill of the `EXPLORE THE MODEL` button with a white label. `{colors.accent-yellow}` (#ffc000) was measured as the fill of an anchor labelled `START CONFIGURATION`; in the capture that label shows as an underlined text link with no visible yellow fill, so where the bright yellow appears on screen is not confirmed here.
 
 **Key Characteristics:**
-- True black (`#000000`) dominant surfaces with white and gold as the only relief colors
-- LamboType custom Neo-Grotesk font with 12° angled terminals inspired by aerodynamic car lines
-- Lamborghini Gold (`#FFC000`) as the sole accent color — used exclusively for primary CTA buttons
-- All-uppercase display typography at extreme scales (120px, 80px, 54px) with tight line-heights
-- Full-viewport video heroes with cinematic event/vehicle content
-- Zero border-radius on buttons — sharp, angular, uncompromising rectangles
-- Hexagonal motifs in UI elements (pause button, icon system) echoing brand geometry
-- Bootstrap grid system + Element Plus/UI 68 components underneath
-- Transparent ghost buttons with white borders at 50% opacity as the secondary CTA pattern
+- Zero radius everywhere (`{rounded.none}`); no box-shadows were recorded on the homepage, and the border-radius frequency list is empty.
+- Uppercase display type: the h1 is 120px on a 110px line, uppercase; the h2 is 27px on 37px, uppercase.
+- Buttons are 72px tall with 24px padding, in 16px type — large, rectangular, easy targets.
+- Hover on a white button swaps the fill to `{colors.canvas-hover}`; the interface does not animate shape.
+- Hexagonal carousel arrows in the capture; the hexagon is the one recurring non-rectangular shape.
+- Legal consumption and emissions copy sits under the model carousel in small body text, not hidden.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary
-- **Lamborghini Gold** (`#FFC000`): The signature accent color — a warm, saturated amber-gold (rgb 255, 192, 0) used exclusively for primary action buttons ("Discover More", "Tickets", "Start Configuration"). The only chromatic color in the entire interface, it ignites against the black canvas like a headlight cutting through night
-- **Pure White** (`#FFFFFF`): Primary text color on dark surfaces, logo rendering, nav elements, and light-mode button fills — the voice that speaks from the darkness
+> **Source pages:** home (`/en-en`), desktop 1280px and mobile 390px extractions.
 
-### Secondary & Accent
-- **Dark Gold** (`#917300`): Hover/pressed state for gold buttons — a deep amber (rgb 145, 115, 0) that darkens the gold to signal interaction
-- **Gold Text** (`#FFCE3E`): Slightly lighter gold variant (rgb 255, 206, 62) used for inline text accents and highlighted labels
-- **Cyan Pulse** (`#29ABE2`): Electric blue-cyan (rgb 41, 171, 226) appearing as an informational accent and interactive element highlight
-- **Link Blue** (`#3860BE`): Medium blue (rgb 56, 96, 190) used universally for link hover states across all text colors
+### Brand & Accent
+- **Gold** (`{colors.primary}` — `#917300`): Fill of the `EXPLORE THE MODEL` button, white label (`{colors.on-primary}`). Also the underline under the active model tab in the capture (colour of the underline matches the gold button visually; the exact value of the underline was not separately measured).
+- **Yellow** (`{colors.accent-yellow}` — `#ffc000`): Measured fill of the `START CONFIGURATION` anchor (text `{colors.ink}`). The site's CSS also defines a `--yellow` and `--warning` variable as `#dfb400`, a different value; both are in the CSS but this document uses only `#ffc000`.
 
-### Surface & Background
-- **Absolute Black** (`#000000`): The dominant surface color — used for page background, hero sections, header, footer, and most containers
-- **Charcoal** (`#202020`): Elevated dark surface (rgb 32, 32, 32) — the primary "dark gray" for cards, panels, and text containers sitting above the black canvas
-- **Dark Iron** (`#181818`): Subtle surface variant (rgb 24, 24, 24) — barely distinguishable from black, used for footer and deep sections
-- **Overlay Black** (`rgba(0,0,0,0.7)`): Semi-transparent overlay for modals and video dimming
-- **Near White** (`#F8F8F8`): Rare light surface (rgb 248, 248, 248) for content blocks in white-mode sections
-- **Mist** (`#E6E6E6`): Light gray surface for secondary light-mode containers
+### Surface
+- **Canvas** (`{colors.canvas}` — `#ffffff`): Model carousel band and the `DISCOVER MORE` / `FIND YOUR DEALER` button fills.
+- **Surface dark** (`{colors.surface-dark}` — `#181818`): Colour of the header's top-to-transparent gradient (`linear-gradient(rgb(24, 24, 24), rgba(24, 24, 24, 0))` on the nav) and a large share of measured background area.
+- **Ink black** (`{colors.ink}` — `#000000`): The footer fill and the largest measured background area on the page.
 
-### Neutrals & Text
-- **Pure White** (`#FFFFFF`): Primary text on dark backgrounds — headlines, body, nav labels
-- **Smoke** (`#F5F5F5`): Secondary text on dark surfaces — slightly softer than pure white
-- **Graphite** (`#494949`): Dark gray text on light surfaces (rgb 73, 73, 73)
-- **Ash** (`#7D7D7D`): Mid-range gray for muted text, timestamps, and metadata (rgb 125, 125, 125)
-- **Steel** (`#969696`): Lighter gray for disabled text and subtle labels (rgb 150, 150, 150)
-- **Slate** (`#666666`): Alternative mid-gray for secondary content
-- **Iron** (`#555555`): Dark mid-gray for body text variants
-- **Shadow** (`#313131`): Very dark gray for text on dark surfaces where white is too strong
+### Text
+- **Ink** (`{colors.ink}` — `#000000`): Text on white bands and on the white and yellow buttons.
+- **Nav text** (`{colors.nav-text}` — `#202020`): The measured colour of the header and body element.
+- **Ink secondary** (`{colors.ink-secondary}` — `#f5f5f5`): Measured as the most-read text colour by character count, used on dark bands and in the footer.
+- **Ink muted** (`{colors.ink-muted}` — `#494949`): Hover text and border colour of the `DISCOVER ALL MODELS` link (on a `#f5f5f5` hover fill).
+- **Ink faint** (`{colors.ink-faint}` — `#dcdcdc`) and **Ink subtle** (`{colors.ink-subtle}` — `#969696`): Secondary text greys measured by character count. The capture shows inactive carousel tabs in a lighter grey than the active tab; the exact colour of those tab labels was not confirmed against these two values.
+- **Canvas hover** (`{colors.canvas-hover}` — `#c4c4c4`): Fill of the `DISCOVER MORE` button on hover, and text colour of the `MENU` button on hover.
 
-### Semantic & Accent
-- **Cyan Pulse** (`#29ABE2`): Used for informational highlights and interactive feedback
-- **Link Blue** (`#3860BE`): Universal hover state for all hyperlinks
-- **Teal Action** (`#1EAEDB`): Button hover background for transparent/ghost variants (rgb 30, 174, 219)
+### Colours present in CSS but not used here
+The site ships a Bootstrap-style palette in its root variables (`--blue #007bff`, `--red #dc3545`, `--success #28a745`, `--info #17a2b8`, `--purple #6f42c1`, `--pink #e83e8c`, `--teal #20c997`, `--orange #fd7e14`, and a `--primary` of `#007bff`). These are generic framework defaults sitting in the stylesheet; none of them was measured on a visible homepage element, so none is a brand colour in this file. `--swiper-theme-color #007aff` is the carousel library's default.
 
-### Gradient System
-- No explicit gradients in the color palette — the dark-to-light progression is achieved through surface layering: `#000000` → `#181818` → `#202020` → `#494949` → `#7D7D7D`
-- Video heroes use natural atmospheric gradients from the content itself
-- Top-of-page gradient: subtle dark-to-darker fade at the edges of full-bleed imagery
+### Gradients
+Root variables define `--gradient-1` through `--gradient-4`, `--gradient-header`, `--gradient-top` and `--gradient-bottom`. They are all vertical (180deg) fades between `#181818` / `#000000` / `#f5f5f5` / `#ffffff` and transparent, used to let photography fade into a solid band. The capture shows exactly this at the hero's bottom edge and at the top of the dealer locator band.
 
-## 3. Typography Rules
+## Typography
 
-### Font Family
-- **Display & UI**: `LamboType`, Roboto, Helvetica Neue, Arial — custom Neo-Grotesk typeface by Character Type for Lamborghini's 2024 brand refresh. Available in widths from Normal to Ultracompressed and weights from Light (300) to Black. Features 12° angled terminals inspired by aerodynamic car geometry, hexagonal construction logic, and support for 200+ languages including Latin, Cyrillic, and Greek
-- **Fallback/UI**: `Open Sans` — used for some button/form contexts as system fallback
-- **No italic variants** observed on the marketing site — the brand voice is always upright
+### Family
+- **LamboType** — declared first in `LamboType, Roboto, "Helvetica Neue", Arial`. The page loads `LamboType normal normal` and `Open Sans 700 normal`; every measured character (by count) is LamboType, and the Open Sans load was not found on any measured text.
+- Root variables name these cuts: `Lambotype Variable`, `Lambotype Variable Regular`, `Lambotype Variable Bold`, `Lambotype Variable UltraCnd Bold`, `Lambotype Variable UltraCnd Black`, `Lambotype Variable Cnd Bold`, `Lambotype Variable Italic`. The names show the family spans normal, condensed and ultra-condensed widths. Which cut sits on which element is not recorded by the extractor.
+- Every measured weight is 400. The cuts are chosen by width and style, so `fontWeight` is 400 in all tokens.
 
 ### Hierarchy
+| Token | Size | Line height | Case | Role |
+|---|---|---|---|---|
+| `{typography.display}` | 120px | 110px | uppercase | Hero h1 (`REVUELTO SV`) on desktop |
+| `{typography.display-mobile}` | 80px | 70px | uppercase | Same h1 at 390px width |
+| `{typography.heading}` | 27px | 37px | uppercase | Hero h2 (`THE QUANTUM OF DRIVING`) on desktop |
+| `{typography.body}` | 16px | 26px | none | Paragraphs, buttons, tab labels |
 
-| Role | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|--------|-------------|----------------|-------|
-| Hero Display | 120px (7.50rem) | 400 | 0.92 | normal | LamboType, uppercase, maximum impact |
-| Display 2 | 80px (5.00rem) | 400 | 1.13 | normal | LamboType, uppercase, major section titles |
-| Section Title | 54px (3.38rem) | 400 | 1.19 | normal | LamboType, uppercase |
-| Sub-section | 40px (2.50rem) | 400 | 1.15 | normal | LamboType, uppercase |
-| Feature Heading | 27px (1.69rem) | 400 | 1.37 | normal | LamboType, uppercase |
-| Card Title | 24px (1.50rem) | 400 | — | normal | LamboType |
-| Body Large | 18px (1.13rem) | 400 | 1.56 | normal | LamboType, mixed case and uppercase variants |
-| Body / UI | 16px (1.00rem) | 400/700 | 1.50 | normal/0.16px | LamboType, primary body text |
-| Button Large | 16px (1.00rem) | 400 | 1.50 | normal | Gold CTA buttons |
-| Button Standard | 14.4px (0.90rem) | 300/700 | 1.00 | 0.14–0.2px | LamboType, uppercase, ghost buttons |
-| Button Small | 13px (0.81rem) | 300/500 | 1.20 | 0.13–0.2px | LamboType, compact button variant |
-| Caption | 14px (0.88rem) | 600/700 | 1.14–1.50 | -0.42px | LamboType, uppercase, negative tracking |
-| Label | 12px (0.75rem) | 400/500 | 1.83 | 0.96px | LamboType, uppercase badges and micro labels |
-| Micro | 10px (0.63rem) | 400 | 1.00–2.00 | 0.225px | LamboType, uppercase, smallest text |
+Other sizes measured by character count on the desktop page: 18px (280 characters), 12px (109), 80px (78), 40px (6). The 18px size is the mobile h2 and a frequent secondary size. The 12px size is the smallest in use. The `MODELS` section heading in the capture is a mid-size uppercase heading; its exact size was not recorded as a role, so it is not tokenised.
 
 ### Principles
-- **ALL-CAPS is the default voice**: Display and feature headings are universally uppercase. This creates a shouting, commanding tone that matches the brand's aggression
-- **Extreme scale range**: From 120px heroes to 10px micro labels — a 12:1 ratio that creates dramatic visual hierarchy
-- **Tight line-heights at scale**: Display sizes use 0.92-1.19 line-height, creating dense, compressed blocks of type that feel stamped rather than typeset
-- **Weight 400 dominates**: Unlike many design systems that use bold for emphasis, Lamborghini's regular weight carries the headlines — the typeface itself is so distinctive it doesn't need weight variation
-- **Negative tracking on captions**: -0.42px letter-spacing on 14px captions creates a compressed, technical aesthetic
-- **Positive tracking on micro text**: +0.225px at 10px ensures legibility at the smallest sizes
-- **Single typeface discipline**: LamboType handles everything — the 12° angled terminals and hexagonal geometry provide visual coherence across all sizes
+- **Uppercase carries the brand voice.** Headlines, nav labels and button labels read in capitals in the capture (`DISCOVER MORE`, `START CONFIGURATION`, `ENQUIRE`, `FIND YOUR DEALER`). The extractor's recorded `textTransform` for the button anchors is `none`, which means the capitals come from the source text itself, not a CSS transform, while the headings use `text-transform: uppercase`.
+- **Tight leading on display, open leading on body.** The h1 line height (110px) is below its font size (120px); body uses 26px on 16px.
+- **No letter-spacing** is recorded (`normal`) on any measured role. Root variables define `--letter-spacing-2: 0.36px`, but no measured role uses it.
+- **Single weight.** Do not introduce a bold weight to create emphasis.
 
-## 4. Component Stylings
+### Font substitutes
+LamboType is proprietary and is not published for download on the pages that were opened. The site's own fallback stack is `Roboto, "Helvetica Neue", Arial`. For an implementation outside lamborghini.com use that stack, and for the condensed headline look use a condensed grotesque with uppercase text at the same size and line height. This is a pragmatic suggestion, not something the site specifies.
+
+## Layout
+
+- **Page width:** the extraction viewport is 1280px; the root variables define breakpoints `--breakpoint-xs 0`, `sm 576px`, `md 768px`, `lg 992px`, `xl 1200px`, `xxl 1440px` (Bootstrap-style names).
+- **Spacing scale:** the root variables expose a rem scale, `--scale-spacing-0` 0.25rem (4px) through `--scale-spacing-11` 5.5rem (88px), plus `--scale-spacing-grid` 3.75rem (60px). The tokens `{spacing.s1}` to `{spacing.s10}` are the subset measured on the page (4, 8, 12, 16, 24, 32, 40, 48, 56, 64px).
+- **Most used gaps:** 24px (57 occurrences), then 8px, 16px and 48px. **Most used paddings:** 24px, 8px, 12px, 16px, 4px.
+- **Left-aligned hero:** in the capture the eyebrow, headline and button align to one left margin; the white `DISCOVER MORE` button sits at the right edge of the same row, on the baseline of the headline block.
+- **Centred carousel:** the models band centres the model logo lettering, the tagline, the car image, the tab row and the three actions on one axis; the previous / next hexagon controls sit at the far left and far right.
+- **Section rhythm:** hero (full viewport photograph), white models band, dealer locator photographic band with its own headline and a white button, then the dark footer. Each band is a full-width rectangle.
+- **Page length:** about 4217px tall at desktop width.
+
+## Elevation & Depth
+
+There is no measured elevation. The border-radius and box-shadow frequency lists on the desktop extraction are empty, and every role records `boxShadow: null`. Depth in the capture comes from:
+
+1. **Photography** — the hero and dealer locator bands are full-bleed images, darkened toward the bottom with the vertical gradients above.
+2. **Tonal change** — white to `{colors.surface-dark}` to `{colors.ink}` between bands.
+3. **The car cut-out** — the model image in the carousel carries its own soft ground shadow inside the picture; that is photography, not a CSS shadow.
+4. **Borders on dark** — a `1px solid #ffffff` border (the only border colour measured) on the `ENQUIRE` outlined button over dark bands.
+
+Hover states change fill and border colour only; no lift or shadow was recorded.
+
+## Shapes
+
+- **Radius:** `{rounded.none}` (0px) on every measured role, including buttons, nav, links and footer.
+- **Border radius variables** exist in the CSS (`--border-radius-radius-0` 0px, `-1` 4px, `-2` 8px, `-4` 16px) but none is used by a measured visible element. Treat 0px as the rule.
+- **Stroke variables:** `--border-stroke-stroke-0` 0px, `-1` 1px, `-2` 2px, `-3` 4px, `-4` 8px. The measured border is 1px.
+- **Hexagon:** the carousel arrows in the capture are outlined hexagons with a thin chevron inside. The configure action also shows a small hexagonal icon in the capture. This is the only non-rectangular UI shape visible.
+- **Underlines as shape:** the `DISCOVER ALL MODELS` link and the `START CONFIGURATION` label in the capture are rules under text, not boxes; the active model tab has a coloured underline and inactive tabs have a thin grey one.
+
+## Components
 
 ### Buttons
-All buttons use **zero border-radius** — sharp, angular rectangles that echo the aggressive lines of Lamborghini vehicles.
+- **`button-primary`** — fill `{colors.primary}`, label `{colors.on-primary}`, `{typography.body}`, 72px high, 24px padding, no radius. Instance: `EXPLORE THE MODEL`, with a right arrow in the capture.
+- **`button-secondary`** — fill `{colors.canvas}`, label `{colors.ink}`, same size. Instances: `DISCOVER MORE` (over the hero photograph) and `FIND YOUR DEALER` (over the dealer photograph). Hover fill `{colors.canvas-hover}` (`button-secondary-hover`).
+- **`button-outlined-on-dark`** — transparent fill, `{colors.canvas}` label, 1px white border. Instance: `ENQUIRE` (a `button` element) as measured on the dark variant. In the capture's white band the same action appears with dark text and an envelope icon and no box, so the outlined form is specific to dark bands.
+- **Accent anchor** — `START CONFIGURATION`, measured fill `{colors.accent-yellow}`, text `{colors.ink}`, 72px high, 24px padding, 253px wide. See Colors for the visibility caveat.
+- **`MENU`** — a button with a white label and white border on transparent; on hover the text becomes `{colors.canvas-hover}`, the fill `{colors.surface-dark}` and the border `{colors.canvas-hover}`. Height 44px.
 
-**Gold Accent CTA** — The primary action:
-- Default: bg `#FFC000` (Lamborghini Gold), text `#000000`, padding 24px, fontSize 16px, fontWeight 400, borderRadius 0px, no border
-- Hover: bg `#917300` (Dark Gold), darkens significantly
-- Class: `btn-accent btn-large`
-- Used for: "Discover More", "Tickets", "Start Configuration"
-
-**Transparent Ghost** — The secondary action on dark backgrounds:
-- Default: bg transparent, text `#FFFFFF`, border 1px solid `#FFFFFF`, padding 16px, opacity 0.5
-- Hover: bg `#1EAEDB` (Teal Action), text white, opacity 0.7
-- Focus: bg `#1EAEDB`, border 1px solid `#000000`, outline 2px solid `#000000`
-- Used for: secondary CTAs on hero sections and dark panels
-
-**White Filled** — Light-mode primary:
-- Default: bg `#FFFFFF`, text `#202020`, no border
-- Used for: CTAs on dark sections where gold isn't appropriate
-
-**Black Filled** — Dark filled variant:
-- Default: bg `#000000`, text `#202020`
-- Used for: Inverted CTA on light sections
-
-**Gray Neutral** — Subtle action:
-- Default: bg `#969696`, text `#202020`
-- Used for: secondary/tertiary actions, badge-like buttons
-
-### Cards & Containers
-- Background: `#202020` (Charcoal) on black canvas, or `#000000` on lighter sections
-- Border: `0px 1px solid #202020` bottom borders for section dividers
-- Border-radius: 0px (completely sharp corners)
-- Shadow: minimal, uses overlay opacity for depth
-- Content: full-bleed photography + overlaid text in white
-
-### Inputs & Forms
-- Minimal form presence on the marketing site
-- Switch elements: border-radius 20px (the only rounded element), border 1px solid `#DDDDDD`
-- Cookie banner input style: white text on black with `#7D7D7D` borders
+### Links
+- **`link`** — `{colors.ink}`, `{typography.body}`, padding `24px 0px`, with an underline rule and a trailing arrow in the capture (`DISCOVER ALL MODELS`). Hover: fill `{colors.ink-secondary}`, text and border `{colors.ink-muted}`.
 
 ### Navigation
-- **Desktop**: Centered bull logo, "MENU" hamburger with icon on left, search icon + bookmarks icon on right
-- **Background**: Transparent (inherits black page background)
-- **Sticky**: Fixed to top, floats above content
-- **No visible borders or shadows** — elements float in the darkness
-- **"MENU" label**: White text at 14px weight 400, uppercase, accompanies hamburger icon
-- **Hexagonal motifs**: Pause button on hero sections uses hexagonal outline shape
+- **`nav`** — a `header` 104px tall at desktop and 80px at 390px width, with a top-to-transparent gradient from `{colors.surface-dark}`. At 390px the capture shows a hamburger icon on the left, the bull emblem centred and a search icon on the right.
+- **`nav-link`** — `{colors.canvas}` on the dark header, `{typography.body}`, 8px padding.
+- **Menu items** (from the homepage text): Models, Ownership, Dealerships, Beyond, Company, Motorsport, Museum, Store; secondary list: Design, History, Financial services, Warranty extension, Driving Programs, Lounge, Club.
 
-### Image Treatment
-- **Hero**: Full-viewport video sections (100vh) with cinematic event/vehicle footage
-- **Event photography**: Full-bleed aerial shots of Lamborghini Arena events
-- **Vehicle imagery**: High-contrast studio shots on dark backgrounds, full-width
-- **Aspect ratios**: Predominantly 16:9 and wider for cinematic feel
-- **Dark gradient overlays**: Subtle darkening at top/bottom edges of video to ensure text legibility
+### Model carousel
+In the capture the carousel stacks: model name lettering, the tagline in a condensed grey uppercase, the car image, then three text tabs (`REVUELTO SV`, `REVUELTO MIURA 60° HOMAGE`, `REVUELTO`), then `EXPLORE THE MODEL`, `START CONFIGURATION` and `ENQUIRE`. A partial next slide (a yellow car) peeks at the right edge to signal swiping. The component is built with the Swiper library (`--swiper-theme-color` and `--swiper-navigation-size: 44px` appear in the CSS).
 
-### Distinctive Components
-- **Hexagonal Pause Button**: Video control uses a hexagonal outline (matching the brand's geometric DNA from the typeface), positioned bottom-right of hero sections
-- **Progress Bar**: Thin white line at bottom of hero sections indicating video/slide progress
-- **Badge/Tag**: bg `#969696`, text white, padding 8px, fontSize 10px, borderRadius 2px — tiny metallic pills
+### Dealer locator band
+A photograph (the capture shows an orange car beside a showroom interior) with the headline `DEALER LOCATOR` in large white uppercase over the image, and a white `FIND YOUR DEALER` button below it.
 
-## 5. Layout Principles
+### Footer
+- **`footer`** — fill `{colors.ink}`, text `{colors.ink-secondary}`, about 962px tall at desktop. Links in uppercase: Company, Cookie settings, Financials, Media Center, Sitemap, Careers, Recall Campaign, Privacy & Legal, Newsletter, Contact us, Accessibility. Social platforms listed: Instagram, Threads, Facebook, YouTube, Twitter, TikTok, LinkedIn, Weibo, Youku, WeChat, Discord. Legal notices follow, including an emissions-values notice and a warning about illegal offers of shares.
 
-### Spacing System
-- **Base unit**: 8px
-- **Full scale**: 2px, 4px, 5px, 8px, 10px, 12px, 15px, 16px, 20px, 24px, 32px, 40px, 48px, 56px
-- **Button padding**: 16px (ghost), 24px (gold accent)
-- **Section padding**: 48–56px vertical, 40px horizontal
-- **Small spacing**: 2–5px for fine adjustments (badge padding, border spacing)
+### Inputs and cards
+No input and no card were detected on the homepage (`input: null`, `cards: []`), so this file defines none.
 
-### Grid & Container
-- **Framework**: Bootstrap grid system (container + row + col)
-- **Max width**: 1440px (largest breakpoint)
-- **Columns**: Standard 12-column Bootstrap grid
-- **Full-bleed**: Hero sections break out of grid to fill viewport edge-to-edge
-- **Content areas**: Centered within 1200px max-width containers
+## Imagery & Voice
 
-### Whitespace Philosophy
-Lamborghini uses darkness as whitespace. The generous black expanses between content blocks serve the same function as white space in a light design — creating breathing room that elevates each element to the status of exhibit. A model name floating in the middle of a black viewport has the same visual weight as a gallery piece on a white wall. The absence of color IS the design.
+- **Hero:** a dark, motion-blurred shot of the Revuelto SV on a track in the capture, with the eyebrow `THE QUANTUM OF DRIVING` above the model name and a single white button.
+- **Model images:** side-on studio cut-outs on a white ground, one car per slide, with a faint ground shadow in the image itself.
+- **Dealer band:** an orange Urus-style car shown from behind next to a showroom interior (fabric swatches on a wall, white sofas). The model name printed on the car in the image is not legible enough in the capture to state.
+- **Slide captions in the page text:** `The quantum of driving` (Revuelto SV), `Urus at its peak` (Urus SE Performante) and `You can't hide who you are` (Urus SE). They are short declarative phrases, sentence-case in the source and rendered uppercase in headings.
+- **Calls to action** are verbs plus the object: `Explore the model`, `Start configuration`, `Enquire`, `Discover more`, `Discover all models`, `Find your dealer`. No exclamation marks, no emoji, no second-person chatter in the copy that was read.
+- **Legal copy** (consumption and emissions values, a legal guarantee notice, an EU label reference) is printed in plain body type directly under the carousel rather than hidden in a modal.
+- **Models listed on the homepage:** Revuelto SV, Urus SE Performante, Temerario, Revuelto, Urus SE. Each carries the same two actions, `Start configuration` and `Enquire`, so the page repeats one pattern per model instead of varying it.
+- **Density:** low. The capture shows large empty areas around the carousel; each screen holds one headline, one image and one action row.
+- **Contrast:** white type over darkened photography in the hero and dealer bands; black type on white in the carousel band. No grey-on-grey body text was seen at body size.
+- **Iconography:** thin-stroke line icons (hamburger, search, arrows, envelope, a small hexagonal configure icon) in the colour of the adjacent text.
+- **Emblem:** the bull emblem is centred in the mobile header in the capture; its exact colours were not measured.
+- **Accessibility affordances in the page text:** a `Skip to main content` link, a `Text size` control and an `Allow animations` toggle appear in the header text, so motion and size are user-controllable.
+- **Tone:** the page does not use marketing superlatives in the headings that were read; it names the model and states a short line.
 
-### Border Radius Scale
-| Value | Context |
-|-------|---------|
-| 0px | Default for everything — buttons, cards, containers, images |
-| 1px | Subtle span elements |
-| 2px | Badges, close buttons, cookie elements — barely perceptible |
-| 20px | Toggle switches only — the sole rounded element |
+## Design System Architecture
 
-## 6. Depth & Elevation
+**No public Lamborghini design system, token package or brand-guidelines site was found.** Searches turned up secondary articles and aggregator pages, and the official news page rendered no article text, so none of that is used here. What can be stated comes from the site's shipped CSS and DOM:
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Level 0 (Abyss) | `#000000` flat | Page background, deepest layer |
-| Level 1 (Surface) | `#181818` or `#202020` | Cards, content panels, elevated sections |
-| Level 2 (Overlay) | `rgba(0,0,0,0.7)` | Modal backdrops, video dimming |
-| Level 3 (Fog) | `rgba(0,0,0,0.5)` | Lighter overlays, hover states |
-| Level 4 (Mist) | `rgba(0,0,0,0.25)` | Subtle depth hints |
+- **Variable naming:** the root variables mix two layers. One is a Bootstrap 4 palette and breakpoints (`--blue`, `--indigo`, `--gray-dark`, `--breakpoint-xl`, `--font-family-sans-serif`). The other is a design-tool token export with numbered scales: `--font-size-0` to `--font-size-18` (0.625rem to 8.5rem), `--line-heights-0` to `--line-heights-17`, `--scale-spacing-*`, `--border-radius-radius-*`, `--border-stroke-stroke-*`, `--letter-spacing-*`, `--opacity-alpha-*`, `--text-case-*`, `--paragraph-*`. The second layer looks like an export from a design token tool; the tool itself is not named anywhere that was opened.
+- **Type scale:** the numbered font sizes include 1rem (`-2`), 1.125rem (`-3`), 1.5rem (`-4`), 1.6875rem (`-5`, the 27px heading), 1.75rem, 2.125rem, 2.25rem, 2.5rem, 3rem, 3.125rem, 3.375rem, 3.75rem, 4.375rem, 5rem, 5.625rem, 7.5rem (`-17`, 120px, the display) and 8.5rem (`-18`). The matching line-height variables include 4.375rem (70px) and 6.875rem (110px), the mobile and desktop display line heights.
+- **Opacity scale:** 0 to 1 in steps of 0.1.
+- **Frameworks:** Bootstrap-style grid variables and the Swiper carousel library show in the CSS. The site loads `Open Sans 700` as well as LamboType; its use was not found.
+- **Colour tokens are not exported as brand names.** Only the Bootstrap palette and the gradient variables appear as named colours; the gold and the near-black are referenced as literals in rules.
+- **Implication:** to reuse this system, take the type scale and spacing scale from the variables, hold radius at 0, and use literal hex values from the Colors section.
 
-### Shadow Philosophy
-Lamborghini achieves depth through surface color layering rather than shadows. On a black canvas, traditional drop shadows are invisible — instead, the system creates elevation by shifting from absolute black to progressively lighter dark grays: `#000000` → `#181818` → `#202020` → `#494949`. This "darkness gradient" approach means that elevated elements are literally lighter than their surroundings, inverting the traditional shadow model.
-
-### Decorative Depth
-- Full-bleed video provides atmospheric depth through cinematic lighting
-- The hexagonal pause button floats with a thin white outline stroke
-- Progress bars at hero section bottoms create a subtle horizon line
-- No gradients, glows, or blur effects on UI elements — the photography provides all visual richness
-
-## 7. Do's and Don'ts
+## Do's and Don'ts
 
 ### Do
-- Use absolute black (`#000000`) as the primary background — never dark gray as a substitute
-- Apply Lamborghini Gold (`#FFC000`) exclusively for primary CTA buttons — never for decorative purposes
-- Set all display headings in uppercase with LamboType — the brand voice is always SHOUTING
-- Use zero border-radius on buttons and cards — sharp angles are non-negotiable
-- Maintain tight line-heights (0.92–1.19) on display type to create dense, architectural text blocks
-- Use the transparent ghost button (white border, 50% opacity) as the secondary CTA on dark backgrounds
-- Let full-viewport video/photography carry emotional weight — UI is infrastructure, not decoration
-- Reserve hexagonal geometry for UI icons and the video control button
-- Use weight 400 (regular) for headlines — the typeface is distinctive enough without bold emphasis
-- Keep the gray palette achromatic — all neutrals are pure gray without color tinting
+- Keep every box square: `{rounded.none}` on buttons, nav and footer.
+- Set headlines in uppercase at the display and heading sizes with the tight line heights (110px on 120px, 37px on 27px).
+- Use one weight (400) and let width, size and case do the hierarchy work.
+- Make buttons 72px tall with 24px padding, and give them a white or dark fill with a clear label, plus a trailing arrow where the capture shows one.
+- Let photography run full bleed and fade to `{colors.surface-dark}` or `{colors.ink}` with a vertical gradient.
+- Reserve the filled gold `{colors.primary}` button for the single most important model action.
+- Keep legal and consumption copy visible under the carousel in `{typography.body}`.
 
 ### Don't
-- Introduce additional accent colors beyond gold — the monochrome-plus-gold system is sacred
-- Apply border-radius to buttons or cards — curved edges contradict the angular vehicle aesthetic
-- Use LamboType in italic or decorative styles — the brand is always upright and direct
-- Add gradients to buttons or surfaces — depth comes from surface layering, not blending
-- Use light backgrounds as the primary canvas — darkness is the default state, light is the exception
-- Mix lowercase into display headings — the uppercase convention communicates authority and power
-- Add hover animations with scale or translate — interactions should be color-only (background/opacity shifts)
-- Use Open Sans for display text — LamboType must handle all visible typography
-- Create busy layouts with many small elements — Lamborghini's design is about singular, bold statements
-- Apply shadows to elements — on a black canvas, shadows are meaningless; use surface color shifts instead
+- Don't round corners, add drop shadows or use pill shapes; none were measured.
+- Don't use the Bootstrap palette from the stylesheet (blue, teal, purple) as brand colour.
+- Don't add bold weights or letter-spacing to headlines; every measured weight is 400 and spacing is normal.
+- Don't put the white button on a white band; the white fills sit on photography and the carousel uses text links and the gold fill.
+- Don't stack more than one filled button in a group; the capture shows one filled button flanked by text actions.
+- Don't assert that the yellow `#ffc000` appears as a visible fill on the homepage; it was measured on an anchor but not located in the capture.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <425px | Single column, reduced type scale, stacked buttons |
-| Mobile | 425-576px | Single column, hamburger nav, hero text ~40px |
-| Tablet Small | 576-768px | 2-column grid begins, padding adjusts |
-| Tablet | 768-1024px | 2-column layout, expanded hero, vehicle cards side-by-side |
-| Desktop | 1024-1280px | Full navigation, 3+ column grids, display text at 80px |
-| Desktop Large | 1280-1440px | Full layout, hero at 120px display, max-width containers |
-| Wide | >1440px | Content centered, margins expand, hero fills viewport |
+- **Display scales down:** the h1 goes from 120px / 110px (`{typography.display}`) to 80px / 70px (`{typography.display-mobile}`) at the 390px mobile extraction. The h2 drops from 27px to 18px (line height 28px) at that width.
+- **Body stays 16px** with a 26px line height at both widths.
+- **Buttons:** the mobile extraction records `START CONFIGURATION` at 16px type, 16px padding and 56px height, full-width (342px in a 390px viewport), against 72px height and 24px padding on desktop. So buttons shrink in height and padding, and can stretch to the column width.
+- **Mobile text colour:** the h1 and h2 are `#ffffff` over the hero photograph; body is `{colors.ink-secondary}`.
+- **Breakpoints** come from the CSS variables: 576px, 768px, 992px, 1200px and 1440px. Which of them the layout actually changes at was not tested; only the 1280px and 390px widths were measured.
 
-### Touch Targets
-- Gold CTA buttons: 48px+ minimum height with 24px padding (exceeds WCAG 44×44px)
-- Ghost buttons: 48px+ with 16px padding
-- Hamburger menu: large touch target (~48px square)
-- Hexagonal pause button: approximately 48px diameter
+## Iteration Guide
 
-### Collapsing Strategy
-- **Navigation**: Always hamburger-based ("MENU" + icon) — no horizontal nav expansion on any breakpoint
-- **Hero video**: Maintains full-viewport height across all breakpoints, adjusting object-fit
-- **Display type**: Scales from 120px (desktop) → 80px (tablet) → 54px/40px (mobile)
-- **Button layout**: Side-by-side on desktop, stacks vertically on mobile
-- **Grid columns**: 3-column → 2-column → 1-column progression
-- **Section spacing**: Reduces from 56px → 40px → 24px vertical padding
+1. Start from the white canvas and the dark band pair: `{colors.canvas}` and `{colors.surface-dark}` / `{colors.ink}`.
+2. Set all type in the LamboType stack at weight 400. Use `{typography.display}` for one hero headline per page, `{typography.heading}` for secondary lines, `{typography.body}` for everything else.
+3. Build buttons first: 72px height, 24px padding, 0px radius. Pick one filled button (gold) and make the rest white-filled or text links.
+4. Add hover states by swapping the fill to `{colors.canvas-hover}` for white buttons and to `{colors.ink-secondary}` with `{colors.ink-muted}` text for text links.
+5. Introduce photography as full-bleed bands, then fade the edges with a 180deg gradient to the band colour.
+6. Draw carousel controls as outlined hexagons and underline the active tab.
+7. When a value is not in the Colors section, measure it from the live page before using it; do not borrow from the Bootstrap defaults in the stylesheet.
+8. Validate: `node web/scripts/verify-designs.mjs --slug=lamborghini`.
 
-### Image Behavior
-- Hero videos use `object-fit: cover` to maintain cinematic framing at all sizes
-- Vehicle images scale within their containers with maintained aspect ratios
-- Event photography crops to viewport width on narrow screens
-- Background images darken at edges to maintain text contrast on all viewports
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary CTA: "Lamborghini Gold (#FFC000)"
-- Background: "Absolute Black (#000000)"
-- Surface: "Charcoal (#202020)"
-- Heading text: "Pure White (#FFFFFF)"
-- Body text: "Ash (#7D7D7D)"
-- Link hover: "Link Blue (#3860BE)"
-- Accent: "Cyan Pulse (#29ABE2)"
-- Border: "Pure White (#FFFFFF) at 50% opacity"
-
-### Example Component Prompts
-- "Create a hero section with a full-viewport black background, the model name 'TEMERARIO' in LamboType at 120px uppercase weight 400 white text with 0.92 line-height, centered vertically, with a Lamborghini Gold (#FFC000) 'Discover More' button below — sharp corners, 0px radius, 24px padding, black text"
-- "Design a transparent ghost button with 1px solid white border at 50% opacity, white text at 14.4px uppercase with 0.2px letter-spacing, padding 16px, on a black background — hover state changes to Teal Action (#1EAEDB) background with 70% opacity"
-- "Build a navigation bar with zero visible background on absolute black, a centered bull logo, 'MENU' text label with hamburger icon on the left, and search + bookmark icons on the right — all in white, sticky position"
-- "Create a news card grid on charcoal (#202020) background with white headlines at 27px uppercase, body text in #7D7D7D at 16px, and a white underlined 'Read More' link that turns #3860BE on hover"
-- "Design a section divider using a 1px solid bottom border in #202020 on a black canvas — the elevation difference is purely through surface color shift, not shadow"
-
-### Iteration Guide
-When refining existing screens generated with this design system:
-1. Focus on ONE component at a time — Lamborghini's system is extreme and every element must feel aggressive
-2. Reference specific color names and hex codes from this document — the palette has only about 5 active colors
-3. Use natural language descriptions, not CSS values — "sharp-cut golden rectangle" not "border-radius: 0px; background: #FFC000"
-4. Describe the desired "feel" alongside specific measurements — "floating in total darkness" communicates the black canvas better than "background: #000000"
-5. Remember that UPPERCASE IS THE DEFAULT — if text isn't uppercase at display sizes, it probably should be
+### Open questions
+- Which LamboType cut (normal, condensed, ultra-condensed) each heading uses was not measured.
+- Where the `#ffc000` yellow fill appears visibly on the site was not confirmed.
+- The tab underline colours and inactive-tab text colours were seen in the capture but not individually measured.

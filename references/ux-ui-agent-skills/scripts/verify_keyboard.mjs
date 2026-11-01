@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * KEYBOARD OPERABILITY gate — WCAG 2.2 SC 2.1.1 (Keyboard) and the P0 rule in
- * CLAUDE.md: "Keyboard navigable — Tab reaches it, Enter/Space activates it."
+ * KEYBOARD OPERABILITY gate: WCAG 2.2 SC 2.1.1 (Keyboard) and the P0 rule in
+ * CLAUDE.md: "Keyboard navigable: Tab reaches it, Enter/Space activates it."
  *
  * The kit already gated how focus LOOKS (verify_states measures the ring) and
  * that a modal holds focus (verify_focustrap). Nothing checked the thing both
@@ -29,7 +29,7 @@
  *                    no tabbable container, and no tabbable owner pointing at it
  *                    via aria-controls/aria-owns.
  *   D. DEAD ARROWS   a composite that IS reachable but whose items do not
- *                    respond to ArrowDown/ArrowRight — roving tabindex declared
+ *                    respond to ArrowDown/ArrowRight: roving tabindex declared
  *                    and never implemented, which strands the user on item one.
  *                    Widgets driven by aria-activedescendant are judged on that
  *                    attribute moving instead of on focus moving.
@@ -47,7 +47,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_keyboard: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_keyboard: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -96,7 +96,7 @@ const MARK = () => {
     return `${el.tagName.toLowerCase()}${id}${t ? ` "${t.slice(0, 28)}"` : ''}`;
   };
 
-  // A correct focus trap keeps Tab inside an open dialog — scope to it if present.
+  // A correct focus trap keeps Tab inside an open dialog, so scope to it if present.
   const openDialog = [...document.querySelectorAll('[role="dialog"],dialog')].find(vis) || null;
   const root = openDialog || document.body;
 
@@ -239,7 +239,7 @@ for (const f of files) {
   for (const w of composites) {
     const wayIn = w.tabbableItem >= 0 || w.boxTabbable || w.hasOwner;
     if (!wayIn) {
-      problems.push(`${fname}  [C orphan-widget]  ${w.name} (${w.role}, ${w.items} items) has no tabbable item, container or owner — unreachable by keyboard`);
+      problems.push(`${fname}  [C orphan-widget]  ${w.name} (${w.role}, ${w.items} items) has no tabbable item, container or owner: unreachable by keyboard`);
       continue;
     }
 
@@ -279,7 +279,7 @@ for (const f of files) {
 await browser.close();
 
 if (problems.length) {
-  console.log('verify_keyboard: FAIL — WCAG 2.1.1 Keyboard');
+  console.log('verify_keyboard: FAIL: WCAG 2.1.1 Keyboard');
   for (const p of problems) console.log(p.startsWith('      ') ? p : '  x ' + p);
   console.log('  Fix A: give the control a native element or tabindex="0" and put it in the tab order.');
   console.log('  Fix B: handle keydown for Enter and Space on custom controls, and update the aria state.');
@@ -287,4 +287,4 @@ if (problems.length) {
   console.log('  Fix D: implement the arrow-key model for the pattern (see accessibility/aria-patterns.md).');
   process.exit(1);
 }
-console.log(`verify_keyboard: OK — ${files.length} file(s), ${totalControls} control(s) + ${totalComposites} composite widget(s): all reachable, Enter/Space and arrow keys answer`);
+console.log(`verify_keyboard: OK: ${files.length} file(s), ${totalControls} control(s) + ${totalComposites} composite widget(s): all reachable, Enter/Space and arrow keys answer`);

@@ -1,4 +1,4 @@
-# Restructure Plan — `ux-ui-skills`
+# Restructure Plan: `ux-ui-skills`
 
 Target: reshape the project toward the recommended Claude Code design-project
 layout (reference image) while folding in the efficiency disciplines from
@@ -8,11 +8,11 @@ layout (reference image) while folding in the efficiency disciplines from
 
 | Phase | State | Evidence |
 |---|---|---|
-| A1 — add the missing pieces | done (v2.4.0) | `CONTEXT.md`, `/gate` `/ship` `/scaffold-project`, `.claude/settings.json`, `.mcp.json`, `CLAUDE.local.md`, `reference/` |
-| B — starter template | done | `templates/product-design/` + `npx ux-ui-skills new <dir>`, gated by `scripts/validate_template.py` |
-| A3 — user vs model invocation | done | `invocation:` in all 17 `SKILL.md`, grouped in README |
-| A2 — slim `CLAUDE.md` | done | 576 -> 267 lines; depth in `.claude/rules/` (7 files), guarded by `scripts/validate_instruction_surface.py` |
-| A4 — optional pointer rules | superseded by A2 | the rule files hold the real content, not pointers |
+| A1: add the missing pieces | done (v2.4.0) | `CONTEXT.md`, `/gate` `/ship` `/scaffold-project`, `.claude/settings.json`, `.mcp.json`, `CLAUDE.local.md`, `reference/` |
+| B: starter template | done | `templates/product-design/` + `npx ux-ui-skills new <dir>`, gated by `scripts/validate_template.py` |
+| A3: user vs model invocation | done | `invocation:` in all 17 `SKILL.md`, grouped in README |
+| A2: slim `CLAUDE.md` | done | 576 -> 267 lines; depth in `.claude/rules/` (7 files), guarded by `scripts/validate_instruction_surface.py` |
+| A4: optional pointer rules | superseded by A2 | the rule files hold the real content, not pointers |
 
 The numbers in the sections below describe the state before the work and are kept
 as the record of why each decision was made.
@@ -34,7 +34,7 @@ Hard constraint that shapes the whole plan:
   references plus every skill and script, and risk the published package.
 
 Decision: do NOT move folders 1:1. Adopt the spirit in this repo (Track A) and
-ship the literal reference layout where it actually belongs — a downstream
+ship the literal reference layout where it actually belongs: a downstream
 project starter (Track B).
 
 ---
@@ -46,12 +46,12 @@ project starter (Track B).
 | `CLAUDE.md` (session brief) | `CLAUDE.md` 36KB always-on | Slim to router + principles | High / Low |
 | `CLAUDE.local.md` (prefs, gitignored) | none | Add + gitignore | Med / Low |
 | `.mcp.json` (Figma/Notion/Drive) | none | Add (template form) | Med / Low |
-| `.claude/rules/` (load when relevant) | top-level knowledge folders | Already rules by behavior (Router loads on demand) | — |
+| `.claude/rules/` (load when relevant) | top-level knowledge folders | Already rules by behavior (Router loads on demand) | - |
 | `.claude/skills/` | 17 skills | Add user/model invocation split | Med / Low |
 | `.claude/commands/` | none | Add slash commands | High / Low |
 | `.claude/settings.json` | none (only skills/) | Add shared permissions | Med / Low |
-| `design-tokens.json` (source of truth) | `tokens/*.json` | Already present and richer | — |
-| `src/components/` (real UI) | `components/*.md` are specs; real code in `examples/` | Real code lives in `examples/` | — |
+| `design-tokens.json` (source of truth) | `tokens/*.json` | Already present and richer | - |
+| `src/components/` (real UI) | `components/*.md` are specs; real code in `examples/` | Real code lives in `examples/` | - |
 | `public/images/` | none | Add if prototyping | Low |
 | `reference/` (real screens) | none | Add | Med / Low |
 
@@ -63,7 +63,7 @@ Matt Pocock targets four failure modes. This repo already nails the feedback-loo
 one (the gates). The three missing wins:
 
 1. **`CONTEXT.md` = ubiquitous language** (highest-value gap). A glossary of the
-   project's domain terms lets the agent say "20 words where 1 will do" — cuts
+   project's domain terms lets the agent say "20 words where 1 will do". It cuts
    tokens and makes naming/navigation consistent. Directly attacks Verbosity.
 2. **Slim `CLAUDE.md` = keep off main context.** 36KB always-on is a per-session
    tax. Push detail into rules/skills that load on demand. The Request Router
@@ -72,19 +72,19 @@ one (the gates). The three missing wins:
    (`/redesign`, `/brandkit`); model-invoked are disciplines the agent reaches for
    (`design-tokens`, `a11y-audit`). Makes the skill index legible and correctly
    routed.
-4. **Feedback loop = gates** (already present via `accuracy_report.mjs`) — wire it
+4. **Feedback loop = gates** (already present via `accuracy_report.mjs`): wire it
    as a formal `/gate` command.
 
 ---
 
-## Intelligence bar — the skill must be genius-tier at UX/UI
+## Intelligence bar: the skill must be genius-tier at UX/UI
 
 Restructuring is the means, not the goal. The goal is a skill that reasons about
-UX/UI like a senior design architect — so the layout changes must each raise
+UX/UI like a senior design architect, so the layout changes must each raise
 intelligence, never just relocate files. Every phase is judged against this bar:
 
 1. **Right knowledge, right moment.** Slimming `CLAUDE.md` and loading rules on
-   demand is not only token thrift — it lets the agent hold the *relevant* depth
+   demand is not only token thrift. It lets the agent hold the *relevant* depth
    for the task instead of a flat 36KB wall. Sharper recall, sharper decisions.
 2. **Shared vocabulary = sharper reasoning.** `CONTEXT.md` is not glossary
    decoration; a precise domain language (the 8 states, token-by-intent, POUR,
@@ -93,7 +93,7 @@ intelligence, never just relocate files. Every phase is judged against this bar:
 3. **Taste is enforced, not asserted.** Genius UX/UI means beating the
    statistical defaults (the anti-slop doctrine) AND proving it: the gates stay
    always-on so "looks premium" is backed by real contrast, state, responsive,
-   and render checks — never a claim.
+   and render checks, never a claim.
 4. **Disciplines the agent reaches for unprompted.** The model-invoked skills
    (a11y-audit, design-qa, design-tokens...) must trigger themselves at the right
    time, the way an expert instinctively checks contrast before shipping. The
@@ -103,12 +103,12 @@ intelligence, never just relocate files. Every phase is judged against this bar:
    POUR. This ordering is what separates expert judgment from pretty output.
 
 Acceptance for the whole restructure: a cold-start agent, given only this layout,
-produces work that passes every gate AND survives a senior design critique — not
+produces work that passes every gate AND survives a senior design critique, not
 one or the other.
 
-## Track A — reshape this repo toward the spirit (no path breakage)
+## Track A: reshape this repo toward the spirit (no path breakage)
 
-### Phase A1 — add the missing pieces (lowest risk, do first)
+### Phase A1: add the missing pieces (lowest risk, do first)
 
 | New file | Contents | Inspired by |
 |---|---|---|
@@ -117,23 +117,23 @@ one or the other.
 | `.claude/commands/ship.md` | gate then verify_responsive then (if green) release checklist per release-readme-rule | |
 | `.claude/commands/scaffold-project.md` | Generate the Track B template into a target folder | |
 | `.claude/settings.json` | Shared permissions: allow `node scripts/*`, `python3 scripts/*`; committed to git | "shared permissions, checked into git" |
-| `.mcp.json` | Figma (plus Notion/Drive if used), in template/placeholder form — tokens are per-machine | "Figma, Notion, Drive connections" |
+| `.mcp.json` | Figma (plus Notion/Drive if used), in template/placeholder form; tokens are per-machine | "Figma, Notion, Drive connections" |
 | `CLAUDE.local.md` | Sample personal prefs; add to `.gitignore` | "gitignored" |
 | `reference/` | Folder + `README.md` explaining: drop real screens/screenshots here for the agent to study | "real screens Claude studies" |
 
-### Phase A2 — slim `CLAUDE.md` (highest value: keep-off-main-context)
+### Phase A2: slim `CLAUDE.md` (highest value: keep-off-main-context)
 
 - Keep always-on in `CLAUDE.md`: persona, Decision Framework, Verification
   Protocol + emoji ban, Request Router table, File Reference Map.
 - Move long detail to on-demand files (either thin `.claude/rules/*.md` OR leave
-  in the existing knowledge folders and let the Router point at them — leaving
+  in the existing knowledge folders and let the Router point at them; leaving
   them is zero path-break): Token System detail, Color / Typography / Spacing /
   Component guidelines, Accessibility standards, Framework output formats.
 - Target: CLAUDE.md down to ~150-200 lines; detail loads when a skill is invoked.
 - Risk guard: critical rules (emoji ban, the gate protocol) MUST stay always-on
-  in CLAUDE.md — never demote them.
+  in CLAUDE.md. Never demote them.
 
-### Phase A3 — split skills user-invoked vs model-invoked
+### Phase A3: split skills user-invoked vs model-invoked
 
 - Add frontmatter `invocation: user` / `invocation: model` to the 17 SKILL.md.
 - Group them in README:
@@ -143,16 +143,16 @@ one or the other.
     a11y-audit, apply-aesthetic, design-qa, design-review, ux-writing,
     token-build, figma-integration, performance.
 - Optional Phase A4: add `.claude/rules/` as thin pointer files into the existing
-  knowledge folders — gets the reference name without moving anything real.
+  knowledge folders. That gets the reference name without moving anything real.
 
 ---
 
-## Track B — starter template that matches the image exactly
+## Track B: starter template that matches the image exactly
 
 Create `templates/product-design/` with the literal reference layout. The three
 group labels below (CONTEXT CLAUDE LOADS / TEAM TOOLKIT / YOUR PROJECT) are
 conceptual headers from the reference image, carried into the template README and
-as comments — not folders. Annotations are reproduced verbatim from the image.
+as comments, not folders. Annotations are reproduced verbatim from the image.
 
 ```
 product-design/
@@ -186,10 +186,10 @@ added only so the two empty folders can be committed; it does not alter the shap
 
 ## Order of work and verification
 
-1. A1 (add files — safe)
-2. B (template — separate folder, does not touch the engine)
+1. A1 (add files, safe)
+2. B (template: separate folder, does not touch the engine)
 3. A3 (frontmatter)
-4. A2 (slim CLAUDE.md — riskiest, do last)
+4. A2 (slim CLAUDE.md, riskiest, do last)
 
 Every phase closes with the existing gates and must be green before it counts as
 done:

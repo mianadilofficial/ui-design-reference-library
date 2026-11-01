@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * SLOP TELLS (render-based). Renders a page in headless Chrome and measures the
- * machine-generated "tells" that taste_audit does NOT cover yet — from REAL
+ * machine-generated "tells" that taste_audit does NOT cover yet, from REAL
  * computed styles + geometry, not static guesses. Complements taste_audit.mjs
  * (which covers type-scale, uniform blocks, measure, palette sprawl).
  *
@@ -26,6 +26,7 @@
  */
 import { resolve } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { COLOR_INIT } from './_color.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -33,7 +34,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`slop_tells: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`slop_tells: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -48,6 +49,7 @@ let high = 0;
 
 for (const f of files) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  await page.addInitScript(COLOR_INIT);
   await page.goto('file://' + resolve(f), { waitUntil: 'networkidle' }).catch(() => {});
   await page.addStyleTag({ content: '*{transition:none!important;animation:none!important}' });
   if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
@@ -59,7 +61,7 @@ for (const f of files) {
       return r.width > 1 && r.height > 1 && s.visibility !== 'hidden' && +s.opacity !== 0;
     };
     const box = el => { const r = el.getBoundingClientRect(); return r.width > 40 && r.height > 20; };
-    const rgb = c => { const m = (c || '').match(/-?\d+\.?\d*/g); return m ? m.slice(0, 4).map(Number) : null; };
+    const rgb = c => { const m = (window.__dsRGBString(c) || '').match(/-?\d+\.?\d*/g); return m ? m.slice(0, 4).map(Number) : null; };
     const hue = (r, g, b) => {
       r /= 255; g /= 255; b /= 255;
       const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
@@ -72,7 +74,7 @@ for (const f of files) {
       return Math.round(h);
     };
 
-    // 1. radius monotony — among card/button/input-sized rounded boxes
+    // 1. radius monotony, among card/button/input-sized rounded boxes
     /* 9. One-sided accent border.
        A card, alert, toast or callout wearing a thick colored bar on exactly one
        side. The maintainer bans it in every direction, not only the left: it is
@@ -153,13 +155,13 @@ for (const f of files) {
         // generic default stack: small offsets + 10%-black
         if (/rgba\(0,\s*0,\s*0,\s*0\.1\d?\)/.test(bs) && /(^|\s)0px\s+1px\s+(2|3)px/.test(bs)) genericShadow++;
         // opaque / heavy black shadow
-        const sc = bs.match(/rgba?\([^)]*\)/);
+        const sc = bs.match(/(?:rgba?|oklch|oklab|lch|lab|color)\([^)]*\)/);
         if (sc) { const a = rgb(sc[0]); if (a && a[0] === 0 && a[1] === 0 && a[2] === 0 && (a[3] === undefined || a[3] >= 0.4)) blackShadow++; }
       }
 
       // pure black text on an element that directly renders text
       const directText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 1);
-      if (directText && s.color === 'rgb(0, 0, 0)') blackText++;
+      if (directText && window.__dsRGBString(s.color) === 'rgb(0, 0, 0)') blackText++;
 
       const bg = rgb(s.backgroundColor);
       if (bg && (bg[3] === undefined || bg[3] > 0.9)) {
@@ -168,7 +170,7 @@ for (const f of files) {
       }
     }
 
-    // 3. default AI gradient — scan AUTHORED css (inline + stylesheets), flag only
+    // 3. default AI gradient: scan AUTHORED css (inline + stylesheets), flag only
     // HARDCODED indigo/violet -> blue. Token gradients (var(--…)) are intentional
     // and themeable; hardcoded hex/rgb is the generated-UI tell.
     const hexRgb = h => {
@@ -213,21 +215,21 @@ for (const f of files) {
   // 1. radius monotony
   const radiusVals = Object.keys(data.radii).map(Number);
   if (data.roundedBoxes >= 10 && radiusVals.length === 1)
-    findings.push(['HIGH', `Single border-radius (${radiusVals[0]}px) on all ${data.roundedBoxes} rounded boxes — vary radius by component size (card > button > input/tag).`]);
+    findings.push(['HIGH', `Single border-radius (${radiusVals[0]}px) on all ${data.roundedBoxes} rounded boxes: vary radius by component size (card > button > input/tag).`]);
 
   // 2. flat elevation
   if (data.genericShadow >= 1)
-    findings.push(['MED', `Generic default shadow stack (0 1px 3px rgba(0,0,0,.1)) x${data.genericShadow} — the boilerplate AI shadow. Use the token elevation scale.`]);
+    findings.push(['MED', `Generic default shadow stack (0 1px 3px rgba(0,0,0,.1)) x${data.genericShadow}: the boilerplate AI shadow. Use the token elevation scale.`]);
   else if (data.shadows === 1)
-    findings.push(['MED', `Only one distinct shadow across the page — no elevation hierarchy. Resting vs hover vs overlay should differ.`]);
+    findings.push(['MED', `Only one distinct shadow across the page, so no elevation hierarchy. Resting vs hover vs overlay should differ.`]);
 
   // 5. opaque black shadow
   if (data.blackShadow >= 1)
-    findings.push(['LOW', `${data.blackShadow} opaque/heavy black shadow(s) — premium shadows are soft and slightly tinted, never solid #000.`]);
+    findings.push(['LOW', `${data.blackShadow} opaque/heavy black shadow(s): premium shadows are soft and slightly tinted, never solid #000.`]);
 
   // 3. default AI gradient (hardcoded only)
   if (data.aiGradient)
-    findings.push(['HIGH', `Hardcoded indigo/violet -> blue gradient${data.aiGradient.angle ? ` (${data.aiGradient.angle}deg)` : ''} — the single most common generated-UI tell. Tokenize it (gradients.json) or use a flat surface.`]);
+    findings.push(['HIGH', `Hardcoded indigo/violet -> blue gradient${data.aiGradient.angle ? ` (${data.aiGradient.angle}deg)` : ''}, the single most common generated-UI tell. Tokenize it (gradients.json) or use a flat surface.`]);
 
   // 4. pure black text
   // 9. one-sided accent border (a rule the maintainer set)
@@ -238,16 +240,16 @@ for (const f of files) {
   }
 
   if (data.blackText >= 1)
-    findings.push(['MED', `${data.blackText} element(s) use pure #000 text — switch to a tinted near-black (e.g. text.primary token) for less eye strain.`]);
+    findings.push(['MED', `${data.blackText} element(s) use pure #000 text: switch to a tinted near-black (e.g. text.primary token) for less eye strain.`]);
 
   // 6. placeholder text
   if (data.lorem)
-    findings.push(['MED', `Placeholder/lorem-ipsum text shipped as content — replace with real copy; prototypes break on real strings.`]);
+    findings.push(['MED', `Placeholder/lorem-ipsum text shipped as content: replace with real copy; prototypes break on real strings.`]);
 
   // 7. flat spacing
   const padVals = Object.keys(data.pads).map(Number);
   if (data.padBoxes >= 10 && padVals.length === 1)
-    findings.push(['LOW', `One padding value (${padVals[0]}px) everywhere — no spatial hierarchy. Outer/container padding should exceed inner element padding.`]);
+    findings.push(['LOW', `One padding value (${padVals[0]}px) everywhere, so no spatial hierarchy. Outer/container padding should exceed inner element padding.`]);
 
   // 8. near-duplicate neutrals
   const ns = data.neutrals.map(s => s.split(',').map(Number));
@@ -258,10 +260,10 @@ for (const f of files) {
       if (d > 0 && d <= 9) { dupPair = [ns[i], ns[j]]; break; }
     }
   if (dupPair)
-    findings.push(['LOW', `Near-duplicate neutrals rgb(${dupPair[0].join(',')}) vs rgb(${dupPair[1].join(',')}) — collapse to one token; ~1-step greys read as inconsistency.`]);
+    findings.push(['LOW', `Near-duplicate neutrals rgb(${dupPair[0].join(',')}) vs rgb(${dupPair[1].join(',')}): collapse to one token; ~1-step greys read as inconsistency.`]);
 
   const mode = dark ? ' [dark]' : '';
-  if (!findings.length) console.log(`OK   ${f}${mode} — no measurable slop tells`);
+  if (!findings.length) console.log(`OK   ${f}${mode}: no measurable slop tells`);
   else {
     console.log(`\n${f}${mode}:`);
     for (const [sev, msg] of findings) { console.log(`  ${sev}  ${msg}`); if (sev === 'HIGH') high++; }
@@ -269,5 +271,5 @@ for (const f of files) {
 }
 await browser.close();
 if (strict && high) { console.log(`\n${high} HIGH slop tell(s).`); process.exit(1); }
-console.log('\n(slop tells are heuristic — a strong signal, not proof. Pair with human visual review.)');
+console.log('\n(slop tells are heuristic: a strong signal, not proof. Pair with human visual review.)');
 process.exit(0);

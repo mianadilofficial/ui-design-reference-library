@@ -1,33 +1,33 @@
 {
-  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand \u2014 sync-references.yml updates it.",
+  "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand — sync-references.yml updates it.",
   "animate-ui": {
     "branch": "main",
-    "commit": "c28163655493f98bff9dc0362301a6242f74a1fd",
-    "date": "2026-10-25",
+    "commit": "dec9850cf8684250d4c289af3e4b3865707ce986",
+    "date": "2026-11-01",
     "repo": "imskyleen/animate-ui"
   },
   "arc-library": {
     "branch": "main",
-    "commit": "fff39c044c6e3b86006e3a6acc9a32a821a80d99",
-    "date": "2026-10-25",
+    "commit": "df3a600fd9ffca85ec8607438b599a4408ab8562",
+    "date": "2026-11-01",
     "repo": "kuratlielia/arc-library"
   },
   "audiocn-ui": {
     "branch": "main",
-    "commit": "bcc737f0c25e1945d36fc8209c3102eafc687967",
-    "date": "2026-10-25",
+    "commit": "05bec0fd503e91593de733b0249f1d275b5a1da0",
+    "date": "2026-11-01",
     "repo": "audiocn/ui"
   },
   "diagram-design": {
     "branch": "main",
-    "commit": "0b9b10cab3dbf695642fa1a6c4b4f60df9083689",
-    "date": "2026-10-25",
+    "commit": "0cf73c3fcc56667ad91a9a04c439ac6ccfabc9d1",
+    "date": "2026-11-01",
     "repo": "cathrynlavery/diagram-design"
   },
   "emilkowalski-skills": {
     "branch": "main",
-    "commit": "2d228630ba1446365f614a108cb8252f1feda202",
-    "date": "2026-10-18",
+    "commit": "a81dbca07f2217b7103e510c0f13f8d5b017afc9",
+    "date": "2026-11-01",
     "repo": "emilkowalski/skills"
   },
   "generativecharts": {
@@ -68,8 +68,8 @@
   },
   "ux-ui-agent-skills": {
     "branch": "main",
-    "commit": "55156b40e3a9aafa52448bde76cdcb5147b958db",
-    "date": "2026-10-25",
+    "commit": "def84a70fadc3490d80901295a4f1951fdb2cc69",
+    "date": "2026-11-01",
     "repo": "plugin87/ux-ui-agent-skills"
   },
   "shadcn-ui": {
@@ -81,14 +81,14 @@
   "magicui": {
     "repo": "dillionverma/magicui",
     "branch": "main",
-    "commit": "efe76fc5755eca1142dd4f74c1d6f0ace2887e3c",
-    "date": "2026-10-18"
+    "commit": "3104579193fa2e2d3c659dcd9441bbd370a3296c",
+    "date": "2026-11-01"
   },
   "realworld": {
     "repo": "gothinkster/realworld",
     "branch": "main",
-    "commit": "ebbcdeb8d55b42a3a613c787560498b8ef10003f",
-    "date": "2026-08-26"
+    "commit": "b8a37f107cdb636f213591aecbae0337f4d777f4",
+    "date": "2026-11-01"
   },
   "bulletproof-react": {
     "repo": "alan2207/bulletproof-react",
@@ -105,8 +105,8 @@
   "full-stack-fastapi-template": {
     "repo": "fastapi/full-stack-fastapi-template",
     "branch": "master",
-    "commit": "b1125d8839482cb7bbae603ddc6d0081bf87532e",
-    "date": "2026-10-18"
+    "commit": "f4bcfaba7c85be3c6332cc74a20819f586dcdbc6",
+    "date": "2026-11-01"
   },
   "node-api-boilerplate": {
     "repo": "talyssonoc/node-api-boilerplate",
@@ -135,14 +135,14 @@
   "django-saas-boilerplate": {
     "repo": "eriktaveras/django-saas-boilerplate",
     "branch": "main",
-    "commit": "4cac15bd4991a013e03d826b197ffaee3ea8a92c",
-    "date": "2026-09-01"
+    "commit": "bfec043941eea0a9c53f278c21a6c95777019c60",
+    "date": "2026-11-01"
   },
   "heroui": {
     "repo": "heroui-inc/heroui",
     "branch": "v3",
-    "commit": "31a6261590798d3c46f9cd0adf507653b3bc29ad",
-    "date": "2026-10-25"
+    "commit": "b2c65a5b5236550526f23d475b1ad0c6e5eab1a2",
+    "date": "2026-11-01"
   },
   "go-clean-arch": {
     "repo": "bxcodec/go-clean-arch",
@@ -164,20 +164,20 @@
   },
   "motion": {
     "branch": "main",
-    "commit": "fa2079f101353f1fa1c9463f5ba9709a0ca3d3bf",
-    "date": "2026-10-25",
+    "commit": "7415b6cd14dfdb35d91dfc5b9758994444cc228b",
+    "date": "2026-11-01",
     "repo": "motiondivision/motion"
   },
   "react-bits": {
     "branch": "main",
-    "commit": "e12c22192ac7b4b452c5e2feb9b586d74765d696",
-    "date": "2026-10-25",
+    "commit": "4dc7b5b7772e1217c8fb8d2a7aa074302180e5b4",
+    "date": "2026-11-01",
     "repo": "DavidHDev/react-bits"
   },
   "mantine": {
     "branch": "master",
-    "commit": "194d652452ee060aad3796c121f9b6a9f74cb453",
-    "date": "2026-10-25",
+    "commit": "f2bc7373a4ffc69cf8af7b6577391f782d4e038c",
+    "date": "2026-11-01",
     "repo": "mantinedev/mantine"
   },
   "angular-ngrx-starter": {
@@ -207,8 +207,8 @@
   "nuxt-ui": {
     "repo": "nuxt/ui",
     "branch": "v4",
-    "commit": "92e28dcb2537755b914aee359edb8064d474de5c",
-    "date": "2026-10-25"
+    "commit": "200b0bfb7a5666c870742f3f43c83cf09234aed9",
+    "date": "2026-11-01"
   },
   "portfolio-brittany": {
     "repo": "bchiang7/v4",
@@ -225,8 +225,8 @@
   "tabler-dashboard": {
     "repo": "tabler/tabler",
     "branch": "dev",
-    "commit": "600e268473dc5194a42891acb9d0298f204debc9",
-    "date": "2026-10-25"
+    "commit": "096491dea4886f78891c2e29310351d5aee6c460",
+    "date": "2026-11-01"
   },
   "spec-kit": {
     "repo": "github/spec-kit",

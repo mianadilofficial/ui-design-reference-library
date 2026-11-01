@@ -1,6 +1,6 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
-  "$description": "Semantic gradient presets. Use sparingly — one signature gradient per view (see taste/design-taste.md). Stops reference primitive colors; positions are 0–1.",
+  "$description": "Semantic gradient presets. Use sparingly: one signature gradient per view (see taste/design-taste.md). Stops reference primitive colors; positions are 0 to 1.",
 
   "brand": {
     "primary": {
@@ -28,7 +28,7 @@
         { "color": "#0d0d15", "position": 0 },
         { "color": "#0a0a12", "position": 1 }
       ],
-      "$description": "Near-flat dark surface depth — barely perceptible"
+      "$description": "Near-flat dark surface depth: barely perceptible"
     },
     "scrim": {
       "$type": "gradient",
@@ -65,7 +65,7 @@
         { "color": "#8b5cf6", "position": 0.5 },
         { "color": "#ec4899", "position": 1 }
       ],
-      "$description": "Multi-stop accent — decorative only, never behind body text"
+      "$description": "Multi-stop accent: decorative only, never behind body text"
     }
   }
 }

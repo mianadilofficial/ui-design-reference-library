@@ -1,6 +1,6 @@
 /**
  * Unit layer: the arithmetic under the contrast gates, and the CLI contract
- * scripts/contrast.py documents. No browser, no fixtures — these run anywhere.
+ * scripts/contrast.py documents. No browser, no fixtures; these run anywhere.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

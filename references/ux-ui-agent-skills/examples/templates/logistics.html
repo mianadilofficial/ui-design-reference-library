@@ -10,13 +10,13 @@
 <style>
   .topbar h1{font-size:var(--text-4xl);line-height:var(--leading-tight);letter-spacing:-0.03em}
   @media (max-width:40rem){.topbar h1{font-size:var(--text-2xl)}}
-  .grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  .grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5)}
   @media (max-width:64rem){.grid{grid-template-columns:minmax(0,1fr)}}
   .route{display:grid;gap:var(--space-4)}
   .leg{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:var(--space-4);align-items:start}
   .leg .mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;border-radius:var(--radius-full);
     background:var(--color-surface-raised);color:var(--color-text-secondary);flex:none}
-  .leg.done .mark{background:var(--color-feedback-success);color:var(--color-text-on-action)}
+  .leg.done .mark{background:var(--color-feedback-success-icon);color:var(--color-text-on-action)}
   .leg.now .mark{background:var(--color-action-primary);color:var(--color-text-on-action)}
   .leg .mark .ico{inline-size:1rem;block-size:1rem}
   .leg h3{font-size:var(--text-base);font-weight:600}
@@ -36,7 +36,7 @@
   .exc{list-style:none;padding:0;margin:0}
   .exc li:first-child{border-block-start:0}
   .exc .pip{display:grid;place-items:center;inline-size:1.75rem;block-size:1.75rem;border-radius:var(--radius-full);
-    background:var(--color-surface-raised);color:var(--color-text-error);flex:none}
+    background:var(--color-surface-raised);color:var(--color-feedback-error-text);flex:none}
   .exc .pip .ico{inline-size:.875rem;block-size:.875rem}
   .exc p{font-size:var(--text-sm);overflow-wrap:anywhere}
   .exc time{display:block;font-size:var(--text-xs);color:var(--color-text-secondary);margin-block-start:var(--space-1)}

@@ -3,9 +3,9 @@
 Follows the [Framework Adapter Protocol](../adapter-protocol.md). Astro components are HTML-first with scoped `<style>` and zero client JS by default; interactivity arrives via islands (React/Vue/Svelte/Solid) hydrated with `client:*` directives.
 
 ## Token layer
-Global CSS custom properties imported once in the root layout (`<style is:global>` or an imported `tokens.css`). Dark mode via `[data-theme="dark"]`; theme toggle is a tiny inline script (it must run pre-hydration to avoid flash — set `data-theme` on `<html>` in `<head>`).
+Global CSS custom properties imported once in the root layout (`<style is:global>` or an imported `tokens.css`). Dark mode via `[data-theme="dark"]`; theme toggle is a tiny inline script (it must run pre-hydration to avoid flash, so set `data-theme` on `<html>` in `<head>`).
 
-## Button (worked example — static, zero JS)
+## Button (worked example: static, zero JS)
 ```astro
 ---
 interface Props {
@@ -38,7 +38,7 @@ const { variant = 'primary', size = 'md', disabled } = Astro.props
 Stateful widgets (Modal, Combobox, Tabs) are framework islands. Author them with the matching adapter (`react-tailwind.md`, `vue.md`, `svelte.md`, `solid.md`) and hydrate selectively: `client:idle` for non-critical, `client:visible` for below-fold, `client:load` for above-fold interactive. They consume the same CSS variable token layer.
 
 ## States & a11y
-- Static Astro markup is plain accessible HTML — use real `<button>`/`<a>`, label everything. Focus management for overlays lives in the hydrated island, not the `.astro` shell. Avoid hydrating purely-presentational components.
+- Static Astro markup is plain accessible HTML: use real `<button>`/`<a>`, label everything. Focus management for overlays lives in the hydrated island, not the `.astro` shell. Avoid hydrating purely-presentational components.
 
 ## Motion
-CSS transitions need no hydration. Astro's View Transitions (`<ClientRouter />`) for page transitions — wrap in `@media (prefers-reduced-motion: reduce)` and use token durations.
+CSS transitions need no hydration. Astro's View Transitions (`<ClientRouter />`) for page transitions; wrap in `@media (prefers-reduced-motion: reduce)` and use token durations.

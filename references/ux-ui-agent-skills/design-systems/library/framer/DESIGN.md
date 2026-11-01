@@ -1,249 +1,309 @@
-# Design System Inspired by Framer
+---
+version: alpha
+name: Framer
+category: "Design & Creative Tools"
+description: "Framer's homepage is a pure black stage (#000000 canvas, #ffffff ink) set in GT Walsheim Medium at 54px/-2.16px for headlines and Inter Variable for text, with white 8px-radius buttons, #111111 and #171717 panels with 15-25px radii, and Framer Blue #0099FF appearing only as a glow, link and focus accent."
+colors:
+  canvas: "#000000"
+  ink: "#ffffff"
+  primary: "#ffffff"
+  on-primary: "#000000"
+  surface-card: "#111111"
+  surface-raised: "#171717"
+  ink-muted: "#ffffff99"
+  ink-gray: "#999999"
+  ink-light-gray: "#cccccc"
+  ink-dim: "#666666"
+  hairline: "#ffffff0f"
+  framer-blue: "#0099ff"
+  framer-deep-blue: "#0055ff"
+typography:
+  display:
+    fontFamily: "\"GT Walsheim Medium\", \"GT Walsheim Medium Placeholder\", sans-serif"
+    fontSize: 54px
+    fontWeight: 500
+    lineHeight: 54px
+    letterSpacing: "-2.16px"
+  display-mobile:
+    fontFamily: "\"GT Walsheim Medium\", \"GT Walsheim Medium Placeholder\", sans-serif"
+    fontSize: 36px
+    fontWeight: 500
+    lineHeight: 36px
+    letterSpacing: "-1.44px"
+  heading:
+    fontFamily: "\"GT Walsheim Medium\", \"GT Walsheim Medium Placeholder\", sans-serif"
+    fontSize: 44px
+    fontWeight: 500
+    lineHeight: 48.4px
+    letterSpacing: "-1.76px"
+  body:
+    fontFamily: "\"Inter Variable\", \"Inter Variable Placeholder\", sans-serif"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 24.3px
+    letterSpacing: "-0.2px"
+  button:
+    fontFamily: "\"Inter Variable\", \"Inter Variable Placeholder\", sans-serif"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 14px
+    letterSpacing: "-0.28px"
+  link:
+    fontFamily: "\"Inter Variable\", \"Inter Variable Placeholder\", sans-serif"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 19.6px
+    letterSpacing: "-0.1px"
+  ui-small:
+    fontFamily: Inter
+    fontSize: 12px
+    fontWeight: 400
+rounded:
+  xs: 1px
+  sm: 3px
+  md: 4px
+  lg: 5px
+  xl: 6px
+  button: 8px
+  card: 15px
+  panel: 20px
+  card-lg: 25px
+  pill: 100px
+spacing:
+  s1: 1px
+  s2: 2px
+  s3: 3px
+  s4: 4px
+  s5: 5px
+  s6: 6px
+  s7: 7px
+  s8: 8px
+  s9: 10px
+  s10: 15px
+  s11: 20px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.button}"
+    padding: 10px 14px
+    height: 34px
+  button-nav:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.button}"
+    padding: 8px 10px
+    height: 30px
+  link:
+    textColor: "{colors.ink-muted}"
+    typography: "{typography.link}"
+  panel-card:
+    backgroundColor: "{colors.surface-card}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.card-lg}"
+    padding: 10px
+---
 
-> Category: Design & Creative
-> Website builder. Bold black and blue, motion-first, design-forward.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+Framer's homepage (captured at 1280px desktop and 390px mobile; the page is 10741px tall at desktop) is a black gallery wall. The page background is `#000000` for the overwhelming majority of the area, text is white or a translucent white, and the only saturated color in view belongs to the product media: a neon-blue glowing editor frame in the hero, portrait photography, and a row of customer logos.
 
-Framer's website is a cinematic, tool-obsessed dark canvas that radiates the confidence of a design tool built by designers who worship craft. The entire experience is drenched in pure black — not a warm charcoal or a cozy dark gray, but an absolute void (`#000000`) that makes every element, every screenshot, every typographic flourish feel like it's floating in deep space. This is a website that treats its own product UI as the hero art, embedding full-fidelity screenshots and interactive demos directly into the narrative flow.
+The first screen reads, top to bottom: a thin navigation bar with the Framer mark and wordmark, Platform / Solutions / Resources dropdowns, Enterprise and Pricing, then "Log in" and a white "Sign up" button at right. Below it the headline, "Framer is the design agent for every step from idea to launch", set in GT Walsheim Medium at 54px over two lines, left-aligned. Under the headline sit a white "Get started for free" button and a translucent "Download app" button, with a "New: Skills" link at the far right. Then a large rounded video frame (timestamp "0:36" at its bottom right) showing a CMS table and a blue-glowing editor with a team page.
 
-The typography is the signature move: GT Walsheim with aggressively tight letter-spacing (as extreme as -5.5px on 110px display text) creates headlines that feel compressed, kinetic, almost spring-loaded — like words under pressure that might expand at any moment. The transition to Inter for body text is seamless, with extensive OpenType feature usage (`cv01`, `cv05`, `cv09`, `cv11`, `ss03`, `ss07`) that gives even small text a refined, custom feel. Framer Blue (`#0099ff`) is deployed sparingly but decisively — as link color, border accents, and subtle ring shadows — creating a cold, electric throughline against the warm-less black.
+Next comes a two-row logo cloud (Dribbble, Legora, Zapier, Perplexity, Cal.com, Mixpanel, Miro, DoorDash), and a second headline, "Agents that work alongside you, not instead of you", with a "Start with agents" button. The following block shows layout explorations beside a dark chat panel ("Create a few layout variations of my site..."). A cookie notice in a white rounded card floats at left over the hero.
 
-The overall effect is a nightclub for web designers: dark, precise, seductive, and unapologetically product-forward. Every section exists to showcase what the tool can do, with the website itself serving as proof of concept.
+Key characteristics:
+- Black canvas, white ink; no light mode on this page.
+- Two typefaces by role: GT Walsheim Medium for the two display sizes, Inter Variable for everything else. Both are tracked tight.
+- Buttons are small (34px and 30px high) with an 8px radius. The primary is solid white with black text.
+- Surfaces are stepped near-blacks: `#111111` and `#171717`, separated by 1px borders at 6 percent white (`#ffffff0f`).
+- Brand blue (`#0099ff`) is rationed to glow, links and selection rings.
+- Voice: product-first claims about agents, with short imperative button copy ("Get started for free", "Download app", "Browse the community", "See Framer sites").
 
-**Key Characteristics:**
-- Pure black (`#000000`) void canvas — absolute dark, not warm or gray-tinted
-- GT Walsheim display font with extreme negative letter-spacing (-5.5px at 110px)
-- Framer Blue (`#0099ff`) as the sole accent color — cold, electric, precise
-- Pill-shaped buttons (40px–100px radius) — no sharp corners on interactive elements
-- Product screenshots as hero art — the tool IS the marketing
-- Frosted glass button variants using `rgba(255, 255, 255, 0.1)` on dark surfaces
-- Extensive OpenType feature usage across Inter for refined micro-typography
+## Colors
 
-## 2. Color Palette & Roles
+Values are from the live page (computed styles and `--token-*` custom properties); two are also published by Framer on its brand page (https://www.framer.com/brand), which lists Black #000000, White #FFFFFF, Framer Blue #0099FF and Framer Deep Blue #0055FF.
 
-### Primary
-- **Pure Black** (`#000000`): Primary background, the void canvas that defines Framer's dark-first identity
-- **Pure White** (`#ffffff`): Primary text color on dark surfaces, button text on accent backgrounds
-- **Framer Blue** (`#0099ff`): Primary accent color — links, borders, ring shadows, interactive highlights
+### Core
+- **Canvas** (`{colors.canvas}` = `#000000`): page background, footer, the largest area by far (weight 18194 versus 3645 for the next).
+- **Ink** (`{colors.ink}` = `#ffffff`): headlines, the most-read text color (2126 characters).
+- **Primary** (`{colors.primary}` = `#ffffff`): the fill of the "Get started for free" and "Sign up" buttons.
+- **On primary** (`{colors.on-primary}` = `#000000`): text inside the white buttons. The default extraction reported `#0000ee` because the button label lives in a child paragraph; a direct probe of the label text on the live page returned `rgb(0, 0, 0)`, 14px Inter Variable, weight 400 (see SOURCES.json `_probes`).
 
-### Secondary & Accent
-- **Muted Silver** (`#a6a6a6`): Secondary text, subdued labels, dimmed descriptions on dark surfaces
-- **Near Black** (`#090909`): Elevated dark surface, shadow ring color for subtle depth separation
+### Surfaces
+- **Surface card** (`{colors.surface-card}` = `#111111`): chat panel and content cards.
+- **Surface raised** (`{colors.surface-raised}` = `#171717`): inner elements on panels.
+- Other measured surfaces not promoted to tokens: `#1a1a1a`, `#242424`, `#ffffff26` (translucent white fills) and `#ffffff1a` (the translucent fill of the secondary buttons "Download app", "Browse the community", "Start with agents", "See Framer sites").
 
-### Surface & Background
-- **Void Black** (`#000000`): Page background, primary canvas
-- **Frosted White** (`rgba(255, 255, 255, 0.1)`): Translucent button backgrounds, glass-effect surfaces on dark
-- **Subtle White** (`rgba(255, 255, 255, 0.5)`): Slightly more opaque frosted elements for hover states
+### Text tints
+- **Ink muted** (`{colors.ink-muted}` = `#ffffff99`): paragraph text under headlines (1408 characters).
+- **Ink gray** (`{colors.ink-gray}` = `#999999`): tertiary text (1290 characters).
+- **Ink light gray** (`{colors.ink-light-gray}` = `#cccccc`).
+- **Ink dim** (`{colors.ink-dim}` = `#666666`): disabled and decorative text.
 
-### Neutrals & Text
-- **Pure White** (`#ffffff`): Heading text, high-emphasis body text
-- **Muted Silver** (`#a6a6a6`): Body text, descriptions, secondary information
-- **Ghost White** (`rgba(255, 255, 255, 0.6)`): Tertiary text, placeholders on dark surfaces
+### Accents
+- **Framer blue** (`{colors.framer-blue}` = `#0099ff`): "Cookie Policy" link in the notice, border color of the glowing editor frame (measured border colors `#0099ff`, `#0099ff69`), tinted fills at about 21 percent (`#0099ff38`). Cited on https://www.framer.com/brand as Framer Blue.
+- **Framer deep blue** (`{colors.framer-deep-blue}` = `#0055ff`): declared on the page as `--token-*: #05f` and cited on the brand page as Framer Deep Blue.
+- The page's CSS also declares a larger Framer-site palette (`#60f`, `#90f`, `#f06`, `#f02`, `#fd7702`, `#fb0`, `#0cf`, `#2dd`, `#4cd963`, and a lime `#cbff00`). They are part of the editor's color tokens and are not seen as interface colors on the homepage, so they are not tokens here.
 
-### Semantic & Accent
-- **Framer Blue** (`#0099ff`): Links, interactive borders, focus rings
-- **Blue Glow** (`rgba(0, 153, 255, 0.15)`): Focus ring shadow, subtle blue halo around interactive elements
-- **Default Link Blue** (`#0000ee`): Standard browser link color (used sparingly in content areas)
+### Hairlines
+- **Hairline** (`{colors.hairline}` = `#ffffff0f`): 1px borders on dark panels (8 uses).
 
-### Gradient System
-- No prominent gradient usage — Framer relies on pure flat black surfaces with occasional blue-tinted glows for depth
-- Subtle radial glow effects behind product screenshots using Framer Blue at very low opacity
+### Rules observed
+- White is the action color. Blue is never a button fill on the homepage.
+- Use alpha white for text hierarchy instead of new hexes: 100, 80 (`#ffffffcc`), 60 (`#ffffff99`), 50 (`#ffffff80`), 40 (`#fff6`).
+- Colorful content comes from images; the interface stays achromatic.
 
-## 3. Typography Rules
+## Typography
 
-### Font Family
-- **Display**: `GT Walsheim Framer Medium` / `GT Walsheim Medium` — custom geometric sans-serif, weight 500. Fallbacks: `GT Walsheim Framer Medium Placeholder`, system sans-serif
-- **Body/UI**: `Inter Variable` / `Inter` — variable sans-serif with extensive OpenType features. Fallbacks: `Inter Placeholder`, `-apple-system`, `system-ui`
-- **Accent**: `Mona Sans` — GitHub's open-source font, used for select elements at ultra-light weight (100)
-- **Monospace**: `Azeret Mono` — companion mono for code and technical labels
-- **Rounded**: `Open Runde` — small rounded companion font for micro-labels
+### Families
+- **GT Walsheim Medium**, weight 500: display and section headings (280 characters). A commercial typeface from Grilli Type; web-font loaded as "GT Walsheim Medium" with a metric placeholder.
+- **Inter Variable** (also static Inter 400/500/600/700): body, navigation, buttons (about 4700 characters combined).
+- **Input Mono Regular / Bold** and **JetBrains Mono**: monospace labels, mostly inside product mockups (654, 70 and 19 characters).
+- Fallback stack on display: `"GT Walsheim Medium Placeholder", sans-serif`.
 
-### Hierarchy
+### Substitutes
+GT Walsheim is licensed. A geometric grotesque such as Inter at weight 500, with the same negative tracking, preserves the look; Inter is open source. Do not substitute a serif or a wide display face.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | GT Walsheim Framer Medium | 110px | 500 | 0.85 | -5.5px | Extreme negative tracking, compressed impact |
-| Section Display | GT Walsheim Medium | 85px | 500 | 0.95 | -4.25px | OpenType: ss02, tnum |
-| Section Heading | GT Walsheim Medium | 62px | 500 | 1.00 | -3.1px | OpenType: ss02 |
-| Feature Heading | GT Walsheim Medium | 32px | 500 | 1.13 | -1px | Tightest of the smaller headings |
-| Accent Display | Mona Sans | 61.5px | 100 | 1.00 | -3.1px | Ultra-light weight, ethereal |
-| Card Title | Inter Variable | 24px | 400 | 1.30 | -0.01px | OpenType: cv01, cv05, cv09, cv11, ss03, ss07 |
-| Feature Title | Inter | 22px | 700 | 1.20 | -0.8px | OpenType: cv05 |
-| Sub-heading | Inter | 20px | 600 | 1.20 | -0.8px | OpenType: cv01, cv09 |
-| Body Large | Inter Variable | 18px | 400 | 1.30 | -0.01px | OpenType: cv01, cv05, cv09, cv11, ss03, ss07 |
-| Body | Inter Variable | 15px | 400 | 1.30 | -0.01px | OpenType: cv11 |
-| Nav/UI | Inter Variable | 15px | 400 | 1.00 | -0.15px | OpenType: cv06, cv11, dlig, ss03 |
-| Body Readable | Inter Framer Regular | 14px | 400 | 1.60 | normal | Long-form body text |
-| Caption | Inter Variable | 14px | 400 | 1.40 | normal | OpenType: cv01, cv06, cv09, cv11, ss03, ss07 |
-| Label | Inter | 13px | 500 | 1.60 | normal | OpenType: cv06, cv11, ss03 |
-| Small Caption | Inter Variable | 12px | 400 | 1.40 | normal | OpenType: cv01, cv06, cv09, cv11, ss03, ss07 |
-| Micro Code | Azeret Mono | 10.4px | 400 | 1.60 | normal | OpenType: cv06, cv11, ss03 |
-| Badge | Open Runde | 9px | 600 | 1.11 | normal | OpenType: cv01, cv09 |
-| Micro Uppercase | Inter Variable | 7px | 400 | 1.00 | 0.21px | uppercase transform |
+### Scale (measured)
+| Token | Size / line | Weight | Tracking | Use |
+|---|---|---|---|---|
+| `display` | 54px / 54px | 500 | -2.16px | h1 |
+| `display-mobile` | 36px / 36px | 500 | -1.44px | h1 at 390px |
+| `heading` | 44px / 48.4px | 500 | -1.76px | section h2 |
+| `body` | 18px / 24.3px | 400 | -0.2px | paragraphs and h3 |
+| `link` | 14px / 19.6px | 400 | -0.1px | nav and footer links |
+| `button` | 14px / 14px | 400 | -0.28px | button labels |
+| `ui-small` | 12px | 400 | normal | mockup UI text |
+
+Tracking is exactly -4 percent of font size on display and heading (54 x 0.04 = 2.16, 44 x 0.04 = 1.76, 36 x 0.04 = 1.44), and about -1 percent on 18px text.
+
+Other sizes measured by character count: 12px (2302), 14px (1141), 18px (934), 13px (912), 44px (181), 15px (105), 54px (99), 10px (48), 20px (19), 16px (17). Weights: 400 (2974), 500 (2468), 600 (234), 700 (107).
 
 ### Principles
-- **Compression as personality**: GT Walsheim's extreme negative letter-spacing (-5.5px at 110px) is the defining typographic gesture — headlines feel spring-loaded, urgent, almost breathless
-- **OpenType maximalism**: Inter is deployed with 6+ OpenType features simultaneously (`cv01`, `cv05`, `cv09`, `cv11`, `ss03`, `ss07`), creating a subtly custom feel even at body sizes
-- **Weight restraint on display**: All GT Walsheim usage is weight 500 (medium) — never bold, never regular. This creates a confident-but-not-aggressive display tone
-- **Ultra-tight line heights**: Display text at 0.85 line-height means letters nearly overlap vertically — intentional density that rewards reading at arm's length
+- Headlines are medium (500) rather than bold; tightness does the work.
+- Two display sizes only; every other line is Inter.
+- Line height on display equals font size (54/54), set solid.
+- Paragraphs under headlines drop to 60 percent white.
 
-## 4. Component Stylings
+## Layout
 
-### Buttons
-- **Frosted Pill**: `rgba(255, 255, 255, 0.1)` background, black text (`#000000`), pill shape (40px radius). The glass-effect button that lives on dark surfaces — translucent, ambient, subtle
-- **Solid White Pill**: `rgb(255, 255, 255)` background, black text (`#000000`), full pill shape (100px radius), padding `10px 15px`. The primary CTA — clean, high-contrast on dark, unmissable
-- **Ghost**: No visible background, white text, relies on text styling alone. Hover reveals subtle frosted background
-- **Transition**: Scale-based animations (matrix transform with 0.85 scale factor), opacity transitions for reveal effects
+- Desktop width 1280px with a content gutter of roughly 30px at left and right (the headline, video frame and footer share the same left edge at about 30px in the capture).
+- The hero video frame spans the full content width, with a large radius and a faint 1px border.
+- Section headlines are left-aligned; their call-to-action button is right-aligned on the same row.
+- The logo cloud is centred, four per row, on black.
+- Product demonstration blocks are two-up: a large canvas card on the left and a narrow chat panel (260px wide, 640px high as measured) on the right.
+- Footer is a black block, 611px tall, with 20px padding and columns beginning "Product", "AI", "Agents", "External Agents", "Design", "Collaborate".
+- Measured gaps: 10px (425 uses), 5px (310), 15px (135), 6px (110), 8px (64), 20px (35), 30px (22). Paddings: 10px, 15px, 20px, 25px, 40px.
 
-### Cards & Containers
-- **Dark Surface Card**: Black or near-black (`#090909`) background, `rgba(0, 153, 255, 0.15) 0px 0px 0px 1px` blue ring shadow border, rounded corners (10px–15px radius)
-- **Elevated Card**: Multi-layer shadow — `rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px` (subtle top highlight) + `rgba(0, 0, 0, 0.25) 0px 10px 30px` (deep ambient shadow)
-- **Product Screenshots**: Full-width or padded within dark containers, 8px–12px border-radius for software UI previews
-- **Hover**: Subtle glow increase on Framer Blue ring shadow, or brightness shift on frosted surfaces
+### Spacing scale
+Tokens: 1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20px. The system is dense and based on 5px and 10px steps for gaps.
 
-### Inputs & Forms
-- Minimal form presence on the marketing site
-- Input fields follow dark theme: dark background, subtle border, white text
-- Focus state: Framer Blue (`#0099ff`) ring border, `1px solid #0099ff`
-- Placeholder text in `rgba(255, 255, 255, 0.4)`
+## Elevation & Depth
+
+Depth is made with glow and near-black layering on a black ground, not with conventional drop shadows:
+- Subtle: `rgba(0,0,0,0.1) 0 1px 2px` and `rgba(0,0,0,0.2) 0 2px 6px` on small controls (3 uses each).
+- Ring: `rgba(255,255,255,0.08) 0 0 0 1px`, a hairline halo on dark cards.
+- Blue key-light: `rgba(0,153,255,0.15) 0 1px 2px, rgba(0,153,255,0.2) 0 2px 4px` for focused or selected elements.
+- Deep: `rgba(0,0,0,0.2) 0 40px 64px` and close variants (26px/41.6px, 36px/57.5px) beneath floating device frames.
+- The hero editor frame glows with saturated blue borders (`#0099ff`) and soft blue fills; this is image content rather than a CSS token.
+- Surface stepping: `#000000` page, `#111111` card, `#171717` raised element.
+- Hover: buttons fade to roughly 60 percent opacity (measured 0.6 on both the white and translucent buttons) rather than changing color.
+
+## Shapes
+
+Measured radii by use: 8px (214), 15px (71), 6px (30), 20px (27), 4px (24), 18px (13), 100px (11), 5px (10), 25px (9), 10px (9).
+
+- `{rounded.button}` 8px: all buttons and most small controls.
+- `{rounded.card}` 15px: content cards.
+- `{rounded.panel}` 20px: large panels and the video frame.
+- `{rounded.card-lg}` 25px: the chat panel and mockup frames.
+- `{rounded.pill}` 100px: pills and tags.
+- 1 to 6px: tiny internal controls inside product mockups.
+
+Buttons are not pills. The brand pairs small 8px buttons with very rounded large media frames.
+
+## Components
+
+### Primary button
+- White fill `{colors.primary}`, black label `{colors.on-primary}`, `{typography.button}` (14px, 400, -0.28px).
+- Radius 8px, padding 10px 14px, height 34px. Example: "Get started for free".
+- Hover: opacity to about 0.6.
+
+### Navigation button
+- Same colors, height 30px, padding 8px 10px; the "Sign up" button in the nav bar.
+
+### Secondary (translucent) button
+- Fill `#ffffff1a`, white label, same 8px radius and 34px height, with a trailing icon in "Download app". Used for "Browse the community", "Start with agents", "See Framer sites".
 
 ### Navigation
-- **Dark floating nav bar**: Black background with frosted glass effect, white text links
-- **Nav links**: Inter at 15px, weight 400, white text with subtle hover opacity change
-- **CTA button**: Pill-shaped, white or frosted, positioned at right end of nav
-- **Mobile**: Collapses to hamburger menu, maintains dark theme
-- **Sticky behavior**: Nav remains fixed at top on scroll
+- Black bar, Framer logo mark plus wordmark at left, links in `{typography.link}`-scale white text with small chevrons on Platform, Solutions and Resources.
+- "Log in" in muted white as a text link beside the white "Sign up" button.
 
-### Image Treatment
-- **Product screenshots as hero art**: Full-width embedded UI screenshots with rounded corners (8px–12px)
-- **Dark-on-dark composition**: Screenshots placed on black backgrounds with subtle shadow for depth separation
-- **16:9 and custom aspect ratios**: Product demos fill their containers
-- **No decorative imagery**: All images are functional — showing the tool, the output, or the workflow
+### Panel card
+- `{colors.surface-card}` fill, 25px radius, 10px padding, white text. The agent chat panel shows a pale pill labelled "Desktop", a prompt, a "Thinking..." state, an input area and a model selector.
 
-### Trust & Social Proof
-- Customer logos and testimonials in muted gray on dark surfaces
-- Minimal ornamentation — the product screenshots serve as the trust signal
+### Video frame
+- Large rounded media with a runtime badge "0:36" at the lower right.
 
-## 5. Layout Principles
+### Cookie notice
+- White card with dark text, rounded corners, an "Ok" button in a pale-gray fill, and a blue "Cookie Policy" link (`{colors.framer-blue}`).
 
-### Spacing System
-- **Base unit**: 8px
-- **Scale**: 1px, 2px, 3px, 4px, 5px, 6px, 8px, 10px, 12px, 15px, 20px, 30px, 35px
-- **Section padding**: Large vertical spacing (80px–120px between sections)
-- **Card padding**: 15px–30px internal padding
-- **Component gaps**: 8px–20px between related elements
+### Logo cloud
+- White wordmarks on black at equal visual weight in a centred four-column grid.
 
-### Grid & Container
-- **Max width**: ~1200px container, centered
-- **Column patterns**: Full-width hero, 2-column feature sections, single-column product showcases
-- **Asymmetric layouts**: Feature sections often pair text (40%) with screenshot (60%)
+## Design System Architecture
 
-### Whitespace Philosophy
-- **Breathe through darkness**: Generous vertical spacing between sections — the black background means whitespace manifests as void, creating dramatic pauses between content blocks
-- **Dense within, spacious between**: Individual components are tightly composed (tight line-heights, compressed text) but float in generous surrounding space
-- **Product-first density**: Screenshot areas are allowed to be dense and information-rich, contrasting with the sparse marketing text
+Framer states its logo and color rules on https://www.framer.com/brand: never outline, rotate, skew, color or place the logo on low-contrast backgrounds, never form combinations with the wordmark, and "never use other typefaces". It lists exactly four colors (black, white, Framer Blue, Framer Deep Blue). Typeface names are not specified on that page.
 
-### Border Radius Scale
-- **1px**: Micro-elements, nearly squared precision edges
-- **5px–7px**: Small UI elements, image thumbnails — subtly softened
-- **8px**: Standard component radius — code blocks, buttons, interactive elements
-- **10px–12px**: Cards, product screenshots — comfortably rounded
-- **15px–20px**: Large containers, feature cards — generously rounded
-- **30px–40px**: Navigation pills, pagination — noticeably rounded
-- **100px**: Full pill shape — primary CTAs, tag elements
+The site itself is built in Framer, and its stylesheet carries Framer's design-token variables: a long list of `--token-<uuid>` custom properties holding color values (examples seen: `#fff`, `#000`, `#111`, `#171717`, `#333`, `#888`, `#999`, `#09f`, `#05f`, `#ffffff1a`, `#fff9`, `#fff6`, `#ffffff12`). These are Framer color styles exported as variables. Fonts are declared with generated "Placeholder" fallback faces (for example "Inter Variable Placeholder" and "GT Walsheim Medium Placeholder") that Framer uses to reduce layout shift.
 
-## 6. Depth & Elevation
+No public, documented component library or token package for the marketing site was found beyond that brand page. The de-facto system is: two typefaces, a black/near-black surface ladder, alpha-white text ladder, an 8px button radius, and blue reserved for accent.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Level 0 (Flat) | No shadow, pure black surface | Page background, empty areas |
-| Level 1 (Ring) | `rgba(0, 153, 255, 0.15) 0px 0px 0px 1px` | Card borders, interactive element outlines — Framer Blue glow ring |
-| Level 2 (Contained) | `rgb(9, 9, 9) 0px 0px 0px 2px` | Near-black ring for subtle containment on dark surfaces |
-| Level 3 (Floating) | `rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px, rgba(0, 0, 0, 0.25) 0px 10px 30px` | Elevated cards, floating elements — subtle white top-edge highlight + deep ambient shadow |
+## Do's and Don'ts
 
-### Shadow Philosophy
-Framer's elevation system is inverted from traditional light-theme designs. Instead of darker shadows on light backgrounds, Framer uses:
-- **Blue-tinted ring shadows** at very low opacity (0.15) for containment — a signature move that subtly brands every bordered element
-- **White edge highlights** (0.5px) on the top edge of elevated elements — simulating light hitting the top surface
-- **Deep ambient shadows** for true floating elements — `rgba(0, 0, 0, 0.25)` at large spread (30px)
+Do:
+- Use a black canvas with white type; build text hierarchy with white at 100, 60 and 40 percent.
+- Use GT Walsheim Medium (or Inter 500) for headlines with tracking of -4 percent.
+- Make the primary action a white 8px button with black text.
+- Use `#111111` and `#171717` for stepped surfaces and 1px `#ffffff0f` borders.
+- Use blue only as glow, link and focus accent: `#0099ff` or `#0055ff`.
+- Put colorful content (photography, UI screens, customer sites) on the black frame.
+- Keep button labels short and imperative.
 
-### Decorative Depth
-- **Blue glow auras**: Subtle Framer Blue (`#0099ff`) radial gradients behind key interactive areas
-- **No background blur/glassmorphism**: Despite the frosted button effect, there's no heavy glass blur usage — the translucency is achieved through simple rgba opacity
+Don't:
+- Don't use blue as a button fill on this style.
+- Don't use shadows for elevation on black; use surface steps and a 1px ring.
+- Don't round buttons into pills (8px); save the large radii for media and panels.
+- Don't use bold weights for headlines; medium only.
+- Don't add serif or decorative display faces ("never use other typefaces", per the brand page).
+- Don't color or outline the Framer logo.
 
-## 7. Do's and Don'ts
+### Imagery and art direction (from the capture)
+- Portraits are shot against saturated blue-violet backdrops with a soft motion blur, then framed in a three-column grid inside the glowing editor.
+- Layout explorations on the second block use a heavy black-and-white "HAUS" wordmark over landscape photography, shown as three artboards side by side.
+- The chat panel uses small pale blue tags ("Desktop") to mark the target breakpoint of a prompt.
+- The CMS table in the hero shows rows with avatars, a "Photo" column and green "Active" status labels; it is dimmed so the glowing editor stays the focal point.
+- Density: headline blocks have large vertical air (about 100px above and below), while product mockups are dense and small-type.
+- Microcopy is lower case after the first word, avoids exclamation marks, and names concrete actions: "Update copy from Slack", "Connect to any AI", "Design with an agent".
 
-### Do
-- Use pure black (`#000000`) as the primary background — not dark gray, not charcoal
-- Apply extreme negative letter-spacing on GT Walsheim display text (-3px to -5.5px)
-- Keep all buttons pill-shaped (40px+ radius) — never use squared or slightly-rounded buttons
-- Use Framer Blue (`#0099ff`) exclusively for interactive accents — links, borders, focus states
-- Deploy `rgba(255, 255, 255, 0.1)` for frosted glass surfaces on dark backgrounds
-- Maintain GT Walsheim at weight 500 only — the medium weight IS the brand
-- Use extensive OpenType features on Inter text (cv01, cv05, cv09, cv11, ss03, ss07)
-- Let product screenshots be the visual centerpiece — the tool markets itself
-- Apply blue ring shadows (`rgba(0, 153, 255, 0.15) 0px 0px 0px 1px`) for card containment
+## Responsive Behavior
 
-### Don't
-- Use warm dark backgrounds (no `#1a1a1a`, `#2d2d2d`, or brownish blacks)
-- Apply bold (700+) weight to GT Walsheim display text — medium 500 only
-- Introduce additional accent colors beyond Framer Blue — this is a one-accent-color system
-- Use large border-radius on non-interactive elements (cards use 10px–15px, only buttons get 40px+)
-- Add decorative imagery, illustrations, or icons — the product IS the illustration
-- Use positive letter-spacing on headlines — everything is compressed, negative tracking
-- Create heavy drop shadows — depth is communicated through subtle rings and minimal ambients
-- Place light/white backgrounds behind content sections — the void is sacred
-- Use serif or display-weight fonts — the system is geometric sans-serif only
+- Measured at 1280px and 390px. The h1 drops from 54px to 36px, tracking from -2.16px to -1.44px, keeping the -4 percent ratio and solid line height.
+- The nav collapses on mobile; the collapsed state was not captured so no claim is made about its layout.
+- Two-up product blocks (canvas card plus chat panel) are expected to stack; not measured.
+- Button heights stay at 34px and 30px; touch targets are small by comparison with common 44px guidance.
+- Radii and the near-black surface ladder do not change by breakpoint.
 
-## 8. Responsive Behavior
+## Iteration Guide
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <809px | Single column, stacked feature sections, reduced hero text (62px→40px), hamburger nav |
-| Tablet | 809px–1199px | 2-column features begin, nav links partially visible, screenshots scale down |
-| Desktop | >1199px | Full layout, expanded nav with all links + CTA, 110px display hero, side-by-side features |
-
-### Touch Targets
-- Pill buttons: minimum 40px height with 10px vertical padding — exceeds 44px WCAG minimum
-- Nav links: 15px text with generous padding for touch accessibility
-- Mobile CTA buttons: Full-width pills on mobile for easy thumb reach
-
-### Collapsing Strategy
-- **Navigation**: Full horizontal nav → hamburger menu at mobile breakpoint
-- **Hero text**: 110px display → 85px → 62px → ~40px across breakpoints, maintaining extreme negative tracking proportionally
-- **Feature sections**: Side-by-side (text + screenshot) → stacked vertically on mobile
-- **Product screenshots**: Scale responsively within containers, maintaining aspect ratios
-- **Section spacing**: Reduces proportionally — 120px desktop → 60px mobile
-
-### Image Behavior
-- Product screenshots are responsive, scaling within their container boundaries
-- No art direction changes — same crops across breakpoints
-- Dark background ensures screenshots maintain visual impact at any size
-- Screenshots lazy-load as user scrolls into view
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary Background: Void Black (`#000000`)
-- Primary Text: Pure White (`#ffffff`)
-- Accent/CTA: Framer Blue (`#0099ff`)
-- Secondary Text: Muted Silver (`#a6a6a6`)
-- Frosted Surface: Translucent White (`rgba(255, 255, 255, 0.1)`)
-- Elevation Ring: Blue Glow (`rgba(0, 153, 255, 0.15)`)
-
-### Example Component Prompts
-- "Create a hero section on pure black background with 110px GT Walsheim heading in white, letter-spacing -5.5px, line-height 0.85, and a pill-shaped white CTA button (100px radius) with black text"
-- "Design a feature card on black background with a 1px Framer Blue ring shadow border (rgba(0,153,255,0.15)), 12px border-radius, white heading in Inter at 22px weight 700, and muted silver (a6a6a6) body text"
-- "Build a navigation bar with black background, white Inter text links at 15px, and a frosted pill button (rgba(255,255,255,0.1) background, 40px radius) as the CTA"
-- "Create a product showcase section with a full-width screenshot embedded on black, 10px border-radius, subtle multi-layer shadow (white 0.5px top highlight + rgba(0,0,0,0.25) 30px ambient)"
-- "Design a pricing card using pure black surface, Framer Blue (#0099ff) accent for the selected plan border, white text hierarchy (24px Inter bold heading, 14px regular body), and a solid white pill CTA button"
-
-### Iteration Guide
-When refining existing screens generated with this design system:
-1. Focus on ONE component at a time — the dark canvas makes each element precious
-2. Always verify letter-spacing on GT Walsheim headings — the extreme negative tracking is non-negotiable
-3. Check that Framer Blue appears ONLY on interactive elements — never as decorative background or text color for non-links
-4. Ensure all buttons are pill-shaped — any squared corner immediately breaks the Framer aesthetic
-5. Test frosted glass surfaces by checking they have exactly `rgba(255, 255, 255, 0.1)` — too opaque looks like a bug, too transparent disappears
+1. Set the page to `{colors.canvas}` and text to `{colors.ink}`.
+2. Pick display (54/54/-2.16px) and heading (44/48.4/-1.76px) in GT Walsheim Medium; use Inter Variable 18px/-0.2px at `{colors.ink-muted}` for paragraphs.
+3. Add one white button: 34px high, 8px radius, 10px 14px padding, black 14px label.
+4. Add translucent secondary buttons with `#ffffff1a` fill.
+5. Surface content on `{colors.surface-card}` with 25px radius and a hairline `{colors.hairline}`.
+6. Add blue only where interaction or emphasis is needed: link, ring or glow.
+7. Show real imagery in large rounded frames; avoid illustration chrome.
+8. Verify every pixel and hex against the frontmatter before shipping.

@@ -1,4 +1,4 @@
-/* Lucide icon sprite — inject once, reference by name with <svg class="ico"><use href="#i-NAME"/></svg>.
+/* Lucide icon sprite: inject once, reference by name with <svg class="ico"><use href="#i-NAME"/></svg>.
    No network, no per-use path duplication, offline + gate-safe. Paths are verbatim lucide (lucide.dev). */
 (function () {
   const I = {

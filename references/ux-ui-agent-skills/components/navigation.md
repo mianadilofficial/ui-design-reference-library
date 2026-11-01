@@ -41,7 +41,7 @@ Show hierarchy and the path to the current page.
 **Accessibility:**
 - Wrap in `<nav aria-label="Breadcrumb">` › ordered list.
 - Current page: `aria-current="page"`, not a link.
-- Separators are decorative (`aria-hidden`) — never the only indicator.
+- Separators are decorative (`aria-hidden`), never the only indicator.
 
 ---
 
@@ -68,7 +68,7 @@ Navigate across pages of results.
 
 Show position within a linear multi-step flow.
 
-**Anatomy:** `①——②——③` with labels; states per step.
+**Anatomy:** `①──②──③` with labels; states per step.
 
 **Variants:** horizontal, vertical, numbered vs. icon, with/without descriptions.
 

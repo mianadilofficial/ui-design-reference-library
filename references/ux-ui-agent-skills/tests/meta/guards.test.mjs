@@ -20,17 +20,17 @@ const BROWSER_GATES = readdirSync(join(ROOT, 'scripts'))
 
 test('every browser gate is accounted for', () => {
   // If a new render gate lands, it must be covered by the guard below.
-  assert.equal(BROWSER_GATES.length, 15, `browser gates changed: ${BROWSER_GATES.join(', ')}`);
+  assert.equal(BROWSER_GATES.length, 17, `browser gates changed: ${BROWSER_GATES.join(', ')}`);
 });
 
 test('a missing browser fails loudly under DS_REQUIRE_BROWSER, and only skips without it', () => {
   // Copied outside the repo so Node's upward node_modules lookup cannot find
-  // playwright — the state a clean CI runner or a fresh npx install is in.
+  // playwright, the state a clean CI runner or a fresh npx install is in.
   const dir = mkdtempSync(join(tmpdir(), 'ds-nobrowser-'));
   try {
-    // _targets.mjs travels with them: the gates import it, and a missing import
-    // would fail for the wrong reason and still look like the right answer.
-    copyFileSync(join(ROOT, 'scripts', '_targets.mjs'), join(dir, '_targets.mjs'));
+    // _targets.mjs and _color.mjs travel with them: the gates import them, and a
+    // missing import would fail for the wrong reason and still look like the right answer.
+    for (const helper of ['_targets.mjs', '_color.mjs']) copyFileSync(join(ROOT, 'scripts', helper), join(dir, helper));
     for (const g of BROWSER_GATES) {
       copyFileSync(join(ROOT, 'scripts', g), join(dir, g));
       const target = join(ROOT, 'examples', 'sample-app', 'preview.html');
@@ -88,7 +88,7 @@ test('every render gate REFUSES a missing path, rather than crashing into one', 
     'verify_target_size.mjs', 'verify_overflow.mjs', 'verify_interactive.mjs',
     'lint_intent.mjs', 'verify_reduced_motion.mjs', 'verify_rtl.mjs', 'slop_tells.mjs',
     'taste_audit.mjs', 'verify_responsive.mjs', 'verify_mobile_first.mjs',
-    'verify_focustrap.mjs',
+    'verify_focustrap.mjs', 'verify_spacing.mjs', 'verify_thai.mjs',
   ];
   for (const g of RENDER_GATES) {
     const r = node(g, ['tests/fixtures/nope.html'], { env: { DS_REQUIRE_BROWSER: '1' } });
@@ -96,6 +96,28 @@ test('every render gate REFUSES a missing path, rather than crashing into one', 
       `${g} exited ${r.status} on a missing path; expected 2 ("could not look")\n${r.out}`);
     assert.match(r.out, /not found/,
       `${g} did not say which path was missing`);
+  }
+});
+
+test('verify_focustrap with no --open refuses, and leaves no receipt that clears the Stop hook', () => {
+  // It printed usage and exited 0. Through gate.mjs that was a passing receipt
+  // for a page nothing had measured, and the Stop hook accepted it.
+  const page = 'tests/fixtures/good/trapped-modal.html';
+  const direct = node('verify_focustrap.mjs', [page], { env: { DS_REQUIRE_BROWSER: '1' } });
+  assert.equal(direct.status, 2, direct.out);
+  assert.match(direct.out, /nothing was measured/);
+  // A fresh copy, with a comment no other copy has: a receipt for the repo's
+  // fixture from some earlier run must not be what --check finds.
+  const data = mkdtempSync(join(tmpdir(), 'ds-ft-'));
+  const copy = join(data, 'page.html');
+  writeFileSync(copy, readFileSync(join(ROOT, page), 'utf8') + `\n<!-- ${data} -->\n`);
+  try {
+    const wrapped = node('gate.mjs', ['verify_focustrap.mjs', copy], { env: { CLAUDE_PLUGIN_DATA: data } });
+    assert.equal(wrapped.status, 2, wrapped.out);
+    const passing = node('gate.mjs', ['--check', copy], { env: { CLAUDE_PLUGIN_DATA: data, CLAUDE_PROJECT_DIR: data } });
+    assert.notEqual(passing.status, 0, `a run that measured nothing left a passing receipt:\n${passing.out}`);
+  } finally {
+    rmSync(data, { recursive: true, force: true });
   }
 });
 
@@ -131,7 +153,7 @@ test('a usage message is never mistaken for a pass', async () => {
 
 test('a SKIPPED run is never mistaken for a pass', async () => {
   const { accepts } = await import('../helpers/run.mjs');
-  const fake = { status: 0, out: 'verify_states: playwright not installed — SKIPPED', signal: null };
+  const fake = { status: 0, out: 'verify_states: playwright not installed: SKIPPED', signal: null };
   assert.throws(() => accepts(fake), /SKIPPED/);
 });
 

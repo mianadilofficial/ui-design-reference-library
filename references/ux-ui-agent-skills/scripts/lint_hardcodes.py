@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Lint generated component code for hardcoded values that should be design tokens.
 
-The kit's rule is "zero hardcoded values" — every color/size/radius/duration must come
+The kit's rule is "zero hardcoded values": every color/size/radius/duration must come
 from a token (CSS var, theme key, asset). Point this at YOUR component source.
 
 Usage:
@@ -30,7 +30,7 @@ HEX_VALUE = re.compile(r"[:=(,]\s*[\"']?#[0-9a-fA-F]{3,8}\b")
 PX = re.compile(r"(?<![\w.])\d+(?:\.\d+)?px\b")
 MS = re.compile(r"(?<![\w.])\d+(?:\.\d+)?m?s\b")
 # raw Tailwind palette utilities (bg-gray-500, text-blue-600, border-red-400 …) that
-# bypass semantic tokens — the #1 real-world drift (527 of these in one audited project).
+# bypass semantic tokens: the #1 real-world drift (527 of these in one audited project).
 _TW_PREFIX = r"(?:bg|text|border|ring|ring-offset|fill|stroke|from|via|to|divide|outline|decoration|accent|caret|placeholder|shadow)"
 _TW_COLOR = r"(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)"
 TW = re.compile(rf"(?<![\w-]){_TW_PREFIX}-{_TW_COLOR}-(?:50|100|200|300|400|500|600|700|800|900|950)\b")
@@ -43,7 +43,7 @@ TOKEN_DEF = re.compile(r"--[\w\-]+\s*:")
 # narrowing them has no measured benefit.
 THEME_FN = re.compile(r"theme\(|tokens?[./]|\{[\w.\-]+\}")
 ALLOW = "ds-allow-hardcode"
-# px values that are conventionally fine (hairlines, zero, 1px borders) — still reported as info? keep strict but allow 0/1px
+# px values that are conventionally fine (hairlines, zero, 1px borders); still reported as info? keep strict but allow 0/1px
 PX_OK = {"0px", "1px"}
 
 
@@ -67,7 +67,7 @@ def strip_block_comment(line, in_comment):
     """Return (code outside /* */, whether the comment is still open).
 
     A single-line comment was already skipped by its leading `/*`, but the middle
-    of a multi-line one is not indented that way — the line explaining that six
+    of a multi-line one is not indented that way, so the line explaining that six
     rotated faders "pushed the page 388px sideways" read as a hardcoded length.
     Prose about a bug is not the bug."""
     out, i = [], 0
@@ -137,7 +137,7 @@ def lint_line(line, tailwind=True, css_scope=True):
     if stripped.startswith(("//", "*", "/*", "#", "<!--")):
         return []
     hits = []
-    # @media / @container conditions can't use var() (a CSS limitation) — breakpoint px there
+    # @media / @container conditions can't use var() (a CSS limitation), so breakpoint px there
     # is not drift; skip px/ms on those lines (still check hex/tailwind/font).
     media_cond = "@media" in line or "@container" in line
     for m in (HEX if css_scope else HEX_VALUE).finditer(code):
@@ -189,7 +189,7 @@ def main(argv):
     unreadable = []
     for f in files:
         try:
-            text = f.read_text()
+            text = f.read_text(encoding="utf-8")
         except (UnicodeDecodeError, OSError) as err:
             # Swallowing this counted the file as scanned and let the run exit 0
             # having never opened it - the same shape as the missing-path guard
@@ -232,7 +232,7 @@ def main(argv):
             else:
                 line, in_comment = raw, False
             for kind, val in lint_line(line, tailwind, css_here):
-                print(f"{f}:{n}: hardcoded {kind} '{val}' — use a token")
+                print(f"{f}:{n}: hardcoded {kind} '{val}': use a token")
                 violations += 1
 
     print(f"\nScanned {len(files) - len(unreadable)} of {len(files)} candidate file(s).")
@@ -251,4 +251,8 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    # Findings quote what they found (an arrow, an emoji, a Thai name), and a
+    # Windows console in a legacy code page cannot print it.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main(sys.argv[1:]))

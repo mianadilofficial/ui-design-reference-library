@@ -2,7 +2,7 @@
 /**
  * TASTE AUDIT (render-based, heuristic). Renders a page in headless Chrome and
  * measures the structural "slop tells" that the doctrine in taste/design-taste.md
- * warns about — from REAL computed styles + geometry, not static guesses.
+ * warns about, from REAL computed styles + geometry, not static guesses.
  *
  * It is heuristic: taste is subjective, so this is a strong signal, not proof.
  * Checks (high-signal subset of the Pre-Flight Aesthetic Check):
@@ -19,6 +19,7 @@
  */
 import { resolve } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { COLOR_INIT } from './_color.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -26,7 +27,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`taste_audit: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`taste_audit: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -41,6 +42,7 @@ let high = 0;
 
 for (const f of files) {
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  await page.addInitScript(COLOR_INIT);
   await page.goto('file://' + resolve(f), { waitUntil: 'networkidle' }).catch(() => {});
   await page.addStyleTag({ content: '*{transition:none!important;animation:none!important}' });
   if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
@@ -73,7 +75,7 @@ for (const f of files) {
         chars: el.textContent.trim().length, w: r.width, ch: chWidth(s) });
     }
     // uniform repetition: LARGE sibling blocks (cards/sections) with same tag+class and near-equal size.
-    // Small elements (icons, buttons) are excluded — uniformity there is fine.
+    // Small elements (icons, buttons) are excluded; uniformity there is fine.
     const cls = el => (typeof el.className === 'string' ? el.className : (el.getAttribute && el.getAttribute('class')) || '').split(' ').filter(Boolean)[0] || '';
     const groups = {};
     for (const el of document.querySelectorAll('body *')) {
@@ -93,7 +95,7 @@ for (const f of files) {
     // distinct accent (non-neutral) colors used on text/bg
     const hues = new Set();
     for (const el of document.querySelectorAll('body *')) {
-      for (const c of [getComputedStyle(el).color, getComputedStyle(el).backgroundColor]) {
+      for (const c of [getComputedStyle(el).color, getComputedStyle(el).backgroundColor].map(window.__dsRGBString)) {
         const m = c.match(/\d+/g); if (!m) continue; const [r, g, b] = m.map(Number);
         const mx = Math.max(r, g, b), mn = Math.min(r, g, b);
         if (mx - mn > 40) hues.add([Math.round(r / 32), Math.round(g / 32), Math.round(b / 32)].join());
@@ -102,11 +104,11 @@ for (const f of files) {
     // pure black/white text or bg
     let pure = 0;
     for (const el of document.querySelectorAll('body *')) {
-      const s = getComputedStyle(el);
-      if (s.color === 'rgb(0, 0, 0)' || s.color === 'rgb(255, 255, 255)') {
+      const s = getComputedStyle(el), color = window.__dsRGBString(s.color), bg = window.__dsRGBString(s.backgroundColor);
+      if (color === 'rgb(0, 0, 0)' || color === 'rgb(255, 255, 255)') {
         // allowed on dark/black sections? flag pure text color usage
       }
-      if (s.backgroundColor === 'rgb(0, 0, 0)' || s.backgroundColor === 'rgb(255, 255, 255)') pure++;
+      if (bg === 'rgb(0, 0, 0)' || bg === 'rgb(255, 255, 255)') pure++;
     }
     return { texts, uniform, uniformKey, hues: hues.size };
   });
@@ -117,13 +119,13 @@ for (const f of files) {
   const maxHead = Math.max(0, ...data.texts.filter(t => t.weight >= 600 || /^H[12]$/.test(t.tag)).map(t => t.px));
   const ratio = maxHead && bodyPx ? maxHead / bodyPx : 0;
   if (ratio && ratio < 2.0) findings.push(['HIGH', `Timid type-scale contrast: biggest heading ${maxHead}px vs body ${bodyPx}px = ${ratio.toFixed(1)}x (premium ≥ ~2.5x). Make display type dramatically bigger and shorter.`]);
-  if (data.uniform >= 3) findings.push(['MED', `${data.uniform} equal-size blocks "${data.uniformKey}" — fine for a dashboard metric row, but on a marketing/feature section break symmetry (one hero item / bento sizing).`]);
+  if (data.uniform >= 3) findings.push(['MED', `${data.uniform} equal-size blocks "${data.uniformKey}": fine for a dashboard metric row, but on a marketing/feature section break symmetry (one hero item / bento sizing).`]);
   const wide = data.texts.filter(t => t.tag === 'P' && t.chars > 40 && t.w / (t.ch || t.px * 0.5) > 80);
-  if (wide.length) findings.push(['MED', `${wide.length} paragraph(s) wider than ~80ch — constrain body to 60–75ch (max-width: 65ch).`]);
-  if (data.hues > 6) findings.push(['MED', `${data.hues} distinct accent hues — palette sprawl. One primary + at most one accent; neutrals carry the rest.`]);
+  if (wide.length) findings.push(['MED', `${wide.length} paragraph(s) wider than ~80ch: constrain body to 60-75ch (max-width: 65ch).`]);
+  if (data.hues > 6) findings.push(['MED', `${data.hues} distinct accent hues: palette sprawl. One primary + at most one accent; neutrals carry the rest.`]);
 
   const mode = dark ? ' [dark]' : '';
-  if (!findings.length) console.log(`OK   ${f}${mode} — no measurable taste slop (type ${ratio.toFixed(1)}x, ${data.hues} hues)`);
+  if (!findings.length) console.log(`OK   ${f}${mode}: no measurable taste slop (type ${ratio.toFixed(1)}x, ${data.hues} hues)`);
   else {
     console.log(`\n${f}${mode}:`);
     for (const [sev, msg] of findings) { console.log(`  ${sev}  ${msg}`); if (sev === 'HIGH') high++; }
@@ -131,5 +133,5 @@ for (const f of files) {
 }
 await browser.close();
 if (strict && high) { console.log(`\n${high} HIGH taste finding(s).`); process.exit(1); }
-console.log('\n(taste is heuristic — a strong signal, not proof. Pair with human visual review.)');
+console.log('\n(taste is heuristic: a strong signal, not proof. Pair with human visual review.)');
 process.exit(0);

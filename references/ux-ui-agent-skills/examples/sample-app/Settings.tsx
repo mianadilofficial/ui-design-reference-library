@@ -3,8 +3,10 @@ import { useState } from "react";
 import { Button } from "../golden/Button";
 import { Modal } from "../golden/Modal";
 
-export function Settings() {
-  const [confirmOpen, setConfirmOpen] = useState(false);
+// initialConfirmOpen lets the render gates see the dialog open: server
+// rendering never clicks, so without it the confirm Delete is never measured.
+export function Settings({ initialConfirmOpen = false }: { initialConfirmOpen?: boolean } = {}) {
+  const [confirmOpen, setConfirmOpen] = useState(initialConfirmOpen);
   const [notify, setNotify] = useState(true);
 
   return (

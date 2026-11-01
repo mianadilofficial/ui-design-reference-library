@@ -4,7 +4,6 @@ import {
     Box,
     clamp,
     Delta,
-    noop,
     Point,
     SubscriptionManager,
 } from "motion-utils"
@@ -24,11 +23,13 @@ import { microtask } from "../../frameloop/microtask"
 import { time } from "../../frameloop/sync-time"
 import type { Process } from "../../frameloop/types"
 import { HTMLVisualElement } from "../../render/html/HTMLVisualElement"
+import type { MotionNodeOptions } from "../../node/types"
 import type { ResolvedValues } from "../../render/types"
 import { scaleCorrectors } from "../../render/utils/is-forced-motion-value"
 import type { MotionStyle, VisualElement } from "../../render/VisualElement"
 import { statsBuffer } from "../../stats/buffer"
 import { delay } from "../../utils/delay"
+import { isRefObject } from "../../utils/is-ref-object"
 import { isSVGElement } from "../../utils/is-svg-element"
 import { isSVGSVGElement } from "../../utils/is-svg-svg-element"
 import { mixNumber } from "../../utils/mix/number"
@@ -51,6 +52,7 @@ import {
     isNear,
 } from "../geometry/delta-calc"
 import { removeBoxTransforms } from "../geometry/delta-remove"
+import { roundBox } from "../geometry/round"
 import { createBox, createDelta } from "../geometry/models"
 import {
     aspectRatio,
@@ -64,9 +66,16 @@ import { defaultScaleCorrectors } from "../styles/default-scale-correctors"
 import { buildProjectionTransform } from "../styles/transform"
 import { eachAxis } from "../utils/each-axis"
 import { FlatTree } from "../utils/flat-tree"
-import { has2DTranslate, hasScale, hasTransform } from "../utils/has-transform"
+import {
+    angleTransforms,
+    has2DTranslate,
+    hasDistortingTransform,
+    hasScale,
+    hasTransform,
+} from "../utils/has-transform"
 import { globalProjectionState } from "./state"
 import {
+    InitialPromotionConfig,
     IProjectionNode,
     LayoutEvents,
     LayoutUpdateData,
@@ -77,13 +86,10 @@ import {
     ScrollMeasurements,
 } from "./types"
 
-const metrics = {
-    nodes: 0,
-    calculatedTargetDeltas: 0,
-    calculatedProjections: 0,
-}
-
-const transformAxes = ["", "X", "Y", "Z"]
+/**
+ * Transforms that distort an element's layout, so must be reset before measuring.
+ */
+const distortingTransforms = ["z", "skew", "skewZ"]
 
 /**
  * We use 1000 as the animation target as 0-1000 maps better to pixels than 0-1
@@ -111,8 +117,16 @@ function resetDistortingTransform(
     }
 }
 
-const demoteTransforms = ({ instance }: IProjectionNode) =>
-    instance && transformGroups.get(instance)?.demote()
+/**
+ * Move accelerated transforms back to the main thread. The WAAPI animation
+ * hid startUpdate()'s reset of rotations, skews and z, and moving off it
+ * writes the whole transform back, so reset them again before this node
+ * is measured.
+ */
+const demoteTransforms = (node: IProjectionNode) =>
+    node.instance &&
+    transformGroups.get(node.instance)?.demote() &&
+    node.resetSkewAndRotation()
 
 function cancelTreeOptimisedTransformAnimations(
     projectionNode: IProjectionNode
@@ -142,6 +156,20 @@ function cancelTreeOptimisedTransformAnimations(
     }
 }
 
+function getClosestProjectingNode(
+    visualElement?: VisualElement<
+        unknown,
+        unknown,
+        { allowProjection?: boolean }
+    >
+): IProjectionNode | undefined {
+    if (!visualElement) return undefined
+
+    return visualElement.options.allowProjection !== false
+        ? visualElement.projection
+        : getClosestProjectingNode(visualElement.parent)
+}
+
 export function createProjectionNode<I>({
     attachResizeListener,
     defaultParent,
@@ -161,6 +189,78 @@ export function createProjectionNode<I>({
     })
 
     return class ProjectionNode implements IProjectionNode<I> {
+        /**
+         * Create the projection node of a `motion` component's VisualElement,
+         * from its props. This runs while the component renders, before its
+         * children. It's here rather than in the component so React
+         * bundles only include it with the features that supply a
+         * ProjectionNode. Vanilla bundles that use the projection node
+         * (drag(), animateLayout()) include it too, as a class static
+         * can't be tree-shaken.
+         */
+        static create(
+            visualElement: VisualElement<any>,
+            props: MotionNodeOptions,
+            initialPromotionConfig?: InitialPromotionConfig
+        ) {
+            const {
+                layoutId,
+                layout,
+                drag,
+                dragConstraints,
+                layoutScroll,
+                layoutRoot,
+                layoutAnchor,
+                layoutCrossfade,
+            } = props
+
+            const projection = (visualElement.projection = new this(
+                visualElement.latestValues,
+                props["data-framer-portal-id"]
+                    ? undefined
+                    : getClosestProjectingNode(visualElement.parent)
+            ) as IProjectionNode)
+
+            projection.setOptions({
+                layoutId,
+                layout,
+                alwaysMeasureLayout:
+                    Boolean(drag) ||
+                    (dragConstraints && isRefObject(dragConstraints)),
+                visualElement,
+                /**
+                 * TODO: Update options in an effect. This could be tricky as it'll be too late
+                 * to update by the time layout animations run.
+                 * We also need to fix this safeToRemove by linking it up to the one returned by usePresence,
+                 * ensuring it gets called if there's no potential layout animations.
+                 *
+                 */
+                animationType: typeof layout === "string" ? layout : "both",
+                initialPromotionConfig,
+                crossfade: layoutCrossfade,
+                layoutScroll,
+                layoutRoot,
+                layoutAnchor,
+            })
+
+            /**
+             * This node will take over from its layoutId's current lead, so snapshot
+             * the lead now, while rendering. By the time the lead unmounts (or this
+             * node mounts) React may already have committed DOM changes that come
+             * before it in the tree, like a sibling changing height, and a snapshot
+             * taken then starts the animation from a position never seen on screen.
+             *
+             * If React discards this render (e.g. it suspends), nothing else
+             * completes the update, so check it after the next frame as an
+             * unmounting node does.
+             */
+            const lead = projection.getStack()?.lead
+            if (lead && !projection.root!.isUpdateBlocked()) {
+                lead.willUpdate()
+                lead.scheduleCheckAfterUnmount()
+            }
+        }
+
         /**
          * A unique ID generated for every projection node.
          */
@@ -367,6 +467,12 @@ export function createProjectionNode<I>({
         needsReset = false
 
         /**
+         * Set when this node gives up its layoutId, so styles it was given
+         * while following another node are cleared on its next render.
+         */
+        needsShow?: boolean
+
+        /**
          * Flags whether this node should have its transform reset prior to measuring.
          */
         shouldResetTransform = false
@@ -456,8 +562,7 @@ export function createProjectionNode<I>({
         }
 
         notifyListeners(name: LayoutEvents, ...args: any) {
-            const subscriptionManager = this.eventHandlers.get(name)
-            subscriptionManager && subscriptionManager.notify(...args)
+            this.eventHandlers.get(name)?.notify(...args)
         }
 
         hasListeners(name: LayoutEvents) {
@@ -480,7 +585,7 @@ export function createProjectionNode<I>({
             }
 
             this.root.nodes!.add(this)
-            this.parent && this.parent.children.add(this)
+            this.parent?.children.add(this)
 
             if (this.root.hasTreeAnimated && (layout || layoutId)) {
                 this.isLayoutDirty = true
@@ -506,7 +611,7 @@ export function createProjectionNode<I>({
 
                     this.root.updateBlockedByResize = true
 
-                    cancelDelay && cancelDelay()
+                    cancelDelay?.()
                     cancelDelay = delay(resizeUnblockUpdate, 250)
 
                     if (globalProjectionState.hasAnimatedSinceResize) {
@@ -635,9 +740,7 @@ export function createProjectionNode<I>({
                             finishAnimation(this)
                         }
 
-                        if (this.isLead() && this.options.onExitComplete) {
-                            this.options.onExitComplete()
-                        }
+                        this.isLead() && this.options.onExitComplete?.()
                     }
 
                     this.targetLayout = newLayout
@@ -648,9 +751,8 @@ export function createProjectionNode<I>({
         unmount() {
             this.options.layoutId && this.willUpdate()
             this.root.nodes!.remove(this)
-            const stack = this.getStack()
-            stack && stack.remove(this)
-            this.parent && this.parent.children.delete(this)
+            this.getStack()?.remove(this)
+            this.parent?.children.delete(this)
             this.instance = undefined
             this.eventHandlers.clear()
             this.hasLayoutListener = false
@@ -677,7 +779,7 @@ export function createProjectionNode<I>({
 
             this.isUpdating = true
 
-            this.nodes && this.nodes.forEach(resetSkewAndRotation)
+            this.nodes?.forEach(resetSkewAndRotation)
             this.animationId++
         }
 
@@ -690,7 +792,7 @@ export function createProjectionNode<I>({
             this.root.hasTreeAnimated = true
 
             if (this.root.isUpdateBlocked()) {
-                this.options.onExitComplete && this.options.onExitComplete()
+                this.options.onExitComplete?.()
                 return
             }
 
@@ -921,25 +1023,15 @@ export function createProjectionNode<I>({
         updateProjection = () => {
             this.projectionUpdateScheduled = false
 
-            /**
-             * Reset debug counts. Manually resetting rather than creating a new
-             * object each frame.
-             */
-            if (statsBuffer.value) {
-                metrics.nodes =
-                    metrics.calculatedTargetDeltas =
-                    metrics.calculatedProjections =
-                        0
-            }
-
             this.nodes!.forEach(propagateDirtyNodes)
             this.nodes!.forEach(resolveTargetDelta)
             this.nodes!.forEach(calcProjection)
             this.nodes!.forEach(cleanDirtyNodes)
 
-            if (statsBuffer.addProjectionMetrics) {
-                statsBuffer.addProjectionMetrics(metrics)
-            }
+            /**
+             * Record this frame's debug counts, if recordStats() is running.
+             */
+            statsBuffer.countProjection?.()
         }
 
         /**
@@ -993,35 +1085,33 @@ export function createProjectionNode<I>({
             this.notifyListeners("measure", this.layout.layoutBox)
 
             const { visualElement } = this.options
-            visualElement &&
-                visualElement.notify(
-                    "LayoutMeasure",
-                    this.layout.layoutBox,
-                    prevLayout ? prevLayout.layoutBox : undefined
-                )
+            visualElement?.notify(
+                "LayoutMeasure",
+                this.layout.layoutBox,
+                prevLayout?.layoutBox
+            )
         }
 
         updateScroll(phase: Phase = "measure") {
-            let needsMeasurement = Boolean(
-                this.options.layoutScroll && this.instance
-            )
+            const { scroll, instance } = this
+            const { animationId } = this.root
 
             if (
-                this.scroll &&
-                this.scroll.animationId === this.root.animationId &&
-                this.scroll.phase === phase
+                this.options.layoutScroll &&
+                instance &&
+                !(
+                    scroll &&
+                    scroll.animationId === animationId &&
+                    scroll.phase === phase
+                )
             ) {
-                needsMeasurement = false
-            }
-
-            if (needsMeasurement && this.instance) {
-                const isRoot = checkIsScrollRoot(this.instance)
+                const isRoot = checkIsScrollRoot(instance)
                 this.scroll = {
-                    animationId: this.root.animationId,
+                    animationId,
                     phase,
                     isRoot,
-                    offset: measureScroll(this.instance),
-                    wasRoot: this.scroll ? this.scroll.isRoot : isRoot,
+                    offset: measureScroll(instance),
+                    wasRoot: scroll ? scroll.isRoot : isRoot,
                 }
             }
         }
@@ -1143,11 +1233,12 @@ export function createProjectionNode<I>({
             box: Box,
             transformOnly = false,
             output?: Box,
-            skipOwnTransform?: boolean
+            skipOwnTransform?: boolean,
+            start = 0
         ): Box {
             const withTransforms = output || createBox()
             copyBoxInto(withTransforms, box)
-            for (let i = 0; i < this.path.length; i++) {
+            for (let i = start; i < this.path.length; i++) {
                 const node = this.path[i]
 
                 if (
@@ -1385,8 +1476,13 @@ export function createProjectionNode<I>({
                 if (
                     this.options.layoutAnchor !== false &&
                     relativeParent &&
-                    Boolean(relativeParent.resumingFrom) ===
-                        Boolean(this.resumingFrom) &&
+                    (!relativeParent.resumingFrom === !this.resumingFrom ||
+                        /**
+                         * Shared layout animations within a layoutRoot
+                         * animate relative to it.
+                         */
+                        (relativeParent.options.layoutRoot &&
+                            !relativeParent.resumingFrom)) &&
                     !relativeParent.options.layoutScroll &&
                     relativeParent.target &&
                     this.animationProgress !== 1
@@ -1404,9 +1500,7 @@ export function createProjectionNode<I>({
             /**
              * Increase debug counter for resolved target deltas
              */
-            if (statsBuffer.value) {
-                metrics.calculatedTargetDeltas++
-            }
+            statsBuffer.countProjection?.(1) // calculatedTargetDeltas
         }
 
         getClosestProjectingParent() {
@@ -1501,7 +1595,7 @@ export function createProjectionNode<I>({
              * delete our target sources for the following frame.
              */
             this.isTreeAnimating = Boolean(
-                (this.parent && this.parent.isTreeAnimating) ||
+                this.parent?.isTreeAnimating ||
                     this.currentAnimation ||
                     this.pendingAnimation
             )
@@ -1525,12 +1619,21 @@ export function createProjectionNode<I>({
             /**
              * Apply all the parent deltas to this box to produce the corrected box. This
              * is the layout box, as it will appear on screen as a result of the transforms of its parents.
+             *
+             * A shared target is usually in page space, so ancestor transforms are applied
+             * too. But a target relative to a parent that isn't itself shared (like a
+             * layoutRoot) is in that parent's layout space. So the transforms of the
+             * parent and its ancestors, which move both elements alike, are skipped,
+             * but those of other ancestors (between it and either element) apply.
              */
             applyTreeDeltas(
                 this.layoutCorrected,
                 this.treeScale,
                 this.path,
-                isShared
+                isShared &&
+                    (lead.relativeTarget && !lead.relativeParent!.resumingFrom
+                        ? lead.relativeParent
+                        : true)
             )
 
             /**
@@ -1611,9 +1714,7 @@ export function createProjectionNode<I>({
             /**
              * Increase debug counter for recalculated projections
              */
-            if (statsBuffer.value) {
-                metrics.calculatedProjections++
-            }
+            statsBuffer.countProjection?.(2) // calculatedProjections
         }
 
         isVisible = true
@@ -1629,8 +1730,7 @@ export function createProjectionNode<I>({
         scheduleRender(notifyAll = true) {
             this.options.visualElement?.scheduleRender()
             if (notifyAll) {
-                const stack = this.getStack()
-                stack && stack.scheduleRender()
+                this.getStack()?.scheduleRender()
             }
             if (this.resumingFrom && !this.resumingFrom.instance) {
                 this.resumingFrom = undefined
@@ -1672,9 +1772,8 @@ export function createProjectionNode<I>({
 
             const relativeLayout = createBox()
 
-            const snapshotSource = snapshot ? snapshot.source : undefined
-            const layoutSource = this.layout ? this.layout.source : undefined
-            const isSharedLayoutAnimation = snapshotSource !== layoutSource
+            const isSharedLayoutAnimation =
+                snapshot?.source !== this.layout?.source
             const stack = this.getStack()
             const isOnlyMember = !stack || stack.members.length <= 1
             const shouldCrossfadeOpacity = Boolean(
@@ -1697,18 +1796,12 @@ export function createProjectionNode<I>({
                 const progress = latest / 1000
                 const point = interpolate?.(progress)
 
+                mixAxisDeltaLinear(targetDelta.x, delta.x, progress)
+                mixAxisDeltaLinear(targetDelta.y, delta.y, progress)
+
                 if (point) {
                     targetDelta.x.translate = point.x
-                    targetDelta.x.scale = mixNumber(delta.x.scale, 1, progress)
-                    targetDelta.x.origin = delta.x.origin
-                    targetDelta.x.originPoint = delta.x.originPoint
                     targetDelta.y.translate = point.y
-                    targetDelta.y.scale = mixNumber(delta.y.scale, 1, progress)
-                    targetDelta.y.origin = delta.y.origin
-                    targetDelta.y.originPoint = delta.y.originPoint
-                } else {
-                    mixAxisDeltaLinear(targetDelta.x, delta.x, progress)
-                    mixAxisDeltaLinear(targetDelta.y, delta.y, progress)
                 }
 
                 this.setTargetDelta(targetDelta)
@@ -1761,7 +1854,7 @@ export function createProjectionNode<I>({
                     )
                 }
 
-                if (point && point.rotate !== undefined) {
+                if (point?.rotate !== undefined) {
                     // Dedicated `pathRotation` channel, not `rotate`, so an
                     // animating `rotate` is composed with, never clobbered.
                     if (!this.animationValues)
@@ -1847,7 +1940,7 @@ export function createProjectionNode<I>({
 
         finishAnimation() {
             if (this.currentAnimation) {
-                this.mixTargetDelta && this.mixTargetDelta(animationTarget)
+                this.mixTargetDelta?.(animationTarget)
                 this.currentAnimation.stop()
             }
 
@@ -1876,15 +1969,11 @@ export function createProjectionNode<I>({
                     layout.layoutBox
                 )
             ) {
+                const { layoutBox } = this.layout
+                const leadTarget = target
                 target = this.target || createBox()
-
-                const xLength = calcLength(this.layout!.layoutBox.x)
-                target!.x.min = lead.target!.x.min
-                target!.x.max = target.x.min + xLength
-
-                const yLength = calcLength(this.layout!.layoutBox.y)
-                target!.y.min = lead.target!.y.min
-                target!.y.max = target.y.min + yLength
+                alignAxis(target.x, leadTarget.x, layoutBox.x)
+                alignAxis(target.y, leadTarget.y, layoutBox.y)
             }
 
             copyBoxInto(targetWithTransforms, target)
@@ -1925,11 +2014,10 @@ export function createProjectionNode<I>({
 
             const config = node.options.initialPromotionConfig
             node.promote({
-                transition: config ? config.transition : undefined,
-                preserveFollowOpacity:
-                    config && config.shouldPreserveFollowOpacity
-                        ? config.shouldPreserveFollowOpacity(node)
-                        : undefined,
+                transition: config?.transition,
+                preserveFollowOpacity: config?.shouldPreserveFollowOpacity
+                    ? config.shouldPreserveFollowOpacity(node)
+                    : undefined,
             })
         }
 
@@ -1962,8 +2050,7 @@ export function createProjectionNode<I>({
             transition?: Transition
             preserveFollowOpacity?: boolean
         } = {}) {
-            const stack = this.getStack()
-            if (stack) stack.promote(this, preserveFollowOpacity)
+            this.getStack()?.promote(this, preserveFollowOpacity)
 
             if (needsReset) {
                 this.projectionDelta = undefined
@@ -1973,12 +2060,7 @@ export function createProjectionNode<I>({
         }
 
         relegate(): boolean {
-            const stack = this.getStack()
-            if (stack) {
-                return stack.relegate(this)
-            } else {
-                return false
-            }
+            return this.getStack()?.relegate(this) || false
         }
 
         resetSkewAndRotation() {
@@ -1986,50 +2068,28 @@ export function createProjectionNode<I>({
 
             if (!visualElement) return
 
-            // If there's no detected skew or rotation values, we can early return without a forced render.
-            let hasDistortingTransform = false
-
             /**
              * An unrolled check for rotation values. Most elements don't have any rotation and
-             * skipping the nested loop and new object creation is 50% faster.
+             * skipping the loop and new object creation is 50% faster.
+             * If there's no distorting values, we don't need to do any more.
              */
             const { latestValues } = visualElement
-            if (
-                latestValues.z ||
-                latestValues.rotate ||
-                latestValues.rotateX ||
-                latestValues.rotateY ||
-                latestValues.rotateZ ||
-                latestValues.skewX ||
-                latestValues.skewY
-            ) {
-                hasDistortingTransform = true
-            }
-
-            // If there's no distorting values, we don't need to do any more.
-            if (!hasDistortingTransform) return
+            if (!hasDistortingTransform(latestValues)) return
 
             const resetValues: ResolvedValues = {}
 
-            if (latestValues.z) {
+            // Check the skew and rotate value of all axes and reset to 0
+            for (let i = 0; i < distortingTransforms.length; i++) {
                 resetDistortingTransform(
-                    "z",
+                    distortingTransforms[i],
                     visualElement,
                     resetValues,
                     this.animationValues
                 )
             }
-
-            // Check the skew and rotate value of all axes and reset to 0
-            for (let i = 0; i < transformAxes.length; i++) {
+            for (let i = 0; i < angleTransforms.length; i++) {
                 resetDistortingTransform(
-                    `rotate${transformAxes[i]}`,
-                    visualElement,
-                    resetValues,
-                    this.animationValues
-                )
-                resetDistortingTransform(
-                    `skew${transformAxes[i]}`,
+                    angleTransforms[i],
                     visualElement,
                     resetValues,
                     this.animationValues
@@ -2059,7 +2119,14 @@ export function createProjectionNode<I>({
         ) {
             if (!this.instance || this.isSVG) return
 
-            if (!this.isVisible) {
+            const lead = this.getLead()
+
+            /**
+             * Without crossfade, a new lead hides the previous one, as it's
+             * usually unmounting. One that gave its layoutId away keeps
+             * rendering, so only hide nodes that follow another.
+             */
+            if (!this.isVisible && lead !== this) {
                 targetStyle.visibility = "hidden"
                 return
             }
@@ -2079,9 +2146,10 @@ export function createProjectionNode<I>({
                 return
             }
 
-            const lead = this.getLead()
             if (!this.projectionDelta || !this.layout || !lead.target) {
-                if (this.options.layoutId) {
+                if (this.options.layoutId || this.needsShow) {
+                    this.needsShow = false
+                    targetStyle.visibility = ""
                     targetStyle.opacity =
                         this.latestValues.opacity !== undefined
                             ? this.latestValues.opacity
@@ -2244,64 +2312,66 @@ function notifyLayoutUpdate(node: IProjectionNode) {
 
         // TODO Maybe we want to also resize the layout snapshot so we don't trigger
         // animations for instance if layout="size" and an element has only changed position
-        if (animationType === "size") {
-            eachAxis((axis) => {
-                const axisSnapshot = isShared
-                    ? snapshot.measuredBox[axis]
-                    : snapshot.layoutBox[axis]
-                const length = calcLength(axisSnapshot)
-                axisSnapshot.min = layout[axis].min
-                axisSnapshot.max = axisSnapshot.min + length
-            })
-        } else if (animationType === "x" || animationType === "y") {
-            const snapAxis = animationType === "x" ? "y" : "x"
-            copyAxisInto(
-                isShared
-                    ? snapshot.measuredBox[snapAxis]
-                    : snapshot.layoutBox[snapAxis],
-                layout[snapAxis]
-            )
-        } else if (
-            shouldAnimatePositionOnly(animationType, snapshot.layoutBox, layout)
-        ) {
-            eachAxis((axis) => {
-                const axisSnapshot = isShared
-                    ? snapshot.measuredBox[axis]
-                    : snapshot.layoutBox[axis]
-                const length = calcLength(layout[axis])
-                axisSnapshot.max = axisSnapshot.min + length
+        const resizeSnapshot = (box: Box, to: Box) => {
+            if (animationType === "size") {
+                eachAxis((axis) => {
+                    const length = calcLength(box[axis])
+                    box[axis].min = to[axis].min
+                    box[axis].max = box[axis].min + length
+                })
+            } else if (animationType === "x" || animationType === "y") {
+                const snapAxis = animationType === "x" ? "y" : "x"
+                copyAxisInto(box[snapAxis], to[snapAxis])
+            } else if (
+                shouldAnimatePositionOnly(
+                    animationType,
+                    snapshot.layoutBox,
+                    layout
+                )
+            ) {
+                eachAxis((axis) => {
+                    const length = calcLength(to[axis])
+                    box[axis].max = box[axis].min + length
 
-                /**
-                 * Ensure relative target gets resized and rerendererd
-                 */
-                if (node.relativeTarget && !node.currentAnimation) {
-                    node.isProjectionDirty = true
-                    node.relativeTarget[axis].max =
-                        node.relativeTarget[axis].min + length
-                }
-            })
+                    /**
+                     * Ensure relative target gets resized and rerendererd
+                     */
+                    if (node.relativeTarget && !node.currentAnimation) {
+                        node.isProjectionDirty = true
+                        node.relativeTarget[axis].max =
+                            node.relativeTarget[axis].min + length
+                    }
+                })
+            }
         }
+
+        const snapshotBox = isShared ? snapshot.measuredBox : snapshot.layoutBox
+        resizeSnapshot(snapshotBox, layout)
 
         const layoutDelta = createDelta()
 
         calcBoxDelta(layoutDelta, layout, snapshot.layoutBox)
         const visualDelta = createDelta()
-        if (isShared) {
-            calcBoxDelta(
-                visualDelta,
-                node.applyTransform(measuredLayout, true),
-                snapshot.measuredBox
-            )
-        } else {
-            calcBoxDelta(visualDelta, layout, snapshot.layoutBox)
-        }
+        calcBoxDelta(
+            visualDelta,
+            isShared ? node.applyTransform(measuredLayout, true) : layout,
+            snapshotBox
+        )
 
         const hasLayoutChanged = !isDeltaZero(layoutDelta)
         let hasRelativeLayoutChanged = false
 
-        if (!node.resumeFrom) {
-            const relativeParent = node.getClosestProjectingParent()
+        const relativeParent = node.getClosestProjectingParent()
 
+        /**
+         * A snapshot resumed from another element is only relative to this
+         * node's relativeParent if it's a layoutRoot that contains both.
+         */
+        if (
+            !node.resumeFrom ||
+            (relativeParent?.options.layoutRoot &&
+                node.resumeFrom.path.includes(relativeParent))
+        ) {
             /**
              * If the relativeParent is itself resuming from a different element then
              * the relative snapshot is not relavent
@@ -2313,10 +2383,23 @@ function notifyLayoutUpdate(node: IProjectionNode) {
                 if (parentSnapshot && parentLayout) {
                     const anchor = node.options.layoutAnchor || undefined
 
+                    /**
+                     * A shared snapshot includes the transforms of the old
+                     * element's ancestors below the layoutRoot, as they
+                     * aren't shared with the new element.
+                     */
                     const relativeSnapshot = createBox()
                     calcRelativePosition(
                         relativeSnapshot,
-                        snapshot.layoutBox,
+                        isShared
+                            ? node.resumeFrom!.applyTransform(
+                                  snapshot.layoutBox,
+                                  true,
+                                  undefined,
+                                  true,
+                                  relativeParent.depth + 1
+                              )
+                            : snapshot.layoutBox,
                         parentSnapshot.layoutBox,
                         anchor
                     )
@@ -2328,6 +2411,12 @@ function notifyLayoutUpdate(node: IProjectionNode) {
                         parentLayout.layoutBox,
                         anchor
                     )
+
+                    /**
+                     * A shared snapshot is resized in page space, above, so
+                     * resize it relative to the layoutRoot too.
+                     */
+                    isShared && resizeSnapshot(relativeSnapshot, relativeLayout)
 
                     if (!boxEqualsRounded(relativeSnapshot, relativeLayout)) {
                         hasRelativeLayoutChanged = true
@@ -2351,8 +2440,7 @@ function notifyLayoutUpdate(node: IProjectionNode) {
             hasRelativeLayoutChanged,
         })
     } else if (node.isLead()) {
-        const { onExitComplete } = node.options
-        onExitComplete && onExitComplete()
+        node.options.onExitComplete?.()
     }
 
     /**
@@ -2367,9 +2455,7 @@ export function propagateDirtyNodes(node: IProjectionNode) {
     /**
      * Increase debug counter for nodes encountered this frame
      */
-    if (statsBuffer.value) {
-        metrics.nodes++
-    }
+    statsBuffer.countProjection?.(0) // nodes
 
     if (!node.parent) return
 
@@ -2478,7 +2564,7 @@ function syncRelativeLayout(node: IProjectionNode) {
 
 function resetTransformStyle(node: IProjectionNode) {
     const { visualElement } = node.options
-    if (visualElement && visualElement.getProps().onBeforeLayoutMeasure) {
+    if (visualElement?.getProps().onBeforeLayoutMeasure) {
         visualElement.notify("BeforeLayoutMeasure")
     }
 
@@ -2521,9 +2607,7 @@ export function mixBox(output: Box, from: Box, to: Box, p: number) {
 }
 
 function hasOpacityCrossfade(node: IProjectionNode) {
-    return (
-        node.animationValues && node.animationValues.opacityExit !== undefined
-    )
+    return node.animationValues?.opacityExit !== undefined
 }
 
 const defaultLayoutTransition = {
@@ -2531,30 +2615,12 @@ const defaultLayoutTransition = {
     ease: [0.4, 0, 0.1, 1],
 }
 
-const userAgentContains = (string: string) =>
-    typeof navigator !== "undefined" &&
-    navigator.userAgent &&
-    navigator.userAgent.toLowerCase().includes(string)
-
 /**
- * Measured bounding boxes must be rounded in Safari and
- * left untouched in Chrome, otherwise non-integer layouts within scaled-up elements
- * can appear to jump.
+ * Align an axis to the start of another, keeping the length of a layout axis.
+ * The length is read first, as output can be the layout axis itself.
  */
-const roundPoint =
-    userAgentContains("applewebkit/") && !userAgentContains("chrome/")
-        ? Math.round
-        : noop
-
-function roundAxis(axis: Axis): void {
-    // Round to the nearest .5 pixels to support subpixel layouts
-    axis.min = roundPoint(axis.min)
-    axis.max = roundPoint(axis.max)
-}
-
-function roundBox(box: Box): void {
-    roundAxis(box.x)
-    roundAxis(box.y)
+function alignAxis(output: Axis, from: Axis, layout: Axis) {
+    output.max = calcLength(layout) + (output.min = from.min)
 }
 
 function shouldAnimatePositionOnly(

@@ -71,20 +71,20 @@ Every interactive element must have all states documented before coding. Missing
 | 7 | **Error** | Validation failed | Red border, error message |
 | 8 | **Selected/Active** | Current selection | Accent background, checkmark |
 
-**Not every element needs all 8** — but you must consciously decide which apply.
+**Not every element needs all 8**, but you must consciously decide which apply.
 
 ### State Matrix Example: Input Field
 
 | State | Border | Background | Text | Icon | Additional |
 |-------|--------|------------|------|------|-----------|
-| Default | gray-200 | white | gray-900 | — | — |
-| Hover | gray-300 | white | gray-900 | — | — |
-| Focus | blue-500 | white | gray-900 | — | Focus ring |
-| Active | blue-500 | white | gray-900 | — | Caret visible |
+| Default | gray-200 | white | gray-900 | - | - |
+| Hover | gray-300 | white | gray-900 | - | - |
+| Focus | blue-500 | white | gray-900 | - | Focus ring |
+| Active | blue-500 | white | gray-900 | - | Caret visible |
 | Disabled | gray-200 | gray-100 | gray-400 | gray-300 | cursor: not-allowed |
-| Loading | gray-200 | white | gray-400 | spinner | — |
+| Loading | gray-200 | white | gray-400 | spinner | - |
 | Error | red-500 | white | gray-900 | red error | Error text below |
-| Filled | gray-200 | white | gray-900 | — | Value displayed |
+| Filled | gray-200 | white | gray-900 | - | Value displayed |
 
 ---
 
@@ -93,29 +93,29 @@ Every interactive element must have all states documented before coding. Missing
 Before marking implementation complete, test these edge cases:
 
 ### Content Edge Cases
-- [ ] **Long text** — Names/titles that are 50+ characters. Truncate with ellipsis? Wrap?
-- [ ] **Empty content** — No items, no data. Show empty state illustration + CTA
-- [ ] **Single item** — Does layout still make sense with just one item?
-- [ ] **Many items** — 100+ items. Does it paginate? Virtual scroll?
-- [ ] **Special characters** — Unicode, emoji, RTL text, HTML entities
-- [ ] **Missing optional fields** — Avatar without image, card without description
-- [ ] **Number extremes** — $0.00, $999,999.99, negative numbers, NaN
+- [ ] **Long text**: Names/titles that are 50+ characters. Truncate with ellipsis? Wrap?
+- [ ] **Empty content**: No items, no data. Show empty state illustration + CTA
+- [ ] **Single item**: Does layout still make sense with just one item?
+- [ ] **Many items**: 100+ items. Does it paginate? Virtual scroll?
+- [ ] **Special characters**: Unicode, emoji, RTL text, HTML entities
+- [ ] **Missing optional fields**: Avatar without image, card without description
+- [ ] **Number extremes**: $0.00, $999,999.99, negative numbers, NaN
 
 ### Layout Edge Cases
-- [ ] **Min-width content** — Viewport at 320px, no horizontal scroll
-- [ ] **Max-width content** — 4K display, content doesn't stretch infinitely
-- [ ] **Zoom 200%** — All content visible, no overlap
-- [ ] **Dynamic font size** — iOS Dynamic Type / browser font scaling
-- [ ] **Long words** — "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch" — use `word-break: break-word`
-- [ ] **No-JS fallback** — If applicable, does basic functionality work without JavaScript?
+- [ ] **Min-width content**: Viewport at 320px, no horizontal scroll
+- [ ] **Max-width content**: 4K display, content doesn't stretch infinitely
+- [ ] **Zoom 200%**: All content visible, no overlap
+- [ ] **Dynamic font size**: iOS Dynamic Type / browser font scaling
+- [ ] **Long words**: "Llanfairpwllgwyngyllgogerychwyrndrobwllllantysiliogogogoch": use `word-break: break-word`
+- [ ] **No-JS fallback**: If applicable, does basic functionality work without JavaScript?
 
 ### Interaction Edge Cases
-- [ ] **Double click** — Prevent double submission
-- [ ] **Rapid clicking** — Debounce where needed
-- [ ] **Back button** — Browser back behavior in SPAs
-- [ ] **Refresh** — Form state preserved? Data refetched?
-- [ ] **Offline** — Error message? Cached content?
-- [ ] **Concurrent edits** — Two users editing same data
+- [ ] **Double click**: Prevent double submission
+- [ ] **Rapid clicking**: Debounce where needed
+- [ ] **Back button**: Browser back behavior in SPAs
+- [ ] **Refresh**: Form state preserved? Data refetched?
+- [ ] **Offline**: Error message? Cached content?
+- [ ] **Concurrent edits**: Two users editing same data
 
 ---
 
@@ -128,7 +128,7 @@ Document responsive behavior at each breakpoint. Use a table for each major comp
 | Breakpoint | Layout | Visibility | Behavior |
 |------------|--------|-----------|----------|
 | Mobile (< 640px) | Single column, stacked | Hide secondary nav, show hamburger | Touch gestures, bottom sheet for actions |
-| Tablet (640–1023px) | 2 columns, sidebar collapsed | Show icon-only sidebar | Hover not reliable, larger touch targets |
+| Tablet (640-1023px) | 2 columns, sidebar collapsed | Show icon-only sidebar | Hover not reliable, larger touch targets |
 | Desktop (≥ 1024px) | 3 columns, full sidebar | Show all navigation | Hover interactions, keyboard shortcuts |
 
 ### Common Responsive Patterns
@@ -161,7 +161,7 @@ Document every animation with precise specs for engineering implementation.
 1. **Duration**: Use 100-300ms for UI transitions. Never > 500ms.
 2. **Easing**: `ease-out` for entrances, `ease-in` for exits, `ease-in-out` for state changes
 3. **Reduced motion**: Always respect `prefers-reduced-motion`. Replace motion with opacity-only or instant transition.
-4. **Purpose**: Every animation must serve a purpose — guide attention, show connection, provide feedback
+4. **Purpose**: Every animation must serve a purpose: guide attention, show connection, provide feedback
 
 ### Common Animation Patterns
 
@@ -204,11 +204,11 @@ A component is "done" when ALL of the following are true:
 - [ ] Touch targets ≥ 24×24px
 
 ### Code Quality
-- [ ] TypeScript — no `any` types, proper interfaces
+- [ ] TypeScript: no `any` types, proper interfaces
 - [ ] Props documented with JSDoc or Storybook
 - [ ] Compound component patterns where appropriate
 - [ ] `forwardRef` for DOM access
-- [ ] No inline styles — all Tailwind classes via `cva`/`cn`
+- [ ] No inline styles: all Tailwind classes via `cva`/`cn`
 
 ### Tested
 - [ ] Unit tests for logic (variants, states, calculations)

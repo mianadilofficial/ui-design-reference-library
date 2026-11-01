@@ -10,11 +10,11 @@ headings below are unchanged, so any pointer to them still resolves.
 ## Design Review & Audit
 
 ### When to Use
-- **Design Review** — Evaluating a new design before development
-- **Design Audit** — Evaluating an existing product for consistency and quality
+- **Design Review**: Evaluating a new design before development
+- **Design Audit**: Evaluating an existing product for consistency and quality
 
 ### Review Output Format
-Score across 6 dimensions (1–10), then provide a prioritized findings table:
+Score across 6 dimensions (1 to 10), then provide a prioritized findings table:
 
 | Dimension | Weight | Score |
 |-----------|--------|-------|
@@ -50,10 +50,10 @@ Never skip fidelity levels. Validate at each stage:
 | Level | Output | Time | Validate |
 |-------|--------|------|----------|
 | 1. Content-first | Text outline | 30 min | Information needs |
-| 2. Wireframe | Box layouts | 1–2 hr | Layout & navigation |
-| 3. Low-fi prototype | Clickable flows | 2–4 hr | Task completion |
-| 4. High-fi mockup | Pixel-perfect | 4–8 hr | Visual & a11y |
-| 5. Code prototype | Working code | 1–3 days | Feasibility & performance |
+| 2. Wireframe | Box layouts | 1-2 hr | Layout & navigation |
+| 3. Low-fi prototype | Clickable flows | 2-4 hr | Task completion |
+| 4. High-fi mockup | Pixel-perfect | 4-8 hr | Visual & a11y |
+| 5. Code prototype | Working code | 1-3 days | Feasibility & performance |
 
 ### User Research Methods
 - Card sorting → navigation structure

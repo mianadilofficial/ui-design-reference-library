@@ -4,7 +4,7 @@
 - **Author:** OrcDev
 - **Original URL:** https://github.com/audiocn/ui
 - **License:** MIT License — see `license.md` in this folder (Copyright (c) 2026 OrcDev)
-- **Mirrored snapshot:** commit `bcc737f0c25e1945d36fc8209c3102eafc687967` (2026-10-25), shallow clone (`--depth 1`)
+- **Mirrored snapshot:** commit `05bec0fd503e91593de733b0249f1d275b5a1da0` (2026-11-01), shallow clone (`--depth 1`)
 - **What it is:** Audio UI components for React, built the shadcn way — level meters, visualizers, faders, rotary knobs, channel strips, a complete mixer, players and sound pads. Copy-paste ready.
 - **Why it's here:** A rare specialized component domain — agents building media/music/audio interfaces get production-grade references instead of inventing knobs and meters from scratch.
 

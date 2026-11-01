@@ -1,266 +1,186 @@
-# Design System Inspired by Together AI
+---
+version: alpha
+name: Together AI
+category: "AI & LLM Platforms"
+description: "Together AI's marketing site sets \"The Future\" (a Futura-inspired geometric sans) at 56.8889px/500 on a pale-blue-to-white canvas, with black #000000 uppercase mono buttons, a deep navy #010120 research band, and lilac, cyan and magenta accents lifted from its own CSS variables."
+colors:
+  canvas: "#ffffff"
+  page-largest: "#010120"
+  ink: "#000000"
+  ink-muted: "#000000b3"
+  primary: "#000000"
+  primary-hover: "#000000b4"
+  on-primary: "#ffffff"
+  hairline: "#00000014"
+  card-on-dark: "#ffffff14"
+  brand-purple: "#caaef5"
+  brand-magenta: "#ef2cc1"
+  accent-cyan: "#70e9f0"
+  accent-blue: "#9bcdf5"
+typography:
+  display:
+    fontFamily: "\"The Future\", Arial, sans-serif"
+    fontSize: 56.8889px
+    fontWeight: 500
+    lineHeight: 62.5778px
+    letterSpacing: "-1.70667px"
+  display-mobile:
+    fontFamily: "\"The Future\", Arial, sans-serif"
+    fontSize: 38px
+    fontWeight: 500
+    lineHeight: 41.8px
+    letterSpacing: "-1.14px"
+  heading:
+    fontFamily: "\"The Future\", Arial, sans-serif"
+    fontSize: 35.5556px
+    fontWeight: 500
+    lineHeight: 42.6667px
+    letterSpacing: "-0.711111px"
+  body:
+    fontFamily: "\"The Future\", Arial, sans-serif"
+    fontSize: 12.4444px
+    fontWeight: 400
+    lineHeight: 17.4222px
+  button:
+    fontFamily: "\"PP Neue Montreal Mono\", Georgia, sans-serif"
+    fontSize: 14.2222px
+    fontWeight: 500
+    lineHeight: 14.2222px
+    letterSpacing: 0.0711111px
+    textTransform: uppercase
+  nav:
+    fontFamily: "\"The Future\", Arial, sans-serif"
+    fontSize: 14.2222px
+    fontWeight: 400
+    lineHeight: 20px
+rounded:
+  xs: 3.56px
+  sm: 7.11px
+  md: 14.22px
+  cta: 3.56px
+spacing:
+  s1: 1.78px
+  s2: 3.56px
+  s3: 5.33px
+  s4: 7.11px
+  s5: 8.89px
+  s6: 10.67px
+  s7: 14.22px
+  s8: 17.78px
+  s9: 21.33px
+  s10: 28.44px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.cta}"
+    padding: 14.2222px
+    height: 36px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.hairline}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.cta}"
+    padding: 7.11111px 14.2222px
+    height: 28px
+  link:
+    textColor: "{colors.canvas}"
+    typography: "{typography.nav}"
+  nav:
+    textColor: "{colors.ink}"
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+  card:
+    backgroundColor: "{colors.card-on-dark}"
+    textColor: "{colors.canvas}"
+    padding: 17.7778px 35.5556px
+  footer:
+    textColor: "{colors.ink}"
+---
 
-> Category: AI & LLM
-> Open-source AI infrastructure. Technical, blueprint-style design.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+The Together AI homepage, as captured at 1280px, is a developer-infrastructure product page that avoids the usual dark-mode look for its first screen. The hero sits on a very pale blue wash. A floating, rounded white navigation bar holds the logo, six menu items with chevrons (Inference, Compute, Model Shaping, Research, Developers, Company) plus Pricing, and, in a second small panel on the right, CONTACT SALES and a black SIGN IN button. The headline reads "Build what's next on the AI Native Cloud", with its second line in a lighter grey, followed by one sentence ("Full-stack AI platform, powered by cutting-edge research.") and two buttons, START BUILDING in black and CONTACT SALES in a faint grey.
 
-Together AI's interface is a pastel-gradient dreamscape built for enterprise AI infrastructure — a design that somehow makes GPU clusters and model inference feel light, airy, and optimistic. The hero section blooms with soft pink-blue-lavender gradients and abstract, painterly illustrations that evoke clouds and flight, establishing a visual metaphor for the "AI-Native Cloud" proposition. Against this softness, the typography cuts through with precision: "The Future" display font at 64px with aggressive negative tracking (-1.92px) creates dense, authoritative headline blocks.
+On the right of the hero is a 3D-rendered abstract object made of translucent and glossy discs and slabs in blue, purple and red-orange, annotated with thin leader lines and tiny uppercase mono labels (PRODUCTION INFERENCE, OPTIMIZED TRAINING, CUTTING-EDGE RESEARCH). Below it, a "TRUSTED BY" row of grey customer logos. The next band returns to white with a centered "The Together AI Platform" title and three tabs (Inference, Compute, Model shaping), the first tab tinted light cyan, and a white panel pairing a vertical list of product names with a product screenshot that shows a dark code window. The page closes this stretch with a deep navy band (#010120) headed "Grounded in cutting-edge research", a row of four translucent cards each carrying a mono category label (KERNELS, AGENTS), a centered title and author names in tiny mono caps, then a "RECOGNIZED BY" row of conference logos.
 
-The design straddles two worlds: a bright, white-canvas light side where pastel gradients and stats cards create an approachable platform overview, and a dark navy universe (`#010120` — not gray-black but a deep midnight blue) where research papers and technical content live. This dual-world approach elegantly separates the "business" messaging (light, friendly, stat-driven) from the "research" messaging (dark, serious, academic).
+The voice is technical and declarative: the copy names the stack ("model, inference, ...") and the research, and avoids marketing adjectives other than "AI Native". Visual interest comes from the 3D hero object and the pastel product art, never from heavy chrome.
 
-What makes Together AI distinctive is its type system. "The Future" handles all display and body text with a geometric modernist aesthetic, while "PP Neue Montreal Mono" provides uppercase labels with meticulous letter-spacing — creating a "technical infrastructure company with taste" personality. The brand accents — magenta (`#ef2cc1`) and orange (`#fc4c02`) — appear sparingly in the gradient and illustrations, never polluting the clean UI.
+## Colors
 
-**Key Characteristics:**
-- Soft pastel gradients (pink, blue, lavender) against pure white canvas
-- Deep midnight blue (`#010120`) for dark/research sections — not gray-black
-- Custom "The Future" font with aggressive negative letter-spacing throughout
-- PP Neue Montreal Mono for uppercase technical labels
-- Sharp geometry (4px, 8px radius) — not rounded, not pill
-- Magenta (#ef2cc1) + orange (#fc4c02) brand accents in illustrations only
-- Lavender (#bdbbff) as a soft secondary accent
-- Enterprise stats prominently displayed (2x, 60%, 90%)
-- Dark-blue-tinted shadows (rgba(1, 1, 32, 0.1))
+All colors are either measured on the live page or read from the CSS custom properties the page declares.
 
-## 2. Color Palette & Roles
+- **Canvas #ffffff** is the body background; the hero adds a pale blue gradient on top of it.
+- **Page-largest #010120** is the dark navy of the research band, the largest opaque background by area in the measurement.
+- **Ink #000000** is the text on light surfaces and the fill of the primary button; **ink-muted #000000b3** is the same black at 70% alpha for secondary copy. On the navy band, text is white (#ffffff), which by character count is the most-read text color (9,804 characters against 2,093 for black).
+- **Hairline #00000014** (black at 8%) is the border color and the fill of the secondary button. Cards on the dark band use **#ffffff14** (white at 8%).
+- **Primary-hover #000000b4** is the black button's computed hover background.
+- Accent colors come from the page's own variables: `--brand--brand-purple` #caaef5, `--brand--brand-magneta` #ef2cc1 (spelled that way in the stylesheet), `--product--cyan-01` #70e9f0 and `--product--blue-01` #9bcdf5. They appear in the artwork, the cyan tab tint and the lilac connectors between research cards; they are not used for buttons.
 
-### Primary
-- **Brand Magenta** (`#ef2cc1`): The primary brand accent — a vivid pink-magenta used in gradient illustrations and the highest-signal brand moments. Never used as UI chrome.
-- **Brand Orange** (`#fc4c02`): The secondary brand accent — a vivid orange for gradient endpoints and warm accent moments.
-- **Dark Blue** (`#010120`): The primary dark surface — a deep midnight blue-black used for research sections, footer, and dark containers. Not gray, not black — distinctly blue.
+The Together AI brand page, which I opened, says the primary palette is "comprised of three foundational color families" but gives no hex values on the text I could read, so the hexes here are the stylesheet's, not a published specification.
 
-### Secondary & Accent
-- **Soft Lavender** (`#bdbbff`): A gentle blue-violet used for subtle accents, secondary indicators, and soft UI highlights.
-- **Black 40** (`#00000066`): Semi-transparent black for de-emphasized overlays and secondary text.
+## Typography
 
-### Surface & Background
-- **Pure White** (`#ffffff`): The primary light-section page background.
-- **Dark Blue** (`#010120`): Dark-section backgrounds — research, footer, technical content.
-- **Glass Light** (`rgba(255, 255, 255, 0.12)`): Frosted glass button backgrounds on dark sections.
-- **Glass Dark** (`rgba(0, 0, 0, 0.08)`): Subtle tinted surfaces on light sections.
+The brand page states that The Future is the primary typeface for headline and body copy and describes it as "a careful observation of Futura's geometric architecture". In the measurement it is the dominant family (8,286 characters), at weights 500 and 400. The second family, PP Neue Montreal Mono (3,762 characters), is used for uppercase labels and buttons in weights 500 and 400, including an italic.
 
-### Neutrals & Text
-- **Pure Black** (`#000000`): Primary text on light surfaces.
-- **Pure White** (`#ffffff`): Primary text on dark surfaces.
-- **Black 8%** (`rgba(0, 0, 0, 0.08)`): Borders and subtle containment on light surfaces.
-- **White 12%** (`rgba(255, 255, 255, 0.12)`): Borders and containment on dark surfaces.
+- **Display**: 56.8889px / 62.5778px, weight 500, tracking -1.70667px; the mobile version at 390px is 38px / 41.8px with -1.14px tracking.
+- **Heading**: 35.5556px / 42.6667px, weight 500, tracking -0.711111px ("The Together AI Platform").
+- **Body**: 12.4444px / 17.4222px, weight 400, used for the hero tagline and card descriptions; the root body element is 14.2222px.
+- **Button and labels**: PP Neue Montreal Mono 14.2222px, weight 500, uppercase, 0.0711111px tracking.
+- **Nav**: The Future 14.2222px weight 400 on 20px.
 
-### Gradient System
-- **Pastel Cloud Gradient**: Soft pink → lavender → soft blue gradients in hero illustrations. These appear in abstract, painterly forms — clouds, feathers, flowing shapes — that create visual warmth without literal meaning.
-- **Hero Gradient**: The hero background uses soft pastel tints layered over white, creating a dawn-like atmospheric effect.
+The unusual decimals are not errors. The page declares `--size-unit: 16`, `--size-container-ideal: 1440` and a `--size-font` that divides a clamped container width by the ideal width, so every size is a fraction of the viewport: at 1280px the scale is 0.8889, and the 56.8889px display size equals 64px at 1440px (derived arithmetic, not a separate measurement). Use fluid scaling rather than rounding these values. Headings carry negative tracking that tightens as size increases.
 
-## 3. Typography Rules
+## Layout
 
-### Font Family
-- **Primary**: `The Future`, with fallback: `Arial`
-- **Monospace / Labels**: `PP Neue Montreal Mono`, with fallback: `Georgia`
+The layout is centered, wide and banded. Each band is a full-width color block: pale blue hero, white platform section, navy research section, then white. Content columns are inset by `--_spacers---padding-global` (3em in the stylesheet) and a floating nav bar inset from the page edge. The hero is a two-column composition with copy left and artwork right; the platform section is a centered title above a three-tab bar, then a two-column panel (list left, screenshot right); the research cards are four equal columns.
 
-### Hierarchy
+Measured spacing values: 1.78, 3.56, 5.33, 7.11, 8.89, 10.67, 14.22, 17.78, 21.33 and 28.44px, with the most common gaps 7.11px, 5.33px and 78.22px, and paddings of 14.22px, 7.11px and 35.56px. Because everything is em-based, spacing scales with the same fluid unit as type.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display / Hero | The Future | 64px (4rem) | 400–500 | 1.00–1.10 (tight) | -1.92px | Maximum impact, dense blocks |
-| Section Heading | The Future | 40px (2.5rem) | 500 | 1.20 (tight) | -0.8px | Feature section titles |
-| Sub-heading | The Future | 28px (1.75rem) | 500 | 1.15 (tight) | -0.42px | Card headings |
-| Feature Title | The Future | 22px (1.38rem) | 500 | 1.15 (tight) | -0.22px | Small feature headings |
-| Body Large | The Future | 18px (1.13rem) | 400–500 | 1.30 (tight) | -0.18px | Descriptions, sections |
-| Body / Button | The Future | 16px (1rem) | 400–500 | 1.25–1.30 | -0.16px | Standard body, nav, buttons |
-| Caption | The Future | 14px (0.88rem) | 400–500 | 1.40 | normal | Metadata, descriptions |
-| Mono Label | PP Neue Montreal Mono | 16px (1rem) | 500 | 1.00 (tight) | 0.08px | Uppercase section labels |
-| Mono Small | PP Neue Montreal Mono | 11px (0.69rem) | 500 | 1.00–1.40 | 0.055–0.08px | Small uppercase tags |
-| Mono Micro | PP Neue Montreal Mono | 10px (0.63rem) | 400 | 1.40 | 0.05px | Smallest uppercase labels |
+## Elevation & Depth
 
-### Principles
-- **Negative tracking everywhere**: Every size of "The Future" uses negative letter-spacing (-0.16px to -1.92px), creating consistently tight, modern text.
-- **Mono for structure**: PP Neue Montreal Mono in uppercase with positive letter-spacing creates technical "label" moments that structure the page without competing with display text.
-- **Weight 500 as emphasis**: The system uses 400 (regular) and 500 (medium) — no bold. Medium weight marks headings and emphasis.
-- **Tight line-heights throughout**: Even body text uses 1.25–1.30 line-height — tighter than typical, creating a dense, information-rich feel.
+Flat by default. The only box-shadow measured on the page is `rgba(1, 1, 32, 0.1) -10px 0px 75px 0px`, a soft leftward navy-tinted glow that appears twice. The nav and the white platform panel separate from the background through contrast (white on pale blue), rounded corners and 8% hairlines, not shadows. On the navy band, depth comes from 8% white translucent cards. The 3D hero artwork supplies the only true depth cue in the whole screen.
 
-## 4. Component Stylings
+## Shapes
 
-### Buttons
+Three radii were measured: 3.56px (269 elements, including the buttons, tabs and tags), 7.11px (9) and 14.22px (1). The primary button uses 3.56px, which is a slightly softened square, not a pill. Larger containers like the nav bar and platform panel appear more rounded than buttons in the capture, consistent with the 14.22px and the 12-to-16 `--_radius---*` variables the stylesheet declares (.75em and 1em).
 
-**Glass on Dark**
-- Background: `rgba(255, 255, 255, 0.12)` (frosted glass)
-- Text: Pure White (`#ffffff`)
-- Radius: sharp (4px)
-- Opacity: 0.5
-- Hover: transparent dark overlay
-- Used on dark sections — subtle, glass-like
+## Components
 
-**Dark Solid**
-- Background: Dark Blue (`#010120`) or Pure Black
-- Text: Pure White
-- Radius: sharp (4px)
-- The primary CTA on light surfaces
+- **Primary button** (START BUILDING, SIGN IN, LEARN MORE): #000000 fill, white PP Neue Montreal Mono 14.2222px uppercase, 14.2222px padding, 36px height, 3.56px radius; hover darkens to #000000b4 in the computed measurement.
+- **Secondary button** (CONTACT SALES): #00000014 fill, black text, 28px height, 7.11px by 14.22px padding.
+- **Nav link**: The Future 14.2222px/400 in black with a chevron where a menu opens.
+- **Tabs**: three equal white tiles, with the selected tab tinted light cyan; labels in The Future.
+- **Research card**: a #ffffff14 panel on navy, with padding 17.7778px by 35.5556px, a small mono category at top, centered white title, and mono authors at the bottom.
+- **Product list rows**: icon in a rounded square, product name, hairline dividers.
 
-**Outlined Light**
-- Border: `1px solid rgba(0, 0, 0, 0.08)`
-- Background: transparent or subtle glass
-- Text: Pure Black
-- Radius: sharp (4px)
-- Secondary actions on light surfaces
+## Design System Architecture
 
-### Cards & Containers
-- Background: Pure White or subtle glass tint
-- Border: `1px solid rgba(0, 0, 0, 0.08)` on light; `1px solid rgba(255, 255, 255, 0.12)` on dark
-- Radius: sharp (4px) for badges and small elements; comfortable (8px) for larger containers
-- Shadow: dark-blue-tinted (`rgba(1, 1, 32, 0.1) 0px 4px 10px`) — warm and subtle
-- Stats cards with large numbers prominently displayed
+Together AI publishes a [brand page](https://www.together.ai/brand) that names The Future as its primary typeface and offers a downloadable logo suite; I found no public design-system, component library or token package. The de-facto system is visible in the stylesheet: custom properties are grouped by prefix, for example `--shades--black-opacity-8` and `--shades--white-opacity-16` for alpha ramps, `--brand--*` for brand colors, `--product--*` for product-art tints, `--opacity--*` for 16% and 40% tints of accent hues, `--_radius---8/12/16` in em and `--_spacers---*` in em. Combined with the fluid `--size-font` calculation, this is a variable-driven, em-based system built in the style of a site builder's variables panel, though the page source I have does not say which tool produced it.
 
-### Badges / Tags
-- Background: `rgba(0, 0, 0, 0.04)` (light) or `rgba(255, 255, 255, 0.12)` (dark)
-- Text: Black (light) or White (dark)
-- Padding: 2px 8px (compact)
-- Radius: sharp (4px)
-- Border: `1px solid rgba(0, 0, 0, 0.08)`
-- PP Neue Montreal Mono, uppercase, 16px
+## Do's and Don'ts
 
-### Navigation
-- Clean horizontal nav on white/transparent
-- Logo: Together AI wordmark
-- Links: The Future at 16px, weight 400
-- CTA: Dark solid button
-- Hover: no text-decoration
+- Do use black for actions and keep each region to one primary action.
+- Do set buttons and labels in the mono face, uppercase.
+- Do use pale blue, white and the navy #010120 as alternating bands.
+- Do apply negative tracking to headlines and scale type fluidly.
+- Don't use purple, magenta or cyan as button fills; they belong to artwork and highlights.
+- Don't add heavy shadows; the single glow is navy at 10% opacity.
+- Don't use pill-shaped buttons; the radius is 3.56px.
+- Don't set body copy below the 12.4444px body token on desktop.
 
-### Image Treatment
-- Abstract pastel gradient illustrations (cloud/feather forms)
-- Product UI screenshots on dark/light surfaces
-- Team photos in editorial style
-- Research paper cards with dark backgrounds
+## Responsive Behavior
 
-### Distinctive Components
+At 390px the display headline is 38px on a 41.8px line with -1.14px tracking, replacing the 56.8889px desktop size. Because sizes derive from a fluid unit capped by container min and max variables, type and spacing scale continuously between breakpoints. The mobile layout beyond the headline metrics was not captured, so how the tab bar and card row reflow is not described here.
 
-**Stats Bar**
-- Large performance metrics (2x, 60%, 90%)
-- Bold display numbers
-- Short descriptive captions beneath
-- Clean horizontal layout
+## Iteration Guide
 
-**Mono Section Labels**
-- PP Neue Montreal Mono, uppercase, 11px, letter-spacing 0.055px
-- Used as navigational signposts throughout the page
-- Technical, structured feel
-
-**Research Section**
-- Dark Blue (#010120) background
-- White text, research paper thumbnails
-- Creates a distinct "academic" zone
-
-**Large Footer Logo**
-- "together" wordmark rendered at massive scale in the dark footer
-- Creates a brand-statement closing moment
-
-## 5. Layout Principles
-
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 4px, 8px, 10px, 12px, 16px, 20px, 24px, 32px, 44px, 48px, 80px, 100px, 120px
-- Button/badge padding: 2px 8px (compact)
-- Card internal padding: approximately 24–32px
-- Section vertical spacing: generous (80–120px)
-
-### Grid & Container
-- Max container width: approximately 1200px, centered
-- Hero: centered with pastel gradient background
-- Feature sections: multi-column card grids
-- Stats: horizontal row of metric cards
-- Research: dark full-width section
-
-### Whitespace Philosophy
-- **Optimistic breathing room**: Generous spacing between sections creates an open, inviting feel that makes enterprise AI infrastructure feel accessible.
-- **Dual atmosphere**: Light sections breathe with whitespace; dark sections are denser with content.
-- **Stats as visual anchors**: Large numbers with small captions create natural focal points.
-
-### Border Radius Scale
-- Sharp (4px): Buttons, badges, tags, small interactive elements — the primary radius
-- Comfortable (8px): Larger containers, feature cards
-
-*This is a deliberately restrained radius system — no pills, no generous rounding. The sharp geometry contrasts with the soft pastel gradients.*
-
-## 6. Depth & Elevation
-
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow, no border | Page background, text blocks |
-| Contained (Level 1) | `1px solid rgba(0,0,0,0.08)` (light) or `rgba(255,255,255,0.12)` (dark) | Cards, badges, containers |
-| Elevated (Level 2) | `rgba(1, 1, 32, 0.1) 0px 4px 10px` | Feature cards, hover states |
-| Dark Zone (Level 3) | Dark Blue (#010120) full-width background | Research, footer, technical sections |
-
-**Shadow Philosophy**: Together AI uses a single, distinctive shadow — tinted with Dark Blue (`rgba(1, 1, 32, 0.1)`) rather than generic black. This gives elevated elements a subtle blue-ish cast that ties them to the brand's midnight-blue dark mode. The shadow is soft (10px blur, 4px offset) and always downward — creating gentle paper-hover elevation.
-
-## 7. Do's and Don'ts
-
-### Do
-- Use pastel gradients (pink/blue/lavender) for hero illustrations and decorative backgrounds
-- Use Dark Blue (#010120) for dark sections — never generic gray-black
-- Apply negative letter-spacing on all "The Future" text (scaled by size)
-- Use PP Neue Montreal Mono in uppercase for section labels and technical markers
-- Keep border-radius sharp (4px) for badges and interactive elements
-- Use the dark-blue-tinted shadow for elevation
-- Maintain the light/dark section duality — business (light) vs research (dark)
-- Show enterprise stats prominently with large display numbers
-
-### Don't
-- Don't use Brand Magenta (#ef2cc1) or Brand Orange (#fc4c02) as UI colors — they're for illustrations only
-- Don't use pill-shaped or generously rounded corners — the geometry is sharp
-- Don't use generic gray-black for dark sections — always Dark Blue (#010120)
-- Don't use positive letter-spacing on "The Future" — it's always negative
-- Don't use bold (700+) weight — 400–500 is the full range
-- Don't use warm-toned shadows — always dark-blue-tinted
-- Don't reduce section spacing below 48px — the open feeling is core
-- Don't mix in additional typefaces — "The Future" + PP Neue Montreal Mono is the pair
-
-## 8. Responsive Behavior
-
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <479px | Compact layout, stacked everything |
-| Large Mobile | 479–767px | Single column, hamburger nav |
-| Tablet | 768–991px | 2-column grids begin |
-| Desktop | 992px+ | Full multi-column layout |
-
-### Touch Targets
-- Buttons with adequate padding
-- Card surfaces as touch targets
-- Navigation links at comfortable 16px
-
-### Collapsing Strategy
-- **Navigation**: Collapses to hamburger on mobile
-- **Hero text**: 64px → 40px → 28px progressive scaling
-- **Stats bar**: Horizontal → stacked vertical
-- **Feature grids**: Multi-column → single column
-- **Research section**: Cards stack vertically
-
-### Image Behavior
-- Pastel illustrations scale proportionally
-- Product screenshots maintain aspect ratio
-- Team photos scale within containers
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary Text (light): "Pure Black (#000000)"
-- Primary Text (dark): "Pure White (#ffffff)"
-- Page Background: "Pure White (#ffffff)"
-- Dark Surface: "Dark Blue (#010120)"
-- Brand Accent 1: "Brand Magenta (#ef2cc1)"
-- Brand Accent 2: "Brand Orange (#fc4c02)"
-- Soft Accent: "Soft Lavender (#bdbbff)"
-- Border (light): "rgba(0, 0, 0, 0.08)"
-
-### Example Component Prompts
-- "Create a hero section on white with soft pastel gradients (pink → lavender → blue) as background. Headline at 64px 'The Future' weight 500, line-height 1.10, letter-spacing -1.92px. Pure Black text. Include a dark blue CTA button (#010120, 4px radius)."
-- "Design a stats card: large display number (64px, weight 500) with a small caption below (14px). White background, 8px radius, dark-blue-tinted shadow (rgba(1, 1, 32, 0.1) 0px 4px 10px)."
-- "Build a section label: PP Neue Montreal Mono, 11px, weight 500, uppercase, letter-spacing 0.055px. Black text on light, white on dark."
-- "Create a dark research section: Dark Blue (#010120) background. White text, section heading at 40px 'The Future' weight 500, letter-spacing -0.8px. Cards with rgba(255, 255, 255, 0.12) border."
-- "Design a badge: 4px radius, rgba(0, 0, 0, 0.04) background, 1px solid rgba(0, 0, 0, 0.08) border, 'The Future' 16px text. Padding: 2px 8px."
-
-### Iteration Guide
-1. Always specify negative letter-spacing for "The Future" — it's scaled by size
-2. Dark sections use #010120 (midnight blue), never generic black
-3. Shadows are always dark-blue-tinted: rgba(1, 1, 32, 0.1)
-4. Mono labels are always uppercase with positive letter-spacing
-5. Keep radius sharp (4px or 8px) — no pills, no generous rounding
-6. Pastel gradients are for decoration, not UI chrome
+1. Choose the band first: pale blue hero, white content, or #010120 for research and proof.
+2. Set the headline in The Future 500 with tracking near -3% of size; set labels in the mono face uppercase.
+3. Make the main action a black 3.56px-radius button and the secondary one an 8% black fill.
+4. Introduce color only through artwork and small tints, using #caaef5, #70e9f0 and #ef2cc1.
+5. Express every size as a multiple of the base unit so it scales with the viewport, then check the result against the capture.

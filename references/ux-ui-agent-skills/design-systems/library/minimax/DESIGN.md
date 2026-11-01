@@ -1,260 +1,316 @@
-# Design System Inspired by MiniMax
+---
+version: alpha
+name: MiniMax
+category: "AI & LLM Platforms"
+description: >-
+  MiniMax's marketing site pairs a bright sky-blue gradient hero and white sections with Outfit display type (108px/500, -4.32px tracking), DM Sans body at weight 330, and Libre Baskerville serif taglines; actions are black 32px-radius pills 38px tall (#000000 Login) or white-outlined pills on the hero, and model cards sit in frosted #ffffff40 frames over the brand's official orange, purple and cyan gradients.
 
-> Category: AI & LLM
-> AI model provider. Bold dark interface with neon accents.
+colors:
+  canvas: "#ffffff"
+  ink-muted: "#00000099"
+  primary: "#000000"
+  on-primary: "#ffffff"
+  surface-gray: "#f4f4f4"
+  ink-secondary: "#86909c"
+  ink: "#181e25"
+  on-dark-soft: "#ffffffcc"
+  card-glass: "#ffffff40"
+  brand-blue: "#1456f0"
+  brand-pink: "#ea5ec1"
+  gradient-orange-start: "#ff3763"
+  gradient-orange-end: "#ff7038"
+  gradient-purple-start: "#7a27ff"
+  gradient-purple-end: "#a36aff"
+  gradient-cyan-start: "#1ba4ff"
+  gradient-cyan-end: "#38cdff"
+  brand-coral: "#ff6452"
+  brand-crimson: "#9a0010"
+typography:
+  display:
+    fontFamily: Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 108px
+    fontWeight: 500
+    lineHeight: 108px
+    letterSpacing: "-4.32px"
+  display-mobile:
+    fontFamily: Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 60px
+    fontWeight: 500
+    lineHeight: 60px
+    letterSpacing: "-2.4px"
+  heading:
+    fontFamily: Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 24px
+    fontWeight: 600
+    lineHeight: 28.8px
+    letterSpacing: "-0.24px"
+  subheading:
+    fontFamily: Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 24px
+    fontWeight: 500
+    lineHeight: 28.8px
+    letterSpacing: "-0.4px"
+  body:
+    fontFamily: "\"DM Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif"
+    fontSize: 14px
+    fontWeight: 330
+    lineHeight: 22.4px
+  button:
+    fontFamily: Outfit, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  link:
+    fontFamily: "\"DM Sans\", \"Helvetica Neue\", Helvetica, Arial, sans-serif"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+rounded:
+  xs: 10px
+  sm: 12px
+  md: 16px
+  lg: 17px
+  xl: 24px
+  2xl: 32px
+  3xl: 40px
+  pill: 9999px
+spacing:
+  s1: 2px
+  s2: 3.5px
+  s3: 4px
+  s4: 5.75px
+  s5: 6px
+  s6: 8px
+  s7: 10px
+  s8: 11px
+  s9: 12px
+  s10: 14px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.2xl}"
+    height: 38px
+  button-primary-hover:
+    backgroundColor: "{colors.ink}"
+  button-secondary:
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.2xl}"
+    height: 38px
+    borderColor: "{colors.canvas}"
+  link:
+    textColor: "{colors.canvas}"
+    typography: "{typography.link}"
+    rounded: "{rounded.xs}"
+    padding: 0px 28px
+    borderColor: "{colors.canvas}"
+  card:
+    backgroundColor: "{colors.card-glass}"
+    textColor: "{colors.canvas}"
+    rounded: "{rounded.md}"
+    padding: 12px
+  footer:
+    textColor: "{colors.ink-secondary}"
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-MiniMax's website is a clean, product-showcase platform for a Chinese AI technology company that bridges consumer-friendly appeal with technical credibility. The design language is predominantly white-space-driven with a light, airy feel — pure white backgrounds (`#ffffff`) dominate, letting colorful product cards and AI model illustrations serve as the visual anchors. The overall aesthetic sits at the intersection of Apple's product marketing clarity and a playful, rounded design language that makes AI technology feel approachable.
+MiniMax is an AI company (the site calls it `A World-Leading General AI Technology Company`) and the homepage at `https://www.minimax.io/` presents its model lines. The brand has a published Brand Book at [minimax.io/brand-vi](https://www.minimax.io/brand-vi), which supplies the official colors, gradient pairs and typeface list used in this file in addition to what was measured from the live page (1280px desktop, 390px mobile).
 
-The typography system is notably multi-font: DM Sans serves as the primary UI workhorse, Outfit handles display headings with geometric elegance, Poppins appears for mid-tier headings, and Roboto handles data-heavy contexts. This variety reflects a brand in rapid growth — each font serves a distinct communicative purpose rather than competing for attention. The hero heading at 80px weight 500 in both DM Sans and Outfit with a tight 1.10 line-height creates a bold but not aggressive opening statement.
+What the capture shows, top to bottom:
 
-What makes MiniMax distinctive is its pill-button geometry (9999px radius) for navigation and primary actions, combined with softer 8px–24px radiused cards for product showcases. The product cards themselves are richly colorful — vibrant gradients in pink, purple, orange, and blue — creating a "gallery of AI capabilities" feel. Against the white canvas, these colorful cards pop like app icons on a phone home screen, making each AI model/product feel like a self-contained creative tool.
+- A header floating over a bright sky-blue gradient with a soft violet bloom in the middle: a waveform-style logo mark and `MINIMAX` wordmark, links `Models`, `Product`, `API`, `Plan`, `Research`, `Company`, then an outlined white pill `Contact Us` and a solid black pill `Login`.
+- A carousel slide titled `MiniMax Design`, set in large white type: `MiniMax` in a geometric sans and `Design` in a serif. Below it a frosted rounded frame holds three white rows, each with a small line illustration, a bold heading (`Agent-Driven Workflow`, `Built for Commercial Creation`, `Open & Flexible Integration`) and a gray description at the right. A white serif tagline (`AI Agent Platform for Commercial Content Creation`) follows, then two outlined white pills (`Try Now`, `MiniMax Design Membership`) and four short carousel indicator bars.
+- `Flagship Models` in white sans over the fading blue, with a serif subtitle (`MiniMax's latest featured models — Language / Video / Speech & Music`). Three model cards sit in translucent frames: `Introducing MiniMax M3` (an orange-red gradient tile), `MiniMax H3` (purple) and `MiniMax Speech 2.8` (purple), each with a one-line caption such as `Top Coding · 1M Context · Multimodal`.
+- `Latest Research` in black on white with a serif subtitle, then a two-column list: small gray tag chips, a two-to-three-line title, a date and `Learn More ›`, and a square gradient thumbnail at the right. A `View All ›` outlined pill follows.
+- A closing block: the `MiniMax` wordmark in large black type, the serif line `A World-Leading General AI Technology Company`, an `About Us` chip and a long gray paragraph.
 
-**Key Characteristics:**
-- White-dominant layout with colorful product card accents
-- Multi-font system: DM Sans (UI), Outfit (display), Poppins (mid-tier), Roboto (data)
-- Pill buttons (9999px radius) for primary navigation and CTAs
-- Generous rounded cards (20px–24px radius) for product showcases
-- Brand blue spectrum: from `#1456f0` (brand-6) through `#3b82f6` (primary-500) to `#60a5fa` (light)
-- Brand pink (`#ea5ec1`) as secondary accent
-- Near-black text (`#222222`, `#18181b`) on white backgrounds
-- Purple-tinted shadows (`rgba(44, 30, 116, 0.16)`) creating subtle brand-colored depth
-- Dark footer section (`#181e25`) with product/company links
+The page starts as saturated color and dissolves into white, so the hero is atmospheric and the lower half is a plain, light editorial layout.
 
-## 2. Color Palette & Roles
+**Key characteristics**
+- Two-world page: blue gradient hero (image, not a flat token) and white lower sections (`{colors.canvas}`).
+- Black pill buttons (`{colors.primary}`, `{rounded.2xl}` 32px, 38px high) and white-outlined pills on the hero.
+- Three typefaces, matching the Brand Book list: Outfit (display and buttons), DM Sans (body and links), Libre Baskerville (serif accents).
+- Official brand gradients in orange, purple and cyan appear as card art.
+- Frosted-glass frames: `{colors.card-glass}` (#ffffff40) with 16px radius and 12px padding.
+- No shadows were measured.
 
-### Brand Primary
-- **Brand Blue** (`#1456f0`): `--brand-6`, primary brand identity color
-- **Sky Blue** (`#3daeff`): `--col-brand00`, lighter brand variant for accents
-- **Brand Pink** (`#ea5ec1`): `--col-brand02`, secondary brand accent
+## Colors
 
-### Blue Scale (Primary)
-- **Primary 200** (`#bfdbfe`): `--color-primary-200`, light blue backgrounds
-- **Primary Light** (`#60a5fa`): `--color-primary-light`, active states, highlights
-- **Primary 500** (`#3b82f6`): `--color-primary-500`, standard blue actions
-- **Primary 600** (`#2563eb`): `--color-primary-600`, hover states
-- **Primary 700** (`#1d4ed8`): `--color-primary-700`, pressed/active states
-- **Brand Deep** (`#17437d`): `--brand-3`, deep blue for emphasis
+### Measured on the live page
+- **Canvas** `{colors.canvas}` (#ffffff): the white lower sections.
+- **Primary** `{colors.primary}` (#000000): the `Login` button fill and the extractor's primary CTA; **on primary** `{colors.on-primary}` (#ffffff).
+- **Ink** `{colors.ink}` (#181e25): heading text (for example `Introducing MiniMax M3`) and the hover fill of the black button.
+- **Ink muted** `{colors.ink-muted}` (#00000099): a 60% black used across 689 characters.
+- **Ink secondary** `{colors.ink-secondary}` (#86909c): the most-read text color (1032 characters), used for the body paragraph and small footnotes.
+- **On dark soft** `{colors.on-dark-soft}` (#ffffffcc): 80% white text on the blue hero.
+- **Surface gray** `{colors.surface-gray}` (#f4f4f4): small gray areas such as tag chips (25 weight in the area table).
+- **Card glass** `{colors.card-glass}` (#ffffff40): the measured card background, a 25% white over the gradient. Other translucent whites measured: #ffffff5c, #ffffff42.
+- **Hover** `{colors.ink}` is also the pressed/hover fill of `Login` (measured `rgb(24,30,37)`).
 
-### Text Colors
-- **Near Black** (`#222222`): `--col-text00`, primary text
-- **Dark** (`#18181b`): Button text, headings
-- **Charcoal** (`#181e25`): Dark surface text, footer background
-- **Dark Gray** (`#45515e`): `--col-text04`, secondary text
-- **Mid Gray** (`#8e8e93`): Tertiary text, muted labels
-- **Light Gray** (`#5f5f5f`): `--brand-2`, helper text
+### Root custom properties (usage not confirmed)
+- `{colors.brand-blue}` (#1456f0): `--brand-6`.
+- `{colors.brand-pink}` (#ea5ec1): `--col-brand02`.
+The CSS also holds a Tailwind-default blue (#3b82f6) and a Swiper blue (#007aff); those look like library defaults and are not tokenized.
 
-### Surface & Background
-- **Pure White** (`#ffffff`): `--col-bg13`, primary background
-- **Light Gray** (`#f0f0f0`): Secondary button backgrounds
-- **Glass White** (`hsla(0, 0%, 100%, 0.4)`): `--fill-bg-white`, frosted glass overlay
-- **Border Light** (`#f2f3f5`): Subtle section dividers
-- **Border Gray** (`#e5e7eb`): Component borders
+### Official brand colors (Brand Book)
+The [Brand Book](https://www.minimax.io/brand-vi) lists three primary gradients and four solid colors, and says to "use the official gradients exactly as specified":
 
-### Semantic
-- **Success Background** (`#e8ffea`): `--success-bg`, positive state backgrounds
+| Gradient | From | To | Token names |
+|---|---|---|---|
+| Orange-red | #FF3763 | #FF7038 | `{colors.gradient-orange-start}`, `{colors.gradient-orange-end}` |
+| Purple | #7A27FF | #A36AFF | `{colors.gradient-purple-start}`, `{colors.gradient-purple-end}` |
+| Cyan | #1BA4FF | #38CDFF | `{colors.gradient-cyan-start}`, `{colors.gradient-cyan-end}` |
 
-### Shadows
-- **Standard** (`rgba(0, 0, 0, 0.08) 0px 4px 6px`): Default card shadow
-- **Soft Glow** (`rgba(0, 0, 0, 0.08) 0px 0px 22.576px`): Ambient soft shadow
-- **Brand Purple** (`rgba(44, 30, 116, 0.16) 0px 0px 15px`): Brand-tinted glow
-- **Brand Purple Offset** (`rgba(44, 30, 116, 0.11) 6.5px 2px 17.5px`): Directional brand glow
-- **Card Elevation** (`rgba(36, 36, 36, 0.08) 0px 12px 16px -4px`): Lifted card shadow
+Solid colors: #FF6452 (`{colors.brand-coral}`), #9A0010 (`{colors.brand-crimson}`), #000000, #FFFFFF.
 
-## 3. Typography Rules
+In the capture the M3 tile reads as the orange-red family, the H3 and Speech tiles as purple, and the hero background as the cyan-blue family; I did not sample pixels to match hexes exactly.
 
-### Font Families
-- **Primary UI**: `DM Sans`, with fallbacks: `Helvetica Neue, Helvetica, Arial`
-- **Display**: `Outfit`, with fallbacks: `Helvetica Neue, Helvetica, Arial`
-- **Mid-tier**: `Poppins`
-- **Data/Technical**: `Roboto`, with fallbacks: `Helvetica Neue, Helvetica, Arial`
+## Typography
 
-### Hierarchy
+Loaded fonts: Libre Baskerville (700), DM Sans (300, 400, 500, 600, 700) and Outfit (a 100-900 variable range). By character count DM Sans carries 2039, Outfit 667 and Libre Baskerville 544. The Brand Book names the same three families and says they establish a clear typographic hierarchy.
 
-| Role | Font | Size | Weight | Line Height | Notes |
-|------|------|------|--------|-------------|-------|
-| Display Hero | DM Sans / Outfit | 80px (5.00rem) | 500 | 1.10 (tight) | Hero headlines |
-| Section Heading | Outfit | 31px (1.94rem) | 600 | 1.50 | Feature section titles |
-| Section Heading Alt | Roboto / DM Sans | 32px (2.00rem) | 600 | 0.88 (tight) | Compact headers |
-| Card Title | Outfit | 28px (1.75rem) | 500–600 | 1.71 (relaxed) | Product card headings |
-| Sub-heading | Poppins | 24px (1.50rem) | 500 | 1.50 | Mid-tier headings |
-| Feature Label | Poppins | 18px (1.13rem) | 500 | 1.50 | Feature names |
-| Body Large | DM Sans | 20px (1.25rem) | 500 | 1.50 | Emphasized body |
-| Body | DM Sans | 16px (1.00rem) | 400–500 | 1.50 | Standard body text |
-| Body Bold | DM Sans | 16px (1.00rem) | 700 | 1.50 | Strong emphasis |
-| Nav/Link | DM Sans | 14px (0.88rem) | 400–500 | 1.50 | Navigation, links |
-| Button Small | DM Sans | 13px (0.81rem) | 600 | 1.50 | Compact buttons |
-| Caption | DM Sans / Poppins | 13px (0.81rem) | 400 | 1.70 (relaxed) | Metadata |
-| Small Label | DM Sans | 12px (0.75rem) | 500–600 | 1.25–1.50 | Tags, badges |
-| Micro | DM Sans / Outfit | 10px (0.63rem) | 400–500 | 1.50–1.80 | Tiny annotations |
+| Role | Family | Size / line | Weight | Tracking |
+|---|---|---|---|---|
+| Display (h1) | Outfit | 108px / 108px | 500 | -4.32px |
+| Display, mobile (390px) | Outfit | 60px / 60px | 500 | -2.4px |
+| Heading | Outfit | 24px / 28.8px | 600 | -0.24px |
+| Subheading | Outfit | 24px / 28.8px | 500 | -0.4px |
+| Body | DM Sans | 14px / 22.4px | 330 | normal |
+| Button | Outfit | 16px / 24px | 400 | normal |
+| Link | DM Sans | 16px / 24px | 400 | normal |
 
-### Principles
-- **Multi-font purpose**: DM Sans = UI workhorse (body, nav, buttons); Outfit = geometric display (headings, product names); Poppins = friendly mid-tier (sub-headings, features); Roboto = technical/data contexts.
-- **Universal 1.50 line-height**: The overwhelming majority of text uses 1.50 line-height, creating a consistent reading rhythm regardless of font or size. Exceptions: display (1.10 tight) and some captions (1.70 relaxed).
-- **Weight 500 as default emphasis**: Most headings use 500 (medium) rather than bold, creating a modern, approachable tone. 600 for section titles, 700 reserved for strong emphasis.
-- **Compact hierarchy**: The size scale jumps from 80px display straight to 28–32px section, then 16–20px body — a deliberate compression that keeps the visual hierarchy feeling efficient.
+Notes:
+- The measured h1 had empty text content and a white color; in the capture the hero slide title `MiniMax Design` is the large white type. I did not confirm that the measured h1 is that exact element, but its size, family and weight match the large display line.
+- Display tracking is -4% of the size (-4.32px at 108px, -2.4px at 60px).
+- Weight 330 is a variable-weight value used for the 14px body and many small captions (878 characters).
+- Libre Baskerville at weight 700 is the serif tagline voice (`AI Agent Platform for Commercial Content Creation`, the subtitles under `Flagship Models` and `Latest Research`, and `A World-Leading General AI Technology Company`). Its size in each place was not isolated, so there is no serif typography token. Measured sizes across the page include 20px (335 characters), 28px, 40px and 19px.
 
-## 4. Component Stylings
+### Note on font substitutes
+All three typefaces are named by the Brand Book and loaded by the site, but I did not open any license page, so I make no license claims. If a font is unavailable, substitute Helvetica Neue or Arial for Outfit and DM Sans (they are already the fallbacks in the measured stacks) and Georgia for the serif.
 
-### Buttons
+## Layout
 
-**Pill Primary Dark**
-- Background: `#181e25`
-- Text: `#ffffff`
-- Padding: 11px 20px
-- Radius: 8px
-- Use: Primary CTA ("Get Started", "Learn More")
+- Hero content is centered; the `MiniMax Design` frame occupies roughly the middle half of the page in the capture, with the header spanning the full width.
+- Flagship model cards: three frames in a row, close to equal width in the capture; column widths were not measured.
+- Research list: two columns, each item a text block on the left and a square thumbnail on the right.
+- Large text blocks run to the edges: the `About` paragraph measured 1232px wide.
+- Most common paddings: 8px, 11px and 28px; gaps: 20px, 12px, 10px, 8px, 11px.
+- Spacing tokens `{spacing.s1}`..`{spacing.s10}` list 2, 3.5, 4, 5.75, 6, 8, 10, 11, 12 and 14px.
+- Vertical rhythm is generous between sections: the page shows large empty bands under the hero and between lists.
 
-**Pill Nav**
-- Background: `rgba(0, 0, 0, 0.05)` (subtle tint)
-- Text: `#18181b`
-- Radius: 9999px (full pill)
-- Use: Navigation tabs, filter toggles
+### Measured frequency tables (desktop)
 
-**Pill White**
-- Background: `#ffffff`
-- Text: `rgba(24, 30, 37, 0.8)`
-- Radius: 9999px
-- Opacity: 0.5 (default state)
-- Use: Secondary nav, inactive tabs
+| Property | Values by character or element weight |
+|---|---|
+| Font sizes | 16px (1198), 14px (1113), 20px (335), 12px (257), 24px (250), 28px (45), 40px (30), 19px (15), 60px (7) |
+| Font weights | 400 (1184), 330 (878), 700 (544), 500 (414), 600 (230) |
+| Letter-spacing | 16px / -0.16px (623), 24px / -0.24px (200), 24px / -0.4px (50), 40px / -0.4px (30), 60px / -2.4px (7) |
+| Border colors | #ffffff (12), #00000033 (1) |
+| Area fills | #ffffff, #000000 (large by DOM area; the capture shows a blue hero, so I did not identify which element it is), #ffffff40, #ffffff5c, #ffffff42, #f4f4f4, #0000008c |
 
-**Secondary Light**
-- Background: `#f0f0f0`
-- Text: `#333333`
-- Padding: 11px 20px
-- Radius: 8px
-- Use: Secondary actions
+Reading the table: 16px text is tracked at -0.16px (-1%), 24px headings at -0.24px or -0.4px, and the 40px size at -0.4px, so tracking tightens as size grows, reaching -4% at 108px.
 
-### Product Cards
-- Background: Vibrant gradients (pink/purple/orange/blue)
-- Radius: 20px–24px (generous rounding)
-- Shadow: `rgba(44, 30, 116, 0.16) 0px 0px 15px` (brand purple glow)
-- Content: Product name, model version, descriptive text
-- Each card has its own color palette matching the product identity
+## Elevation & Depth
 
-### AI Product Cards (Matrix)
-- Background: white with subtle shadow
-- Radius: 13px–16px
-- Shadow: `rgba(0, 0, 0, 0.08) 0px 4px 6px`
-- Icon/illustration centered above product name
-- Product name in DM Sans 14–16px weight 500
+Zero box shadows were measured. Depth is made with:
+1. A gradient photographic background behind translucent frames.
+2. Frosted white borders: nested frames at 25% white (`{colors.card-glass}`) and about 36% white (#ffffff5c) around white inner panels.
+3. A fade from blue to white behind the Flagship cards.
+4. In the Research list, flat thumbnails with no frame.
 
-### Links
-- **Primary**: `#18181b` or `#181e25`, underline on dark text
-- **Secondary**: `#8e8e93`, muted for less emphasis
-- **On Dark**: `rgba(255, 255, 255, 0.8)` for footer and dark sections
+## Shapes
 
-### Navigation
-- Clean horizontal nav on white background
-- MiniMax logo left-aligned (red accent in logo)
-- DM Sans 14px weight 500 for nav items
-- Pill-shaped active indicators (9999px radius)
-- "Login" text link, minimal right-side actions
-- Sticky header behavior
+Measured radii by frequency: 12px (17), 40px (14), 10px (11), 32px (8), 16px (7), 24px (7), 9999px (5), 17px (1).
 
-## 5. Layout Principles
+| Token | Value | Typical use |
+|---|---|---|
+| `{rounded.xs}` | 10px | link/tag-like controls, the measured `API` link |
+| `{rounded.sm}` | 12px | the most common radius |
+| `{rounded.md}` | 16px | card frame |
+| `{rounded.lg}` | 17px | small chips (one element) |
+| `{rounded.xl}` | 24px | |
+| `{rounded.2xl}` | 32px | buttons (`Login`, `Contact Us`) |
+| `{rounded.3xl}` | 40px | 14 elements, large frames |
+| `{rounded.pill}` | 9999px | pill chips such as `About Us`, `View All` |
 
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 4px, 6px, 8px, 10px, 11px, 14px, 16px, 24px, 32px, 40px, 50px, 64px, 80px
+## Components
 
-### Grid & Container
-- Max content width centered on page
-- Product card grids: horizontal scroll or 3–4 column layout
-- Full-width white sections with contained content
-- Dark footer at full-width
+### Primary button (`button-primary`)
+`{colors.primary}` fill, `{colors.canvas}` text, Outfit 16px/400, `{rounded.2xl}`, 38px tall, 140px wide for `Login`. Hover fill `{colors.ink}` (`button-primary-hover`); no shadow.
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <768px | Single column, stacked cards |
-| Tablet | 768–1024px | 2-column grids |
-| Desktop | >1024px | Full layout, horizontal card scrolls |
+### Outline button (`button-secondary`)
+Transparent fill, white text and a 1px white border, same 32px radius and 38px height (`Contact Us`; in the capture the hero's `Try Now` and `MiniMax Design Membership` are outlined pills of the same family, only drawn larger). On white sections the `View All ›` and `About Us` controls are gray-outlined pills.
 
-### Whitespace Philosophy
-- **Gallery spacing**: Products are presented like gallery items with generous white space between cards, letting each AI model breathe as its own showcase.
-- **Section rhythm**: Large vertical gaps (64px–80px) between major sections create distinct "chapters" of content.
-- **Card breathing**: Product cards use internal padding of 16px–24px with ample whitespace around text.
+### Header link (`link`)
+DM Sans 16px/400, white text, 10px radius, `0px 28px` padding, 44px tall (the measured `API` link had a 1px white border).
 
-### Border Radius Scale
-- Minimal (4px): Small tags, micro badges
-- Standard (8px): Buttons, small cards
-- Comfortable (11px–13px): Medium cards, panels
-- Generous (16px–20px): Large product cards
-- Large (22px–24px): Hero product cards, major containers
-- Pill (30px–32px): Badge pills, rounded panels
-- Full (9999px): Buttons, nav tabs
+### Frosted card (`card`)
+`{colors.card-glass}` background, `{rounded.md}` corners, 12px padding, inner white panels. Used for the `MiniMax Design` feature rows and for the model cards. The measured card was 648px wide by 364px tall.
 
-## 6. Depth & Elevation
+### Model tile
+A square gradient artwork tile with the model's name set in large type inside, then title in `{colors.ink}` and a small gray caption.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | White background, text blocks |
-| Subtle (Level 1) | `rgba(0, 0, 0, 0.08) 0px 4px 6px` | Standard cards, containers |
-| Ambient (Level 2) | `rgba(0, 0, 0, 0.08) 0px 0px 22.576px` | Soft glow around elements |
-| Brand Glow (Level 3) | `rgba(44, 30, 116, 0.16) 0px 0px 15px` | Featured product cards |
-| Elevated (Level 4) | `rgba(36, 36, 36, 0.08) 0px 12px 16px -4px` | Lifted cards, hover states |
+### Tag chips
+Small light-gray pills in serif or sans type (`AI`, `M3`, `Frontier Model`, `MSA`, `Open Weights`).
 
-**Shadow Philosophy**: MiniMax uses a distinctive purple-tinted shadow (`rgba(44, 30, 116, ...)`) for featured elements, creating a subtle brand-color glow that connects the shadow system to the blue brand identity. Standard shadows use neutral black but at low opacity (0.08), keeping everything feeling light and airy. The directional shadow variant (6.5px offset) adds dimensional interest to hero product cards.
+### Research row
+Tags, title (Outfit 500 style), date (`2026-08-13` style) and a `Learn More ›` link, plus a thumbnail.
 
-## 7. Do's and Don'ts
+### Footer-style text
+`{colors.ink-secondary}` at 12px/14.4px for dates and notes.
+
+## Imagery and Voice
+
+- **Hero.** A slide carousel (four indicator bars in the capture) with one slide visible: a saturated sky-blue field with a darker blue-violet bloom, no photograph of people. The Brand Book asks for "vibrant plant and animal forms that embody vitality and energy"; the bloom shape in the hero is consistent with that, but I cannot name what it depicts.
+- **Model tiles.** Each model is a square gradient tile with a large wordmark-style title (`MiniMax M3`, `H3`, `Speech 2.8`) and a flowing organic shape behind the type. Colors follow the three Brand Book gradients.
+- **Research thumbnails.** The same square tile format at small size; one is a red tile with a diagram-like line drawing rather than a wordmark.
+- **Icons in the hero rows.** Black line illustrations on white, each a small technical-looking diagram (a workflow of nodes, a network of points, a device with connected lines).
+- **Dates.** ISO-style, `2026-08-13`, in small gray type.
+- **Voice.** Declarative and spec-like: `Input your goal. Agents autonomously plan, execute, and deliver the final output.`, `Create ads, e-commerce assets, brand campaigns, and post-production content.`, `Connect local assets, deploy privately, and scale through APIs.` The about text says MiniMax is `driven by the mission to 'co-create intelligence with everyone,'` and the Brand Book slogan is `Intelligence with Everyone`.
+- **Labels.** Model captions use a middle-dot list (`Top Coding · 1M Context · Multimodal`); section subtitles use a slash list (`Language / Video / Speech & Music`).
+- **Density.** Hero is sparse; the Research list is dense text with chips.
+
+## Design System Architecture
+
+Sources opened:
+
+- [MiniMax Brand Book](https://www.minimax.io/brand-vi): official page with the slogan `Intelligence with Everyone`, five attributes (Nature, Life, Growth, Vitality, Motion), the logo versions (gradient, black, white, monochrome) and rule against altering the logo, three primary gradients, four solid colors, the typeface trio and imagery guidance (vibrant plant and animal forms).
+- No public design-token package, component library or GitHub design system for the marketing site was found in the pages I opened. The developer documentation lives at platform.minimax.io, but I did not read it for visual tokens.
+
+The de-facto system in the shipped CSS is a mix of semantic custom properties (names like `--col-text01`, `--col-bg03`, `--line-3`, `--fill-3`, `--text-5`, `--brand-6`, `--error-fill`, `--success-line`) and Tailwind defaults (`--color-primary-500` #3b82f6, `--tw-ring-*`), plus Font Awesome 6 and Swiper variables. Values include an error red (#f53f3f fill, #cb2634 line) and a success green (#278f3c line), which are not tokenized because I did not see them on the page.
+
+## Do's and Don'ts
 
 ### Do
-- Use white as the dominant background — let product cards provide the color
-- Apply pill radius (9999px) for navigation tabs and toggle buttons
-- Use generous border radius (20px–24px) for product showcase cards
-- Employ the purple-tinted shadow for featured/hero product cards
-- Keep body text at DM Sans weight 400–500 — heavier weights for buttons only
-- Use Outfit for display headings, DM Sans for everything functional
-- Maintain the universal 1.50 line-height across body text
-- Let colorful product illustrations/gradients serve as the primary visual interest
+- Use the official gradient pairs as-is for artwork; do not invent intermediate colors.
+- Keep the lower page white and let colored product tiles supply the color.
+- Use pill buttons: black fill on white, white outline on the gradient hero.
+- Mix Outfit headings with Libre Baskerville taglines for the brand's sans-plus-serif voice.
+- Use frosted translucent frames around white panels on the hero.
 
 ### Don't
-- Don't add colored backgrounds to main content sections — white is structural
-- Don't use sharp corners (0–4px radius) on product cards — the rounded aesthetic is core
-- Don't apply the brand pink (`#ea5ec1`) to text or buttons — it's for logo and decorative accents only
-- Don't mix more than one display font per section (Outfit OR Poppins, not both)
-- Don't use weight 700 for headings — 500–600 is the range, 700 is reserved for strong emphasis in body text
-- Don't darken shadows beyond 0.16 opacity — the light, airy feel requires restraint
-- Don't use Roboto for headings — it's the data/technical context font only
+- Do not alter, distort, separate or redesign the logo (Brand Book rule).
+- Do not add drop shadows; none are measured.
+- Do not use a thick bold weight for display text; measured display weight is 500.
+- Do not use serif for body copy; it is limited to taglines and subtitles in the capture.
+- Do not substitute a different black for the primary button; it measures #000000.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <768px | Single column, stacked product cards, hamburger nav |
-| Tablet | 768–1024px | 2-column product grids, condensed spacing |
-| Desktop | >1024px | Full horizontal card layouts, expanded spacing |
+Measured at 390px: the display line is 60px/60px with -2.4px tracking (against 108px/108px at desktop). Other mobile layout rules (nav collapse, card stacking) were not captured, so none are claimed.
 
-### Collapsing Strategy
-- Hero: 80px → responsive scaling to ~40px on mobile
-- Product card grid: horizontal scroll → 2-column → single column stacked
-- Navigation: horizontal → hamburger menu
-- Footer: multi-column → stacked sections
-- Spacing: 64–80px gaps → 32–40px on mobile
+### Touch targets
+Header buttons are 38px tall and 140px wide; header link buttons are 44px tall.
 
-## 9. Agent Prompt Guide
+## Iteration Guide
 
-### Quick Color Reference
-- Background: `#ffffff` (primary), `#181e25` (dark/footer)
-- Text: `#222222` (primary), `#45515e` (secondary), `#8e8e93` (muted)
-- Brand Blue: `#1456f0` (brand), `#3b82f6` (primary-500), `#2563eb` (hover)
-- Brand Pink: `#ea5ec1` (accent only)
-- Borders: `#e5e7eb`, `#f2f3f5`
-
-### Example Component Prompts
-- "Create a hero section on white background. Headline at 80px Outfit weight 500, line-height 1.10, near-black (#222222) text. Sub-text at 16px DM Sans weight 400, line-height 1.50, #45515e. Dark CTA button (#181e25, 8px radius, 11px 20px padding, white text)."
-- "Design a product card grid: white cards with 20px border-radius, shadow rgba(44,30,116,0.16) 0px 0px 15px. Product name at 28px Outfit weight 600. Internal gradient background for the product illustration area."
-- "Build navigation bar: white background, DM Sans 14px weight 500 for links, #18181b text. Pill-shaped active tab (9999px radius, rgba(0,0,0,0.05) background). MiniMax logo left-aligned."
-- "Create an AI product matrix: 4-column grid of cards with 13px radius, subtle shadow rgba(0,0,0,0.08) 0px 4px 6px. Centered icon above product name in DM Sans 16px weight 500."
-- "Design footer on dark (#181e25) background. Product links in DM Sans 14px, rgba(255,255,255,0.8). Multi-column layout."
-
-### Iteration Guide
-1. Start with white — color comes from product cards and illustrations only
-2. Pill buttons (9999px) for nav/tabs, standard radius (8px) for CTA buttons
-3. Purple-tinted shadows for featured cards, neutral shadows for everything else
-4. DM Sans handles 70% of text — Outfit is display-only, Poppins is mid-tier only
-5. Keep weights moderate (500–600 for headings) — the brand tone is confident but approachable
-6. Large radius cards (20–24px) for products, smaller radius (8–13px) for UI elements
+1. Build the top as a blue-to-white gradient image section with a white 500-weight Outfit display title.
+2. Place a frosted frame holding white rows with line illustrations for the key points.
+3. Add a serif tagline and two outlined white pills.
+4. Fade to white for `Flagship Models`; use three frosted frames with gradient tiles.
+5. Switch to black headings on white for `Latest Research` with gray tag chips and square thumbnails.
+6. Keep primary actions as black 38px pills; hover to `{colors.ink}`.
+7. Use `{colors.ink-secondary}` for long gray paragraphs at 14px weight 330.

@@ -47,7 +47,7 @@ class DsButton extends StatelessWidget {
 ```
 
 ## States & a11y
-- Disabled = `onPressed: null` (Flutter dims + blocks). `Semantics(button:true, enabled, label)` for screen readers. Focus ring via `FocusableActionDetector`/default Material focus. Min tap target 48×48 (Material) — meets `tokens/sizing.json`.
+- Disabled = `onPressed: null` (Flutter dims + blocks). `Semantics(button:true, enabled, label)` for screen readers. Focus ring via `FocusableActionDetector`/default Material focus. Min tap target 48×48 (Material), which meets `tokens/sizing.json`.
 
 ## Motion
 `AnimatedContainer`/implicit animations or `AnimationController` with token `Duration`s and `Curves` (map easings). Honor `MediaQuery.of(context).disableAnimations` → instant/opacity.

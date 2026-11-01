@@ -35,13 +35,13 @@
     background:var(--color-surface-card);border:0;cursor:pointer;padding:var(--space-4);font:500 var(--text-base)/1.4 var(--font-sans);color:var(--color-text-primary);text-align:start}
   .acc-trigger:hover{background:var(--color-surface-raised)}
   .acc-trigger:focus-visible{outline:none;box-shadow:var(--shadow-focus-ring)}
-  .acc-trigger svg{inline-size:1rem;block-size:1rem;color:var(--color-text-secondary);fill:none;stroke-width:2;transition:transform var(--duration-normal) var(--ease-emphasized)}
+  .acc-trigger svg{inline-size:1rem;block-size:1rem;color:var(--color-text-secondary);fill:none;stroke-width:2;transition:transform var(--duration-base) var(--ease-spring)}
   .acc-trigger[aria-expanded="true"] svg{transform:rotate(180deg)}
   /* smooth height: grid-rows 0fr -> 1fr (animatable), inner clips overflow */
-  .acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--duration-normal) var(--ease-emphasized)}
+  .acc-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--duration-base) var(--ease-spring)}
   .acc-panel.open{grid-template-rows:1fr}
   .acc-panel > .acc-inner{overflow:hidden;min-block-size:0}
-  .acc-inner > p{padding:var(--space-1) var(--space-4) var(--space-4);margin:0;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.5}
+  .acc-inner > p{padding:var(--space-2) var(--space-4) var(--space-4);margin:0;font-size:var(--text-sm);color:var(--color-text-secondary);line-height:1.5}
   .acc-panel[hidden]{display:none}
   @media(prefers-reduced-motion:reduce){.acc-trigger svg,.acc-panel{transition:none}}
 </style>

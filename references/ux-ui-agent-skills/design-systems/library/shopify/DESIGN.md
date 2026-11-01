@@ -1,353 +1,217 @@
-# Design System Inspired by Shopify
+---
+version: alpha
+name: Shopify
+category: "E-commerce & Retail"
+description: "Shopify's marketing homepage is a near-black, cinematic dark theme: a #02090a canvas with deep forest-green (#041e18) and midnight-navy (#000a1e) panels, white type in the variable Shopify-Inter family at light weights (300/330) with negative tracking up to -1.92px at 96px, and a single white pill CTA (9999px radius, 56px tall) that turns #d4d4d8 on hover."
+colors:
+  canvas: "#02090a"
+  page-body: "#000000"
+  ink: "#ffffff"
+  primary: "#ffffff"
+  on-primary: "#000000"
+  surface-forest: "#041e18"
+  surface-midnight: "#000a1e"
+  ink-link: "#9797a2"
+  ink-muted: "#a1a1aa"
+  ink-sage: "#99b3ad"
+  ink-sage-2: "#9dabad"
+  ink-body: "#bdbdca"
+  hairline: "#e4e4e7"
+  primary-hover: "#d4d4d8"
+  accent-mint: "#36f4a4"
+  shop-purple: "#5433eb"
+typography:
+  display:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 96px
+    fontWeight: 300
+    lineHeight: 103.68px
+    letterSpacing: "-1.92px"
+  display-mobile:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 56px
+    fontWeight: 330
+    lineHeight: 60.48px
+    letterSpacing: "-1.12px"
+  subheading:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 56px
+    fontWeight: 300
+    lineHeight: 60.48px
+    letterSpacing: "-1.68px"
+  body:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 20px
+    fontWeight: 400
+    lineHeight: 28px
+  button:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 18px
+    fontWeight: 550
+    lineHeight: 28px
+  nav:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  button-secondary:
+    fontFamily: Shopify-Inter, Helvetica, Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 550
+    lineHeight: 24px
+rounded:
+  xs: 4px
+  sm: 5px
+  md: 8px
+  lg: 12px
+  xl: 16px
+  2xl: 20px
+  3xl: 48px
+  4xl: 340px
+  pill: 9999px
+spacing:
+  s1: 2px
+  s2: 4px
+  s3: 6px
+  s4: 8px
+  s5: 10px
+  s6: 12px
+  s7: 13px
+  s8: 16px
+  s9: 20px
+  s10: 24px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 12px 24px
+    height: 56px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button-secondary}"
+    rounded: "{rounded.pill}"
+    padding: 8px 20px
+    height: 44px
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+  nav:
+    textColor: "{colors.ink}"
+    padding: 0px 90px
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+  footer:
+    textColor: "{colors.ink}"
+---
 
-> Category: E-Commerce & Retail
-> E-commerce platform. Dark-first cinematic, neon green accent, ultra-light type.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+The Shopify homepage as captured in this catalog is a dark, cinematic page rather than the light, green-accented identity many people associate with the brand. The first screen is a full-bleed photograph of a person in a dark hooded top, with the headline "Be the next AI all-star" set in white at 96px, weight 300, and a single white pill reading "Start for free". Below the hero the page drops into a near-black canvas (`{colors.canvas}`, #02090a) whose large panels are tinted deep forest green (`{colors.surface-forest}`, #041e18) and midnight navy (`{colors.surface-midnight}`, #000a1e). Those three colors together account for most of the painted area measured on the page.
 
-Shopify.com is a dark-first digital theatre — a website that stages its commerce platform like a cinematic premiere. The entire experience unfolds against an abyss of near-black surfaces that carry the faintest whisper of deep forest green (`#02090A`, `#061A1C`, `#102620`), creating a nocturnal atmosphere that feels less like a SaaS marketing page and more like an exclusive product reveal at a tech keynote. This darkness isn't cold or corporate — it's the warm, enveloping dark of a luxury experience, like sitting in the front row of a darkened auditorium.
-
-The typography is the undeniable star. NeueHaasGrotesk — a refined Helvetica descendant — appears at monumental scale (96px) with impossibly light weight (330-400), creating headlines that feel etched in light rather than printed in ink. The `ss03` OpenType feature gives letterforms a distinctive character that separates Shopify's type from generic Helvetica usage. Below the display layer, Inter Variable handles body text with surgical precision, using equally unusual variable weights (420, 450, 550) that live in the spaces between traditional weight stops. This precision signals a company that sweats every detail.
-
-Color is used with extreme restraint. The primary accent is Shopify Neon Green (`#36F4A4`) — an electric mint that appears exclusively on focus rings and accent highlights, pulsing like a bioluminescent signal against the dark canvas. Softer green tints (Aloe `#C1FBD4`, Pistachio `#D4F9E0`) provide atmospheric washes. White is the only text color that matters on dark surfaces, while a zinc-based neutral scale (`#A1A1AA` through `#3F3F46`) handles the hierarchy of quiet information. The result is a design that makes commerce technology feel like it belongs in a science-fiction future.
+The mood is quiet and confident. Headlines are light and tightly tracked, supporting copy is a desaturated grey, and the only strongly filled control on the page is white. The page sells commerce as something that happens across channels, and the copy on the capture says as much: "Sell everywhere people shop. Online and in person. Across AI and on social. Locally and globally." The second sentence of that headline is rendered in a dimmer grey than the first, which is the page's main trick for hierarchy inside a single heading.
 
 **Key Characteristics:**
-- Dark-first design with deep forest-teal undertones (not pure black)
-- Ultra-light display typography (weight 330) at monumental scale (96px) creating an ethereal presence
-- Neon Green (`#36F4A4`) as the singular high-energy accent against darkness
-- Full-pill buttons (9999px radius) as the primary interactive shape
-- Layered, multi-stage box shadows creating photographic depth
-- Product screenshots embedded in dark UI contexts, matching the surrounding darkness
-- Zinc-based neutral scale for text hierarchy — balanced between warm and cool
-
-## 2. Color Palette & Roles
-
-### Primary
-
-- **Shopify White** (`#FFFFFF`): Primary text on dark surfaces, button fills, high-contrast elements
-- **Shopify Black** (`#000000`): Body background, button text on white, maximum contrast base (--color-shade-100)
-
-### Secondary & Accent
-
-- **Neon Green** (`#36F4A4`): The signature accent — focus rings, interactive highlights, active state indicators. Electric and bioluminescent
-- **Aloe** (`#C1FBD4`): Soft green wash for decorative backgrounds, atmospheric cards (--color-aloe-10)
-- **Pistachio** (`#D4F9E0`): Lightest green tint for subtle surface differentiation (--color-pistachio-10)
-
-### Surface & Background
-
-- **Void** (`#000000`): Root page background — true black for maximum depth
-- **Deep Teal** (`#02090A`): Card surfaces, content containers — near-black with green undertone
-- **Dark Forest** (`#061A1C`): Section backgrounds with visible green character
-- **Forest** (`#102620`): Elevated dark surfaces, header backgrounds — the warmest dark shade
-- **Dark Card Border** (`#1E2C31`): Card borders on dark surfaces, subtle boundary definition
-
-### Neutrals & Text (Zinc Scale)
-
-- **Shade-30** (`#D4D4D8`): Lightest neutral, barely-there borders on dark (--color-shade-30)
-- **Muted Text** (`#A1A1AA`): Secondary text, metadata, descriptions — the quiet voice
-- **Shade-50** (`#71717A`): Tertiary text, timestamps, least important info (--color-shade-50)
-- **Shade-60** (`#52525B`): Disabled text, decorative neutrals (--color-shade-60)
-- **Shade-70** (`#3F3F46`): Subtle dividers, barely-visible UI boundaries (--color-shade-70)
-- **Light Border** (`#E4E4E7`): Borders on light surfaces (rare — only in light-mode modals)
-
-### Semantic & Accent
-
-- **Link Muted** (`#9797A2`): Muted link text with underline decoration
-- **Link Sage** (`#9DABAD`): Teal-tinted muted links
-- **Link Lavender** (`#BDBDCA`): Lighter link variant
-- **Link Mint** (`#99B3AD`): Green-tinted link variant for themed sections
-
-### Gradient System
-
-- **Dark Teal Wash**: Radial gradient from `#102620` center to `#02090A` edge — used behind product showcases
-- **Green Atmospheric**: Subtle green-tinted ambient gradients behind hero sections, creating depth without solid colors
-- **Spotlight**: Focused bright area fading to black — creates keynote-style presentation lighting
-
-## 3. Typography Rules
-
-### Font Family
-
-**Display:** NeueHaasGrotesk (refined Helvetica descendant, variable font)
-- Fallbacks: Helvetica, Arial, sans-serif
-- OpenType features: `ss03` (stylistic set 3 — distinctive letterform alternates)
-- Available weights: 330, 360, 400, 500, 750 (variable)
-- Used for all headings, hero text, and large display elements
-
-**Body:** Inter-Variable
-- Fallbacks: Helvetica, Arial, sans-serif
-- OpenType features: `ss03`
-- Available weights: 400, 420, 450, 500, 550 (variable)
-- Used for body text, links, buttons, UI elements
-
-**Mono:** ui-monospace
-- Fallbacks: SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New
-- Used for code snippets, data labels, technical content
-
-### Hierarchy
-
-| Role | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|--------|-------------|----------------|-------|
-| Display XL | 96px | 400 | 1.00 | — | NeueHaasGrotesk, hero headlines, "ss03" |
-| Display XL Bold | 90.74px | 750 | 1.00 | 4.54px | NeueHaasGrotesk, emphasis display |
-| Display XL Tracked | 96px | 400 | 1.00 | 2.4px | NeueHaasGrotesk, spaced display |
-| Display Light | 96px | 330 | 0.96 | — | NeueHaasGrotesk, ethereal display |
-| Heading 1 | 70px | 330 | 1.00 | — | NeueHaasGrotesk, section titles |
-| Heading 2 | 55px | 330 | 1.16 | — | NeueHaasGrotesk, subsections |
-| Heading 3 | 48px | 330 | 1.14 | — | NeueHaasGrotesk, feature titles |
-| Heading 4 | 32px | 360 | 1.14 | 0.32px | NeueHaasGrotesk, card headings |
-| Heading 5 | 28px | 500 | 1.28 | 0.42px | NeueHaasGrotesk, small headings |
-| Heading 6 | 24px | 400 | 1.14 | 0.36px | NeueHaasGrotesk, minor headings |
-| Body Large | 20px | 500 | 1.40 | 0.3px | NeueHaasGrotesk / Inter, lead paragraphs |
-| Body | 18px | 400 | 1.56 | — | Inter-Variable, standard body |
-| Body Medium | 18px | 550 | 1.56 | — | Inter-Variable, emphasized body |
-| Body Small | 16px | 400 | 1.50 | — | Inter / NeueHaasGrotesk, compact body |
-| Body Small Medium | 16px | 420 | 1.50 | — | Inter-Variable, slightly emphasized |
-| Button | 16px | 400 | 1.50 | — | NeueHaasGrotesk, CTA text |
-| Nav Link | 18px | 500 | 1.25 | 0.72px | NeueHaasGrotesk, navigation items |
-| Caption | 14px | 500 | 1.49 | 0.28px | NeueHaasGrotesk / Inter, metadata |
-| Caption Medium | 14px | 550 | 1.49 | 0.28px | Inter-Variable, emphasized caption |
-| Overline | 15.36px | 400 | 1.50 | 1.54px | NeueHaasGrotesk, wide-tracked labels |
-| Micro | 13px | 500 | 1.50 | -0.13px | Inter, tight-tracked small text |
-| Label | 12px | 400 | 1.20 | 0.72px | Inter, uppercase labels |
-| Code | 16px | 400 | 1.50 | — | ui-monospace, uppercase, code blocks |
-| Code Small | 12px | 400 | 1.33 | — | ui-monospace, uppercase, inline code |
-
-### Principles
-
-Shopify's typography is a masterclass in variable font precision. The display layer lives almost exclusively at weights 330-400 — featherweight text that appears to hover above the dark background like projected light. This is the opposite of the bold, heavy approach most SaaS sites take: where others shout, Shopify whispers at scale. The 96px headlines at weight 330 create a paradox of enormous size and delicate stroke that feels both monumental and fragile. The `ss03` OpenType feature activates a stylistic set that gives specific characters (likely 'a', 'g', and certain numerals) a more refined appearance, distinguishing Shopify's typography from standard Helvetica Neue usage. Inter Variable handles the body layer with surgical precision, using weights like 420 and 550 that exist between the traditional stops — every piece of text has exactly the visual weight it needs.
-
-## 4. Component Stylings
-
-### Buttons
-
-**Primary (White Fill)**
-- Background: White (`#FFFFFF`)
-- Text: Black (`#000000`)
-- Border: 2px solid transparent
-- Border radius: full pill (9999px)
-- Padding: 12px 26px 12px 16px (asymmetric — more right padding for visual balance)
-- Hover: slight opacity reduction or background shift
-- Focus: 2px `#36F4A4` (Neon Green) outline ring
-- Transition: all 200ms ease
-
-**Secondary (Ghost/Outlined)**
-- Background: transparent
-- Text: White (`#FFFFFF`)
-- Border: 2px solid White (`#FFFFFF`)
-- Border radius: full pill (9999px)
-- Padding: 12px 26px 12px 16px
-- Hover: fills to white bg with black text
-- Focus: 2px `#36F4A4` outline
-
-**Badge/Tag (Neutral Filled)**
-- Background: `rgba(255, 255, 255, 0.2)` (frosted glass)
-- Text: White (`#FFFFFF`)
-- Border: none
-- Border radius: subtly rounded (4px)
-- Padding: 12px 16px
-- Font: 16px regular
-
-### Cards & Containers
-
-- Background: Deep Teal (`#02090A`) on dark pages
-- Border: 1px solid `#1E2C31` (Dark Card Border) — barely visible boundary
-- Border radius: 8px for standard cards, 12px for featured cards, 20px 20px 0 0 for top-rounded cards
-- Shadow: Multi-layered system:
-  - Resting: `rgba(0,0,0,0.1) 0px 0px 0px 1px, rgba(0,0,0,0.1) 0px 2px 2px, rgba(0,0,0,0.1) 0px 4px 4px, rgba(0,0,0,0.1) 0px 8px 8px` + `rgba(255,255,255,0.03) 0px 1px 0px inset`
-  - The inset white highlight creates a subtle top-edge glow
-- Hover: shadow expands, card may slightly brighten
-- Transition: box-shadow 300ms ease, transform 200ms ease
-
-### Inputs & Forms
-
-- Background: transparent or Dark Forest (`#061A1C`)
-- Text: White (`#FFFFFF`)
-- Border: 1px solid `#3F3F46` (Shade-70)
-- Border radius: 8px
-- Padding: 12px 16px
-- Focus: 2px solid `#36F4A4` (Neon Green focus ring)
-- Placeholder: Shade-50 (`#71717A`)
-- Transition: border-color 200ms ease
-
-### Navigation
-
-- Background: transparent (overlaid on dark hero), becomes Forest (`#102620`) on scroll
-- Height: ~64px
-- Left: Shopify wordmark logo (SVG, white on dark)
-- Center/Right: nav links in 18px/500 NeueHaasGrotesk, white, letter-spacing 0.72px
-- CTA: White pill button "Start for free" (right)
-- Secondary CTA: Ghost button with white border
-- Hover: links shift to Muted Text (`#A1A1AA`) or gain underline
-- Mobile: hamburger menu, full-screen dark overlay
-- Transition: background 300ms ease on scroll
-
-### Image Treatment
-
-- Product screenshots: embedded in dark UI contexts, matching the surrounding darkness
-- Admin interface previews: shown on dark backgrounds with subtle card borders
-- Aspect ratios: varied — hero images are wide (16:9-ish), feature shots are flexible
-- All images sit flush within dark containers — no bright borders or frames
-- Lazy loading with dark placeholder surfaces
-
-### Trust Indicators
-
-- Statistics displayed prominently: "15+" (years), "150M+" (buyers)
-- Numbers at display scale in NeueHaasGrotesk
-- Partner/developer ecosystem callout sections
-- Dark-themed testimonials integrated into the page flow
-
-## 5. Layout Principles
-
-### Spacing System
-
-Base unit: 8px
-
-| Token | Value | Use |
-|-------|-------|-----|
-| space-1 | 4px | Tight inline gaps |
-| space-2 | 8px | Base unit, icon gaps |
-| space-3 | 12px | Card padding, tight margins |
-| space-4 | 16px | Standard element padding |
-| space-5 | 24px | Card gaps, section padding |
-| space-6 | 28px | Medium section spacing |
-| space-7 | 32px | Section breaks |
-| space-8 | 36px | Large padding |
-| space-9 | 40px | Major section padding |
-| space-10 | 64px | Hero section padding, large gaps |
-
-### Grid & Container
-
-- Max container width: ~1280px (centered)
-- Hero: full-width, edge-to-edge dark background with centered text
-- Feature sections: 2-column layouts with text and product screenshots
-- Stats sections: horizontal layout with large numbers
-- Horizontal padding: 64px desktop, 32px tablet, 16px mobile
-- Grid gap: 24-32px between major content blocks
-
-### Whitespace Philosophy
-
-Shopify's whitespace strategy is theatrical. Sections are separated by vast expanses of dark space — 80px to 120px of pure black breathing room — that create the pacing of a presentation, not a webpage. Each content block is its own "slide" in a keynote-style scroll. Within sections, spacing is tighter and more deliberate, creating focal density against the expansive void. The contrast between macro-level emptiness and micro-level precision is what gives the site its cinematic cadence.
-
-### Border Radius Scale
-
-| Value | Context |
-|-------|---------|
-| 4px | Tags, badges, micro-elements |
-| 8px | Standard cards, inputs, video containers |
-| 12px | Featured cards, image containers, buttons (non-pill) |
-| 20px | Top-rounded cards (20px 20px 0 0), modal headers |
-| 340px | Large rounded decorative elements |
-| 9999px | Pill buttons, pill badges, nav elements |
-
-## 6. Depth & Elevation
-
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Base | No shadow, dark surface | Default page background |
-| Subtle | `rgba(0,0,0,0.1) 0px 0px 0px 1px` + inset white glow | Resting cards |
-| Medium | Multi-layer: 1px ring + 2px + 4px + 8px shadow stack | Elevated cards, featured sections |
-| High | `rgba(0,0,0,0.25) 0px 25px 50px -12px` | Modals, dropdowns, overlays |
-| Focus | `0px 0px 0px 2px #36F4A4` | Keyboard focus ring (Neon Green) |
-
-Shopify's shadow system is unusually sophisticated. Rather than single-value shadows, cards use a stacked, multi-layer approach: a 1px ring for boundary definition, 2px/4px/8px progressive blurs for natural light falloff, and a delicate inset white glow (`rgba(255,255,255,0.03)`) that simulates a top-lit glass surface. On dark backgrounds, shadows darken from already-dark surfaces, so the shadows function more as "ambient occlusion" than traditional elevation — the card appears to sink slightly into the surface rather than float above it.
-
-### Decorative Depth
-
-- **Dark teal gradients**: Ambient radial washes behind hero sections and product showcases
-- **Spotlight effects**: Bright centered areas fading to black, creating keynote-style theatrical lighting
-- **Edge glow**: Subtle light colored edges on dark cards via inset box-shadow
-- **Green atmospheric halos**: Faint green tints in background gradients, echoing the brand accent
-
-## 7. Do's and Don'ts
-
-### Do
-
-- Use the dark teal-black surface hierarchy (Void → Deep Teal → Dark Forest → Forest) for depth
-- Keep display typography at weight 330-400 — the ethereal lightness is the design's signature
-- Use Neon Green (`#36F4A4`) exclusively for focus states and critical accent highlights
-- Apply 9999px radius to all primary CTA buttons — the full pill is non-negotiable
-- Use the multi-layered shadow system for card elevation — single shadows look flat
-- Maintain the `ss03` OpenType feature across all text — it's part of the typographic identity
-- Use Inter Variable for body text and NeueHaasGrotesk for headings — never mix their roles
-- Create theatrical spacing between sections (80px+) for cinematic pacing
-
-### Don't
-
-- Don't use pure black (#000000) for text on dark backgrounds — use white (#FFFFFF) only
-- Don't introduce warm colors (orange, red, yellow) — the palette is strictly cool (greens, teals, neutrals)
-- Don't use font weights above 500 for NeueHaasGrotesk body text — heavy weights break the ethereal feel
-- Don't apply green accents to large surfaces — Neon Green is for small, precise highlights only
-- Don't use sharp corners (0px radius) on interactive elements — everything rounds
-- Don't add bright backgrounds — the dark theme is fundamental, not optional
-- Don't use single-layer box shadows — the stacked approach is the system
-- Don't set line-height above 1.56 for body text — Shopify's text is relatively compact
-- Don't mix NeueHaasGrotesk and Inter at the same size/role — their weight scales differ
-- Don't use letter-spacing below 0 for headings — Shopify headings track neutral or positive
-
-## 8. Responsive Behavior
-
-### Breakpoints
-
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <640px | Single column, hamburger nav, display text scales to 48px, 16px padding |
-| Tablet | 640-1024px | 2-column grids begin, display text at 70px, 32px padding |
-| Desktop | 1024-1440px | Full layout, expanded nav, 96px display, 64px padding |
-| Large Desktop | >1440px | Max-width container centered, increased section spacing |
-
-### Touch Targets
-
-- Minimum touch target: 44x44px (WCAG AAA)
-- Pill buttons: 48px height minimum with generous horizontal padding
-- Nav links: 44px touch area
-- Card surfaces: full card is tappable where linked
-
-### Collapsing Strategy
-
-- **Navigation**: Full horizontal links → hamburger menu below 1024px; logo and CTA button remain visible
-- **Hero section**: 96px display → 70px at tablet → 48px on mobile; maintains single-column center alignment
-- **Feature sections**: 2-column text+image → stacked single column below 768px
-- **Stats**: Horizontal row → stacked vertical on mobile
-- **Section padding**: 64px → 40px → 24px → 16px as viewport narrows
-- **Cards**: Grid → stack, maintaining full-width on mobile
-
-### Image Behavior
-
-- Product screenshots: responsive within dark containers, maintain aspect ratio
-- Hero images: full-width on all breakpoints, lazy loaded with dark placeholders
-- Admin UI previews: scale proportionally, may crop on mobile
-- All images use CDN (`cdn.shopify.com`) with responsive srcset
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-
-- Primary CTA: Shopify White (`#FFFFFF`)
-- Page background: Void Black (`#000000`)
-- Card surface: Deep Teal (`#02090A`)
-- Section bg: Dark Forest (`#061A1C`)
-- Elevated bg: Forest (`#102620`)
-- Accent: Neon Green (`#36F4A4`)
-- Body text: White (`#FFFFFF`)
-- Muted text: Muted (`#A1A1AA`)
-- Border dark: Dark Card Border (`#1E2C31`)
-
-### Example Component Prompts
-
-- "Create a hero section on true black (#000000) background with a 96px/330 NeueHaasGrotesk headline in white, a 20px/500 subtitle in #A1A1AA, and two pill buttons: white filled (9999px radius) and ghost with 2px white border"
-- "Design a feature card on Deep Teal (#02090A) with 1px #1E2C31 border, 12px radius, multi-layer shadow (1px ring + 2px/4px/8px blur at 10% black), containing a 32px/360 white heading and 18px/400 #A1A1AA body text"
-- "Build a stats section on Dark Forest (#061A1C) with 96px/750 white numbers (NeueHaasGrotesk), 16px/400 #A1A1AA descriptive labels, and generous 64px spacing between stat blocks"
-- "Create a sticky nav with transparent background (becomes #102620 on scroll), white Shopify logo left, 18px/500 white nav links with 0.72px letter-spacing, and a white pill 'Start for free' button right"
-- "Design a tag/badge with rgba(255,255,255,0.2) frosted glass background, 4px radius, 12px 16px padding, white 16px text — floating over a dark card surface"
-
-### Iteration Guide
-
-When refining existing screens generated with this design system:
-1. Focus on ONE component at a time
-2. Reference specific color names and hex codes from this document
-3. Remember: this is a DARK-FIRST design — light surfaces are the exception, not the rule
-4. Display text should always feel feather-light (weight 330-400) — if it looks heavy, reduce the weight
-5. Neon Green (#36F4A4) is precious — use sparingly for focus and accent only
-6. The dark surface hierarchy (black → deep teal → dark forest → forest) creates subtle depth
-7. Shadows are multi-layered — a single `box-shadow` value won't capture the Shopify card feel
-8. `ss03` OpenType feature must be active on all text for typographic consistency
+- Near-black canvas with green and navy tinted panels instead of a single flat background.
+- One typeface, Shopify-Inter, used from 12px up to 96px; contrast comes from weight (300 to 550) and size, not from a second family.
+- White-on-black primary pill; no colored CTA fill appears in the extracted roles.
+- Large rounded panels and product-photo tiles carry the imagery; there is almost no illustration.
+- Grey text ladder (`{colors.ink-body}`, `{colors.ink-muted}`, `{colors.ink-link}`, `{colors.ink-sage}`) tuned to sit softly against the dark panels.
+
+## Colors
+
+All values below were measured from the live homepage (see `tokens.sources.json`), not taken from a brand sheet.
+
+- **Canvas** `{colors.canvas}` #02090a is the largest background by painted area; `{colors.page-body}` #000000 is the computed body background behind it.
+- **Surfaces**: `{colors.surface-forest}` #041e18 (the green feature panel in the capture) and `{colors.surface-midnight}` #000a1e (navy sections).
+- **Ink** `{colors.ink}` #ffffff is the most-read text color. Secondary text steps down through `{colors.ink-body}` #bdbdca (paragraph copy under headlines), `{colors.ink-muted}` #a1a1aa, `{colors.ink-link}` #9797a2 and two sage greys, `{colors.ink-sage}` #99b3ad and `{colors.ink-sage-2}` #9dabad, which read as slightly green-tinted greys over the forest panel.
+- **Primary** `{colors.primary}` is white, the fill of the primary CTA, with `{colors.on-primary}` black text. Hover moves the fill to `{colors.primary-hover}` #d4d4d8 (measured with a hover probe at both 44px and 56px heights).
+- **Hairline** `{colors.hairline}` #e4e4e7 is the lightest neutral in the page's own variable ramp.
+- **Accents**: `{colors.accent-mint}` #36f4a4 appears as text color on the page; `{colors.shop-purple}` #5433eb is declared in the page's variables as `--color-shop-purple` and painted on a very small area. Neither is a CTA color.
+
+The page's own custom properties also carry a neutral ramp named shade-10 through shade-90 (for example shade-10 #f4f4f5, shade-30 #d4d4d8, shade-40 #a1a1aa, shade-50 #71717a, shade-70 #3f3f46, shade-90 #18181b) and pale green swatches (`--color-aloe-10` #c1fbd4, `--color-pistachio-10` #d4f9e0). Those green swatches were not observed painted on the homepage capture.
+
+## Typography
+
+The family is **Shopify-Inter**, declared in the page CSS as a variable font loaded for weights 100 through 900, with Helvetica and Arial as fallbacks. A second, monospace stack (`ui-monospace`) covers a very small share of characters.
+
+| Role | Size / line | Weight | Tracking |
+|---|---|---|---|
+| Display (h1) | 96px / 103.68px | 300 | -1.92px |
+| Subheading (h3) | 56px / 60.48px | 300 | -1.68px |
+| Display, mobile (390px viewport) | 56px / 60.48px | 330 | -1.12px |
+| Body | 20px / 28px | 400 | normal |
+| Button | 18px / 28px | 550 | normal |
+| Nav and links | 16px / 24px | 400 | normal |
+| Secondary button | 16px / 24px | 550 | normal |
+
+The page's custom properties name a "t1 to t8" scale (t1 is 4rem with weight 330 and -0.02em tracking, t2 is 3.5rem) plus a "dsp" display step of 6rem at weight 300 and -0.025em tracking. The weights actually used include unusual in-between values, 330, 420 and 450, which is only possible because the font is variable. Headlines are light; buttons are the heaviest text on the page at 550. Tracking tightens as size grows, from -0.24px at 24px to -1.92px at 96px.
+
+### Font substitutes
+Shopify-Inter is served by Shopify itself and its provenance beyond the name is not documented in anything opened for this entry. As a stand-in use Inter (Google Fonts, variable) with the same 300/330/400/550 weights and the same tracking values; do not substitute a heavier default, because the look depends on light weights.
+
+## Layout
+
+The page is a single long column (scroll height 10,673px at 1280px wide). The page's variables define a gutter of 1.5rem (24px), a side margin of 5.625rem (90px, matching the 0px 90px padding measured on the nav), a header height of 4.5rem (72px) and a container up to 72rem. Spacing in variables runs xs .5rem, sm 1rem, md 1.5rem, lg 2rem, xl 2.5rem, 2xl 4rem, 3xl 5rem, 4xl 8rem and 5xl 10rem, so section gaps are generous: headline blocks sit well apart from the media rows beneath them.
+
+The capture shows a left-aligned reading column for headlines and copy, with media laid out as a row of three tiles of unequal width (a phone mockup over flowers, a retail-counter photograph, and a beauty-brand site screenshot). A wide green panel then pairs left-aligned copy with a product card on the right. Content never centers; everything hangs off the left margin.
+
+## Elevation & Depth
+
+Depth is mostly tonal rather than shadowed. Layers are separated by the shift from `{colors.canvas}` to `{colors.surface-forest}` and `{colors.surface-midnight}`, and by the rounded top edges of the first panel after the hero (the extraction records radii of 20px and 48px on top corners only). Where shadows exist they are black-based, for example a stack of `rgba(0,0,0,0.1)` offsets at 0.929px, 1.858px and 3.717px with a faint `rgba(255,255,255,0.03)` inset highlight, and a heavier stack with a `rgba(255,255,255,0.08)` 1px ring plus `rgba(0,0,0,0.3)` 1px 3px. The page also applies a 3D matrix transform to one card, a small perspective tilt that appears in the measured card styles. Treat these as quiet edge definition, not as drop-shadow elevation.
+
+## Shapes
+
+The radius scale is measured from the page: 4px, 5px, 8px, 12px, 16px, 20px and 48px, with 340px and 9999px for fully rounded pieces. 8px (26 occurrences) and 12px (24) dominate card and tile corners; `{rounded.pill}` is reserved for buttons. The first dark panel under the hero uses large top-only radii (20px and 48px variants appear in the measurements), which gives the page its sheet-over-sheet look. The CSS variables name `--radius-md` .375rem, `--radius-lg` .5rem, `--radius-xl` .75rem and `--radius-2xl` 1rem.
+
+## Components
+
+**Primary button.** `button-primary`: white fill (`{colors.primary}`), black text, 18px / 550 type, 12px 24px padding, 56px tall, `{rounded.pill}`. A 44px-tall variant with 16px type also exists (nav "Start for free" in the capture). Hover swaps the fill to `{colors.primary-hover}` with no change in border, shadow or opacity.
+
+**Secondary button.** `button-secondary`: same white fill and black text at 16px / 550, padding 8px 20px, 44px tall, pill radius.
+
+**Navigation.** A transparent bar over the hero: logo at left, links "Why Shopify", "Products", "Pricing" and "Enterprise" in 16px / 400 white, "Log in" and the white "Start for free" pill at the right, with 90px side padding.
+
+**Panels and tiles.** Feature panels use the surface colors above with 8 to 12px corners on the media tiles; the large panel in the capture carries a faint gradient and rounded corners. Chips with logos in the capture are small white circles.
+
+**Links.** Link colors in the page's variables are `--color-link-dark` #9797a2, hover #d4d4d8, active #a1a1aa, focus #fff and disabled #71717a. In body copy the capture shows an underlined inline link ("Agentic Storefronts").
+
+## Design System Architecture
+
+No public design system or brand-guideline site for the shopify.com marketing page was found. What is public is Polaris, Shopify's system for admin and app UI: the GitHub repository (https://github.com/Shopify/polaris) states that the Polaris React library is deprecated, and that Polaris Web Components, released October 1, 2025, replace it (https://shopify.dev/docs/api/app-home/polaris-web-components), a library meant to make apps "look and feel native to the Shopify admin". That documentation does not describe this marketing page, and its fonts and tokens were not specified in the pages opened, so no Polaris value is used here.
+
+The marketing page's de-facto system is visible in its CSS custom properties: Tailwind-style names (`--text-*`, `--color-*`, `--radius-*`, `--spacing` .25rem, `--ease-*`) layered with Shopify's own scale tokens (`--text-t1` to `t8`, `--text-dsp`, `--text-body-sm/base/lg`, `--text-theme-cta-sm/lg`), a `--font-base`/`--font-sans` pair pointing to Shopify-Inter, and named color families such as shade, aloe and pistachio. Easing curves are named `--ease-in`, `--ease-out`, `--ease-in-out` and a custom `--ease-uc` of cubic-bezier(.22,1,.36,1).
+
+## Do's and Don'ts
+
+**Do**
+- Keep the canvas near-black (`{colors.canvas}`) and let panels shift to forest or midnight rather than adding new hues.
+- Use weight 300 to 330 for headlines at 56px and above, with the negative tracking listed above.
+- Make the primary action a white pill with black 550-weight text.
+- Dim the second half of a headline with a grey to create hierarchy without a second font.
+- Let photography and product mockups carry color.
+
+**Don't**
+- Don't use Shopify green or `{colors.shop-purple}` as a CTA fill; the measured primary is white.
+- Don't set headlines in bold; the heaviest text on the page is the 550 button label.
+- Don't add heavy drop shadows; edges come from tone and thin rings.
+- Don't center-align long headlines; the capture keeps them left.
+- Don't substitute a pure-white page background; the canvas is dark throughout.
+
+## Responsive Behavior
+
+Measured at 390px, the h1 drops from 96px to 56px (line-height 60.48px, tracking -1.12px) and its weight moves from 300 to 330. The primary CTA remains a pill at 44px tall in that capture. The variable `--margin` (5.625rem) and `--gutter` (1.5rem) indicate a wide desktop margin and a 24px column gap; other breakpoint values were not extracted. Treat the 56px mobile display size as the floor for hero statements and keep body at 18 to 20px.
+
+## Iteration Guide
+
+1. Start with `{colors.canvas}` and set text to `{colors.ink}`; add one surface panel (`{colors.surface-forest}`) before introducing anything else.
+2. Add display type at 300 weight, then check the tracking against the table.
+3. Place exactly one white pill per view; use the 44px version in the nav and the 56px version in the hero.
+4. Pull secondary copy from the grey ladder: body `{colors.ink-body}`, captions `{colors.ink-muted}`.
+5. Only then add imagery, keeping 8 to 12px corners on tiles.
+6. Verify against the capture and re-run `node web/scripts/verify-designs.mjs --slug=shopify`.

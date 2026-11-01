@@ -12,6 +12,8 @@ const orchestrationKeys = new Set([
     "repeatDelay",
     "from",
     "elapsed",
+    "out",
+    "mixer",
 ])
 
 /**

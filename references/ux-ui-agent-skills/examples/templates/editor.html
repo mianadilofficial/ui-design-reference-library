@@ -40,10 +40,10 @@
   .k4{background:var(--color-chart-4)} .k5{background:var(--color-chart-6)}
   .wave{position:absolute;inset:0}
   .wave rect{fill:var(--trm-accent);opacity:.5}
-  .play{position:absolute;inset-block:0;inset-inline-start:41%;inline-size:2px;background:var(--color-text-error)} /* ds-allow-hardcode: a playhead is a hairline */
+  .play{position:absolute;inset-block:0;inset-inline-start:41%;inline-size:2px;background:var(--color-feedback-error-text)} /* ds-allow-hardcode: a playhead is a hairline */
   .ticks{display:flex;justify-content:space-between;gap:var(--space-2);flex-wrap:wrap;
     font-family:var(--font-mono);font-size:.625rem;color:var(--lin-ink-3);margin-inline-start:5.5rem}
-  @media (max-width:46rem){.lane{grid-template-columns:minmax(0,1fr);gap:var(--space-1)}
+  @media (max-width:46rem){.lane{grid-template-columns:minmax(0,1fr);gap:var(--space-2)}
     .ticks{margin-inline-start:0}}
 
   .curve{background:var(--lin-canvas);border-radius:var(--radius-sm)}

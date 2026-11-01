@@ -115,7 +115,7 @@ def references():
     out = []
     for f in surface_files():
         try:
-            text = f.read_text()
+            text = f.read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError) as err:
             print(f"ERROR: could not read {f}: {err}", file=sys.stderr)
             continue
@@ -191,7 +191,7 @@ def installed_by_cli(path_text: str) -> bool:
     """Does `init` actually copy the top-level area this path sits in?"""
     global _CLI_AREAS
     if _CLI_AREAS is None:
-        cli = (ROOT / "bin" / "cli.js").read_text()
+        cli = (ROOT / "bin" / "cli.js").read_text(encoding="utf-8")
         block = cli[cli.index("const AREAS = {"):]
         block = block[:block.index("};")]
         # AREAS maps an area NAME to the path it installs; the paths are what
@@ -260,4 +260,8 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    # Findings quote what they found (an arrow, an emoji, a Thai name), and a
+    # Windows console in a legacy code page cannot print it.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main(sys.argv[1:]))

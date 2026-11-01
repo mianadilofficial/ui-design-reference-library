@@ -14,6 +14,7 @@ import { Button } from "@/registry/components/button/button";
 import { Progress } from "@/registry/components/progress/progress";
 import { motionTokens } from "@/lib/motion-tokens";
 import styles from "./page-header.module.css";
+import { writeClipboard } from "@/lib/use-copy-feedback";
 
 /** The header condenses past CONDENSE_AT and only opens again near the top, so it never flickers at the threshold. */
 const CONDENSE_AT = 16;
@@ -371,7 +372,7 @@ export function PageHeader() {
 
   async function copyLink() {
     try {
-      await navigator.clipboard.writeText(PROJECT_URL);
+      await writeClipboard(PROJECT_URL);
       notify("Link copied");
     } catch {
       notify("Couldn't copy the link. Try again from the address bar.", "error");

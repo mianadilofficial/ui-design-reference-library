@@ -208,7 +208,7 @@
     <rect x="1376.3" y="448" width="13.5" height="7" fill="#6644ed"/>
     <rect x="1389.1" y="448" width="13.5" height="7" fill="#6644ed"/>
   </g>
-  <text x="1050" y="533" font-family="'Arial Rounded MT Bold','Arial Rounded Bold','Avenir Next',system-ui,sans-serif" font-size="46" fill="#f6f7f9">138</text>
+  <text x="1050" y="533" font-family="'Arial Rounded MT Bold','Arial Rounded Bold','Avenir Next',system-ui,sans-serif" font-size="46" fill="#f6f7f9">2,144</text>
   <text x="1050" y="563" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="15" letter-spacing="2" fill="#9aa2b1">design systems</text>
   <text x="1050" y="589" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="13" fill="#5d6578">Colour roles, type, spacing, motion</text>
   <rect x="1424" y="448" width="386" height="186" rx="18" fill="#131419" stroke="#24262e"/>
@@ -320,6 +320,6 @@
   <text x="1458" y="771" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="15" letter-spacing="2" fill="#9aa2b1">token files</text>
   <text x="1458" y="797" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="13" fill="#5d6578">DTCG, 3 tiers, 16 adapters</text>
 
-  <text x="960" y="928" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" letter-spacing="3" fill="#5d6578">CLAUDE CODE &#183; CODEX &#183; CURSOR &#183; COPILOT &#183; AIDER &#183; MCP</text>
+  <text x="960" y="928" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" letter-spacing="3" fill="#5d6578">CLAUDE CODE &#183; CODEX &#183; CURSOR &#183; COPILOT &#183; GEMINI CLI &#183; ANTIGRAVITY &#183; AIDER &#183; MCP</text>
   <text x="960" y="962" text-anchor="middle" font-family="ui-monospace, 'SF Mono', Menlo, monospace" font-size="14" letter-spacing="2" fill="#5d6578" opacity=".75">github.com/plugin87/ux-ui-agent-skills</text>
 </svg>

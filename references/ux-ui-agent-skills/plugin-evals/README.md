@@ -1,9 +1,9 @@
-# Invocation evals — does the right skill load, and do the wrong ones stay out
+# Invocation evals: does the right skill load, and do the wrong ones stay out
 
 `claude plugin eval` runs each prompt below in an isolated session with the
 plugin loaded, and scores what Claude actually did. This suite measures **one
-thing**: routing. Not whether the output is good — `accuracy_report.mjs` and
-`/critique` do that — but whether a real user sentence reaches the skill that
+thing**: routing. Not whether the output is good (`accuracy_report.mjs` and
+`/critique` do that), but whether a real user sentence reaches the skill that
 claims it, and whether the skills that must not start on their own stay out.
 
 ```bash
@@ -52,19 +52,19 @@ spends the user's context on files the task never needed.
 
 **Only read-only tools are granted.** Every case lists `[Read, Glob, Grep,
 Skill]` and nothing else. With no `Write`, `Edit` or `Bash`, a run cannot spend
-twelve turns building the thing — it answers in the message. That keeps runs
+twelve turns building the thing: it answers in the message. That keeps runs
 short and cheap, and it keeps the measurement on *routing* rather than on
 production quality, which this suite is not equipped to judge.
 
 **"Never invoked" is written `min: 0`, `max: 0`, `arm: both`.** All three are
 load-bearing. `min: 0` alone is a floor and passes when the skill fired twenty
 times. And without `arm: both`, Claude Code excludes a `Skill` grader from
-scoring in a two-arm run — the claim would be reported as an indicator and never
+scoring in a two-arm run: the claim would be reported as an indicator and never
 counted. `tests/meta/plugin-evals.test.mjs` fails if a negative grader is
 written any other way.
 
 **An `artifact` case grades routing only.** A case tagged `artifact` asks for
-something the kit writes as files in the project — a screen, a token set — in a
+something the kit writes as files in the project (a screen, a token set) in a
 session with no `Write` and no `Bash`. Its reply is whatever the model says about
 being unable to produce it, so grading that reply measures the sandbox rather
 than the plugin.
@@ -93,7 +93,7 @@ is that control: it has been observed printing `Skill called 1x`.
 
 ## Costs, and the check that runs first
 
-Runs cost real model calls — roughly $0.07 for a short near-miss case and $0.33
+Runs cost real model calls: roughly $0.07 for a short near-miss case and $0.33
 for a build request, per run, per arm. `--ablation none` halves that by skipping
 the no-plugin baseline; keep the baseline when you want to know what the plugin
 *adds* rather than whether it routes.
@@ -103,5 +103,5 @@ checks the suite is well-formed before anything is spent: every grader regex
 compiles with its own flags, no case names a skill that does not exist, and
 every negative claim is written so it can actually fail. It exists because the
 first paid run of this suite spent $0.33 to discover an inline `(?i)`, which
-JavaScript does not support — a limitation stated in the plugin-evals reference,
+JavaScript does not support, a limitation stated in the plugin-evals reference,
 which had been read before the grader was written.

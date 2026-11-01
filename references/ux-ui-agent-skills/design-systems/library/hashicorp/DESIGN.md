@@ -1,281 +1,323 @@
-# Design System Inspired by HashiCorp
+---
+version: alpha
+name: HashiCorp
+category: "Backend, Database & DevOps"
+description: 'HashiCorp''s marketing site: a near-black #0d0e12 canvas with cool grey #b2b6bd body copy, HashiCorp Sans (600) display headlines at 82px, system-ui for UI text, a single electric-blue #1060ff action color, and 5px-radius buttons over iridescent purple-blue glass imagery.'
+colors:
+  canvas: "#0d0e12"
+  page-body: "#ffffff"
+  ink: "#b2b6bd"
+  primary: "#1060ff"
+  on-primary: "#ffffff"
+  surface-raised: "#15181e"
+  ink-strong: "#efeff1"
+  ink-muted: "#656a76"
+  link-on-dark: "#2b89ff"
+  ink-on-light-button: "#3b3d45"
+  ink-soft: "#d5d7db"
+  hairline: "#b2b6bd1a"
+  primary-hover: "#0c56e9"
+  button-secondary-bg: "#fafafa"
+  button-secondary-border: "#3b3d4566"
+  nav-text: "#0c0c0e"
+  nav-link-text: "#2264d6"
+  text-input-border: "#616875"
+  terraform-brand: "#7b42bc"
+  vault-brand: "#ffcf25"
+  waypoint-brand: "#14c6cb"
+  vagrant-brand: "#1868f2"
+typography:
+  display:
+    fontFamily: __hashicorpSans_96f0ca, __hashicorpSans_Fallback_96f0ca
+    fontSize: 82px
+    fontWeight: 600
+    lineHeight: 95.9974px
+  display-mobile:
+    fontFamily: __hashicorpSans_96f0ca, __hashicorpSans_Fallback_96f0ca
+    fontSize: 42px
+    fontWeight: 600
+    lineHeight: 49.9968px
+  heading:
+    fontFamily: __hashicorpSans_96f0ca, __hashicorpSans_Fallback_96f0ca
+    fontSize: 52px
+    fontWeight: 600
+    lineHeight: 61.9996px
+  subheading:
+    fontFamily: __hashicorpSans_96f0ca, __hashicorpSans_Fallback_96f0ca
+    fontSize: 34px
+    fontWeight: 700
+    lineHeight: 39.9976px
+  body:
+    fontFamily: system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 24.0002px
+  button:
+    fontFamily: system-ui, -apple-system, blinkmacsystemfont, "Segoe UI", helvetica, arial, sans-serif
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 27px
+  input:
+    fontFamily: Arial
+    fontSize: 16px
+    fontWeight: 400
+rounded:
+  xs: 2px
+  sm: 3px
+  md: 4px
+  lg: 5px
+  xl: 6px
+  2xl: 8px
+  pill: 9999px
+spacing:
+  s1: 4px
+  s2: 6px
+  s3: 8px
+  s4: 9px
+  s5: 11px
+  s6: 12px
+  s7: 15px
+  s8: 16px
+  s9: 19px
+  s10: 20px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.page-body}"
+    typography: "{typography.button}"
+    rounded: "{rounded.lg}"
+    padding: 9px 15px
+    height: 36px
+    borderColor: "{colors.primary-hover}"
+    boxShadow: rgba(101, 106, 118, 0.05) 0px 1px 1px 0px, rgba(101, 106, 118, 0.05) 0px 2px 2px 0px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.button-secondary-bg}"
+    textColor: "{colors.ink-on-light-button}"
+    typography: "{typography.button}"
+    rounded: "{rounded.lg}"
+    padding: 11px 19px
+    height: 48px
+    borderColor: "{colors.button-secondary-border}"
+    boxShadow: rgba(97, 104, 117, 0.05) 0px 1px 1px 0px, rgba(97, 104, 117, 0.05) 0px 2px 2px 0px
+  link:
+    textColor: "{colors.ink-strong}"
+    typography: "{typography.button}"
+    padding: 4px 0px
+  nav:
+    backgroundColor: "{colors.page-body}"
+    textColor: "{colors.nav-text}"
+  nav-link:
+    textColor: "{colors.nav-link-text}"
+    typography: "{typography.button}"
+  text-input:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink-strong}"
+    typography: "{typography.input}"
+    rounded: "{rounded.lg}"
+    padding: 11px
+    height: 48px
+    borderColor: "{colors.text-input-border}"
+    boxShadow: rgba(97, 104, 117, 0.1) 0px 1px 2px 1px inset
+---
 
-> Category: Backend & Data
-> Infrastructure automation. Enterprise-clean, black and white.
+# HashiCorp
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-HashiCorp's website is enterprise infrastructure made tangible — a design system that must communicate the complexity of cloud infrastructure management while remaining approachable. The visual language splits between two modes: a clean white light-mode for informational sections and a dramatic dark-mode (`#15181e`, `#0d0e12`) for hero areas and product showcases, creating a day/night duality that mirrors the "build in light, deploy in dark" developer workflow.
+HashiCorp's marketing site (hashicorp.com, "an IBM Company" under the wordmark in the captured header) presents the "Infrastructure Cloud" as a dark, technical, calm product. The page is a long vertical scroll over a near-black canvas (`{colors.canvas}`, #0d0e12) with white-header chrome on top. Almost everything between the header and the footer sits on that dark field; light surfaces appear only as buttons, the sticky chat widget and the top navigation bar.
 
-The typography is anchored by a custom brand font (HashiCorp Sans, loaded as `__hashicorpSans_96f0ca`) that carries substantial weight — literally. Headings use 600–700 weights with tight line-heights (1.17–1.19), creating dense, authoritative text blocks that communicate enterprise confidence. The hero headline at 82px weight 600 with OpenType `"kern"` enabled is not decorative — it's infrastructure-grade typography.
+The hero is a deep indigo-to-violet gradient with angled translucent glass planes, a centered 82px headline "Do cloud right", one white button ("Meet The Infrastructure Cloud") and a row of desaturated customer wordmarks under a small tracked caps label "TRUSTED BY LEADING ORGANIZATIONS". Below it, alternating two-column feature rows pair a left text block (eyebrow with product glyph, 52px headline, grey paragraphs with blue inline links, a light "Learn more" button and a text-link "Try HCP ->") with a right-hand 3D isometric glass object that glows violet, pink and amber.
 
-What distinguishes HashiCorp is its multi-product color system. Each product in the portfolio has its own brand color — Terraform purple (`#7b42bc`), Vault yellow (`#ffcf25`), Waypoint teal (`#14c6cb`), Vagrant blue (`#1868f2`) — and these colors appear throughout as accent tokens via a CSS custom property system (`--mds-color-*`). This creates a design system within a design system: the parent brand is black-and-white with blue accents, while each child product injects its own chromatic identity.
+Personality: confident, enterprise-sober, slightly futuristic. Color is rationed: one blue for actions, one grey scale for text, and all the chroma is carried by illustration rather than UI.
 
-The component system uses the `mds` (Markdown Design System) prefix, indicating a systematic, token-driven approach where colors, spacing, and states are all managed through CSS variables. Shadows are remarkably subtle — dual-layer micro-shadows using `rgba(97, 104, 117, 0.05)` that are nearly invisible but provide just enough depth to separate interactive surfaces from the background.
+**Key characteristics**
+- Near-black canvas `{colors.canvas}` with a slightly lifted `{colors.surface-raised}` (#15181e) for banners and cards.
+- Body copy is the cool grey `{colors.ink}` (#b2b6bd); headlines are the brighter `{colors.ink-strong}` (#efeff1).
+- One action color: `{colors.primary}` (#1060ff), hover `{colors.primary-hover}` (#0c56e9).
+- HashiCorp Sans for display at weight 600/700; system-ui for body and controls.
+- 5px button radius, 1px hairline dividers at 10% grey, extremely faint two-layer shadows.
+- Product accents (Terraform, Vault, Waypoint, Vagrant) exist as tokens but are rationed to product glyphs.
 
-**Key Characteristics:**
-- Dual-mode: clean white sections + dramatic dark (`#15181e`) hero/product areas
-- Custom HashiCorp Sans font with 600–700 weights and `"kern"` feature
-- Multi-product color system via `--mds-color-*` CSS custom properties
-- Product brand colors: Terraform purple, Vault yellow, Waypoint teal, Vagrant blue
-- Uppercase letter-spaced captions (13px, weight 600, 1.3px letter-spacing)
-- Micro-shadows: dual-layer at 0.05 opacity — depth through whisper, not shout
-- Token-driven `mds` component system with semantic variable names
-- Tight border radius: 2px–8px, nothing pill-shaped or circular
-- System-ui fallback stack for secondary text
+## Colors
 
-## 2. Color Palette & Roles
+The palette is measured from the live page (desktop capture at 1280px) and from custom properties shipped in its CSS.
 
-### Brand Primary
-- **Black** (`#000000`): Primary brand color, text on light surfaces, `--mds-color-hcp-brand`
-- **Dark Charcoal** (`#15181e`): Dark mode backgrounds, hero sections
-- **Near Black** (`#0d0e12`): Deepest dark mode surface, form inputs on dark
+### Surfaces
+| Token | Hex | Role |
+|---|---|---|
+| `canvas` | #0d0e12 | page background, ~54% of the screen in the capture |
+| `surface-raised` | #15181e | announcement banner ("Cyber Risk 2026"), secondary black button background in the CSS |
+| `page-body` | #ffffff | white nav bar, chat widget, white buttons |
+| `button-secondary-bg` | #fafafa | light secondary button fill |
 
-### Neutral Scale
-- **Light Gray** (`#f1f2f3`): Light backgrounds, subtle surfaces
-- **Mid Gray** (`#d5d7db`): Borders, button text on dark
-- **Cool Gray** (`#b2b6bd`): Border accents (at 0.1–0.4 opacity)
-- **Dark Gray** (`#656a76`): Helper text, secondary labels, `--mds-form-helper-text-color`
-- **Charcoal** (`#3b3d45`): Secondary text on light, button borders
-- **Near White** (`#efeff1`): Primary text on dark surfaces
+### Text
+| Token | Hex | Role |
+|---|---|---|
+| `ink` | #b2b6bd | paragraph copy (most-read color, 4,329 characters in the extraction) |
+| `ink-strong` | #efeff1 | h1, h2, h3 and nav-on-dark labels |
+| `ink-soft` | #d5d7db | lead lines |
+| `ink-muted` | #656a76 | captions, helper text, customer-logo labels |
+| `ink-on-light-button` | #3b3d45 | text on the light secondary buttons |
+| `link-on-dark` | #2b89ff | inline links in paragraphs and the pale-blue buttons ("Subscribe") |
+| `nav-link-text` | #2264d6 | `--brand-link` in the CSS, used on the white header |
+| `nav-text` | #0c0c0e | text on the white nav bar |
 
-### Product Brand Colors
-- **Terraform Purple** (`#7b42bc`): `--mds-color-terraform-button-background`
-- **Vault Yellow** (`#ffcf25`): `--mds-color-vault-button-background`
-- **Waypoint Teal** (`#14c6cb`): `--mds-color-waypoint-button-background-focus`
-- **Waypoint Teal Hover** (`#12b6bb`): `--mds-color-waypoint-button-background-hover`
-- **Vagrant Blue** (`#1868f2`): `--mds-color-vagrant-brand`
-- **Purple Accent** (`#911ced`): `--mds-color-palette-purple-300`
-- **Visited Purple** (`#a737ff`): `--mds-color-foreground-action-visited`
+### Action
+- `primary` #1060ff with `on-primary` #ffffff text is the "Get started" button in the header.
+- `primary-hover` #0c56e9 is both the hover fill and the 1px border color of the resting button.
+- `link-on-dark` #2b89ff is used as a bright fill for "Get the white paper" / "Subscribe" with dark `{colors.canvas}` text, so the two blues form a light-on-dark pair.
 
-### Semantic Colors
-- **Action Blue** (`#1060ff`): Primary action links on dark
-- **Link Blue** (`#2264d6`): Primary links on light
-- **Bright Blue** (`#2b89ff`): Active links, hover accent
-- **Amber** (`#bb5a00`): `--mds-color-palette-amber-200`, warning states
-- **Amber Light** (`#fbeabf`): `--mds-color-palette-amber-100`, warning backgrounds
-- **Vault Faint Yellow** (`#fff9cf`): `--mds-color-vault-radar-gradient-faint-stop`
-- **Orange** (`#a9722e`): `--mds-color-unified-core-orange-6`
-- **Red** (`#731e25`): `--mds-color-unified-core-red-7`, error states
-- **Navy** (`#101a59`): `--mds-color-unified-core-blue-7`
+### Borders
+- `hairline` #b2b6bd1a (grey at 10%) draws card and section outlines on the dark canvas.
+- `button-secondary-border` #3b3d4566 outlines the light buttons.
+- `text-input-border` #616875 outlines inputs.
 
-### Shadows
-- **Micro Shadow** (`rgba(97, 104, 117, 0.05) 0px 1px 1px, rgba(97, 104, 117, 0.05) 0px 2px 2px`): Default card/button elevation
-- **Focus Outline**: `3px solid var(--mds-color-focus-action-external)` — systematic focus ring
+### Product accents
+The CSS ships per-product tokens, reproduced here only as identity colors: `terraform-brand` #7b42bc, `vault-brand` #ffcf25, `waypoint-brand` #14c6cb, `vagrant-brand` #1868f2. They belong on product logos and product pages, not on generic UI.
 
-## 3. Typography Rules
+### Color usage rules
+- Never put `ink` (#b2b6bd) on the white surface; the light surfaces switch to `ink-on-light-button` or `nav-text`.
+- Reserve `primary` for the single most important action in a viewport.
+- Do not tint the canvas; depth comes from `surface-raised` and from imagery.
 
-### Font Families
-- **Primary Brand**: `__hashicorpSans_96f0ca` (HashiCorp Sans), with fallback: `__hashicorpSans_Fallback_96f0ca`
-- **System UI**: `system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial`
+## Typography
 
-### Hierarchy
+Two families carry the page. The measured display family is the self-hosted variable font loaded as `__hashicorpSans_96f0ca` (weight range 300 to 600, one loaded face). HashiCorp's own announcement describes HashiCorp Sans as a display face by the XYZ Type studio, available in Light, Regular, Medium and Semibold, with accentuated bridges, monospace-like slabs on i and l, ink traps and humanist letterforms (https://www.hashicorp.com/blog/introducing-hashicorp-sans). Everything else uses the system stack.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | HashiCorp Sans | 82px (5.13rem) | 600 | 1.17 (tight) | normal | `"kern"` enabled |
-| Section Heading | HashiCorp Sans | 52px (3.25rem) | 600 | 1.19 (tight) | normal | `"kern"` enabled |
-| Feature Heading | HashiCorp Sans | 42px (2.63rem) | 700 | 1.19 (tight) | -0.42px | Negative tracking |
-| Sub-heading | HashiCorp Sans | 34px (2.13rem) | 600–700 | 1.18 (tight) | normal | Feature blocks |
-| Card Title | HashiCorp Sans | 26px (1.63rem) | 700 | 1.19 (tight) | normal | Card and panel headings |
-| Small Title | HashiCorp Sans | 19px (1.19rem) | 700 | 1.21 (tight) | normal | Compact headings |
-| Body Emphasis | HashiCorp Sans | 17px (1.06rem) | 600–700 | 1.18–1.35 | normal | Bold body text |
-| Body Large | system-ui | 20px (1.25rem) | 400–600 | 1.50 | normal | Hero descriptions |
-| Body | system-ui | 16px (1.00rem) | 400–500 | 1.63–1.69 (relaxed) | normal | Standard body text |
-| Nav Link | system-ui | 15px (0.94rem) | 500 | 1.60 (relaxed) | normal | Navigation items |
-| Small Body | system-ui | 14px (0.88rem) | 400–500 | 1.29–1.71 | normal | Secondary content |
-| Caption | system-ui | 13px (0.81rem) | 400–500 | 1.23–1.69 | normal | Metadata, footer links |
-| Uppercase Label | HashiCorp Sans | 13px (0.81rem) | 600 | 1.69 (relaxed) | 1.3px | `text-transform: uppercase` |
+| Token | Font | Size | Weight | Line height |
+|---|---|---|---|---|
+| `display` | HashiCorp Sans | 82px | 600 | 95.9974px |
+| `display-mobile` | HashiCorp Sans | 42px | 600 | 49.9968px |
+| `heading` | HashiCorp Sans | 52px | 600 | 61.9996px |
+| `subheading` | HashiCorp Sans | 34px | 700 | 39.9976px |
+| `body` | system-ui stack | 14px | 400 | 24.0002px |
+| `button` | system-ui stack | 16px | 500 | 27px |
+| `input` | Arial | 16px | 400 | n/a |
 
-### Principles
-- **Brand/System split**: HashiCorp Sans for headings and brand-critical text; system-ui for body, navigation, and functional text. The brand font carries the weight, system-ui carries the words.
-- **Kern always on**: All HashiCorp Sans text enables OpenType `"kern"` — letterfitting is non-negotiable.
-- **Tight headings**: Every heading uses 1.17–1.21 line-height, creating dense, stacked text blocks that feel infrastructural — solid, load-bearing.
-- **Relaxed body**: Body text uses 1.50–1.69 line-height (notably generous), creating comfortable reading rhythm beneath the dense headings.
-- **Uppercase labels as wayfinding**: 13px uppercase with 1.3px letter-spacing serves as the systematic category/section marker — always HashiCorp Sans weight 600.
+### Observations
+- Headline to body contrast is dramatic: 52px to 14px with a switch of family, so hierarchy is carried by size and family rather than by weight.
+- Mobile h1 is 42px with measured letter spacing of -0.42px (1% negative tracking); desktop headings use `normal` tracking.
+- Small uppercase labels measure 13px with 1.3px tracking (10%), seen in "TRUSTED BY LEADING ORGANIZATIONS".
+- Most characters on the page (about 5,900) are system-ui; HashiCorp Sans is about 860 characters, i.e. reserved for headlines.
+- The sizes that appear in the extraction are 82, 52, 42, 34, 26, 20, 19, 17, 16, 15, 14 and 13px.
 
-## 4. Component Stylings
+### Font substitutes
+HashiCorp Sans is proprietary and served only as a hashed web font. Where it is not available use a geometric-humanist sans with a slightly squared feel at weight 600 (for example Inter or Manrope at 600) and keep the same sizes. The system-ui stack needs no substitute.
+
+## Layout
+
+- Desktop capture width is 1280px; sections are full-bleed on the dark canvas with content inset roughly 36px from the left edge at the capture's 960px preview scale, i.e. a wide container with generous gutters.
+- Feature rows are two columns: text at about 475px wide (measured h2 width 475px) and an illustration filling the other half; rows alternate sides.
+- The CSS defines `--space-block-padding: 88px`, the vertical padding between blocks; paddings of 48px, 64px and 128px also occur.
+- Measured gaps: 24px (most common), 8px, 6px, 12px, 4px, 32px, 20px, 16px, 40px, 48px and 96px.
+- Spacing tokens in the front matter (s1 4px to s10 20px) cover control-level spacing; section-level spacing is the 48 to 128px set above.
+- Navigation is a white bar, 48px-tall at preview scale, with the logomark and wordmark at left, six dropdown triggers (Solutions, Products, Pricing, Developers, Resources, Company) and three actions at right: Log in (text), Contact us (outlined), Get started (blue).
+- A banner strip below the hero is a bordered `surface-raised` row with a bold label cell, a one-line grey description and a right-aligned "Learn more ->".
+- A floating white chat panel anchors to the lower right with four full-width outlined buttons.
+
+## Elevation & Depth
+
+Depth on this site is optical rather than structural.
+
+- UI shadows are almost invisible: buttons use `rgba(101, 106, 118, 0.05) 0px 1px 1px 0px, rgba(101, 106, 118, 0.05) 0px 2px 2px 0px`; secondary buttons use the same recipe with `rgba(97, 104, 117, 0.05)`.
+- Inputs use an inset shadow `rgba(97, 104, 117, 0.1) 0px 1px 2px 1px inset`.
+- Focus is a 3px ring: `rgb(89, 144, 255) 0px 0px 0px 3px` layered over the resting shadow (the CSS also holds `--mds-color-focus-action-external: #5990ff`).
+- Surface layers are expressed through the step from `canvas` (#0d0e12) to `surface-raised` (#15181e), plus hairlines at 10% grey.
+- The big sense of depth comes from photographic 3D glass cubes, soft glows and the hero gradient; never emulate it with box-shadows.
+- A mid-level surface shadow exists in the CSS (`--mds-surface-mid-box-shadow`) for light-theme product surfaces; the dark marketing pages do not use it.
+
+## Shapes
+
+| Token | Value | Where |
+|---|---|---|
+| `xs` | 2px | small tags |
+| `sm` | 3px | tiny chips |
+| `md` | 4px | nav triggers (hover chip is 4px) |
+| `lg` | 5px | all primary and secondary buttons, text input |
+| `xl` | 6px | grouped control ends |
+| `2xl` | 8px | cards and panels |
+| `pill` | 9999px | circular controls (measured 50%) |
+
+The dominant corner is the small 5px button radius; cards use 8px. There are no pill-shaped CTAs. Imagery is sharp-edged glass with square corners.
+
+## Components
 
 ### Buttons
-
-**Primary Dark**
-- Background: `#15181e`
-- Text: `#d5d7db`
-- Padding: 9px 9px 9px 15px (asymmetric, more left padding)
-- Radius: 5px
-- Border: `1px solid rgba(178, 182, 189, 0.4)`
-- Shadow: `rgba(97, 104, 117, 0.05) 0px 1px 1px, rgba(97, 104, 117, 0.05) 0px 2px 2px`
-- Focus: `3px solid var(--mds-color-focus-action-external)`
-- Hover: uses `--mds-color-surface-interactive` token
-
-**Secondary White**
-- Background: `#ffffff`
-- Text: `#3b3d45`
-- Padding: 8px 12px
-- Radius: 4px
-- Hover: `--mds-color-surface-interactive` + low-shadow elevation
-- Focus: `3px solid transparent` outline
-- Clean, minimal appearance
-
-**Product-Colored Buttons**
-- Terraform: background `#7b42bc`
-- Vault: background `#ffcf25` (dark text)
-- Waypoint: background `#14c6cb`, hover `#12b6bb`
-- Each product button follows the same structural pattern but uses its brand color
-
-### Badges / Pills
-- Background: `#42225b` (deep purple)
-- Text: `#efeff1`
-- Padding: 3px 7px
-- Radius: 5px
-- Border: `1px solid rgb(180, 87, 255)`
-- Font: 16px
-
-### Inputs
-
-**Text Input (Dark Mode)**
-- Background: `#0d0e12`
-- Text: `#efeff1`
-- Border: `1px solid rgb(97, 104, 117)`
-- Padding: 11px
-- Radius: 5px
-- Focus: `3px solid var(--mds-color-focus-action-external)` outline
-
-**Checkbox**
-- Background: `#0d0e12`
-- Border: `1px solid rgb(97, 104, 117)`
-- Radius: 3px
-
-### Links
-- **Action Blue on Light**: `#2264d6`, hover → blue-600 variable, underline on hover
-- **Action Blue on Dark**: `#1060ff` or `#2b89ff`, underline on hover
-- **White on Dark**: `#ffffff`, transparent underline → visible underline on hover
-- **Neutral on Light**: `#3b3d45`, transparent underline → visible underline on hover
-- **Light on Dark**: `#efeff1`, similar hover pattern
-- All links use `var(--wpl-blue-600)` as hover color
-
-### Cards & Containers
-- Light mode: white background, micro-shadow elevation
-- Dark mode: `#15181e` or darker surfaces
-- Radius: 8px for cards and containers
-- Product showcase cards with gradient borders or accent lighting
+- **button-primary**: fill `{colors.primary}`, text `{colors.page-body}`, 16px/500 system-ui, radius 5px, padding 9px 15px, height 36px, 1px border `{colors.primary-hover}` and the faint two-layer shadow. Hover swaps fill to `{colors.primary-hover}`. Used for "Get started" in the header.
+- **button-secondary**: fill `{colors.button-secondary-bg}` (#fafafa), text `{colors.ink-on-light-button}`, radius 5px, padding 11px 19px, height 48px, border `{colors.button-secondary-border}`. This is the hero and content-row button ("Meet The Infrastructure Cloud", "Learn more"): a white button on the dark canvas.
+- **Pale-blue button**: `#2b89ff` fill with `#0d0e12` text for "Subscribe" and "Get the white paper" on dark sections.
+- **Text link with arrow**: "Try HCP ->" in `ink-strong` at 16px/500, padding 4px 0.
 
 ### Navigation
-- Clean horizontal nav with mega-menu dropdowns
-- HashiCorp logo left-aligned
-- system-ui 15px weight 500 for links
-- Product categories organized by lifecycle management group
-- "Get started" and "Contact us" CTAs in header
-- Dark mode variant for hero sections
+White bar (`{colors.page-body}`), text `{colors.nav-text}`, dropdown triggers 40px high with 4px radius; hover fills them with a light grey (rgb 241,242,243 in the hover probe). Links on the bar use `{colors.nav-link-text}`.
 
-## 5. Layout Principles
+### Inputs
+Text input: fill `{colors.canvas}`, text `{colors.ink-strong}`, Arial 16px, 5px radius, 48px high, padding 11px, border `{colors.text-input-border}` with the inset shadow.
 
-### Spacing System
-- Base unit: 8px
-- Scale: 2px, 3px, 4px, 6px, 7px, 8px, 9px, 11px, 12px, 16px, 20px, 24px, 32px, 40px, 48px
+### Banner strip
+Bordered row at `{colors.surface-raised}` with hairline, 8px corner, a label cell in `ink-strong` and a short grey description in `ink` at small size.
 
-### Grid & Container
-- Max content width: ~1150px (xl breakpoint)
-- Full-width dark hero sections with contained content
-- Card grids: 2–3 column layouts
-- Generous horizontal padding at desktop scale
+### Customer logo row
+Seven wordmarks rendered in desaturated grey over the canvas under a 13px tracked caps label; no cards, no borders.
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <375px | Tight single column |
-| Mobile | 375–480px | Standard mobile |
-| Small Tablet | 480–600px | Minor adjustments |
-| Tablet | 600–768px | 2-column grids begin |
-| Small Desktop | 768–992px | Full nav visible |
-| Desktop | 992–1120px | Standard layout |
-| Large Desktop | 1120–1440px | Max-width content |
-| Ultra-wide | >1440px | Centered, generous margins |
+### Eyebrow
+A 20px-ish product glyph in a small rounded square followed by "HashiCorp Cloud Platform" in `ink-strong` at about 16px/500, above each h2.
 
-### Whitespace Philosophy
-- **Enterprise breathing room**: Generous vertical spacing between sections (48px–80px+) communicates stability and seriousness.
-- **Dense headings, spacious body**: Tight line-height headings sit above relaxed body text, creating visual "weight at the top" of each section.
-- **Dark as canvas**: Dark hero sections use extra vertical padding to let 3D illustrations and gradients breathe.
+### Chat panel
+White surface, product screenshot header, 20px-ish bold greeting, four outlined buttons at 5px radius and a small underlined privacy link; a blue square launcher (`primary`) sits beside it.
 
-### Border Radius Scale
-- Minimal (2px): Links, small inline elements
-- Subtle (3px): Checkboxes, small inputs
-- Standard (4px): Secondary buttons
-- Comfortable (5px): Primary buttons, badges, inputs
-- Card (8px): Cards, containers, images
+## Design System Architecture
 
-## 6. Depth & Elevation
+HashiCorp publishes the Helios Design System, documented at https://helios.hashicorp.design. The Helios tokens page (https://helios.hashicorp.design/foundations/tokens) lists tokens under `--hds-` names such as `--hds-border-radius-x-small` and `--hds-core-color-blue-500`, grouped into Border, Core, Focus, Foreground, Page, Surface and a Product section carrying brand, foreground, surface, border and gradient tokens for Boundary, Consul, Nomad, Packer, Terraform, Vagrant, Vault, Waypoint and Vault Radar.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Default surfaces, text blocks |
-| Whisper (Level 1) | `rgba(97, 104, 117, 0.05) 0px 1px 1px, rgba(97, 104, 117, 0.05) 0px 2px 2px` | Cards, buttons, interactive surfaces |
-| Focus (Level 2) | `3px solid var(--mds-color-focus-action-external)` outline | Focus rings — color-matched to context |
+The marketing site itself ships a sibling set of variables prefixed `--mds-` (for example `--mds-color-foreground-action-visited`, `--mds-spacing-03: 0.5rem`, `--mds-form-checkbox-size: 16px`, `--mds-typography-display-expressive-800-font-size: 5.125rem`) plus a handful of unprefixed brand variables (`--brand`, `--brand-link`, `--space-block-padding`). The values in this file were measured from rendered elements; the variable names above explain how the system is organised, not additional tokens.
 
-**Shadow Philosophy**: HashiCorp uses arguably the subtlest shadow system in modern web design. The dual-layer shadows at 5% opacity are nearly invisible — they exist not to create visual depth but to signal interactivity. If you can see the shadow, it's too strong. This restraint communicates the enterprise value of stability — nothing floats, nothing is uncertain.
+Brand rules are published separately at https://www.hashicorp.com/brand. The brand welcome page itself carries no hex values, pointing to separate Brand Logos, Product logos, Color and Typography pages that were not read for this file.
 
-## 7. Do's and Don'ts
+Architecture summary:
+- Tokens: layered core -> semantic -> product, named by role and scale (`unified-core-blue-7`, `button-background`).
+- Components: Helios for products; the marketing site (a Next.js build, judging by the hashed `__hashicorpSans_96f0ca` font class) consumes the `--mds-` variables.
+- Typography: HashiCorp Sans for display (from April 2024), system-ui for text.
 
-### Do
-- Use HashiCorp Sans for headings and brand text, system-ui for body and UI text
-- Enable `"kern"` on all HashiCorp Sans text
-- Use product brand colors ONLY for their respective products (Terraform = purple, Vault = yellow, etc.)
-- Apply uppercase labels at 13px weight 600 with 1.3px letter-spacing for section markers
-- Keep shadows at the "whisper" level (0.05 opacity dual-layer)
-- Use the `--mds-color-*` token system for consistent color application
-- Maintain the tight-heading / relaxed-body rhythm (1.17–1.21 vs 1.50–1.69 line-heights)
-- Use `3px solid` focus outlines for accessibility
+## Do's and Don'ts
 
-### Don't
-- Don't use product brand colors outside their product context (no Terraform purple on Vault content)
-- Don't increase shadow opacity above 0.1 — the whisper level is intentional
-- Don't use pill-shaped buttons (>8px radius) — the sharp, minimal radius is structural
-- Don't skip the `"kern"` feature on headings — the font requires it
-- Don't use HashiCorp Sans for small body text — it's designed for 17px+ heading use
-- Don't mix product colors in the same component — each product has one color
-- Don't use pure black (`#000000`) for dark backgrounds — use `#15181e` or `#0d0e12`
-- Don't forget the asymmetric button padding — 9px 9px 9px 15px is intentional
+**Do**
+- Keep the canvas `#0d0e12` and let imagery carry color.
+- Use `{colors.primary}` once per viewport for the lead action.
+- Set body at 14px/24px in `{colors.ink}` and headlines in `{colors.ink-strong}`.
+- Use 5px radius on every button and input.
+- Pair a white (`#fafafa`) secondary button with a text link plus arrow as the secondary action.
+- Use small tracked caps (13px, 1.3px) for section labels.
+- Keep shadows at the faint 5% two-layer recipe.
 
-## 8. Responsive Behavior
+**Don't**
+- Don't use pill buttons or large radii on controls.
+- Don't use product accent colors (Terraform purple, Vault yellow) as generic UI colors.
+- Don't place #b2b6bd copy on white.
+- Don't add drop shadows to cards on the dark canvas; use `surface-raised` and hairlines.
+- Don't recolor the logo; follow the brand pages at https://www.hashicorp.com/brand.
+- Don't use more than two blues on one view.
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <768px | Single column, hamburger nav, stacked CTAs |
-| Tablet | 768–992px | 2-column grids, nav begins expanding |
-| Desktop | 992–1150px | Full layout, mega-menu nav |
-| Large | >1150px | Max-width centered, generous margins |
+## Responsive Behavior
 
-### Collapsing Strategy
-- Hero: 82px → 52px → 42px heading sizes
-- Navigation: mega-menu → hamburger
-- Product cards: 3-column → 2-column → stacked
-- Dark sections maintain full-width but compress padding
-- Buttons: inline → full-width stacked on mobile
+- Measured at two widths: desktop 1280px and mobile 390px.
+- The hero heading drops from 82px to 42px on mobile with line height 49.9968px and -0.42px letter spacing.
+- Mobile header navigation was not measured; the desktop header has six dropdown triggers and a blue "Get started" CTA.
+- Mobile feature row layout was not measured.
+- Block padding of 88px compresses on small screens; section rhythm stays on the 4px spacing ladder.
+- Touch targets: the primary button is 36px high on desktop and the secondary 48px; use the 48px secondary size on touch.
+- The customer-logo row wraps or scrolls rather than shrinking the logos.
+- The chat panel docks to the lower right at every width.
 
-## 9. Agent Prompt Guide
+## Iteration Guide
 
-### Quick Color Reference
-- Light bg: `#ffffff`, `#f1f2f3`
-- Dark bg: `#15181e`, `#0d0e12`
-- Text light: `#000000`, `#3b3d45`
-- Text dark: `#efeff1`, `#d5d7db`
-- Links: `#2264d6` (light), `#1060ff` (dark), `#2b89ff` (active)
-- Helper text: `#656a76`
-- Borders: `rgba(178, 182, 189, 0.4)`, `rgb(97, 104, 117)`
-- Focus: `3px solid` product-appropriate color
-
-### Example Component Prompts
-- "Create a hero on dark background (#15181e). Headline at 82px HashiCorp Sans weight 600, line-height 1.17, kern enabled, white text. Sub-text at 20px system-ui weight 400, line-height 1.50, #d5d7db text. Two buttons: primary dark (#15181e, 5px radius, 9px 15px padding) and secondary white (#ffffff, 4px radius, 8px 12px padding)."
-- "Design a product card: white background, 8px radius, dual-layer shadow at rgba(97,104,117,0.05). Title at 26px HashiCorp Sans weight 700, body at 16px system-ui weight 400 line-height 1.63."
-- "Build an uppercase section label: 13px HashiCorp Sans weight 600, line-height 1.69, letter-spacing 1.3px, text-transform uppercase, #656a76 color."
-- "Create a product-specific CTA button: Terraform → #7b42bc background, Vault → #ffcf25 with dark text, Waypoint → #14c6cb. All: 5px radius, 500 weight text, 16px system-ui."
-- "Design a dark form: #0d0e12 input background, #efeff1 text, 1px solid rgb(97,104,117) border, 5px radius, 11px padding. Focus: 3px solid accent-color outline."
-
-### Iteration Guide
-1. Always start with the mode decision: light (white) for informational, dark (#15181e) for hero/product
-2. HashiCorp Sans for headings only (17px+), system-ui for everything else
-3. Shadows are at whisper level (0.05 opacity) — if visible, reduce
-4. Product colors are sacred — each product owns exactly one color
-5. Focus rings are always 3px solid, color-matched to product context
-6. Uppercase labels are the systematic wayfinding pattern — 13px, 600, 1.3px tracking
+1. Start from `canvas` and `ink`; add `surface-raised` only for one banner or card family.
+2. Set headlines in HashiCorp Sans (or a substitute) 600 at 52px, body 14px/24px.
+3. Add exactly one `primary` action, then a `button-secondary` beside it.
+4. Add imagery with glass, glow and violet-blue gradients; keep UI chrome neutral.
+5. Check every control for the 5px radius, the 10% grey hairline and the faint shadow.
+6. Validate contrast: `ink` on `canvas` (#b2b6bd on #0d0e12) passes comfortably; `ink-muted` (#656a76) is for captions only.
+7. When extending, pull values from the Helios tokens or the site's `--mds-` variables rather than inventing new hues.
+8. Re-measure with `node web/scripts/extract-tokens.mjs --slug=hashicorp --force` if the live site changes, then run the verifier.

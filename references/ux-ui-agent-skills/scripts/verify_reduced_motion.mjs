@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
- * REDUCED-MOTION gate — WCAG 2.2 SC 2.3.3 (Animation from Interactions, AAA)
+ * REDUCED-MOTION gate: WCAG 2.2 SC 2.3.3 (Animation from Interactions, AAA)
  * and the house rule in CLAUDE.md: "Always respect prefers-reduced-motion.
  * Replace with fade or instant."
  *
- * Renders every harness twice — once at no-preference, once at reduce — and
+ * Renders every harness twice (once at no-preference, once at reduce) and
  * compares. Three independent signals, all measured, none asserted:
  *
  *   A. NO POLICY   the page declares real motion but ships no
@@ -15,7 +15,7 @@
  *                  NOT flagged: a fade is the sanctioned reduced-motion
  *                  replacement, and a colour change is not motion.
  *   C. PARITY LOSS the dangerous one. An element that is visible at
- *                  no-preference becomes invisible under reduce — the classic
+ *                  no-preference becomes invisible under reduce: the classic
  *                  bug where content starts at opacity:0 and is revealed only by
  *                  an entrance animation, so killing the animation hides the
  *                  content forever. Reduced motion must never cost content.
@@ -33,7 +33,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_reduced_motion: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_reduced_motion: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -109,7 +109,7 @@ const SNAPSHOT = ({ THRESHOLD, linkedCss }) => {
 
     if (hasAnim || hasMotionTransition) declaresMotion = true;
     if (shown && (hasAnim || hasMotionTransition)) {
-      moving.push(`${describe(el, i)} — ${hasAnim ? `animation ${cs.animationName} ${animMs}s` : `transition ${tProps} ${tMs}s`}`);
+      moving.push(`${describe(el, i)}: ${hasAnim ? `animation ${cs.animationName} ${animMs}s` : `transition ${tProps} ${tMs}s`}`);
     }
   });
 
@@ -176,18 +176,18 @@ for (const f of files) {
   const normal = await shoot('no-preference');
   const reduced = await shoot('reduce');
 
-  // A — declares motion but ships no policy
+  // A: declares motion but ships no policy
   if (normal.declaresMotion && !normal.hasPolicy) {
     problems.push(`${name}  [A no-policy]  page animates but has no @media (prefers-reduced-motion: reduce)`);
   }
 
-  // B — motion still running under reduce
+  // B: motion still running under reduce
   if (reduced.moving.length) {
     problems.push(`${name}  [B not-reduced]  ${reduced.moving.length} element(s) still animate under reduce`);
     for (const m of reduced.moving.slice(0, 4)) problems.push(`      ${m}`);
   }
 
-  // C — content lost under reduce
+  // C: content lost under reduce
   const lost = Object.keys(normal.visible).filter(k => !(k in reduced.visible));
   if (lost.length) {
     problems.push(`${name}  [C parity-loss]  ${lost.length} element(s) visible normally are INVISIBLE under reduce`);
@@ -201,7 +201,7 @@ if (problems.length) {
   for (const p of problems) console.log(p.startsWith('      ') ? p : '  x ' + p);
   console.log('  Fix A: add @media (prefers-reduced-motion: reduce) that stops animation/transform motion.');
   console.log('  Fix B: inside that block set animation:none and drop motion transitions (fade is allowed).');
-  console.log('  Fix C: never rely on an animation to reveal content — reveal it in the reduced branch too.');
+  console.log('  Fix C: never rely on an animation to reveal content; reveal it in the reduced branch too.');
   process.exit(1);
 }
-console.log(`verify_reduced_motion: OK — ${files.length} file(s): policy present, motion stopped under reduce, no content lost`);
+console.log(`verify_reduced_motion: OK: ${files.length} file(s): policy present, motion stopped under reduce, no content lost`);

@@ -4,7 +4,7 @@ Tagged `artifact`: a token palette is something the kit writes as `tokens/*.json
 in the project, not something it says in a message.
 
 `design-tokens-fired` passed 2/2. The output grader beside it, `dtcg-shape`,
-passed one run and failed the other — in the failing run the model spent 10 turns
+passed one run and failed the other. In the failing run the model spent 10 turns
 and ended on a message that did not contain the palette, because every case here
 grants only `[Read, Glob, Grep, Skill]` and the natural place for a palette is a
 file it cannot write.

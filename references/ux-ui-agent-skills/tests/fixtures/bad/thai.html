@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><title>Thai text defects</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* The journal's own OFL faces, so the glyphs are the same on every machine. */
+  @font-face { font-family:"Fixture Display"; src:url("../../../examples/sites/journal/fonts/journal-display.woff2") format("woff2"); font-weight:400 700; }
+  @font-face { font-family:"Fixture Reading"; src:url("../../../examples/sites/journal/fonts/journal-reading.woff2") format("woff2"); font-weight:400 700; }
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.7 "Fixture Reading", serif; }
+  main { padding:24px; display:grid; gap:32px; }
+  /* Five defects verify_thai.mjs must reject. width:min-content puts every legal
+     break on its own line, so where the lines break does not depend on the width:
+     1. the compound ใบอนุญาต split into ใบ / อนุญาต;
+     2. 23 on one line and คน on the next;
+     3. a Thai word cut between its own letters by word-break:break-all;
+     4. a display heading at line-height 1 with negative tracking, where the
+        tone mark on the second line reaches the first;
+     5. ความหมาย broken after ความ, a prefix that never stands alone. */
+  .narrow { inline-size:min-content; margin:0; }
+  .cut { inline-size:2.5em; margin:0; word-break:break-all; }
+  h1 { font:700 48px/1 "Fixture Display", sans-serif; letter-spacing:-0.02em; inline-size:min-content; margin:0; }
+</style></head>
+<body><main>
+  <p class="narrow">ใบอนุญาต</p>
+  <p class="narrow">มี 23 คน</p>
+  <p class="cut">ประเสริฐ</p>
+  <h1>ญาติ ปั้น</h1>
+  <p class="narrow">ความหมาย</p>
+</main></body></html>

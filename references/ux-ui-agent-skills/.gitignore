@@ -1,4 +1,4 @@
-# Locally-installed agent skill bundles — never commit to this repo
+# Locally-installed agent skill bundles: never commit to this repo
 .agents/
 skills-lock.json
 
@@ -7,10 +7,10 @@ node_modules/
 *.tgz
 npm-debug.log*
 
-# Local-only demos (IP) — never commit
+# Local-only demos (IP): never commit
 examples/apple-home/
 
-# Personal, machine-local preferences — never commit
+# Personal, machine-local preferences: never commit
 CLAUDE.local.md
 
 # eval outputs are committed as fixtures: they are what the 13-gate scorer runs against

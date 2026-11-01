@@ -1,6 +1,6 @@
 # Motion Choreography
 
-Tokens in `tokens/motion.json` define the *vocabulary* (durations, easings, presets). This file is the *grammar* — how to compose motion that feels intentional and premium instead of busy or janky.
+Tokens in `tokens/motion.json` define the *vocabulary* (durations, easings, presets). This file is the *grammar*: how to compose motion that feels intentional and premium instead of busy or janky.
 
 > Motion serves the **Aesthetics** tier and must honor `prefers-reduced-motion` (WCAG 2.3.3). Every effect below has a reduced-motion fallback. Never block content or delay interaction on animation.
 
@@ -9,9 +9,9 @@ Tokens in `tokens/motion.json` define the *vocabulary* (durations, easings, pres
 ## Principles
 
 1. **Purpose only.** Motion exists to (a) guide attention, (b) show spatial/causal connection, or (c) confirm an action. If it does none of these, cut it.
-2. **Fast and out of the way.** UI feedback lands in `duration.fast`–`duration.base`. Nothing routine exceeds `duration.moderate`. Only full-screen/hero transitions may reach `duration.slow`.
+2. **Fast and out of the way.** UI feedback lands in `duration.fast` to `duration.base`. Nothing routine exceeds `duration.moderate`. Only full-screen/hero transitions may reach `duration.slow`.
 3. **Easing carries meaning.** `ease-out` for entrances (arrive fast, settle), `ease-in` for exits (accelerate away), `ease-in-out` for in-place state changes, `spring` for rare celebratory emphasis.
-4. **Transform + opacity only.** Animate `transform` and `opacity` — they are GPU-composited and hit 60fps. Avoid animating `width`, `height`, `top`, `left`, `box-shadow`, `filter` in hot paths.
+4. **Transform + opacity only.** Animate `transform` and `opacity`: they are GPU-composited and hit 60fps. Avoid animating `width`, `height`, `top`, `left`, `box-shadow`, `filter` in hot paths.
 5. **Restraint reads as premium.** One signature motion per view. Stacking parallax + glow + spring + scrub looks cheap. Pick one focal motion and keep the rest quiet.
 
 ---
@@ -19,19 +19,19 @@ Tokens in `tokens/motion.json` define the *vocabulary* (durations, easings, pres
 ## Patterns
 
 ### Entrance reveals (on scroll / mount)
-- Translate ≤ 8–16px + fade. Never animate from far offscreen.
+- Translate ≤ 8-16px + fade. Never animate from far offscreen.
 - `duration.moderate`, `ease-out`. Use `tokens/motion.json` → `transition.enter`.
 - **Reduced motion:** opacity-only fade, ≤ `duration.fast`, no translate.
 
 ### Stagger
-- Reveal grouped items with a small delay step (40–80ms) to imply order.
+- Reveal grouped items with a small delay step (40-80ms) to imply order.
 - Cap total stagger so the last item isn't perceptibly late (< ~400ms overall).
 - **Reduced motion:** reveal the whole group at once.
 
 ### Hover physics (pointer devices)
 - Subtle lift: `translateY(-2px)` + elevation step up, `duration.fast`, `ease-out`.
 - Optional colored shadow on primary CTAs only (`tokens/shadows.json` → `colored`).
-- **Touch:** no hover dependency — the resting state must be complete on its own.
+- **Touch:** no hover dependency. The resting state must be complete on its own.
 
 ### Press / active feedback
 - Scale down slightly (`scale(0.97)`) on press, snap back on release, `duration.fast`.
@@ -48,19 +48,19 @@ Tokens in `tokens/motion.json` define the *vocabulary* (durations, easings, pres
 - **Reduced motion:** fade only, no scale.
 
 ### Loading
-- Skeleton `pulse` (opacity 1↔0.5) or shimmer, `linear`, infinite. Spinner `spin`, 600–1000ms, `linear`.
+- Skeleton `pulse` (opacity 1↔0.5) or shimmer, `linear`, infinite. Spinner `spin`, 600-1000ms, `linear`.
 - Prefer skeletons that match final layout over spinners for perceived speed.
 
 ---
 
 ## Anti-Patterns (the cheap tells)
 
-- **Avoid:** everything animates on load — nothing feels important.
-- **Avoid:** long durations (> 500ms) on routine UI — feels sluggish.
-- **Avoid:** bounce/spring on every element — toy-like.
-- **Avoid:** animating `box-shadow`/`filter`/`width` — jank.
-- **Avoid:** motion with no reduced-motion fallback — accessibility failure.
-- **Avoid:** scroll-jacking that fights the user's scroll — abandon.
+- **Avoid:** everything animates on load, so nothing feels important.
+- **Avoid:** long durations (> 500ms) on routine UI: feels sluggish.
+- **Avoid:** bounce/spring on every element: toy-like.
+- **Avoid:** animating `box-shadow`/`filter`/`width`: jank.
+- **Avoid:** motion with no reduced-motion fallback: accessibility failure.
+- **Avoid:** scroll-jacking that fights the user's scroll: abandon.
 
 ---
 

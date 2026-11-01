@@ -6,7 +6,7 @@ Components that present structured or browsable data: Calendar, Carousel, and Tr
 
 ## 1. Calendar / Date Grid
 
-Standalone month grid for picking or displaying dates. The popover-wrapped picker variant lives in `components/forms-advanced.md` (Date Picker) — this is the grid itself.
+Standalone month grid for picking or displaying dates. The popover-wrapped picker variant lives in `components/forms-advanced.md` (Date Picker); this is the grid itself.
 
 **Anatomy:** `[header: ‹ prev | month year | next ›] [weekday row] [day grid 6×7] [footer: Today / Clear?]`
 
@@ -15,7 +15,7 @@ Standalone month grid for picking or displaying dates. The popover-wrapped picke
 |---------|-----|
 | Single date | Pick one day |
 | Range | Start→end selection with in-range fill (`semantic.interactive.selected-bg` at reduced opacity) |
-| Multi-month | 2–3 grids side-by-side for range picking |
+| Multi-month | 2-3 grids side-by-side for range picking |
 | With time | Grid + time selector below |
 | Display-only | Read-only schedule/availability heatmap |
 
@@ -25,9 +25,9 @@ Standalone month grid for picking or displaying dates. The popover-wrapped picke
 
 **Accessibility:**
 - `role="grid"` (or `role="application"` for rich range UX); column headers `role="columnheader"` with `abbr` for weekday.
-- **Roving tabindex** — one cell tabbable; Arrow keys move day/week, PageUp/Down month, Shift+PageUp/Down year, Home/End week edges, Enter/Space select.
+- **Roving tabindex**: one cell tabbable; Arrow keys move day/week, PageUp/Down month, Shift+PageUp/Down year, Home/End week edges, Enter/Space select.
 - Selected cell `aria-selected="true"`; today `aria-current="date"`. Announce month/year change on navigation (live region).
-- Never convey availability by color alone — pair with icon/label/`aria-disabled`.
+- Never convey availability by color alone; pair with icon/label/`aria-disabled`.
 
 ---
 
@@ -47,7 +47,7 @@ Sequentially browsable set of slides (media, cards, testimonials).
 
 **Accessibility:**
 - Container `role="region"` (or `group`) with `aria-roledescription="carousel"` + `aria-label`. Slide group `aria-roledescription="slide"` + `aria-label="N of M"`.
-- **WCAG 2.2.2** — any auto-advance must be pausable/stoppable; show a visible Pause control and **pause on hover/focus**. Respect `prefers-reduced-motion` (disable autoplay + use fade/instant).
+- **WCAG 2.2.2**: any auto-advance must be pausable/stoppable; show a visible Pause control and **pause on hover/focus**. Respect `prefers-reduced-motion` (disable autoplay + use fade/instant).
 - Prev/Next/dots are real `<button>`s with labels; rotation region `aria-live="off"` while auto, `"polite"` after user interaction.
 - Off-screen slides `aria-hidden`/`inert` so they're skipped by Tab and SR.
 
@@ -67,5 +67,5 @@ Hierarchical, expandable list (file explorers, nav, nested categories).
 
 **Accessibility:**
 - `role="tree"` → `role="treeitem"` → nested `role="group"`. Each item: `aria-expanded` (parents only), `aria-level`, `aria-setsize`, `aria-posinset`; selection via `aria-selected`. Multi-select checkboxes use `aria-checked="mixed"` for partial.
-- **Roving tabindex** — Up/Down move visible items, Right expands/enters, Left collapses/exits to parent, Home/End to first/last, type-ahead to label, Enter/Space activate/select, `*` expands siblings.
+- **Roving tabindex**: Up/Down move visible items, Right expands/enters, Left collapses/exits to parent, Home/End to first/last, type-ahead to label, Enter/Space activate/select, `*` expands siblings.
 - Twisty is decorative if the row is the control; expose state through `aria-expanded`, never the glyph alone.

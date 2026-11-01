@@ -1,5 +1,5 @@
-/* shell.css — the chrome every industry template shares: app shell, panels,
- * tables, badges, buttons. Each template adds only what its domain needs, so a
+/* shell.css: the chrome every industry template shares (app shell, panels,
+ * tables, badges, buttons). Each template adds only what its domain needs, so a
  * fix here is a fix everywhere and no screen invents its own button.
  * Values come from brandkit-demo/theme.css; nothing is typed in. */
 *{box-sizing:border-box;margin:0}
@@ -10,7 +10,7 @@ a{color:inherit}
 .ico{inline-size:1.125rem;block-size:1.125rem;flex:none;stroke-width:1.75}
 .sr-only{position:absolute;inline-size:1px;block-size:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
 .num{font-variant-numeric:tabular-nums;white-space:nowrap}
-.up{color:var(--color-feedback-success)} .dn{color:var(--color-text-error)}
+.up{color:var(--color-feedback-success-icon)} .dn{color:var(--color-feedback-error-text)}
 
 /* shell */
 /* Mobile first: one column is the base, and the 15rem sidebar is added for wide
@@ -73,7 +73,7 @@ main{display:flex;flex-direction:column;min-inline-size:0}
    push the page sideways. */
 @media (max-width:30rem){
   .panel{padding:var(--space-4)}
-  .panel > header{flex-direction:column;align-items:flex-start;gap:var(--space-1)}
+  .panel > header{flex-direction:column;align-items:flex-start;gap:var(--space-2)}
 }
 /* A row is as tall as its tallest panel, and align-content:start packs the short
    one's content to the top - so it ends in a bordered void. A panel in a row has
@@ -98,8 +98,8 @@ main{display:flex;flex-direction:column;min-inline-size:0}
 .btn-primary:hover{background:var(--color-action-primary-hover)}
 .btn-secondary{background:transparent;color:var(--color-text-primary);border:1px solid var(--color-border-strong)}
 .btn-secondary:hover{background:var(--color-surface-raised)}
-.btn-danger{background:var(--color-action-danger);color:var(--color-text-on-action)}
-.btn-danger:hover{background:var(--color-action-danger-hover)}
+.btn-danger{background:var(--color-action-destructive);color:var(--color-text-on-action)}
+.btn-danger:hover{background:var(--color-action-destructive-hover)}
 .btn-block{inline-size:100%}
 .iconbtn{display:grid;place-items:center;inline-size:var(--size-control-md);block-size:var(--size-control-md);
   border:1px solid var(--color-border-strong);border-radius:var(--radius-button);background:transparent;
@@ -127,10 +127,10 @@ main{display:flex;flex-direction:column;min-inline-size:0}
 
 /* badges: a dot is a pair for the word, never the only signal */
 .badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.125rem var(--space-3);
-  border-radius:var(--radius-pill);background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:600}
+  border-radius:var(--radius-full);background:var(--color-surface-raised);font-size:var(--text-xs);font-weight:600}
 .badge .dot{inline-size:.4375rem;block-size:.4375rem;border-radius:var(--radius-full);background:var(--dot);flex:none}
-.b-ok{--dot:var(--color-feedback-success)} .b-warn{--dot:var(--color-feedback-warning)}
-.b-bad{--dot:var(--color-text-error)} .b-info{--dot:var(--color-text-link)}
+.b-ok{--dot:var(--color-feedback-success-icon)} .b-warn{--dot:var(--color-feedback-warning-icon)}
+.b-bad{--dot:var(--color-feedback-error-text)} .b-info{--dot:var(--color-text-link)}
 .b-mute{--dot:var(--color-text-secondary)}
 
 /* A badge that takes you to what it counts.

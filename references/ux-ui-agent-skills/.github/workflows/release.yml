@@ -1,7 +1,7 @@
 name: Release on tag
 
 # Auto-create a GitHub Release whenever a vX.Y.Z tag is pushed.
-# Uses the built-in GITHUB_TOKEN — no manual `gh auth login` / npm login needed.
+# Uses the built-in GITHUB_TOKEN, so no manual `gh auth login` / npm login needed.
 on:
   push:
     tags:
@@ -54,6 +54,29 @@ jobs:
           else
             gh release create "$TAG" --title "$TAG" --verify-tag "${NOTES[@]}"
           fi
+
+      # `gemini extensions install https://github.com/plugin87/ux-ui-agent-skills`
+      # installs a release's asset when it is the only generic one, and the source
+      # tarball otherwise - which has no skills/, because a root skills/ would load
+      # twice in the Claude Code plugin. So this is the one asset, built from the
+      # tagged tree. Only on a tag push: a manual backfill checks out the default
+      # branch, and would attach an extension the tag does not describe.
+      - uses: actions/setup-node@v4
+        if: github.event_name == 'push'
+        with:
+          node-version: 22
+      - name: Attach the Gemini CLI extension
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG='${{ steps.tag.outputs.name }}'
+          PKG="$(node -p "require('./package.json').version")"
+          if [ "v$PKG" != "$TAG" ]; then
+            echo "::error::package.json is $PKG but the tag is $TAG"; exit 1
+          fi
+          node scripts/build_gemini_extension.mjs --tar ux-ui-agent-skills-gemini.tar.gz
+          gh release upload "$TAG" ux-ui-agent-skills-gemini.tar.gz --clobber
 
   publish-npm:
     # Only on a real tag push (not manual backfill of an old tag).
@@ -120,13 +143,13 @@ jobs:
           echo "registry: $(npm config get registry)"
           echo "OIDC available: ${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}${ACTIONS_ID_TOKEN_REQUEST_URL:-no}"
 
-      - name: Guard — tag must match package.json version
+      - name: 'Guard: tag must match package.json version'
         run: |
           PKG="$(node -p "require('./package.json').version")"
           TAG="${GITHUB_REF_NAME#v}"
           echo "package.json=$PKG  tag=$TAG"
           if [ "$PKG" != "$TAG" ]; then
-            echo "::error::Tag v$TAG does not match package.json version $PKG — bump package.json before tagging."
+            echo "::error::Tag v$TAG does not match package.json version $PKG. Bump package.json before tagging."
             exit 1
           fi
 

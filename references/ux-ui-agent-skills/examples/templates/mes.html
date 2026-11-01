@@ -17,7 +17,7 @@
   .cn{font-family:var(--font-mono);color:var(--lin-ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .cbar{block-size:.75rem;border-radius:var(--radius-sm);background:var(--lin-raised);overflow:hidden;min-inline-size:0}
   .cbar i{display:block;block-size:100%;inline-size:var(--w);background:var(--trm-accent)}
-  .cbar i.over{background:var(--color-text-error)}
+  .cbar i.over{background:var(--color-feedback-error-text)}
   .ct{font-family:var(--font-mono);text-align:end;color:var(--lin-ink-2)}
   .par rect{fill:var(--color-chart-1);opacity:.8}
   .parlab{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--space-2);
@@ -25,10 +25,10 @@
   .parlab li{display:grid;gap:var(--space-1);min-inline-size:0}
   .parlab b{font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-2)}
   .parlab span{font-size:.625rem;color:var(--lin-ink-3);overflow-wrap:anywhere}
-  .par polyline{fill:none;stroke:var(--color-feedback-warning);stroke-width:2}
-  .par circle{fill:var(--color-feedback-warning)}
+  .par polyline{fill:none;stroke:var(--color-feedback-warning-icon);stroke-width:2}
+  .par circle{fill:var(--color-feedback-warning-icon)}
   .spc polyline{fill:none;stroke:var(--lin-accent);stroke-width:1.75}
-  .spc .ucl,.spc .lcl{stroke:var(--color-text-error);stroke-dasharray:4 4}
+  .spc .ucl,.spc .lcl{stroke:var(--color-feedback-error-text);stroke-dasharray:4 4}
   .spc .cl{stroke:var(--lin-hairline)}
   /* Three gauges, three tracks. auto-fit resolved to two here and left the third
      one orphaned beside an empty cell. */
@@ -41,7 +41,7 @@
     color:var(--lin-ink-3)}
   .gt{fill:none;stroke:var(--lin-raised);stroke-width:9;stroke-linecap:round}
   .gf{fill:none;stroke:var(--trm-accent);stroke-width:9;stroke-linecap:round}
-  .gf.warn{stroke:var(--color-feedback-warning)}
+  .gf.warn{stroke:var(--color-feedback-warning-icon)}
 </style>
 </head>
 <body>

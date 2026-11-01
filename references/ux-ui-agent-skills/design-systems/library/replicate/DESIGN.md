@@ -1,264 +1,196 @@
-# Design System Inspired by Replicate
+---
+version: alpha
+name: Replicate
+category: "AI & LLM Platforms"
+description: Replicate's homepage sets a white canvas (#ffffff) against a hot magenta-to-yellow gradient hero, with 72px rb-freigeist-neue headlines at weight 700, basier-square body, JetBrains Mono code, square black buttons (#000000, 0px radius) and pill-shaped filter chips. It reads as a developer tool dressed in a print-poster palette.
 
-> Category: AI & LLM
-> Run ML models via API. Clean white canvas, code-forward.
+colors:
+  canvas: "#ffffff"
+  page-largest: "#fcfcfc"
+  ink: "#202020"
+  ink-muted: "#646464"
+  primary: "#000000"
+  on-primary: "#ffffff"
+  primary-hover: "#0000009b"
+  surface-tint: "#fffcfc"
+  signal-red: "#ea2804"
+  accent-red-text: "#dd4425"
+  text-input-bg: "#ffffff1a"
+typography:
+  display:
+    fontFamily: basier-square, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 24px
+    fontWeight: 400
+    lineHeight: 32px
+  display-mobile:
+    fontFamily: basier-square, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 20px
+    fontWeight: 400
+    lineHeight: 28px
+  heading:
+    fontFamily: rb-freigeist-neue, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 72px
+    fontWeight: 700
+    lineHeight: 72px
+    letterSpacing: "-1.8px"
+  subheading:
+    fontFamily: rb-freigeist-neue, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 30px
+    fontWeight: 600
+    lineHeight: 36px
+  body:
+    fontFamily: basier-square, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 20px
+    fontWeight: 400
+    lineHeight: 28px
+  button:
+    fontFamily: basier-square, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 28px
+  nav:
+    fontFamily: basier-square, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  link:
+    fontFamily: jetbrains-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 20px
+  input:
+    fontFamily: basier-square, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 20px
+rounded:
+  xs: 4px
+  none: 0px
+  pill: 9999px
+spacing:
+  s1: 1px
+  s2: 2px
+  s3: 4px
+  s4: 6px
+  s5: 8px
+  s6: 10px
+  s7: 12px
+  s8: 16px
+  s9: 24px
+  s10: 28px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.none}"
+    padding: 12px 16px
+    height: 54px
+    borderColor: "{colors.primary}"
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.none}"
+    padding: 8px 12px
+    height: 42px
+    borderColor: "{colors.primary}"
+  button-tint:
+    backgroundColor: "{colors.surface-tint}"
+    textColor: "{colors.accent-red-text}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.none}"
+    height: 42px
+  chip-active:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.canvas}"
+    rounded: "{rounded.pill}"
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.link}"
+    rounded: "{rounded.none}"
+  nav:
+    textColor: "{colors.canvas}"
+    rounded: "{rounded.none}"
+  nav-link:
+    textColor: "{colors.primary}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.none}"
+  text-input:
+    backgroundColor: "{colors.text-input-bg}"
+    textColor: "{colors.ink}"
+    typography: "{typography.input}"
+    rounded: "{rounded.none}"
+    padding: 6px 56px 6px 28px
+    height: 34px
+  footer:
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-Replicate's interface is a developer playground crackling with creative energy — a bold, high-contrast design that feels more like a music festival poster than a typical API platform. The hero section explodes with a vibrant orange-red-magenta gradient that immediately signals "this is where AI models come alive," while the body of the page grounds itself in a clean white canvas where code snippets and model galleries take center stage.
+Replicate is a hosted API for running machine-learning models, and the homepage speaks to developers first. The capture begins with a thin announcement bar ("Wan 3.0 is 30% off this week", with a close icon), then a header with the Replicate wordmark, a search field ("Search 'best image models' or 'text to image'" with a cmd+k hint), links Explore, Pricing, Enterprise, Docs, Blog, Sign in and a dark "Try for free" button. The hero is a saturated gradient field that runs from magenta and pink through orange to acid yellow at the bottom right, overlaid with a halftone dot texture. On it, in white, is the headline "Run AI with an API." in two lines, the sub-line "Run and fine-tune models. Deploy custom models. All with one line of code.", and a square black button, "Get started for free".
 
-The design personality is defined by two extreme choices: **massive display typography** (up to 128px) using the custom rb-freigeist-neue face, and **exclusively pill-shaped geometry** (9999px radius on everything). The display font is thick, bold, and confident — its heavy weight at enormous sizes creates text that feels like it's shouting with joy rather than whispering authority. Combined with basier-square for body text (a clean geometric sans) and JetBrains Mono for code, the system serves developers who want power and playfulness in equal measure.
+Directly beneath is a code card with tabs Node, Python and HTTP: a short script that imports Replicate, calls `replicate.run("black-forest-labs/flux-2-pro", ...)` with a prompt about a poolside patio at sunset, and beside it the generated photograph of the patio. A white panel overlaps the bottom of the gradient with the label "With Replicate you can" and a row of pill chips (Generate images, Generate speech, Generate music, Restore images, Generate videos from images, Caption images, Large Language Models (LLMs)), the first one filled dark. Rows of model cards follow, each with a thumbnail, an owner/name pair (such as openai / gpt-image-1.5), a one-line description, a red run count and an "Official" badge. Further down, circular avatars with gradient rings are joined by dotted red lines, a large headline "Thousands of models contributed by our community" in a lighter weight, and two buttons, "Explore models" (black) and "Push a model" (outlined).
 
-What makes Replicate distinctive is its community-powered energy. The model gallery with AI-generated images, the dotted-underline links, the green status badges, and the "Imagine what you can build" closing manifesto all create a space that feels alive and participatory — not a corporate product page but a launchpad for creative developers.
+The tone is direct and practical: "Run AI with an API", "Make it real by pushing it to Replicate." There is little decoration beyond the gradient; model artwork supplies the rest of the colour.
 
-**Key Characteristics:**
-- Explosive orange-red-magenta gradient hero (#ea2804 brand anchor)
-- Massive display typography (128px) in heavy rb-freigeist-neue
-- Exclusively pill-shaped geometry: 9999px radius on EVERYTHING
-- High-contrast black (#202020) and white palette with red brand accent
-- Developer-community energy: model galleries, code examples, dotted-underline links
-- Green status badges (#2b9a66) for live/operational indicators
-- Bold/heavy font weights (600-700) creating maximum typographic impact
-- Playful closing manifesto: "Imagine what you can build."
+## Colors
 
-## 2. Color Palette & Roles
+The measured palette is almost monochrome, apart from the hero gradient and one red.
 
-### Primary
-- **Replicate Dark** (`#202020`): The primary text color and dark surface — a near-black that's the anchor of all text and borders. Slightly warmer than pure #000.
-- **Replicate Red** (`#ea2804`): The core brand color — a vivid, saturated orange-red used in the hero gradient, accent borders, and high-signal moments.
-- **Secondary Red** (`#dd4425`): A slightly warmer variant for button borders and link hover states.
+- **Canvas.** `{colors.canvas}` is the document background. `{colors.page-largest}` (`#fcfcfc`) is the single largest-area surface, a hair off white, used for cards and panels.
+- **Ink.** `{colors.ink}` (`#202020`) is the main heading and interface colour; `{colors.ink-muted}` (`#646464`) is the most frequently set text colour, used for descriptions and metadata. I reassigned `ink` from the generator's `#646464` to `#202020` because the capture shows headings and chips in the darker value and the lighter one carries secondary text.
+- **Primary.** Solid buttons are pure black `{colors.primary}` with white `{colors.on-primary}` labels. Hover drops the fill to black at roughly 60% opacity (`{colors.primary-hover}`), measured on the hero button.
+- **Red.** `{colors.signal-red}` (`#ea2804`) is the colour of run counts ("490.5k runs"); the dotted connectors in the community illustration are also red, though I did not measure their exact value. `{colors.accent-red-text}` (`#dd4425`) on the tint `{colors.surface-tint}` (`#fffcfc`) is the label colour of outlined buttons such as "Fine-tune image models".
+- **Gradient.** The hero is imagery, not a token: magenta, orange and yellow blend with a dot texture.
+- **Code.** The code card uses a GitHub-like syntax palette (blue, red, navy) that is confined to the snippet and is not part of the interface tokens.
 
-### Secondary & Accent
-- **Status Green** (`#2b9a66`): Badge/pill background for "running" or operational status indicators.
-- **GitHub Dark** (`#24292e`): A blue-tinted dark used for code block backgrounds and developer contexts.
+## Typography
 
-### Surface & Background
-- **Pure White** (`#ffffff`): The primary page body background.
-- **Near White** (`#fcfcfc`): Button text on dark surfaces and the lightest content.
-- **Hero Gradient**: A dramatic orange → red → magenta → pink gradient for the hero section. Transitions from warm (#ea2804 family) through hot pink.
+Three families, listed in the page's loaded fonts: rb-freigeist-neue (weights 400, 600, 700) for display, basier-square (400, 600) for interface and body, and jetbrains-mono (400) for code. They are custom webfonts served by the site; I found no public Replicate brand or typography page to confirm their licensing or origin, so none is stated here. The declared fallback is `ui-sans-serif, system-ui, sans-serif` for the two sans families and `ui-monospace, SFMono-Regular, Menlo, ...` for the monospace.
 
-### Neutrals & Text
-- **Medium Gray** (`#646464`): Secondary body text and de-emphasized content.
-- **Warm Gray** (`#4e4e4e`): Emphasized secondary text.
-- **Mid Silver** (`#8d8d8d`): Tertiary text, footnotes.
-- **Light Silver** (`#bbbbbb`): Dotted-underline link decoration color, muted metadata.
-- **Pure Black** (`#000000`): Maximum-emphasis borders and occasional text.
+Roles: `{typography.heading}` is 72px, weight 700, line-height 72px with -1.8px tracking for the hero headline (sizes of 128px and 48px also appear in the measured set); `{typography.subheading}` is 30px/600; `{typography.display}` (24px, 400, 32px line-height) is the hero sub-line and `{typography.display-mobile}` (20px/28px) its mobile size; `{typography.body}` is 20px/28px; `{typography.button}` is 18px; `{typography.nav}` is 16px; `{typography.link}` and `{typography.input}` are 14px/20px. Tight leading (line-height equal to size at 72px) and negative tracking make the headline dense and poster-like.
 
-### Gradient System
-- **Hero Blaze**: A dramatic multi-stop gradient flowing through orange (`#ea2804`) → red → magenta → hot pink. This gradient occupies the full hero section and is the most visually dominant element on the page.
-- **Dark Sections**: Deep dark (#202020) sections with white/near-white text provide contrast against the white body.
+## Layout
 
-## 3. Typography Rules
+The page is a centred container on a wide canvas, with sections stacked vertically. The hero's gradient is full-bleed, with the code card and the "With Replicate you can" panel sitting inside the container and overlapping the gradient's lower edge. Model cards are horizontal strips that bleed off the viewport edge in two staggered rows, signalling a scrollable catalogue, and the avatar rows are placed in a loose staggered grid. Spacing in the frontmatter runs from `{spacing.s5}` 8px to `{spacing.s10}` 28px for the compact controls inside chips, cards and inputs; section gaps are far larger and were not tokenised.
 
-### Font Family
-- **Display**: `rb-freigeist-neue`, with fallbacks: `ui-sans-serif, system-ui`
-- **Body / UI**: `basier-square`, with fallbacks: `ui-sans-serif, system-ui`
-- **Code**: `jetbrains-mono`, with fallbacks: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New`
+## Elevation & Depth
 
-### Hierarchy
+Almost flat. The measured roles carry no box shadows. Panels are defined by white fills against the gradient and thin 1px dark outlines (the model cards, the code card and the outlined "Push a model" button all show a visible thin border). The only translucency is the header search field's white-at-10% fill (`{colors.text-input-bg}`) and the hover darkening of the primary button. The depth in the page comes from the saturated gradient behind white panels.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Mega | rb-freigeist-neue | 128px (8rem) | 700 | 1.00 (tight) | normal | The maximum: closing manifesto |
-| Display / Hero | rb-freigeist-neue | 72px (4.5rem) | 700 | 1.00 (tight) | -1.8px | Hero section headline |
-| Section Heading | rb-freigeist-neue | 48px (3rem) | 400–700 | 1.00 (tight) | normal | Feature section titles |
-| Sub-heading | rb-freigeist-neue | 30px (1.88rem) | 600 | 1.20 (tight) | normal | Card headings |
-| Sub-heading Sans | basier-square | 38.4px (2.4rem) | 400 | 0.83 (ultra-tight) | normal | Large body headings |
-| Feature Title | basier-square / rb-freigeist-neue | 18px (1.13rem) | 600 | 1.56 | normal | Small section titles, labels |
-| Body Large | basier-square | 20px (1.25rem) | 400 | 1.40 | normal | Intro paragraphs |
-| Body / Button | basier-square | 16–18px (1–1.13rem) | 400–600 | 1.50–1.56 | normal | Standard text, buttons |
-| Caption | basier-square | 14px (0.88rem) | 400–600 | 1.43 | -0.35px to normal | Metadata, descriptions |
-| Small / Tag | basier-square | 12px (0.75rem) | 400 | 1.33 | normal | Tags (lowercase transform) |
-| Code | jetbrains-mono | 14px (0.88rem) | 400 | 1.43 | normal | Code snippets, API examples |
-| Code Small | jetbrains-mono | 11px (0.69rem) | 400 | 1.50 | normal | Tiny code references |
+## Shapes
 
-### Principles
-- **Heavy display, light body**: rb-freigeist-neue at 700 weight creates thundering headlines, while basier-square at 400 handles body text with quiet efficiency. The contrast is extreme and intentional.
-- **128px is a real size**: The closing manifesto "Imagine what you can build." uses 128px — bigger than most mobile screens. This is the design equivalent of shouting from a rooftop.
-- **Negative tracking on hero**: -1.8px letter-spacing at 72px creates dense, impactful hero text.
-- **Lowercase tags**: 12px basier-square uses `text-transform: lowercase` — an unusual choice that creates a casual, developer-friendly vibe.
-- **Weight 600 as emphasis**: When basier-square needs emphasis, it uses 600 (semibold) — never bold (700), which is reserved for rb-freigeist-neue display text.
+Shape is the signature contrast. Interactive primary controls are square: `{rounded.none}` (0px) on buttons, inputs, nav and footer. Chips and tags are full pills, `{rounded.pill}` (9999px), and avatars are circles. A single small radius, `{rounded.xs}` (4px, on top corners only), is measured on top corners only (`4px 4px 0px 0px`); I did not confirm which element carries it. Cards are rectangular. Mixing square buttons with pill chips gives the page an engineered, slightly retro feel.
 
-## 4. Component Stylings
+## Components
 
-### Buttons
+- **Primary button.** `{components.button-primary}`: black, white 18px label, 54px tall, `12px 16px` padding, square, 1px black border. Hover uses `{components.button-primary-hover}`.
+- **Secondary button.** `{components.button-secondary}`: same black treatment at 42px tall with 16px label ("Explore models", "Get started").
+- **Tint button.** `{components.button-tint}`: off-white fill with red label, 42px tall, for outlined actions ("Learn more", "Fine-tune image models").
+- **Chips.** Pill-shaped with a thin outline; the active chip is filled with `{colors.ink}` and white text (`{components.chip-active}`).
+- **Header search.** `{components.text-input}`: 34px tall, 14px text, generous right padding for the shortcut hint.
+- **Model card.** Thumbnail on the left, owner/model name, description, red run count and "Official" badge.
+- **Code card.** Tabs, a monospace script and an output image.
 
-**Dark Solid**
-- Background: Replicate Dark (`#202020`)
-- Text: Near White (`#fcfcfc`)
-- Padding: 0px 4px (extremely compact)
-- Outline: Replicate Dark 4px solid
-- Radius: pill-shaped (implied by system)
-- Maximum emphasis — dark pill on light surface
+## Design System Architecture
 
-**White Outlined**
-- Background: Pure White (`#ffffff`)
-- Text: Replicate Dark (`#202020`)
-- Border: `1px solid #202020`
-- Radius: pill-shaped
-- Clean outlined pill for secondary actions
+No public design-system documentation for Replicate was found. I opened the company's about page (https://replicate.com/about) and its docs home (https://replicate.com/docs): the first contains no brand or visual-identity statements and the second no brand-asset or press-kit section. A web search surfaced third-party summaries of the site, which are not treated as sources. The de-facto system is utility-driven: the page root carries Tailwind-style variables (`--tw-ring-color`, `--tw-ring-shadow`) and Radix-style colour scales (`--gray-*`, `--tomato-*`, `--yellow-*`, `--green-*`, `--indigo-*`, with alpha variants), and fonts are declared through three font families. That is consistent with a component layer built from utility classes on top of a published colour scale, but I did not open any repository to confirm it.
 
-**Transparent Glass**
-- Background: `rgba(255, 255, 255, 0.1)` (frosted glass)
-- Text: Replicate Dark (`#202020`)
-- Padding: 6px 56px 6px 28px (asymmetric — icon/search layout)
-- Border: transparent
-- Outline: Light Silver (`#bbbbbb`) 1px solid
-- Used for search/input-like buttons
+## Do's and Don'ts
 
-### Cards & Containers
-- Background: Pure White or subtle gray
-- Border: `1px solid #202020` for prominent containment
-- Radius: pill-shaped (9999px) for badges, labels, images
-- Shadow: minimal standard shadows
-- Model gallery: grid of AI-generated image thumbnails
-- Accent border: `1px solid #ea2804` for highlighted/featured items
+Do keep the interface white and let the gradient and model artwork provide colour. Do use square black buttons for commitments and pill chips for filters. Do set the hero headline at 72px with tight leading and -1.8px tracking. Do show real code and real model output beside claims. Do keep red for counts and secondary actions.
 
-### Inputs & Forms
-- Background: `rgba(255, 255, 255, 0.1)` (frosted glass)
-- Text: Replicate Dark (`#202020`)
-- Border: transparent with outline
-- Padding: 6px 56px 6px 28px (search-bar style)
+Don't round the black buttons. Don't use shadows. Don't put the headline on a flat white field; it belongs on the gradient. Don't use more than one saturated hue family outside imagery. Don't set body text in the display face.
 
-### Navigation
-- Clean horizontal nav on white
-- Logo: Replicate wordmark in dark
-- Links: dark text with dotted underline on hover
-- CTA: Dark pill button
-- GitHub link and sign-in
+## Responsive Behavior
 
-### Image Treatment
-- AI-generated model output images in a gallery grid
-- Pill-shaped image containers (9999px)
-- Full-width gradient hero section
-- Product screenshots with dark backgrounds
+The extraction measured a 390px viewport, where the hero sub-line steps down from 24px to `{typography.display-mobile}` (20px, 28px line-height). Other mobile behaviour (header, card strips, chip wrapping) was not measured in this pass. In the desktop capture the chip row already wraps onto a second line ("Large Language Models (LLMs)"), which shows chips are designed to wrap rather than scroll.
 
-### Distinctive Components
+## Iteration Guide
 
-**Model Gallery Grid**
-- Horizontal scrolling or grid of AI-generated images
-- Each image in a pill-shaped container
-- Model names and run counts displayed
-- The visual heart of the community platform
-
-**Dotted Underline Links**
-- Links use `text-decoration: underline dotted #bbbbbb`
-- A distinctive, developer-notebook aesthetic
-- Lighter and more casual than solid underlines
-
-**Status Badges**
-- Status Green (`#2b9a66`) background with white text
-- Pill-shaped (9999px)
-- 14px font size
-- Indicates model availability/operational status
-
-**Manifesto Section**
-- "Imagine what you can build." at 128px
-- Dark background with white text
-- Images embedded between words
-- The emotional climax of the page
-
-## 5. Layout Principles
-
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 4px, 6px, 8px, 10px, 12px, 16px, 24px, 32px, 48px, 64px, 96px, 160px, 192px
-- Button padding: varies widely (0px 4px to 6px 56px)
-- Section vertical spacing: very generous (96–192px)
-
-### Grid & Container
-- Fluid width with responsive constraints
-- Hero: full-width gradient with centered content
-- Model gallery: multi-column responsive grid
-- Feature sections: mixed layouts
-- Code examples: contained dark blocks
-
-### Whitespace Philosophy
-- **Bold and generous**: Massive spacing between sections (up to 192px) creates distinct zones.
-- **Dense within galleries**: Model images are tightly packed in the grid for browsable density.
-- **The gradient IS the whitespace**: The hero gradient section occupies significant vertical space as a colored void.
-
-### Border Radius Scale
-- **Pill (9999px)**: The ONLY radius in the system. Everything interactive, every image, every badge, every label, every container uses 9999px. This is the most extreme pill-radius commitment in any major tech brand.
-
-## 6. Depth & Elevation
-
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | White body, text blocks |
-| Bordered (Level 1) | `1px solid #202020` | Cards, buttons, containers |
-| Accent Border (Level 2) | `1px solid #ea2804` | Featured/highlighted items |
-| Gradient Hero (Level 3) | Full-width blaze gradient | Hero section, maximum visual impact |
-| Dark Section (Level 4) | Dark bg (#202020) with light text | Manifesto, footer, feature sections |
-
-**Shadow Philosophy**: Replicate relies on **borders and background color** for depth rather than shadows. The `1px solid #202020` border is the primary containment mechanism. The dramatic gradient hero and dark/light section alternation provide all the depth the design needs.
-
-## 7. Do's and Don'ts
-
-### Do
-- Use pill-shaped (9999px) radius on EVERYTHING — buttons, images, badges, containers
-- Use rb-freigeist-neue at weight 700 for display text — go big (72px+) or go home
-- Use the orange-red brand gradient for hero sections
-- Use Replicate Dark (#202020) as the primary dark — not pure black
-- Apply dotted underline decoration on text links (#bbbbbb)
-- Use Status Green (#2b9a66) for operational/success badges
-- Keep body text in basier-square at 400–600 weight
-- Use JetBrains Mono for all code content
-- Create a "manifesto" section with 128px type for emotional impact
-
-### Don't
-- Don't use any border-radius other than 9999px — the pill system is absolute
-- Don't use the brand red (#ea2804) as a surface/background color — it's for gradients and accent borders
-- Don't reduce display text below 48px on desktop — the heavy display font needs size to breathe
-- Don't use light/thin font weights on rb-freigeist-neue — 600–700 is the range
-- Don't use solid underlines on links — dotted is the signature
-- Don't add drop shadows — depth comes from borders and background color
-- Don't use warm neutrals — the gray scale is purely neutral (#202020 → #bbbbbb)
-- Don't skip the code examples — they're primary content, not decoration
-- Don't make the hero gradient subtle — it should be BOLD and vibrant
-
-## 8. Responsive Behavior
-
-### Breakpoints
-*No explicit breakpoints detected — likely using fluid/container-query responsive system.*
-
-### Touch Targets
-- Pill buttons with generous padding
-- Gallery images as large touch targets
-- Navigation adequately spaced
-
-### Collapsing Strategy
-- **Hero text**: 128px → 72px → 48px progressive scaling
-- **Model gallery**: Grid reduces columns
-- **Navigation**: Collapses to hamburger
-- **Manifesto**: Scales down but maintains impact
-
-### Image Behavior
-- AI-generated images scale within pill containers
-- Gallery reflows to fewer columns on narrow screens
-- Hero gradient maintained at all sizes
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary Text: "Replicate Dark (#202020)"
-- Page Background: "Pure White (#ffffff)"
-- Brand Accent: "Replicate Red (#ea2804)"
-- Secondary Text: "Medium Gray (#646464)"
-- Muted/Decoration: "Light Silver (#bbbbbb)"
-- Status: "Status Green (#2b9a66)"
-- Dark Surface: "Replicate Dark (#202020)"
-
-### Example Component Prompts
-- "Create a hero section with a vibrant orange-red-magenta gradient background. Headline at 72px rb-freigeist-neue weight 700, white text, -1.8px letter-spacing. Include a dark pill CTA button and a white outlined pill button."
-- "Design a model card with pill-shaped (9999px) image container, model name at 16px basier-square weight 600, run count at 14px in Medium Gray. Border: 1px solid #202020."
-- "Build a status badge: pill-shaped (9999px), Status Green (#2b9a66) background, white text at 14px basier-square."
-- "Create a manifesto section on Replicate Dark (#202020) with 'Imagine what you can build.' at 128px rb-freigeist-neue weight 700, white text. Embed small AI-generated images between the words."
-- "Design a code block: dark background (#24292e), JetBrains Mono at 14px, white text. Pill-shaped container."
-
-### Iteration Guide
-1. Everything is pill-shaped — never specify any other border-radius
-2. Display text is HEAVY — weight 700, sizes 48px+
-3. Links use dotted underline (#bbbbbb) — never solid
-4. The gradient hero is the visual anchor — make it bold
-5. Use basier-square for body, rb-freigeist-neue for display, JetBrains Mono for code
+Start from white, black and the two reds. Reuse the square-button recipe for new actions and the pill for any new filter or tag. For new headlines, apply the 72px/700 recipe with -1.8px tracking, and place them on the gradient. Add a new colour only if it is measured on a page; re-run the extractor on component pages before adding tokens.

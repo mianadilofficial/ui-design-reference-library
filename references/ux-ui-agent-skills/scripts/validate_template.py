@@ -5,14 +5,14 @@ The template is what /scaffold-project copies into a new product repo, so a
 mistake here ships to every project started with the kit. This gate proves the
 template is not just present but correct:
 
-  1. LAYOUT   — every file of the reference layout exists (and nothing empty is
+  1. LAYOUT:   every file of the reference layout exists (and nothing empty is
                 left uncommittable).
-  2. TOKENS   — design-tokens.json parses and every {alias} resolves. Unresolved
+  2. TOKENS:   design-tokens.json parses and every {alias} resolves. Unresolved
                 aliases FAIL here (unlike the multi-file engine check, this file
                 is self-contained, so an unresolved ref is always a bug).
-  3. CONTRAST — the seeded theme passes WCAG 2.2 AA on the required pairs in
+  3. CONTRAST: the seeded theme passes WCAG 2.2 AA on the required pairs in
                 BOTH light and dark, so a new project starts accessible.
-  4. RULES    — CLAUDE.md points at rules that exist, and the rules point at
+  4. RULES:    CLAUDE.md points at rules that exist, and the rules point at
                 gates that exist.
 
 Usage:
@@ -163,4 +163,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # Findings quote what they found (an arrow, an emoji, a Thai name), and a
+    # Windows console in a legacy code page cannot print it.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main())

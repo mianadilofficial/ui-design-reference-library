@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * SCREEN ECONOMY — every part of the screen earns its space.
+ * SCREEN ECONOMY: every part of the screen earns its space.
  *
  * The owner's rule, and the one the kit's own doctrine used to contradict:
  * `taste/design-taste.md` answered "three identical cards" with "bento sizing",
@@ -47,7 +47,7 @@ const required = process.env.DS_REQUIRE_BROWSER === '1';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
-  console.log(`verify_screen_economy: playwright not installed — ${required ? 'REQUIRED, FAILING' : 'SKIPPED'}`);
+  console.log(`verify_screen_economy: playwright not installed: ${required ? 'REQUIRED, FAILING' : 'SKIPPED'}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -98,7 +98,7 @@ const MEASURE = ({ T }) => {
       && Number(cs.opacity) > 0.05 && r.width > 0 && r.height > 0;
   };
 
-  // 1 + 2 — oversized media, and media wider than the viewport
+  // 1 + 2. Oversized media, and media wider than the viewport
   for (const el of document.querySelectorAll('img, video, picture, svg[data-media], [data-media]')) {
     if (!visible(el)) continue;
     const r = el.getBoundingClientRect();
@@ -114,7 +114,7 @@ const MEASURE = ({ T }) => {
     if (r.height > vh * T.mediaMaxBlock) out.media.push({ el: name(el) + ' (background-image)', h: Math.round(r.height), w: Math.round(r.width) });
   }
 
-  /* 3 — a large box that carries little.
+  /* 3. A large box that carries little.
    *
    * "Hollow" is unused SPACE, not low ink. The first version of this check
    * measured the pixel area of text and controls against the box area and
@@ -174,7 +174,7 @@ const MEASURE = ({ T }) => {
     }
   }
 
-  /* 5 — animation that never ends.
+  /* 5. Animation that never ends.
    *
    * The rule is about DECORATION that never stops: a floating blob, a looping
    * background, a shimmer with nothing to shimmer for. A spinner is not that.
@@ -205,7 +205,7 @@ const MEASURE = ({ T }) => {
     out.forever.push(name(v) + ' (autoplaying video)');
   }
 
-  // 4 — images carrying their own size, and lazy below the fold
+  // 4. Images carrying their own size, and lazy below the fold
   for (const img of document.querySelectorAll('img')) {
     const r = img.getBoundingClientRect();
     const problems = [];
@@ -214,7 +214,7 @@ const MEASURE = ({ T }) => {
     if (problems.length) out.images.push({ el: name(img), problems });
   }
 
-  /* 6 — the first screen earns itself.
+  /* 6. The first screen earns itself.
    *
    * A product screen owes the reader a heading and a way to act without
    * scrolling. A component harness owes neither: its job is to show variants,
@@ -333,5 +333,5 @@ if (problems.length) {
   console.log('  The rule: taste/design-taste.md -> Screen economy.');
   process.exit(1);
 }
-console.log(`verify_screen_economy: OK — ${files.length} file(s)${DARK ? ' (dark)' : ''}: media bounded, no hollow boxes, first screen earns itself, images sized`);
+console.log(`verify_screen_economy: OK: ${files.length} file(s)${DARK ? ' (dark)' : ''}: media bounded, no hollow boxes, first screen earns itself, images sized`);
 process.exit(0);

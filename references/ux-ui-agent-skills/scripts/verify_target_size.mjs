@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * TARGET SIZE gate — WCAG 2.2 SC 2.5.8 Target Size (Minimum), Level AA.
+ * TARGET SIZE gate: WCAG 2.2 SC 2.5.8 Target Size (Minimum), Level AA.
  *
  * Every pointer target must be at least 24x24 CSS px, measured on the REAL
  * rendered page (not asserted from source). CLAUDE.md mandates this ("Target
@@ -23,7 +23,7 @@
  * Usage: node scripts/verify_target_size.mjs <file.html | dir> [--widths=414,1280]
  *                                            [--min=24] [--dark] [--advisory]
  * Exit 1 if any operable target is under the minimum with no exception.
- * --advisory reports findings but exits 0 — use it for the 44px AAA/recommended
+ * --advisory reports findings but exits 0; use it for the 44px AAA/recommended
  * sweep (SC 2.5.5), which is a goal rather than a merge blocker.
  */
 import { readdirSync, statSync } from 'node:fs';
@@ -36,7 +36,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_target_size: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_target_size: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -158,10 +158,10 @@ await browser.close();
 if (fails.length) {
   const uniq = [...new Set(fails)];
   const head = advisory ? 'ADVISORY' : 'FAIL';
-  console.log(`verify_target_size: ${head} — target size under ${MIN}px${dark ? ' [dark]' : ''}`);
+  console.log(`verify_target_size: ${head}: target size under ${MIN}px${dark ? ' [dark]' : ''}`);
   for (const m of uniq.slice(0, 30)) console.log(`  ${advisory ? '!' : 'x'} ` + m);
   if (uniq.length > 30) console.log(`  ... and ${uniq.length - 30} more`);
   console.log(`  Fix: give the control >= ${MIN}x${MIN} CSS px, or space it >= ${MIN}px from its neighbours.`);
   process.exit(advisory ? 0 : 1);
 }
-console.log(`verify_target_size: OK — ${files.length} file(s), ${totalTargets} targets @${widths.join('/')}px, all >= ${MIN}x${MIN} or exception-covered${dark ? ' [dark]' : ''}`);
+console.log(`verify_target_size: OK: ${files.length} file(s), ${totalTargets} targets @${widths.join('/')}px, all >= ${MIN}x${MIN} or exception-covered${dark ? ' [dark]' : ''}`);

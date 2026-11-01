@@ -1,4 +1,4 @@
-/* _console.css — the chrome the dark operator consoles share. Extracted after the
+/* _console.css: the chrome the dark operator consoles share. Extracted after the
  * same five defects appeared in three of them: a missing .sr-only rule, headers
  * that could not shrink, tables with no scroller, secondary text with no
  * min-inline-size, and hidden labels without a positioned ancestor. */
@@ -45,7 +45,7 @@ h1{font-size:var(--text-2xl);letter-spacing:-0.035em;line-height:var(--leading-t
   gap:var(--space-3);align-content:start;position:relative}
 .panel > *{min-inline-size:0}
 .panel > header{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;
-  gap:var(--space-1);flex-wrap:wrap;min-inline-size:0}
+  gap:var(--space-2);flex-wrap:wrap;min-inline-size:0}
 .panel > header > *{min-inline-size:0;overflow-wrap:anywhere}
 h2{font-family:var(--font-mono);font-size:var(--text-xs);letter-spacing:.14em;text-transform:uppercase;
   color:var(--lin-ink-3)}
@@ -78,10 +78,10 @@ tbody th{font-family:var(--font-mono);color:var(--lin-ink);font-weight:600}
 td.end,th.end{text-align:end}
 
 .badge{display:inline-flex;align-items:center;gap:var(--space-2);padding:.0625rem var(--space-2);
-  border-radius:var(--radius-pill);background:var(--lin-raised);font-size:.625rem;font-weight:600}
+  border-radius:var(--radius-full);background:var(--lin-raised);font-size:.625rem;font-weight:600}
 .badge .dot{inline-size:.375rem;block-size:.375rem;border-radius:var(--radius-full);background:var(--dot)}
-.b-ok{--dot:var(--trm-accent)} .b-warn{--dot:var(--color-feedback-warning)}
-.b-bad{--dot:var(--color-text-error)} .b-info{--dot:var(--lin-accent)}
+.b-ok{--dot:var(--trm-accent)} .b-warn{--dot:var(--color-feedback-warning-icon)}
+.b-bad{--dot:var(--color-feedback-error-text)} .b-info{--dot:var(--lin-accent)}
 
 .kv{display:grid;grid-template-columns:auto 1fr;gap:var(--space-2) var(--space-4);font-family:var(--font-mono);
   font-size:var(--text-xs)}

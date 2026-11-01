@@ -4,7 +4,7 @@ import { forwardRef, useCallback, useEffect, useId, useMemo, useRef, useState } 
 import type { CSSProperties, KeyboardEvent as ReactKeyboardEvent, ReactNode } from "react";
 import { AnimatePresence, LayoutGroup, animate, motion, useReducedMotion } from "motion/react";
 import type { AnimationPlaybackControls, Transition } from "motion/react";
-import { Check, ChevronDown, ChevronRight, ChevronUp, ChevronsDownUp, ChevronsUpDown, Copy, Link2, Search, X } from "lucide-react";
+import { ChevronDown, ChevronRight, ChevronUp, ChevronsDownUp, ChevronsUpDown, Copy, Link2, Search, X } from "lucide-react";
 import { motionTokens } from "@/lib/motion-tokens";
 import styles from "./json-viewer.module.css";
 
@@ -183,20 +183,19 @@ function CopyButton({ label, icon, onCopy, reduced, className, focusable = false
     try { await onCopy(); setState("done"); } catch { setState("error"); }
     timer.current = window.setTimeout(() => setState("idle"), 1400);
   };
-  const glyph = state === "done" ? <Check size={14} strokeWidth={2} aria-hidden="true" /> : state === "error" ? <X size={14} strokeWidth={2} aria-hidden="true" /> : icon;
+  const glyph = state === "done" ? <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><motion.path d="M4 12l5 5L20 6" initial={reduced ? false : { pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: .22, ease: [...motionTokens.ease.standard], delay: .04 }} /></svg> : state === "error" ? <X size={14} strokeWidth={2} aria-hidden="true" /> : icon;
   return <button type="button" tabIndex={focusable ? undefined : -1} className={[styles.action, className].filter(Boolean).join(" ")} data-state={state} aria-label={state === "done" ? "Copied" : state === "error" ? "Copy failed" : label} title={label}
     onClick={event => { event.stopPropagation(); void run(); }}>
     <AnimatePresence initial={false} mode="popLayout">
-      <motion.span key={state} className={styles.actionGlyph} initial={reduced ? { opacity: 0 } : { opacity: 0, scale: .6, filter: `blur(${motionTokens.blur.subtle}px)` }}
-        animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }} exit={reduced ? { opacity: 0 } : { opacity: 0, scale: .6, filter: `blur(${motionTokens.blur.subtle}px)` }}
-        transition={reduced ? { duration: motionTokens.duration.instant } : { ...motionTokens.spring.snappy, opacity: { duration: motionTokens.duration.instant }, filter: { duration: motionTokens.duration.instant } }}>{glyph}</motion.span>
+      <motion.span key={state} className={styles.actionGlyph} initial={reduced ? { opacity: 0 } : { opacity: 0, scale: .85 }}
+        animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, transition: { duration: reduced ? 0 : .1, ease: [...motionTokens.ease.standard] } }}
+        transition={{ duration: reduced ? 0 : .16, ease: [...motionTokens.ease.standard] }}>{glyph}</motion.span>
     </AnimatePresence>
   </button>;
 }
 
 async function writeClipboard(text: string) {
-  if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable");
-  await navigator.clipboard.writeText(text);
+  await writeClipboard(text);
 }
 
 /* Scroll, row heights and the current-row highlight share one critically damped spring, so a highlight that moves while

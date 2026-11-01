@@ -1,306 +1,184 @@
-# Design System Inspired by Resend
+---
+version: alpha
+name: Resend
+category: "Productivity & SaaS"
+description: "Resend is a dark-first email API brand, a pure black canvas (#000000) with soft white-alpha text (#f0f0f0, then #a1a4a5), 96px domaine serif headlines beside aBCFavorit and Inter, and glassy outlined buttons at 16px radius. Panels are blue-black (#0b0e14) with faint blue-white hairlines, and colour is withheld for logos and code."
 
-> Category: Productivity & SaaS
-> Email API. Minimal dark theme, monospace accents.
+colors:
+  canvas: "#000000"
+  ink: "#f0f0f0"
+  ink-muted: "#a1a4a5"
+  ink-alpha-70: "#f1f7feb5"
+  ink-strong: "#fcfdffef"
+  ink-soft: "#ebeced"
+  ink-quiet: "#ababab"
+  primary: "#ffffff"
+  on-primary: "#000000"
+  surface-panel: "#0b0e14"
+  hairline: "#d6ebfd30"
+typography:
+  display:
+    fontFamily: domaine, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 96px
+    fontWeight: 400
+    lineHeight: 96px
+    letterSpacing: "-0.96px"
+  display-mobile:
+    fontFamily: domaine, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 64px
+    fontWeight: 400
+    lineHeight: 64px
+    letterSpacing: "-0.64px"
+  heading:
+    fontFamily: aBCFavorit, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 56px
+    fontWeight: 400
+    lineHeight: 67.2px
+    letterSpacing: "-2.8px"
+  subheading:
+    fontFamily: aBCFavorit, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 20px
+    fontWeight: 400
+    lineHeight: 20px
+  body:
+    fontFamily: inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 27px
+  button:
+    fontFamily: inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 16px
+    fontWeight: 600
+  nav:
+    fontFamily: inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  link:
+    fontFamily: inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 14px
+  button-secondary:
+    fontFamily: inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 20px
+rounded:
+  xs: 4px
+  sm: 6px
+  md: 8px
+  lg: 10px
+  xl: 12px
+  2xl: 16px
+  3xl: 24px
+  pill: 9999px
+spacing:
+  s1: 1px
+  s2: 2px
+  s3: 4px
+  s4: 6px
+  s5: 8px
+  s6: 10px
+  s7: 12px
+  s8: 14px
+  s9: 16px
+  s10: 20px
+components:
+  button-primary:
+    textColor: "{colors.primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.2xl}"
+    padding: 0px 20px
+    height: 48px
+    borderColor: "{colors.hairline}"
+  button-secondary:
+    textColor: "{colors.primary}"
+    typography: "{typography.button-secondary}"
+    rounded: "{rounded.2xl}"
+    padding: 0px 16px
+    height: 40px
+    borderColor: "{colors.hairline}"
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.link}"
+    rounded: "{rounded.pill}"
+  nav:
+    textColor: "{colors.ink}"
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+    padding: 4px 0px
+  card:
+    backgroundColor: "{colors.surface-panel}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.3xl}"
+    borderColor: "{colors.hairline}"
+  footer:
+    textColor: "{colors.ink}"
+    padding: 20px 16px 12px
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-Resend's website is a dark, cinematic canvas that treats email infrastructure like a luxury product. The entire page is draped in pure black (`#000000`) with text that glows in near-white (`#f0f0f0`), creating a theater-like experience where content performs on a void stage. This isn't the typical developer-tool darkness — it's the controlled darkness of a photography gallery, where every element is lit with intention and nothing competes for attention.
+Resend sells an email-sending API, and its homepage is built to look like a quiet developer terminal with a magazine headline. The capture shows a near-black page with a faint diagonal sheen of light crossing the hero. The header carries the white Resend wordmark, a nav (Features, Company, Enterprise, Help, Docs, AI, Pricing, each with a chevron except Pricing), a "Log in" link and a glass-outlined "Get started" button. Below it a small pill announcement, "Join us at Resend Forward", sits over the headline "Email for developers", set in a light serif at very large size. The sub-line reads "The best way to reach humans instead of spam folders. Deliver transactional and marketing emails at scale." Two controls follow: "Get started" in an outlined glass button and "Documentation" as a borderless grey text button.
 
-The typography system is the star of the show. Three carefully chosen typefaces create a hierarchy that feels both editorial and technical: Domaine Display (a Klim Type Foundry serif) appears at massive 96px for hero headlines with barely-there line-height (1.00) and negative tracking (-0.96px), creating display text that feels like a magazine cover. ABC Favorit (by Dinamo) handles section headings with an even more aggressive letter-spacing (-2.8px at 56px), giving a compressed, engineered quality to mid-tier text. Inter takes over for body and UI, providing the clean readability that lets the display fonts shine. Commit Mono rounds out the family for code blocks.
+The next band, on a slightly raised black panel with a rounded top edge, says "Companies of all sizes trust Resend to deliver their most important emails." and shows a two-row wall of customer logos (Warner Bros., Max, Raycast, Mistral AI, Replit, Anghami, Gumroad, Decathlon, Supabase, Leap, Payload, Paper) in white, followed by "Explore Enterprise". After that, a glossy dark envelope icon sits above "Integrate this morning", where the last two words carry a warm gold gradient, then a row of rounded-square language icons (Node.js, Serverless, Ruby, Python, PHP, CLI, Go, Rust, Java, Elixir, .NET, REST, SMTP) and a code card with a tab strip (Node.js, Next.js, Remix, Nuxt, Express, Hono, Redwood, Bun, Astro), line numbers and a copy button.
 
-What makes Resend distinctive is its icy, blue-tinted border system. Instead of neutral gray borders, Resend uses `rgba(214, 235, 253, 0.19)` — a frosty, slightly blue-tinted line at 19% opacity that gives every container and divider a cold, crystalline quality against the black background. Combined with pill-shaped buttons (9999px radius), multi-color accent system (orange, green, blue, yellow, red — each with its own CSS variable scale), and OpenType stylistic sets (`"ss01"`, `"ss03"`, `"ss04"`, `"ss11"`), the result is a design system that feels premium, precise, and quietly confident.
+The voice is short, confident and a little literary ("Integrate this morning"). Density is low: lots of black, one idea per band.
 
-**Key Characteristics:**
-- Pure black background with near-white (`#f0f0f0`) text — theatrical, gallery-like darkness
-- Three-font hierarchy: Domaine Display (serif hero), ABC Favorit (geometric sections), Inter (body/UI)
-- Icy blue-tinted borders: `rgba(214, 235, 253, 0.19)` — every border has a cold, crystalline shimmer
-- Multi-color accent system: orange, green, blue, yellow, red — each with numbered CSS variable scales
-- Pill-shaped buttons and tags (9999px radius) with transparent backgrounds
-- OpenType stylistic sets (`"ss01"`, `"ss03"`, `"ss04"`, `"ss11"`) on display fonts
-- Commit Mono for code — monospace as a design element, not an afterthought
-- Whisper-level shadows using blue-tinted ring: `rgba(176, 199, 217, 0.145) 0px 0px 0px 1px`
+## Colors
 
-## 2. Color Palette & Roles
+The measured page is monochrome. Resend's own brand-guidelines page (https://resend.com/handbook/design/what-are-our-brand-guidelines) says the palette "prioritizes dark mode" on a black and white foundation, extended with named tones Eggshell, Iron, Stone and Zinc; it gives no hex values, so the hexes below come from the live measurement only.
 
-### Primary
-- **Void Black** (`#000000`): Page background, the defining canvas color (95% opacity via `--color-black-12`)
-- **Near White** (`#f0f0f0`): Primary text, button text, high-contrast elements
-- **Pure White** (`#ffffff`): `--color-white`, maximum emphasis text, link highlights
+- **Canvas.** `{colors.canvas}` is pure black. Raised bands and code panels use `{colors.surface-panel}` (`#0b0e14`, a blue-tinted black).
+- **Ink.** `{colors.ink}` (`#f0f0f0`) is the main light text; `{colors.ink-strong}` is a slightly brighter blue-white at about 94% opacity; `{colors.ink-soft}` and `{colors.ink-quiet}` are neutral greys. The single most-read colour in the page is `{colors.ink-muted}` (`#a1a4a5`), used for body paragraphs and secondary buttons, with `{colors.ink-alpha-70}` as a blue-white at about 71%. Reassignment: the generator picked `#a1a4a5` as `ink`; the capture shows headings and logos in the brighter off-white, so `ink` is `#f0f0f0` and the grey is `ink-muted`.
+- **Primary.** There is no filled brand button on the live page. The visible calls to action are transparent with white labels and a faint border, so `{colors.primary}` is white and `{colors.on-primary}` is black. The generator's detected primary (`#00a3ff`) comes from a "Get Started" link inside the sample "Welcome to ACME" email that the page shows as a product demo, which is customer-template content and not site chrome; I overrode that role.
+- **Hairline.** `{colors.hairline}` is a blue-white at about 19% opacity, used for card and panel borders.
+- **Accent.** The gold on "this morning" and the tinted language-icon states are gradients and imagery, which I did not tokenise.
 
-### Accent Scale — Orange
-- **Orange 4** (`#ff5900`): `--color-orange-4`, at 22% opacity — subtle warm glow
-- **Orange 10** (`#ff801f`): `--color-orange-10`, primary orange accent — warm, energetic
-- **Orange 11** (`#ffa057`): `--color-orange-11`, lighter orange for secondary use
+## Typography
 
-### Accent Scale — Green
-- **Green 3** (`#22ff99`): `--color-green-3`, at 12% opacity — faint emerald wash
-- **Green 4** (`#11ff99`): `--color-green-4`, at 18% opacity — success indicator glow
+The brand-guidelines page names three families: ABC Favorit (Dinamo) for display, Inter (Rasmus Andersson) for product and Domaine Display (Klim Type Foundry) for editorial. The measured loaded fonts match: `domaine` (400) is the hero headline, `aBCFavorit` (400 and 500) sets the section headings, `inter` (variable 100-900) the interface and body, and `commitMono` the code. Inter is open source; Domaine and ABC Favorit are commercial typefaces, so a licence or a fallback sans (`ui-sans-serif, system-ui`, which the declared stacks already include) is needed for reproduction.
 
-### Accent Scale — Blue
-- **Blue 4** (`#0075ff`): `--color-blue-4`, at 34% opacity — medium blue accent
-- **Blue 5** (`#0081fd`): `--color-blue-5`, at 42% opacity — stronger blue
-- **Blue 10** (`#3b9eff`): `--color-blue-10`, bright blue — links, interactive elements
+The scale: `{typography.display}` is 96px with line-height 96px and -0.96px tracking (`{typography.display-mobile}` 64px at 390px width); `{typography.heading}` is 56px/67.2px with -2.8px tracking for section titles; `{typography.subheading}` is 20px; `{typography.body}` is 18px/27px; `{typography.nav}` is 16px; `{typography.link}` is 14px; buttons are Inter 600 at 16px (`{typography.button}`) in the hero and 14px (`{typography.button-secondary}`) in the header. Weight is 400 almost everywhere except buttons, so the page relies on size and serif-versus-sans contrast for hierarchy, and negative tracking increases at larger sizes.
 
-### Accent Scale — Other
-- **Yellow 9** (`#ffc53d`): `--color-yellow-9`, warm gold for warnings or highlights
-- **Red 5** (`#ff2047`): `--color-red-5`, at 34% opacity — error states, destructive actions
+## Layout
 
-### Neutral Scale
-- **Silver** (`#a1a4a5`): Secondary text, muted links, descriptions
-- **Dark Gray** (`#464a4d`): Tertiary text, de-emphasized content
-- **Mid Gray** (`#5c5c5c`): Hover states, subtle emphasis
-- **Medium Gray** (`#494949`): Quaternary text
-- **Light Gray** (`#f8f8f8`): Light mode surface (if applicable)
-- **Border Gray** (`#eaeaea`): Light context borders
-- **Edge Gray** (`#ececec`): Subtle borders on light surfaces
-- **Mist Gray** (`#dedfdf`): Light dividers
-- **Soft Gray** (`#e5e6e6`): Alternate light border
+A left-aligned hero gives way to centred bands. The hero text column sits at the left, roughly a third of the width, leaving the rest of the field for the light sheen; subsequent sections (logos, integrate, code) are centred. Logos form two rows of six, evenly spaced; the language icons are a single row of thirteen rounded squares with labels beneath. The code card is wide, framed by a hairline and a 24px radius. The spacing steps in the frontmatter (`{spacing.s5}` 8px to `{spacing.s10}` 20px) describe control internals; section gaps are large and were not tokenised.
 
-### Surface & Overlay
-- **Frost Primary** (`#fcfdff`): Primary color token (slight blue tint, 94% opacity)
-- **White Hover** (`rgba(255, 255, 255, 0.28)`): Button hover state on dark
-- **White 60%** (`oklab(0.999994 ... / 0.577)`): Semi-transparent white for muted text
-- **White 64%** (`oklab(0.999994 ... / 0.642)`): Slightly brighter semi-transparent white
+## Elevation & Depth
 
-### Borders & Shadows
-- **Frost Border** (`rgba(214, 235, 253, 0.19)`): The signature — icy blue-tinted borders at 19% opacity
-- **Frost Border Alt** (`rgba(217, 237, 254, 0.145)`): Slightly lighter variant for list items
-- **Ring Shadow** (`rgba(176, 199, 217, 0.145) 0px 0px 0px 1px`): Blue-tinted shadow-as-border
-- **Focus Ring** (`rgb(0, 0, 0) 0px 0px 0px 8px`): Heavy black focus ring
-- **Subtle Shadow** (`rgba(0, 0, 0, 0.1) 0px 1px 3px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px`): Minimal card elevation
+Depth is made with value and light, not shadow. The page is black, bands are raised by a very slightly lighter blue-black panel (`{colors.surface-panel}`) with a rounded top edge, and a soft diagonal highlight crosses the hero. Controls are defined by a 2px border at roughly 5% white and a transparent fill, so they read as glass. The envelope icon is the only strongly dimensional object, rendered as a glossy dark tile.
 
-## 3. Typography Rules
+## Shapes
 
-### Font Families
-- **Display Serif**: `domaine` (Domaine Display by Klim Type Foundry) — hero headlines
-- **Display Sans**: `aBCFavorit` (ABC Favorit by Dinamo), fallbacks: `ui-sans-serif, system-ui` — section headings
-- **Body / UI**: `inter`, fallbacks: `ui-sans-serif, system-ui` — body text, buttons, navigation
-- **Monospace**: `commitMono`, fallbacks: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas`
-- **Secondary**: `Helvetica` — fallback for specific UI contexts
-- **System**: `-apple-system, system-ui, Segoe UI, Roboto` — embedded content
+Radii run through a measured ladder: 4, 6, 8, 10, 12, 16 and 24px, plus full pills. Header and hero buttons use `{rounded.2xl}` (16px), the code card and panels `{rounded.3xl}` (24px), and `{rounded.md}`, `{rounded.sm}` and `{rounded.pill}` also occur in the measured radii (I did not map each to an element). Language icons are rounded squares. The overall impression is soft but not bubbly, with the larger radius reserved for containers.
 
-### Hierarchy
+## Components
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | domaine | 96px (6.00rem) | 400 | 1.00 (tight) | -0.96px | `"ss01", "ss04", "ss11"` |
-| Display Hero Mobile | domaine | 76.8px (4.80rem) | 400 | 1.00 (tight) | -0.768px | Scaled for mobile |
-| Section Heading | aBCFavorit | 56px (3.50rem) | 400 | 1.20 (tight) | -2.8px | `"ss01", "ss04", "ss11"` |
-| Sub-heading | aBCFavorit | 20px (1.25rem) | 400 | 1.30 (tight) | normal | `"ss01", "ss04", "ss11"` |
-| Sub-heading Compact | aBCFavorit | 16px (1.00rem) | 400 | 1.50 | -0.8px | `"ss01", "ss04", "ss11"` |
-| Feature Title | inter | 24px (1.50rem) | 500 | 1.50 | normal | Section sub-headings |
-| Body Large | inter | 18px (1.13rem) | 400 | 1.50 | normal | Introductions |
-| Body | inter | 16px (1.00rem) | 400 | 1.50 | normal | Standard body text |
-| Body Semibold | inter | 16px (1.00rem) | 600 | 1.50 | normal | Emphasis, active states |
-| Nav Link | aBCFavorit | 14px (0.88rem) | 500 | 1.43 | 0.35px | `"ss01", "ss03", "ss04"` — positive tracking |
-| Button / Link | inter | 14px (0.88rem) | 500–600 | 1.43 | normal | Buttons, nav, CTAs |
-| Caption | inter | 14px (0.88rem) | 400 | 1.60 (relaxed) | normal | Descriptions |
-| Helvetica Caption | Helvetica | 14px (0.88rem) | 400–600 | 1.00–1.71 | normal | UI elements |
-| Small | inter | 12px (0.75rem) | 400–500 | 1.33 | normal | Tags, meta, fine print |
-| Small Uppercase | inter | 12px (0.75rem) | 500 | 1.33 | normal | `text-transform: uppercase` |
-| Small Capitalize | inter | 12px (0.75rem) | 500 | 1.33 | normal | `text-transform: capitalize` |
-| Code Body | commitMono | 16px (1.00rem) | 400 | 1.50 | normal | Code blocks |
-| Code Small | commitMono | 14px (0.88rem) | 400 | 1.43 | normal | Inline code |
-| Code Tiny | commitMono | 12px (0.75rem) | 400 | 1.33 | normal | Small code labels |
-| Heading (Helvetica) | Helvetica | 24px (1.50rem) | 400 | 1.40 | normal | Alternate heading context |
+- **Primary action.** `{components.button-primary}`: transparent glass, 16px/600 white label, 48px tall, `0 20px` padding, 16px radius, 2px faint border (measured on all hero and footer "Get started" buttons).
+- **Header action.** `{components.button-secondary}`: the same recipe at 40px tall and 14px/600.
+- **Text button.** "Documentation": no border, `{colors.ink-muted}` label.
+- **Nav.** `{components.nav-link}`: 16px Inter links with chevrons.
+- **Card.** `{components.card}`: blue-black panel, 24px radius and hairline border.
+- **Announcement pill.** A small outlined pill with an arrow above the hero headline.
+- **Code card.** Tabs with icons, a line-numbered monospace script and a copy button.
 
-### Principles
-- **Three-font editorial hierarchy**: Domaine Display (serif, hero), ABC Favorit (geometric sans, sections), Inter (readable body). Each font has a strict role — they never cross lanes.
-- **Aggressive negative tracking on display**: Domaine at -0.96px, ABC Favorit at -2.8px. The display type feels compressed, urgent, and designed — like a magazine masthead.
-- **Positive tracking on nav**: ABC Favorit nav links use +0.35px letter-spacing — the only positive tracking in the system. This creates airy, spaced-out navigation text that contrasts with the compressed headings.
-- **OpenType as identity**: The `"ss01"`, `"ss03"`, `"ss04"`, `"ss11"` stylistic sets are enabled on all ABC Favorit and Domaine text, activating alternate glyphs that give Resend's typography its unique character.
-- **Commit Mono as design element**: The monospace font isn't hidden in code blocks — it's used prominently for code examples and technical content, treated as a first-class visual element.
+## Design System Architecture
 
-## 4. Component Stylings
+Resend publishes brand rules, not a component system, on its own site: the brand guidelines page at https://resend.com/handbook/design/what-are-our-brand-guidelines covers principles (simplicity, modernity, memorability), naming ("Resend", never "ReSend"), a symbol redesigned in July 2025, three typefaces and a dark-first palette, and the brand-kit page at https://resend.com/brand covers logo files in black and white with the instruction not to alter them. The open-source React Email library (https://github.com/resend/react-email) offers unstyled email components (Html, Head, Button, Container, CodeBlock, Heading, Tailwind and more) and states no design tokens, so it is not a token source. The site's de-facto system is Tailwind-based: the root defines `--tw-*` variables, the Radix colour scales with alpha variants (`--slate-a3`, `--green-a9` and so on), Tailwind colour names, and `--font-mono` for commitMono.
 
-### Buttons
+## Do's and Don'ts
 
-**Primary Transparent Pill**
-- Background: transparent
-- Text: `#f0f0f0`
-- Padding: 5px 12px
-- Radius: 9999px (full pill)
-- Border: `1px solid rgba(214, 235, 253, 0.19)` (frost border)
-- Hover: background `rgba(255, 255, 255, 0.28)` (white glass)
-- Use: Primary CTA on dark backgrounds
+Do keep the canvas pure black and let light text carry hierarchy. Do pair a large editorial serif headline with Inter and a mono code face. Do use glass outlines for actions and a 24px radius for containers. Do put real code beside every claim. Do follow the brand rules: capitalised "Resend", unaltered logo files.
 
-**White Solid Pill**
-- Background: `#ffffff`
-- Text: `#000000`
-- Padding: 5px 12px
-- Radius: 9999px
-- Use: High-contrast CTA ("Get started")
+Don't introduce a saturated filled button on the marketing page; the sample-email blue belongs to the demo content. Don't use drop shadows. Don't set body copy in white at full opacity; use the muted greys. Don't use heavy weights for headlines. Don't use the logo in a colour other than the supplied black and white versions.
 
-**Ghost Button**
-- Background: transparent
-- Text: `#f0f0f0`
-- Radius: 4px
-- No border
-- Hover: subtle background tint
-- Use: Secondary actions, tab items
+## Responsive Behavior
 
-### Cards & Containers
-- Background: transparent or very subtle dark tint
-- Border: `1px solid rgba(214, 235, 253, 0.19)` (frost border)
-- Radius: 16px (standard cards), 24px (large sections/panels)
-- Shadow: `rgba(176, 199, 217, 0.145) 0px 0px 0px 1px` (ring shadow)
-- Dark product screenshots and code demos as card content
-- No traditional box-shadow elevation
+At 390px the hero headline drops from 96px to `{typography.display-mobile}` (64px, line-height 64px, tracking -0.64px); the typeface and weight stay the same. The full-page capture is at desktop width, and I did not inspect how the nav, logo wall and icon row collapse on mobile, so those behaviours are not described.
 
-### Inputs & Forms
-- Text: `#f0f0f0` on dark, `#000000` on light
-- Radius: 4px
-- Focus: shadow-based ring
-- Minimal styling — inherits dark theme
+## Iteration Guide
 
-### Navigation
-- Sticky dark header with frost border bottom: `1px solid rgba(214, 235, 253, 0.19)`
-- "Resend" wordmark left-aligned
-- ABC Favorit 14px weight 500 with +0.35px tracking for nav links
-- Pill CTAs right-aligned
-- Mobile: hamburger collapse
-
-### Image Treatment
-- Product screenshots and code demos dominate content sections
-- Dark-themed screenshots on dark background — seamless integration
-- Rounded corners: 12px–16px on images
-- Full-width sections with subtle gradient overlays
-
-### Distinctive Components
-
-**Tab Navigation**
-- Horizontal tabs with subtle selection indicator
-- Tab items: 8px radius
-- Active state with subtle background differentiation
-
-**Code Preview Panels**
-- Dark code blocks using Commit Mono
-- Frost borders (`rgba(214, 235, 253, 0.19)`)
-- Syntax-highlighted with multi-color accent tokens (orange, blue, green, yellow)
-
-**Multi-color Accent Badges**
-- Each product feature has its own accent color from the CSS variable scale
-- Badges use the accent color at low opacity (12–42%) for background, full opacity for text
-
-## 5. Layout Principles
-
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 4px, 5px, 6px, 7px, 8px, 10px, 12px, 16px, 20px, 24px, 30px, 32px, 40px
-
-### Grid & Container
-- Centered content with generous max-width
-- Full-width black sections with contained inner content
-- Single-column hero, expanding to feature grids below
-- Code preview panels as full-width or contained showcases
-
-### Whitespace Philosophy
-- **Cinematic black space**: The black background IS the whitespace. Generous vertical spacing (80px–120px+) between sections creates a scroll-through-darkness experience where each section emerges like a scene.
-- **Tight content, vast surrounds**: Text blocks and cards are compact internally, but float in vast dark space — creating isolated "islands" of content.
-- **Typography-led rhythm**: The massive display fonts (96px) create their own vertical rhythm — each headline is a visual event that anchors the surrounding space.
-
-### Border Radius Scale
-- Sharp (4px): Buttons (ghost), inputs, small interactive elements
-- Subtle (6px): Menu panels, navigation items
-- Standard (8px): Tabs, content blocks
-- Comfortable (10px): Accent elements
-- Card (12px): Clipboard buttons, medium containers
-- Large (16px): Feature cards, images, main buttons
-- Section (24px): Large panels, section containers
-- Pill (9999px): Primary CTAs, tags, badges
-
-## 6. Depth & Elevation
-
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow, transparent background | Default — most elements on dark void |
-| Ring (Level 1) | `rgba(176, 199, 217, 0.145) 0px 0px 0px 1px` | Shadow-as-border for cards, containers |
-| Frost Border (Level 1b) | `1px solid rgba(214, 235, 253, 0.19)` | Explicit borders — buttons, dividers, tabs |
-| Subtle (Level 2) | `rgba(0, 0, 0, 0.1) 0px 1px 3px, rgba(0, 0, 0, 0.1) 0px 1px 2px -1px` | Light card elevation |
-| Focus (Level 3) | `rgb(0, 0, 0) 0px 0px 0px 8px` | Heavy black focus ring — accessibility |
-
-**Shadow Philosophy**: Resend barely uses shadows at all. On a pure black background, traditional shadows are invisible — you can't cast a shadow into the void. Instead, Resend creates depth through its signature frost borders (`rgba(214, 235, 253, 0.19)`) — thin, icy blue-tinted lines that catch light against the darkness. This creates a "glass panel floating in space" aesthetic where borders are the primary depth mechanism.
-
-### Decorative Depth
-- Subtle warm gradient glows behind hero content (orange/amber tints)
-- Product screenshots create visual depth through their own internal UI
-- No gradient backgrounds — depth comes from border luminance and content contrast
-
-## 7. Do's and Don'ts
-
-### Do
-- Use pure black (`#000000`) as the page background — the void is the canvas
-- Apply frost borders (`rgba(214, 235, 253, 0.19)`) for all structural lines — they're the blue-tinted signature
-- Use Domaine Display ONLY for hero headings (96px), ABC Favorit for section headings, Inter for everything else
-- Enable OpenType `"ss01"`, `"ss04"`, `"ss11"` on Domaine and ABC Favorit text
-- Apply pill radius (9999px) to primary CTAs and tags
-- Use the multi-color accent scale (orange/green/blue/yellow/red) with opacity variants for context-specific highlighting
-- Keep shadows at ring level (`0px 0px 0px 1px`) — on black, traditional shadows don't work
-- Use +0.35px letter-spacing on ABC Favorit nav links — the only positive tracking
-
-### Don't
-- Don't lighten the background above `#000000` — the pure black void is non-negotiable
-- Don't use neutral gray borders — all borders must have the frost blue tint
-- Don't apply Domaine Display to body text — it's a display-only serif
-- Don't mix accent colors in the same component — each feature gets one accent color
-- Don't use box-shadow for elevation on the dark background — use frost borders instead
-- Don't skip the OpenType stylistic sets — they define the typographic character
-- Don't use negative letter-spacing on nav links — ABC Favorit nav uses positive +0.35px
-- Don't make buttons opaque on dark — transparency with frost border is the pattern
-
-## 8. Responsive Behavior
-
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <480px | Single column, tight padding, 76.8px hero |
-| Mobile | 480–600px | Standard mobile, stacked layout |
-| Desktop | >600px | Full layout, 96px hero, expanded sections |
-
-*Note: Resend uses a minimal breakpoint system — only 480px and 600px detected. The design is desktop-first with a clean mobile collapse.*
-
-### Touch Targets
-- Pill buttons: adequate padding (5px 12px minimum)
-- Tab items: 8px radius with comfortable hit areas
-- Navigation links spaced with 0.35px tracking for visual separation
-
-### Collapsing Strategy
-- Hero: Domaine 96px → 76.8px on mobile
-- Navigation: horizontal → hamburger
-- Feature sections: side-by-side → stacked
-- Code panels: maintain width, horizontal scroll if needed
-- Spacing compresses proportionally
-
-### Image Behavior
-- Product screenshots maintain aspect ratio
-- Dark screenshots blend seamlessly with dark background at all sizes
-- Rounded corners (12px–16px) maintained across breakpoints
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Background: Void Black (`#000000`)
-- Primary text: Near White (`#f0f0f0`)
-- Secondary text: Silver (`#a1a4a5`)
-- Border: Frost Border (`rgba(214, 235, 253, 0.19)`)
-- Orange accent: `#ff801f`
-- Green accent: `#11ff99` (at 18% opacity)
-- Blue accent: `#3b9eff`
-- Focus ring: `rgb(0, 0, 0) 0px 0px 0px 8px`
-
-### Example Component Prompts
-- "Create a hero section on pure black (#000000) background. Headline at 96px Domaine Display weight 400, line-height 1.00, letter-spacing -0.96px, near-white (#f0f0f0) text, OpenType 'ss01 ss04 ss11'. Subtitle at 20px ABC Favorit weight 400, line-height 1.30. Two pill buttons: white solid (#ffffff, 9999px radius) and transparent with frost border (rgba(214,235,253,0.19))."
-- "Design a navigation bar: dark background with frost border bottom (1px solid rgba(214,235,253,0.19)). Nav links at 14px ABC Favorit weight 500, letter-spacing +0.35px, OpenType 'ss01 ss03 ss04'. White pill CTA right-aligned."
-- "Build a feature card: transparent background, frost border (rgba(214,235,253,0.19)), 16px radius. Title at 56px ABC Favorit weight 400, letter-spacing -2.8px. Body at 16px Inter weight 400, #a1a4a5 text."
-- "Create a code block using Commit Mono 16px on dark background. Frost border container (24px radius). Syntax colors: orange (#ff801f), blue (#3b9eff), green (#11ff99), yellow (#ffc53d)."
-- "Design an accent badge: background #ff5900 at 22% opacity, text #ffa057, 9999px radius, 12px Inter weight 500."
-
-### Iteration Guide
-1. Start with pure black — everything floats in the void
-2. Frost borders (`rgba(214, 235, 253, 0.19)`) are the universal structural element — not gray, not neutral
-3. Three fonts, three roles: Domaine (hero), ABC Favorit (sections), Inter (body) — never cross
-4. OpenType stylistic sets are mandatory on display fonts — they define the character
-5. Multi-color accents at low opacity (12–42%) for backgrounds, full opacity for text
-6. Pill shape (9999px) for CTAs and badges, standard radius (4px–16px) for containers
-7. No shadows — use frost borders for depth against the void
+Begin with black and the two inks. For a new action, copy the glass button (transparent fill, faint 2px border, 16px radius). For a new panel use `{colors.surface-panel}` with a hairline and 24px radius. Keep headlines in the serif and section titles in aBCFavorit, and use Inter for everything functional. Check the brand guidelines before adding a colour, as they name Eggshell, Iron, Stone and Zinc tones whose hex values must be taken from the brand kit, and re-measure the live page before adding any token.

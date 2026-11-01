@@ -1,188 +1,204 @@
-# Design System Inspired by Revolut
+---
+version: alpha
+name: Revolut
+category: "Fintech & Crypto"
+description: "Revolut's UK homepage as measured on the live site — a full-bleed photographic hero with white Aeonik Pro 500 display type at 84.6578px, a near-black #1f1f1f pill call-to-action (9999px radius, 10px 24px padding), Inter at 12px for running text, and alternating white, #000000 and #191c1f bands. Product UI is driven by a --rui-* token set shipped in the page CSS."
 
-> Category: Fintech & Crypto
-> Digital banking. Sleek dark interface, gradient cards, fintech precision.
+colors:
+  canvas: "#ffffff"
+  ink: "#1f1f1f"
+  primary: "#1f1f1f"
+  on-primary: "#ffffff"
+  surface-black: "#000000"
+  surface-dark: "#191c1f"
+  ink-on-dark: "#c9c9cd"
+  ink-muted: "#717173"
+  ink-soft: "#1f1f1fcc"
+  grey-subtle: "#f7f7f7"
+  blue: "#4275db"
+  cold-blue: "#0666eb"
+  teal: "#00a17a"
+  danger: "#a90b1a"
+  success: "#005f48"
+  warning: "#774915"
 
-## 1. Visual Theme & Atmosphere
+typography:
+  display:
+    fontFamily: "\"Aeonik Pro\", sans-serif"
+    fontSize: 84.6578px
+    fontWeight: 500
+    lineHeight: 84.6578px
+    letterSpacing: "-2.08px"
+  display-mobile:
+    fontFamily: "\"Aeonik Pro\", sans-serif"
+    fontSize: 48px
+    fontWeight: 500
+    lineHeight: 48px
+  heading:
+    fontFamily: "\"Aeonik Pro\", sans-serif"
+    fontSize: 50.3289px
+    fontWeight: 500
+    lineHeight: 50.3289px
+    letterSpacing: "-0.6px"
+  subheading:
+    fontFamily: "\"Aeonik Pro\", sans-serif"
+    fontSize: 18px
+    fontWeight: 400
+    lineHeight: 24px
+  body:
+    fontFamily: Inter, sans-serif
+    fontSize: 12px
+    fontWeight: 400
+    lineHeight: 18px
+    letterSpacing: 0.18px
+  button:
+    fontFamily: "\"Aeonik Pro\", sans-serif"
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 22px
+  nav:
+    fontFamily: "-apple-system, \"system-ui\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Helvetica, Arial, Arimo, sans-serif"
+    fontSize: 16px
+    fontWeight: 400
 
-Revolut's website is fintech confidence distilled into pixels — a design system that communicates "your money is in capable hands" through massive typography, generous whitespace, and a disciplined neutral palette. The visual language is built on Aeonik Pro, a geometric grotesque that creates billboard-scale headlines at 136px with weight 500 and aggressive negative tracking (-2.72px). This isn't subtle branding; it's fintech at stadium scale.
+rounded:
+  xs: 12px
+  sm: 20px
+  md: 50px
+  pill: 9999px
 
-The color system is built on a comprehensive `--rui-*` (Revolut UI) token architecture with semantic naming for every state: danger (`#e23b4a`), warning (`#ec7e00`), teal (`#00a87e`), blue (`#494fdf`), deep-pink (`#e61e49`), and more. But the marketing surface itself is remarkably restrained — near-black (`#191c1f`) and pure white (`#ffffff`) dominate, with the colorful semantic tokens reserved for the product interface, not the marketing page.
+spacing:
+  s1: 4px
+  s2: 8px
+  s3: 10px
+  s4: 12px
+  s5: 16px
+  s6: 20px
+  s7: 24px
+  s8: 26px
+  s9: 32px
+  s10: 40px
 
-What distinguishes Revolut is its pill-everything button system. Every button uses 9999px radius — primary dark (`#191c1f`), secondary light (`#f4f4f4`), outlined (`transparent + 2px solid`), and ghost on dark (`rgba(244,244,244,0.1) + 2px solid`). The padding is generous (14px 32px–34px), creating large, confident touch targets. Combined with Inter for body text at various weights and positive letter-spacing (0.16px–0.24px), the result is a design that feels both premium and accessible — banking for the modern era.
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 10px 24px
+    height: 42px
+  button-secondary:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.surface-black}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 10px 24px
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+  nav:
+    textColor: "{colors.canvas}"
+  nav-link:
+    textColor: "{colors.canvas}"
+    typography: "{typography.nav}"
+  card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
+  footer:
+    backgroundColor: "{colors.surface-dark}"
+    textColor: "{colors.ink-on-dark}"
+    padding: 40px 140px
+---
 
-**Key Characteristics:**
-- Aeonik Pro display at 136px weight 500 — billboard-scale fintech headlines
-- Near-black (`#191c1f`) + white binary with comprehensive `--rui-*` semantic tokens
-- Universal pill buttons (9999px radius) with generous padding (14px 32px)
-- Inter for body text with positive letter-spacing (0.16px–0.24px)
-- Rich semantic color system: blue, teal, pink, yellow, green, brown, danger, warning
-- Zero shadows detected — depth through color contrast only
-- Tight display line-heights (1.00) with relaxed body (1.50–1.56)
+## Overview
 
-## 2. Color Palette & Roles
+The Revolut UK homepage opens on a photograph, not on an interface. A woman in a linen shirt fills the first screen against a blue sky, the h1 "Banking & Beyond" is set in white Aeonik Pro at 84.6578px / weight 500, and a single dark pill reading "Download the app" is the only filled call to action in the hero. Beneath the hero, the page drops to a plain white band of social proof (app-store rank, Trustpilot score, award badges), then to a second full-bleed photograph of a hiker at dusk, and finally to a dark footer. The rhythm is image, white, image, dark: large atmospheric photography does the emotional work and the interface chrome stays almost invisible.
 
-### Primary
-- **Revolut Dark** (`#191c1f`): Primary dark surface, button background, near-black text
-- **Pure White** (`#ffffff`): `--rui-color-action-label`, primary light surface
-- **Light Surface** (`#f4f4f4`): Secondary button background, subtle surface
+The microcopy is short and declarative: "This is your bank, redefined", "Join 80+ million customers worldwide and 13 million in the UK", "Your salary, reimagined". Section titles are sentence case and rarely longer than five words. Button labels are verbs or verb phrases: "Download the app", "Move your salary", "Explore Savings", "Start earning", "Learn more".
 
-### Brand / Interactive
-- **Revolut Blue** (`#494fdf`): `--rui-color-blue`, primary brand blue
-- **Action Blue** (`#4f55f1`): `--rui-color-action-photo-header-text`, header accent
-- **Blue Text** (`#376cd5`): `--website-color-blue-text`, link blue
+What the measurement shows is a restrained palette. The page background is #ffffff; the most-read ink is #1f1f1f; the large dark areas are #000000 and #191c1f. There are no gradients in the measured colour list and no measured box shadows on the homepage elements, so depth comes from photography and from contrast between bands rather than from elevation.
 
-### Semantic
-- **Danger Red** (`#e23b4a`): `--rui-color-danger`, error/destructive
-- **Deep Pink** (`#e61e49`): `--rui-color-deep-pink`, critical accent
-- **Warning Orange** (`#ec7e00`): `--rui-color-warning`, warning states
-- **Yellow** (`#b09000`): `--rui-color-yellow`, attention
-- **Teal** (`#00a87e`): `--rui-color-teal`, success/positive
-- **Light Green** (`#428619`): `--rui-color-light-green`, secondary success
-- **Green Text** (`#006400`): `--website-color-green-text`, green text
-- **Light Blue** (`#007bc2`): `--rui-color-light-blue`, informational
-- **Brown** (`#936d62`): `--rui-color-brown`, warm neutral accent
-- **Red Text** (`#8b0000`): `--website-color-red-text`, dark red text
+## Colors
 
-### Neutral Scale
-- **Mid Slate** (`#505a63`): Secondary text
-- **Cool Gray** (`#8d969e`): Muted text, tertiary
-- **Gray Tone** (`#c9c9cd`): `--rui-color-grey-tone-20`, borders/dividers
+Colour on this page is neutral by default and chromatic only inside photography and product imagery.
 
-## 3. Typography Rules
+- **Canvas** `#ffffff` is the white band that carries the social-proof section and most card surfaces.
+- **Ink** `#1f1f1f` is the dominant text colour on white and the fill of the primary button. It is also published in the shipped CSS as `--rui-color-black`. A 80% alpha variant, `#1f1f1fcc`, is used for secondary text on white.
+- **Surface black** `#000000` and **surface dark** `#191c1f` are the two large dark areas by DOM area; `#191c1f` is the footer background.
+- **Ink on dark** `#c9c9cd` is the most-read text colour by character count (the footer legal text) and is shipped as `--rui-color-grey-20`.
+- **Ink muted** `#717173` is the caption grey used for the "Join 80+ million customers" line and for award captions (shipped as `--rui-color-grey-50`).
+- **Grey subtle** `#f7f7f7` is `--rui-color-grey-2`, a very light neutral for grouped backgrounds.
 
-### Font Families
-- **Display**: `Aeonik Pro` — geometric grotesque, no detected fallbacks
-- **Body / UI**: `Inter` — standard system sans
-- **Fallback**: `Arial` for specific button contexts
+The page CSS also declares a semantic palette as `--rui-color-*` custom properties. The values recorded here are read from those declarations on the live homepage: blue `#4275db`, cold blue `#0666eb`, teal `#00a17a`, danger `#a90b1a`, success `#005f48` and warning `#774915`. They are product-level colours (status, charts, category accents); on the homepage itself they do not appear as large fills. Other families in the same set include indigo, purple, pink, orange, lime and several "metal" and "premium" tones, which are not reproduced here.
 
-### Hierarchy
+## Typography
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Mega | Aeonik Pro | 136px (8.50rem) | 500 | 1.00 (tight) | -2.72px | Stadium-scale hero |
-| Display Hero | Aeonik Pro | 80px (5.00rem) | 500 | 1.00 (tight) | -0.8px | Primary hero |
-| Section Heading | Aeonik Pro | 48px (3.00rem) | 500 | 1.21 (tight) | -0.48px | Feature sections |
-| Sub-heading | Aeonik Pro | 40px (2.50rem) | 500 | 1.20 (tight) | -0.4px | Sub-sections |
-| Card Title | Aeonik Pro | 32px (2.00rem) | 500 | 1.19 (tight) | -0.32px | Card headings |
-| Feature Title | Aeonik Pro | 24px (1.50rem) | 400 | 1.33 | normal | Light headings |
-| Nav / UI | Aeonik Pro | 20px (1.25rem) | 500 | 1.40 | normal | Navigation, buttons |
-| Body Large | Inter | 18px (1.13rem) | 400 | 1.56 | -0.09px | Introductions |
-| Body | Inter | 16px (1.00rem) | 400 | 1.50 | 0.24px | Standard reading |
-| Body Semibold | Inter | 16px (1.00rem) | 600 | 1.50 | 0.16px | Emphasized body |
-| Body Bold Link | Inter | 16px (1.00rem) | 700 | 1.50 | 0.24px | Bold links |
+Two families are loaded: **Aeonik Pro** (weight 500 only) for display, headings, subheadings and buttons, and **Inter** (variable weight) for running text. Aeonik Pro is released by CoType Foundry, designed by Mark Bloom, and sold in seven weights from Air to Black (source: The Brand Identity article on the Aeonik Pro launch). The shipped CSS names two font roles, `--rui-font-brand` which resolves to Inter followed by the system stack, and `--rui-font-system`, which resolves to `--rui-font-default`, an `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue"…` stack. The nav links measured on the page use that system stack at 16px / 400.
 
-### Principles
-- **Weight 500 as display default**: Aeonik Pro uses medium (500) for ALL headings — no bold. This creates authority through size and tracking, not weight.
-- **Billboard tracking**: -2.72px at 136px is extremely compressed — text designed to be read at a glance, like airport signage.
-- **Positive tracking on body**: Inter uses +0.16px to +0.24px, creating airy, well-spaced reading text that contrasts with the compressed headings.
+Measured scale on desktop (1280px): display 84.6578px with line-height equal to the font size and -2.08px tracking; heading 50.3289px with -0.6px tracking; subheading 18px / 24px; button 16px / 22px at weight 500; body 12px / 18px with +0.18px tracking. On a 390px viewport the h1 becomes 48px / 48px. By character count the page is dominated by the 12px Inter legal copy, so the body token reflects the footer-weight reading size rather than a marketing paragraph size.
 
-## 4. Component Stylings
+Display type uses tight negative tracking and a line-height of exactly 1.0 — headlines pack closely and rely on the photograph behind them for breathing room.
 
-### Buttons
+### Font substitutes
 
-**Primary Dark Pill**
-- Background: `#191c1f`
-- Text: `#ffffff`
-- Padding: 14px 32px
-- Radius: 9999px (full pill)
-- Hover: opacity 0.85
-- Focus: `0 0 0 0.125rem` ring
+Aeonik Pro is a commercial typeface and is not provided here. Inter, which the page already uses for body, is a reasonable stand-in for Aeonik Pro at 500 weight where the licence is not available; expect slightly wider, less geometric forms and re-check the -2.08px tracking at large sizes.
 
-**Secondary Light Pill**
-- Background: `#f4f4f4`
-- Text: `#000000`
-- Padding: 14px 34px
-- Radius: 9999px
-- Hover: opacity 0.85
+## Layout
 
-**Outlined Pill**
-- Background: transparent
-- Text: `#191c1f`
-- Border: `2px solid #191c1f`
-- Padding: 14px 32px
-- Radius: 9999px
+The page scroll height measured on desktop is 8071px at a 1280px viewport. Content in the hero and the social-proof band is left-aligned inside a container roughly 1000px wide (the h1 and the body paragraph both measure 1000px wide). Social-proof logos and badges sit in a four-up row followed by a three-up row, centred under a single muted caption.
 
-**Ghost on Dark**
-- Background: `rgba(244, 244, 244, 0.1)`
-- Text: `#f4f4f4`
-- Border: `2px solid #f4f4f4`
-- Padding: 14px 32px
-- Radius: 9999px
+Spacing values that recur in the measured gaps and paddings: 4, 8, 12, 16, 24, 32 and 56px for gaps, and 4, 8, 10, 20, 24 and 26px for paddings. The footer padding is 40px 140px. The hero places the 10px 24px pill button directly under a short paragraph with a large vertical gap above and below; text blocks never exceed about three lines.
 
-### Cards & Containers
-- Radius: 12px (small), 20px (cards)
-- No shadows — flat surfaces with color contrast
-- Dark and light section alternation
+A translucent phone-shaped outline with an account balance ("Personal £6,012") and an "Accounts" pill sits centred over the hero photograph, a layered treatment where product UI is composited onto the photo.
 
-### Navigation
-- Aeonik Pro 20px weight 500
-- Clean header, hamburger toggle at 12px radius
-- Pill CTAs right-aligned
+## Elevation & Depth
 
-## 5. Layout Principles
+No box shadows were measured on the homepage's visible elements. The shipped CSS does define an elevation scale: `--rui-shadow-level1` through `--rui-shadow-level4` (for example level2 is `0 0.1875rem 0.5rem rgb(0 0 0/0.1)` and level4 is `0 1rem 4rem rgb(0 0 0/0.12)`), plus a `--website-shadow-level-5` built from three very faint `rgba(25,28,31,0.04)` layers. These belong to product and card components; the marketing page itself separates layers with full-bleed colour and photography instead. Hover is a pure opacity change: measured on the white "Sign up", the "Download the app" pill and the transparent "Log in" pill, opacity goes from 1 to 0.85 and nothing else (colour, border, height) changes; the "Log in" pill additionally gains a `rgba(255, 255, 255, 0.06)` background.
 
-### Spacing System
-- Base unit: 8px
-- Scale: 4px, 6px, 8px, 14px, 16px, 20px, 24px, 32px, 40px, 48px, 80px, 88px, 120px
-- Large section spacing: 80px–120px
+## Shapes
 
-### Border Radius Scale
-- Standard (12px): Navigation, small buttons
-- Card (20px): Feature cards
-- Pill (9999px): All buttons
+Radius is binary. Every measured button is `9999px` (the pill), 21 elements in the border-radius table. Cards and image containers use `20px` (8 elements, with a `20px 20px 0px 0px` top-only variant) and `12px` for smaller nested widgets; one `50px` radius appears four times. The CSS also publishes a radius ladder (`--rui-radius-rd100` 0.25rem through `--rui-radius-rd600` 1.5rem, plus `--rui-radius-round: 9999px`, `--rui-radius-widget` and `--rui-radius-nested-widget` pointing at 16px and 12px steps). Photography is cropped to full-bleed rectangles, never rounded on the hero.
 
-## 6. Depth & Elevation
+## Components
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Everything — Revolut uses zero shadows |
-| Focus | `0 0 0 0.125rem` ring | Accessibility focus |
+- **Primary button.** `#1f1f1f` fill, white 16px Aeonik Pro 500 label, 9999px radius, padding 10px 24px, 42px tall. Measured on "Download the app" and "Move your salary".
+- **Secondary button.** White fill with `#000000` text, same pill, same 10px 24px padding (one variant uses 10px 26px). Measured on "Explore Savings", "Start earning", "Learn more" and "Physical cards". The nav "Sign up" pill is the same white-on-dark treatment, 42px tall, with a `#000000` border.
+- **Ghost button.** The nav "Log in" is a transparent pill with a white border over the hero image.
+- **Nav.** White 16px system-stack links ("Personal", "Business", "Kids & Teens", "Company") over the hero, with the wordmark on the left and "Log in" / "Sign up" on the right.
+- **Card.** White surface, `20px` radius, no shadow in the measured data.
+- **Footer.** `#191c1f` background, `#c9c9cd` 12px legal text, padding 40px 140px.
 
-**Shadow Philosophy**: Revolut uses ZERO shadows. Depth comes entirely from the dark/light section contrast and the generous whitespace between elements.
+## Design System Architecture
 
-## 7. Do's and Don'ts
+Revolut does not publish a public design system, token package or brand guidelines that could be opened for this entry: the pages searched for it either returned 403 to the fetcher or were third-party. What the live site does expose is its own CSS. The homepage stylesheet declares a `--rui-*` custom-property set (358 root variables were captured; what the prefix stands for is not stated by Revolut on any page that was read) covering colour (`--rui-color-*`, with semantic names such as danger, positive, warning and a numbered grey ramp from grey-2 to grey-50), radius (`--rui-radius-*`), spacing (`--rui-space-sp50` = 0.125rem, `--rui-space-sp600` = 1.5rem), type size (`--rui-font-size-marketing-display1` = 3.5rem, display2 = 2.5rem, display3 = 2rem, `--rui-font-size-heading1` = 1.5rem), button heights (`--rui-size-button-xs` 1.875rem, sm 2.5rem, md 3.25rem), and shadows. A small `--website-*` layer (for example `--website-color-grouped-background`) sits on top for marketing-only overrides. Marketing typography lives in a separate "marketing-display" scale from product headings, which is why the homepage h1 is far larger than the product `heading1` token.
 
-### Do
-- Use Aeonik Pro weight 500 for all display headings
-- Apply 9999px radius to all buttons — pill shape is universal
-- Use generous button padding (14px 32px)
-- Keep the palette to near-black + white for marketing surfaces
-- Apply positive letter-spacing on Inter body text
+Sources read: the Aeonik Pro foundry coverage at https://the-brandidentity.com/feed/cotype-foundry-launches-aeonik-pro-alongside-set-museum-inspired-specimen-books/ and the live page's own CSS (extraction of https://www.revolut.com).
 
-### Don't
-- Don't use shadows — Revolut is flat by design
-- Don't use bold (700) for Aeonik Pro headings — 500 is the weight
-- Don't use small buttons — the generous padding is intentional
-- Don't apply semantic colors to marketing surfaces — they're for the product
+## Do's and Don'ts
 
-## 8. Responsive Behavior
+Do:
+- Pair a photograph with white Aeonik Pro 500 display type at tight negative tracking; keep the hero to one headline, one short paragraph and one filled button.
+- Use `#1f1f1f` for the one primary action and 9999px radius on every button.
+- Alternate white and dark (`#000000`, `#191c1f`) bands to create rhythm.
+- Express hover as an opacity drop to 0.85.
+- Keep labels to a verb phrase.
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <400px | Compact, single column |
-| Mobile | 400–720px | Standard mobile |
-| Tablet | 720–1024px | 2-column layouts |
-| Desktop | 1024–1280px | Standard desktop |
-| Large | 1280–1920px | Full layout |
+Don't:
+- Add box shadows or gradients to marketing buttons or cards; none were measured.
+- Introduce a brand accent colour in large fills — the chromatic `--rui-color-*` values are for status and product charts.
+- Mix radii on buttons; reserve 20px and 12px for cards and nested widgets.
+- Set long paragraphs in Aeonik Pro; running text is Inter.
 
-## 9. Agent Prompt Guide
+## Responsive Behavior
 
-### Quick Color Reference
-- Dark: Revolut Dark (`#191c1f`)
-- Light: White (`#ffffff`)
-- Surface: Light (`#f4f4f4`)
-- Blue: Revolut Blue (`#494fdf`)
-- Danger: Red (`#e23b4a`)
-- Success: Teal (`#00a87e`)
+Two viewports were measured, 1280px and 390px. At 390px the h1 reduces from 84.6578px to 48px (line-height 48px, tracking returns to normal) and the h1 box becomes 350px wide, i.e. full width minus a 20px gutter on each side. The page keeps the single-column photographic hero, and the CTA stays a pill. The CSS exposes three button sizes (1.875rem, 2.5rem and 3.25rem tall) that product surfaces can switch between by density. Nothing else about breakpoints was measured, so no breakpoint pixel values are claimed here.
 
-### Example Component Prompts
-- "Create a hero: white background. Headline at 136px Aeonik Pro weight 500, line-height 1.00, letter-spacing -2.72px, #191c1f text. Dark pill CTA (#191c1f, 9999px, 14px 32px). Outlined pill secondary (transparent, 2px solid #191c1f)."
-- "Build a pill button: #191c1f background, white text, 9999px radius, 14px 32px padding, 20px Aeonik Pro weight 500. Hover: opacity 0.85."
+## Iteration Guide
 
-### Iteration Guide
-1. Aeonik Pro 500 for headings — never bold
-2. All buttons are pills (9999px) with generous padding
-3. Zero shadows — flat is the Revolut identity
-4. Near-black + white for marketing, semantic colors for product
+1. Start from the white canvas `#ffffff`, ink `#1f1f1f`, and a full-bleed photograph; do not add a colour palette before the photography is chosen.
+2. Build display type first: Aeonik Pro 500, 84.6578px, line-height equal to size, -2.08px tracking; drop to 48px for mobile.
+3. Place one pill (`#1f1f1f`, 10px 24px, 9999px) under a short Inter paragraph; add a white pill only if a second action is needed.
+4. Add proof sections on white with `#717173` captions, then close with a `#191c1f` footer.
+5. When a status colour is needed, take it from the semantic set (danger `#a90b1a`, success `#005f48`, warning `#774915`, blue `#4275db`) rather than inventing one.
+6. Verify after each change that every colour, size and radius used is in the front matter above.

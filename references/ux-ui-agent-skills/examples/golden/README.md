@@ -1,14 +1,14 @@
-# Golden Examples — the quality bar, demonstrated
+# Golden Examples: the quality bar, demonstrated
 
 Reference output that shows what "done" looks like, and proves the **single-theme consistency** contract. Use these as the benchmark when generating or reviewing UI.
 
 ## Files
-- `theme.css` — the ONE shared token theme (light + dark): full color, **type scale (`--text-xs..7xl`)**, spacing, radius, sizing, motion, breakpoints, and overlay tokens. Imported once at the app root; generated from `tokens/*.json`; contrast-verified in both modes.
-- `Button.tsx` — a golden atom: `forwardRef`, all 8 states, ARIA wired, dark-mode safe, **zero hardcoded values**.
-- `Modal.tsx` — the ONE reusable overlay primitive: focus trap, `role="dialog"`, `aria-modal`, `aria-labelledby`, Escape, **return-focus on close**, backdrop (WCAG 2.4.3 + 2.1.2). Reuse it — never hand-roll a dialog per screen.
+- `theme.css`: the ONE shared token theme (light + dark), with full color, **type scale (`--text-xs..7xl`)**, spacing, radius, sizing, motion, breakpoints, and overlay tokens. Imported once at the app root; generated from `tokens/*.json`; contrast-verified in both modes.
+- `Button.tsx`: a golden atom with `forwardRef`, all 8 states, ARIA wired, dark-mode safe, **zero hardcoded values**.
+- `Modal.tsx`: the ONE reusable overlay primitive, with focus trap, `role="dialog"`, `aria-modal`, `aria-labelledby`, Escape, **return-focus on close**, backdrop (WCAG 2.4.3 + 2.1.2). Reuse it; never hand-roll a dialog per screen.
 
 ## The contract these demonstrate
-1. **One theme, every page.** Each page imports `theme.css` and references the same `--color-*` variables. No page defines its own palette. Switch brand/dark mode by editing the token source — every page updates.
+1. **One theme, every page.** Each page imports `theme.css` and references the same `--color-*` variables. No page defines its own palette. Switch brand/dark mode by editing the token source and every page updates.
 2. **Real WCAG.** The token pairs in `theme.css` pass WCAG 2.2 AA in light and dark (`scripts/validate_contrast.py`). Link and primary-action colors are tuned per mode.
 3. **No drift.** Component code contains no raw hex/px/timing (`scripts/lint_hardcodes.py` returns clean on this folder).
 

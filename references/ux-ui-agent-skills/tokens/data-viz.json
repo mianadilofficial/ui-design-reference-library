@@ -1,9 +1,9 @@
 {
   "$schema": "https://design-tokens.github.io/community-group/format/",
-  "$description": "Data-visualization color + axis tokens. Categorical palette is ordered for maximum perceptual separation and color-vision-deficiency safety (Okabe–Ito-inspired). Use these for charts — never the brand action/feedback colors directly. Charts are graphical objects: meaningful strokes meet 3:1, and series must also be distinguished by shape/label/pattern, not hue alone.",
+  "$description": "Data-visualization color + axis tokens. Categorical palette is ordered for maximum perceptual separation and color-vision-deficiency safety (Okabe-Ito-inspired). Use these for charts, never the brand action/feedback colors directly. Charts are graphical objects: meaningful strokes meet 3:1, and series must also be distinguished by shape/label/pattern, not hue alone.",
 
   "categorical": {
-    "$description": "Qualitative series colors. Assign in order; cap at 8 — beyond that, group or re-encode.",
+    "$description": "Qualitative series colors. Assign in order; cap at 8. Beyond that, group or re-encode.",
     "1": { "$type": "color", "$value": "#2563EB", "$description": "Blue" },
     "2": { "$type": "color", "$value": "#E8710A", "$description": "Orange" },
     "3": { "$type": "color", "$value": "#0E9F6E", "$description": "Green" },
@@ -43,11 +43,11 @@
     "$description": "Axis lines, ticks, and labels.",
     "line": { "$type": "color", "$value": "{semantic.border.strong}", "$description": "Baseline/zero axis" },
     "tick": { "$type": "color", "$value": "{semantic.border.default}" },
-    "label": { "$type": "color", "$value": "{semantic.text.secondary}", "$description": "Meets 4.5:1 — axis labels are essential text" }
+    "label": { "$type": "color", "$value": "{semantic.text.secondary}", "$description": "Meets 4.5:1, since axis labels are essential text" }
   },
 
   "grid": {
-    "$description": "Non-essential gridlines — low contrast is acceptable (decorative reference).",
+    "$description": "Non-essential gridlines: low contrast is acceptable (decorative reference).",
     "line": { "$type": "color", "$value": "{semantic.border.default}" },
     "line-subtle": { "$type": "color", "$value": "{primitive.gray.100}" }
   },

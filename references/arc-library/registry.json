@@ -2873,6 +2873,44 @@
       }
     },
     {
+      "name": "ruler-slider",
+      "type": "registry:ui",
+      "title": "Ruler slider",
+      "description": "A tape of ticks that slides under a fixed needle, with momentum, snapping, and a rolling readout.",
+      "categories": [
+        "inputs"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [
+        "https://uiarc.dev/r/arc-motion-tokens.json"
+      ],
+      "files": [
+        {
+          "path": "registry/components/ruler-slider/ruler-slider.tsx",
+          "type": "registry:component",
+          "target": "@components/arc/ruler-slider/ruler-slider.tsx"
+        },
+        {
+          "path": "registry/components/ruler-slider/ruler-slider.module.css",
+          "type": "registry:component",
+          "target": "@components/arc/ruler-slider/ruler-slider.module.css"
+        }
+      ],
+      "docs": "Docs and live preview: https://uiarc.dev/components/ruler-slider",
+      "meta": {
+        "tier": "free",
+        "kind": "component",
+        "docs": "https://uiarc.dev/components/ruler-slider",
+        "markdown": "https://uiarc.dev/components/ruler-slider/markdown",
+        "tags": [
+          "inputs",
+          "new"
+        ]
+      }
+    },
+    {
       "name": "inline-edit",
       "type": "registry:ui",
       "title": "Inline edit",
@@ -5406,6 +5444,11 @@
           "path": "registry/blocks/page-header/page-header.tsx",
           "type": "registry:component",
           "target": "@components/arc/blocks/page-header/page-header.tsx"
+        },
+        {
+          "path": "lib/use-copy-feedback.ts",
+          "type": "registry:lib",
+          "target": "@components/arc/lib/use-copy-feedback.ts"
         },
         {
           "path": "registry/blocks/page-header/page-header.module.css",

@@ -1,152 +1,210 @@
-# Design System Inspired by Arc Browser
+---
+version: alpha
+name: Arc
+category: "Productivity & SaaS"
+description: "Arc's arc.net is a playful brand-blue site: #3139fb headings and full-bleed bands, an #fffcec off-white, Marlin Soft SQ 700 headlines with tight tracking (45.51px hero, 28px sections at -1.4px), ABC Oracle body, #2702c2 and white download buttons at 10px radius, and pastel browser screenshots as the main imagery."
+colors:
+  canvas: "#ffffff"
+  ink: "#3139fb"
+  primary: "#2702c2"
+  on-primary: "#ffffff"
+  brand-blue: "#3139fb"
+  offwhite: "#fffcec"
+  brand-deep-blue: "#2404aa"
+  brand-dark-blue: "#000354"
+  brand-red: "#fb3a4d"
+  ink-body: "#000000a6"
+  ink-grey: "#696969"
+  ink-cream: "#fffadd"
+  ink-black: "#000000"
+  dia-button: "#000000d9"
+  focus: "#96c4ff"
+typography:
+  display:
+    fontFamily: "\"Marlin Soft SQ\", -apple-system, \"system-ui\", \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif"
+    fontSize: 45.51px
+    fontWeight: 700
+    lineHeight: 42.25px
+    letterSpacing: "-1.8204px"
+  display-mobile:
+    fontFamily: "\"Marlin Soft SQ\", -apple-system, \"system-ui\", \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif"
+    fontSize: 32px
+    fontWeight: 700
+    lineHeight: 31.2px
+    letterSpacing: "-1.6px"
+  heading:
+    fontFamily: "\"Marlin Soft SQ\", -apple-system, \"system-ui\", \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif"
+    fontSize: 28px
+    fontWeight: 700
+    lineHeight: 30.8px
+    letterSpacing: "-1.4px"
+  body:
+    fontFamily: "\"ABC Oracle\", Helvetica, sans-serif"
+    fontSize: 20px
+    fontWeight: 400
+    lineHeight: 24px
+  button:
+    fontFamily: "-apple-system, \"system-ui\", sans-serif"
+    fontSize: 14px
+    fontWeight: 600
+    lineHeight: 29px
+    letterSpacing: "-0.14px"
+  nav:
+    fontFamily: Marlin, -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif
+    fontSize: 16px
+    fontWeight: 400
+  nav-pill:
+    fontFamily: "\"Marlin Soft SQ\", -apple-system, \"system-ui\", \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif"
+    fontSize: 14px
+    fontWeight: 500
+    letterSpacing: "-0.28px"
+rounded:
+  none: 0px
+  xs: 4px
+  sm: 8px
+  md: 10px
+  lg: 22px
+spacing:
+  s1: 3px
+  s2: 4px
+  s3: 6px
+  s4: 8px
+  s5: 10px
+  s6: 12px
+  s7: 16px
+  s8: 20px
+  s9: 24px
+  s10: 32px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"
+    padding: 8px 0px
+    height: 45px
+    boxShadow: rgba(0, 0, 0, 0.1) 0px 5px 5px 0px
+  button-secondary:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"
+    height: 45px
+  button-dia:
+    backgroundColor: "{colors.dia-button}"
+    textColor: "{colors.on-primary}"
+    rounded: "{rounded.lg}"
+    height: 76px
+    boxShadow: rgba(0, 0, 0, 0.25) 0px 2px 8px 0px
+  nav:
+    textColor: "{colors.on-primary}"
+  nav-pill:
+    textColor: "{colors.on-primary}"
+    typography: "{typography.nav-pill}"
+    rounded: "{rounded.sm}"
+    padding: 8px 10px
+    height: 36px
+  nav-pill-hover:
+    backgroundColor: rgba(23, 3, 148, 0.5)
+  link:
+    textColor: "{colors.ink-cream}"
+    typography: "{typography.nav}"
+  footer:
+    backgroundColor: "{colors.brand-blue}"
+    textColor: "{colors.offwhite}"
+    typography: "{typography.heading}"
+---
 
-> Category: Productivity & SaaS
-> "The browser that browses for you." Translucent surfaces, gradient warmth, sidebar-first layout.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+Arc is a web browser from The Browser Company (the measured page title is "Arc from The Browser Company"), and arc.net sells it with a cheerful, editorial look built on one saturated blue. The desktop capture opens with a slim header of white nav pills ("Max", "Mobile", "Developers", "Students", "Blog") above a soft pastel band promoting the company's newer browser: "Meet Dia, the next evolution of Arc", a short grey line ("Weekly security updates, SOC 2 certification, and the Arc DNA you know (and love).") and a dark, rounded "Try Dia" button with an app icon, followed by a cropped Dia window.
 
-Arc Browser dissolves the boundary between the chrome and the page. Where Chrome and Safari treat the browser frame as a container, Arc treats it as scenery — the toolbar fades into the system wallpaper, the sidebar carries gradient warmth from the user's chosen "theme color", and translucency is everywhere. The visual signature is **frosted glass plus a single saturated gradient** — most often a peach-to-coral or violet-to-fuchsia bloom — that sets the emotional temperature of the entire window.
+A wavy edge then opens into a full-bleed brand-blue `#3139fb` band with a large pull quote ("Arc is the Chrome replacement I've been waiting for." — The Verge), two download buttons and a purple-tinted Arc window. A marquee of press quotes (Bloomberg, Inverse, Fast Company) runs below. White sections follow, each with a centred blue headline and a large screenshot: "A browser that doesn't just meet your needs — it anticipates them." over a photo collage, "Space for the different sides of you." with a coral-framed Spaces window, "Your perfect setup." with a mint Split View window and a colour-picker panel, and "The comfort of privacy." The page ends with a cream `#fffcec` band of user quotes with handwritten-style icons, a blue "Enter your new home on the internet" call-out with a white download button, and a blue footer.
 
-Typography uses **Inter** for chrome and a custom display serif (`Argent CF` or similar) for marketing — when Arc speaks publicly it speaks editorially, in a serif voice unusual for tech. The product itself is sans-only, with tight tracking and generous line-height.
+The voice is warm and witty — "Way more powerful than Chrome. Arc looks like the future of browsers.", "Arc brought order to the chaos that was my online life." Imagery is product screenshots in pastel theme colours rather than photography of people.
 
-Shapes are squircle-soft: 12–16px radii on cards, 8px on tabs, 9999px pills for tags. Borders are rare — Arc prefers tinted background washes (`rgba(255, 255, 255, 0.5)` over the gradient) to delineate panes.
+## Colors
 
-**Key Characteristics:**
-- Translucent frosted-glass surfaces over a saturated gradient background
-- Theme-color gradients (peach-coral, violet-fuchsia, mint-cyan) as the primary mood
-- Inter for product chrome, Argent CF (serif) for marketing display
-- Squircle-soft 12–16px radii everywhere
-- Sidebar-first layout: tabs, spaces, and bookmarks live on the left, not the top
-- Color picker is a brand surface — themes are user-driven, not fixed
-- Subtle shadows (`0 8px 32px rgba(0,0,0,0.08)`) over the gradient backdrop
+The site's root variables name the brand palette: `--colors-brandBlue #3139FB`, `--colors-brandDeepBlue #2404AA`, `--colors-brandDarkBlue #000354`, `--colors-brandRed #FB3A4D`, `--colors-brandOffwhite #FFFCEC`, plus `--colors-focusOutline #96C4FF`.
 
-## 2. Color Palette & Roles
+- **Canvas `#ffffff`** — section backgrounds between bands.
+- **Ink / brand blue `#3139fb`** — the most-read text colour (section headlines) and the background of the quote band and footer.
+- **Primary `#2702c2`** — the "Download Arc for Windows" fill and the text of the white "Download Arc for Mac" button.
+- **Off-white `#fffcec`** — the testimonial band and the text on blue (footer, quote).
+- **Cream `#fffadd`** — link text on blue bands.
+- **Body `#000000a6`** — 65% black for paragraph copy; `#696969` for small grey sublines; `#000000` for a few nav elements.
+- **Dia button `#000000d9`** — 85% black, hover 65%.
+- **Brand red `#fb3a4d`**, **deep blue `#2404aa`**, **dark blue `#000354`** — declared brand colours not measured as rendered fills on this page.
 
-### Primary Theme Gradients (User-selectable; default is "Sunset")
-- **Sunset Start** (`#ff7e5f`): Peach gradient origin.
-- **Sunset End** (`#feb47b`): Soft coral gradient terminus.
-- **Twilight Start** (`#7f5af0`): Violet gradient origin.
-- **Twilight End** (`#e84393`): Fuchsia gradient terminus.
-- **Aurora Start** (`#16f2b3`): Mint gradient origin.
-- **Aurora End** (`#0db4f7`): Cyan gradient terminus.
+## Typography
 
-### Surface (Frosted)
-- **Glass Light** (`rgba(255, 255, 255, 0.7)`): Standard frosted pane over gradient.
-- **Glass Medium** (`rgba(255, 255, 255, 0.5)`): Hover state, tab pill background.
-- **Glass Heavy** (`rgba(255, 255, 255, 0.85)`): Active pane, command bar.
-- **Glass Dark** (`rgba(20, 20, 25, 0.6)`): Dark-mode frosted surface.
+Arc uses an unusually large type kit, all loaded on the home page: **Marlin Soft SQ** (500, 700, 700 italic) for headlines and nav pills; **Marlin** (800) for links; **ABC Oracle** (400) for body copy; **InterVariable** / **Inter** (500–700) as `--fonts-body` and `--fonts-cta`; **ABC Favorit Mono** (400, 700) for monospaced labels; and **Exposure VAR** (700, 750) for display accents. Download buttons use the system stack (`-apple-system, "system-ui"`).
 
-### Ink & Text
-- **Ink Primary** (`#1a1a1f`): Primary text on light frosted surface.
-- **Ink Secondary** (`#54545a`): Secondary text, tab title at rest.
-- **Ink Muted** (`#8c8c93`): Tertiary, captions, URL bar.
-- **Ink Inverse** (`#fafafa`): Text on dark frosted surface.
+| Role | Family | Size / line-height | Weight | Tracking |
+|---|---|---|---|---|
+| Display (quote h1) | Marlin Soft SQ | 45.51px / 42.25px | 700 | -1.8204px |
+| Heading (sections, footer) | Marlin Soft SQ | 28px / 30.8px | 700 | -1.4px |
+| Body | ABC Oracle | 20px / 24px | 400 | normal |
+| Nav pill | Marlin Soft SQ | 14px | 500 | -0.28px |
+| Button | system | 14px / 29px | 600 | -0.14px |
+| Link | Marlin | 16px | 400 | normal |
 
-### Border & Divider
-- **Border Glass** (`rgba(255, 255, 255, 0.4)`): Frosted-edge border.
-- **Border Hairline** (`rgba(0, 0, 0, 0.06)`): Hairline divider on light surface.
-- **Border Active** (`rgba(0, 0, 0, 0.18)`): Active tab outline.
+Headlines are tight: line-height below font size on the display, and tracking of about -4% (-1.4px at 28px, -1.6px at 40px, -1.82px at 45.51px). Small mono labels go the other way — 12px at +0.4px, +0.6px and +1.8px. Weight 700 dominates the measured characters.
 
-### Brand Accent
-- **Arc Coral** (`#ff5f5f`): Default brand color — used in marketing, `arc.net`.
-- **Arc Lavender** (`#b794f4`): Secondary brand accent.
+**Substitutes:** Marlin and ABC Oracle are commercial faces. Inter, already declared in the site's stacks, is the in-system fallback; keep the negative tracking on headlines.
 
-### Semantic
-- **Success** (`#48bb78`): Toast confirmation.
-- **Warning** (`#f6ad55`): Permission prompt.
-- **Error** (`#f56565`): Form validation.
+## Layout
 
-## 3. Typography Rules
+Each section is centred: a headline, a one-line subline, then a large screenshot or collage at nearly the full content width. Bands are separated by wavy or zig-zag edges (visible in the capture between the Dia band, the blue quote band and the marquee). The testimonial band is a four-column row; the extractor measured a maximum of eight card columns on desktop. Measured gaps are led by 12px, then 16px, 8px, 6px, 24px and 32px; paddings by 24px, then 32px, 8px, 16px and 10px. The root variables define a spacing scale `--space-4` to `--space-72` and `--padding: 32px`.
 
-### Font Family
-- **Display / Marketing**: `Argent CF`, with fallback: `'Source Serif Pro', Georgia, serif`
-- **Body / UI**: `Inter`, with fallback: `system-ui, -apple-system, BlinkMacSystemFont, sans-serif`
-- **Code / Mono**: `Berkeley Mono`, with fallback: `ui-monospace, Menlo, Consolas, monospace`
+## Elevation & Depth
 
-### Hierarchy
+Shadows are soft and declared as three tokens: `--shadows-small` (`0 5px 10px rgba(0, 0, 0, 0.12)`), `--shadows-medium` (`0 8px 30px rgba(0, 0, 0, 0.12)`) and `--shadows-large` (`0 30px 60px rgba(0, 0, 0, 0.12)`). Measured on the page: `rgba(0, 0, 0, 0.1) 0px 5px 5px 0px` under the download buttons and `rgba(0, 0, 0, 0.25) 0px 2px 8px 0px` under "Try Dia". Screenshots float on white with a large soft shadow in the capture, which gives the page its "windows on a desk" depth.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Marketing Hero | Argent CF | 72px (4.5rem) | 400 | 1.05 | -0.03em | Editorial display, marketing only |
-| Section Heading | Argent CF | 40px (2.5rem) | 400 | 1.15 | -0.02em | Marketing section titles |
-| Page H1 | Inter | 32px (2rem) | 700 | 1.2 | -0.02em | Settings, command bar header |
-| Page H2 | Inter | 22px (1.375rem) | 600 | 1.25 | -0.01em | Sub-section |
-| Tab Title | Inter | 13px (0.8125rem) | 500 | 1.3 | -0.005em | Sidebar tab label |
-| Body | Inter | 15px (0.9375rem) | 400 | 1.55 | normal | Settings prose, tooltips |
-| Caption | Inter | 12px (0.75rem) | 500 | 1.4 | 0.01em | URL bar protocol, metadata |
-| Code | Berkeley Mono | 13px (0.8125rem) | 400 | 1.5 | normal | URL bar, devtools |
+## Shapes
 
-### Principles
-- **Serif moments are rare**: Argent CF appears only in marketing. The product is sans-only.
-- **Title size is small**: tabs render at 13px so a long sidebar of 30+ tabs stays scannable.
-- **Tracking tightens with size**: -0.03em at 72px, returning to normal by 15px.
+Measured radii: 8px (nav pills and small UI), 10px (download buttons), 22px ("Try Dia") and 4px. The root variables offer `--radii-2`, `-4`, `-8`, `-12`, `-16`, `-32` and `--radii-round: 9999px`. Bands use decorative wavy edges rather than rounded corners; screenshots show the rounded window frames of the Arc app itself.
 
-## 4. Component Stylings
+## Components
 
-### Buttons
+- **Primary button** — "Download Arc for Windows": `#2702c2`, white system 14px/600, 45px tall, 10px radius, `rgba(0, 0, 0, 0.1) 0px 5px 5px 0px` shadow. Hover left it unchanged.
+- **Secondary button** — "Download Arc for Mac": white fill, `#2702c2` text, same metrics, with an Apple icon.
+- **Dia button** — 85% black, white text with an app icon, 76px tall, 22px radius; hover to 65% black.
+- **Nav pill** — white Marlin Soft SQ 14px/500, 8px 10px padding, 36px tall, 8px radius; hover fills `rgba(23, 3, 148, 0.5)`.
+- **Quote card** — on the cream band: a bold blue quote in Marlin Soft SQ and a small outlined handle tag below (capture).
+- **Press marquee** — a single line of italic quotes with publication logos (capture).
+- **Footer** — `#3139fb` background, `#fffcec` text, 28px/700 heading "Enter your new home on the internet", product and resource link columns, and a "The Browser Company of New York" mark.
 
-**Primary (Filled)**
-- Background: linear-gradient on theme color (e.g., `linear-gradient(135deg, #ff7e5f, #feb47b)`)
-- Text: `#ffffff`
-- Padding: 10px 20px
-- Radius: 12px
-- Shadow: `0 4px 16px rgba(255, 127, 95, 0.3)`
-- Hover: shadow grows to `0 8px 24px rgba(255, 127, 95, 0.4)`
+## Design System Architecture
 
-**Glass (Secondary)**
-- Background: `rgba(255, 255, 255, 0.7)`
-- Backdrop: `blur(20px)`
-- Text: `#1a1a1f`
-- Border: 1px solid `rgba(255, 255, 255, 0.4)`
-- Padding: 10px 20px
-- Radius: 12px
+No public design system, press kit or brand guideline was found: the home page's header and footer links (https://arc.net/) point to product, legal, resource-centre and social pages, and https://arc.net/credits lists tester names without design credits. The site's shipped CSS shows a token layer of 120 root custom properties grouped as `--colors-*` (brand colours, a `primary1–12` red-orange scale and `secondary1–12` green scale, student-page colours, `focusOutline`), `--fonts-*` (named stacks: `sans`, `softSans`, `oracle`, `exposure`, `mono`, `cta`, `body`), `--fontSizes-*`, `--lineHeights-*`, `--fontWeights-*`, `--space-*`, `--sizes-*`, `--radii-*` and `--shadows-small/medium/large`.
 
-**Subtle**
-- Background: transparent
-- Text: theme color
-- Hover: background `rgba(255, 127, 95, 0.1)`
+## Do's and Don'ts
 
-### Tabs (Sidebar)
-- Background at rest: transparent
-- Background on hover: `rgba(255, 255, 255, 0.5)`
-- Background active: `rgba(255, 255, 255, 0.85)` + soft shadow
-- Padding: 8px 12px
-- Radius: 8px
-- Favicon: 16px square at left, 8px gap to title.
+**Do**
+- Use `#3139fb` for headlines and for full-bleed bands, with `#fffcec` text on blue.
+- Set headlines in Marlin Soft SQ 700 with roughly -4% tracking and tight line-height.
+- Show the product as large screenshots in pastel theme colours.
+- Pair a `#2702c2` button with a white one, both 10px radius.
+- Keep shadows soft (0.1–0.12 alpha) and let wavy edges separate bands.
 
-### Cards / Panes
-- Background: `rgba(255, 255, 255, 0.7)`
-- Backdrop: `blur(24px)` saturate 180%
-- Border: 1px solid `rgba(255, 255, 255, 0.4)`
-- Radius: 16px
-- Shadow: `0 8px 32px rgba(0, 0, 0, 0.08)`
-- Padding: 24px
+**Don't**
+- Don't use the brand red `#fb3a4d` for primary actions; buttons are blue, white or black.
+- Don't set body copy in pure black; it is 65% black in ABC Oracle.
+- Don't track headlines positively; only small mono labels are letter-spaced open.
+- Don't square off buttons or pills.
+- Don't replace screenshots with stock photography of people.
 
-### Inputs (Command Bar)
-- Background: `rgba(255, 255, 255, 0.85)`
-- Backdrop: `blur(40px)`
-- Text: `#1a1a1f`
-- Border: 1px solid `rgba(255, 255, 255, 0.4)`
-- Radius: 14px
-- Padding: 14px 18px
-- Focus: shadow `0 0 0 4px rgba(255, 127, 95, 0.2)`
+## Responsive Behavior
 
-### Pills (Spaces / Bookmarks Folder)
-- Background: theme color at 16% alpha
-- Text: theme color (full)
-- Padding: 4px 10px
-- Radius: 9999px
-- Font: 12px / 600
+Measured at 390px: the quote h1 drops from 45.51px to 32px (line-height 31.2px, tracking -1.6px) and the Dia heading from 36px to 30px; body copy drops from 20px to 16px in ABC Oracle; the Windows download button keeps its 45px height. The header shows one visible link and an "Open navigation menu" toggle at 390px, versus six visible links and no toggle on desktop. The mobile size list adds 27.2px (from 40px on desktop). Breakpoints in the stylesheet include `min-width 480px`, `580px`, `600px`, `650px`, `800px`, `960px`, `1000px`, `1075px` and `1100px`, and `max-width 600px` and `480px`. Other reflow was not measured.
 
-## 5. Spacing & Layout
+## Iteration Guide
 
-- **Base unit**: 4px. Scale: 4, 8, 12, 16, 24, 32, 48, 64.
-- **Sidebar**: 240px wide; collapsible to 56px.
-- **Window radius**: 12px on the OS window itself (macOS-only flourish).
-- **Padding inside panes**: 24px.
-
-## 6. Motion
-
-- **Duration**: 200ms for hover; 320ms for tab create/close; 480ms for "Little Arc" window expand.
-- **Easing**: `cubic-bezier(0.32, 0.72, 0, 1)` for window expand (Apple's spring-style).
-- **Tab swap**: 1px translate + opacity blend, no scale change.
+1. White sections and `#3139fb` bands; text on blue in `#fffcec`.
+2. Headlines in Marlin Soft SQ 700, blue, centred, about -4% tracking; sublines small and grey.
+3. Body in ABC Oracle (Inter as fallback) at 65% black.
+4. Buttons: `#2702c2` or white, 45px, 10px radius, soft 5px shadow; nav as 8px pills.
+5. One large product screenshot per section, framed by a soft `--shadows-large`.
+6. Use cream `#fffcec` bands for social proof.
+7. Reach for the declared `--colors-*`, `--radii-*` and `--shadows-*` tokens before adding values.

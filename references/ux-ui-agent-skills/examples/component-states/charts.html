@@ -26,15 +26,15 @@
   @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
   @keyframes fadein{from{opacity:0}to{opacity:1}}
   @keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
-  .bar{transform-box:fill-box;transform-origin:bottom;animation:rise var(--duration-slow) var(--ease-emphasized) both}
+  .bar{transform-box:fill-box;transform-origin:bottom;animation:rise var(--duration-slow) var(--ease-spring) both}
   /* Stagger is an index times a token, never a typed millisecond: change the
      duration scale and the whole sequence follows. */
   .bar{--n:0;animation-delay:calc(var(--duration-fast) * 0.66 * var(--n))}
   .bar:nth-of-type(2){--n:1}.bar:nth-of-type(3){--n:2}.bar:nth-of-type(4){--n:3}
   .draw{stroke-dasharray:1;animation:draw calc(var(--duration-slow) * 3.4) var(--ease-out) both}
   .area{animation:fadein var(--duration-slow) var(--ease-out) calc(var(--duration-slow) * 1.25) both}
-  .donut{transform-box:fill-box;transform-origin:center;animation:pop var(--duration-slow) var(--ease-emphasized) both}
-  .pt{transform-box:fill-box;transform-origin:center;animation:pop var(--duration-normal) var(--ease-emphasized) both}
+  .donut{transform-box:fill-box;transform-origin:center;animation:pop var(--duration-slow) var(--ease-spring) both}
+  .pt{transform-box:fill-box;transform-origin:center;animation:pop var(--duration-base) var(--ease-spring) both}
   .pt{--n:0;animation-delay:calc(var(--duration-fast) * 0.42 * var(--n))}
   .pt:nth-of-type(2){--n:1}.pt:nth-of-type(3){--n:2}.pt:nth-of-type(4){--n:3}
   .pt:nth-of-type(5){--n:4}.pt:nth-of-type(6){--n:5}.pt:nth-of-type(7){--n:6}
@@ -106,7 +106,7 @@
         <circle cx="276" cy="6" r="3" fill="var(--color-chart-5)"/>
       </g>
     </svg>
-    <div class="legend"><span>14-day trend <strong style="color:var(--color-feedback-success)">+8%</strong></span></div>
+    <div class="legend"><span>14-day trend <strong style="color:var(--color-feedback-success-icon)">+8%</strong></span></div>
   </figure>
 
   <figure>

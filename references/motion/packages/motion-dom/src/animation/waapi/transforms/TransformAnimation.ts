@@ -9,15 +9,13 @@ import { frame } from "../../../frameloop/frame"
 import { frameData } from "../../../frameloop/frame-data"
 import { time } from "../../../frameloop/sync-time"
 import {
-    buildTransform,
-    translateAlias,
+    isDefaultTransform,
+    transformFunction,
 } from "../../../render/html/utils/build-transform"
 import type { ResolvedValues } from "../../../render/types"
 import { transformPropOrder } from "../../../render/utils/keys-transform"
 import { mixNumber } from "../../../utils/mix/number"
 import type { MotionValue, Owner } from "../../../value"
-import { numberValueTypes } from "../../../value/types/maps/number"
-import { getValueAsType } from "../../../value/types/utils/get-as-type"
 import { frameloopDriver } from "../../drivers/frame"
 import { DriverControls } from "../../drivers/types"
 import { keyframes as keyframesGenerator } from "../../generators/keyframes"
@@ -32,6 +30,7 @@ import {
 import { cubicBezierAsString } from "../easing/cubic-bezier"
 import { supportedWaapiEasing } from "../easing/supported"
 import { supportsWaapi } from "../supports/waapi"
+import { needsMixer } from "../utils/needs-mixer"
 import { supportsLinearEasing } from "../../../utils/supports/linear-easing"
 import { TransformGroupHooks, transformGroups } from "./groups"
 
@@ -92,7 +91,7 @@ interface TransformGroup extends TransformGroupHooks {
      * end the group.
      */
     release(track: TransformAnimation<any>): void
-    demote(canReturn?: boolean): void
+    demote(canReturn?: boolean): true | void
 }
 
 /**
@@ -140,22 +139,30 @@ const churnWindow = 100
 const isNativeEasing = (ease: unknown): ease is "linear" =>
     /^(linear|ease(In|Out|InOut))$/.test(ease as string)
 
+/**
+ * Whether two eased progresses match. False if either is NaN.
+ */
+const isNear = (a: number, b: number) => Math.abs(a - b) <= easingTolerance
+
 const byTime = (a: number, b: number) => a - b
 
 /**
  * n + 1 evenly spaced timestamps, from one timestamp to another.
  */
-const spread = (from: number, to: number, n: number) => {
-    const result: number[] = []
-    for (let i = 0; i <= n; i++) result.push(mixNumber(from, to, i / n))
-    return result
-}
+const spread = (from: number, to: number, n: number) =>
+    defaultOffset(Array(n + 1)).map((p) => mixNumber(from, to, p))
 
 const getOwner = (options: ValueAnimationOptions<any>) =>
     options.motionValue!.owner as TransformOwner
 
 const getGroup = (element: Element) =>
     transformGroups.get(element) as TransformGroup | undefined
+
+/**
+ * Whether an animation has ended, so can leave its group.
+ */
+const hasEnded = ({ state }: TransformAnimation<any>) =>
+    state === "idle" || state === "finished"
 
 const read = (owner: TransformOwner, key: string) =>
     owner.latestValues ? owner.latestValues[key] : owner.getValue(key)?.get()
@@ -203,7 +210,12 @@ function canAccelerateTransform(options: ValueAnimationOptions<any>) {
         /**
          * Layout animations write transform every frame.
          */
-        !owner.projection?.isProjecting()
+        !owner.projection?.isProjecting() &&
+        /**
+         * A mixer that blends these values makes them every frame. It's
+         * asked last, as it's user code.
+         */
+        !needsMixer(options)
     )
 }
 
@@ -538,28 +550,33 @@ function createGroup(owner: TransformOwner): TransformGroup {
     }
 
     /**
-     * Build the transform at a timestamp. Unlike buildTransform, every key
-     * is written, even at its default, so each keyframe has the same list
-     * of functions and the browser interpolates them one by one.
+     * Build a transform from values in transformPropOrder. For a keyframe,
+     * every key is written, even at its default, so each keyframe has the
+     * same list of functions and the browser interpolates them one by one.
+     * As an inline style, defaults are left out, as buildTransform does.
      */
-    const compose = (timestamp: number, settled?: number) => {
+    const toTransform = (values: ResolvedValues, isStyle?: boolean) => {
         let transform = ""
-        const values = valuesAt(timestamp, settled)
         for (const key in values) {
-            transform +=
-                (translateAlias[key] || key) +
-                "(" +
-                getValueAsType(values[key], numberValueTypes[key]) +
-                ") "
+            const value = values[key]
+            if (!isStyle || !isDefaultTransform(key, value)) {
+                transform += transformFunction(key, value) + " "
+            }
         }
-        return transform || "none"
+        return (isStyle ? transform.trim() : transform) || "none"
     }
+
+    /**
+     * Build the transform at a timestamp.
+     */
+    const compose = (timestamp: number, settled?: number) =>
+        toTransform(valuesAt(timestamp, settled))
 
     /**
      * Write the transform as an inline style, as the renderer would.
      */
     const commit = (values = valuesAt()) => {
-        element.style.transform = buildTransform(values, {})
+        element.style.transform = toTransform(values, true)
     }
 
     /**
@@ -571,6 +588,20 @@ function createGroup(owner: TransformOwner): TransformGroup {
         segments.forEach(({ animation }) => animation.cancel())
         segments = []
     }
+
+    /**
+     * A WAAPI animation that add() starts by setting its startTime. Playing
+     * it first, as element.animate() does, would leave WebKit holding that
+     * play's ready time once startTime ends the play, and it uses that for
+     * the next updatePlaybackRate(), so the animation would jump.
+     */
+    const create = (
+        keyframes: PropertyIndexedKeyframes | null,
+        options: KeyframeAnimationOptions
+    ) =>
+        new Animation(
+            new KeyframeEffect(element, keyframes, options) as AnimationEffect
+        )
 
     const add = (animation: Animation, offset: number, end = Infinity) => {
         const segment: Segment = { animation, offset, end }
@@ -641,9 +672,8 @@ function createGroup(owner: TransformOwner): TransformGroup {
         let progressAt: (t: number) => number
 
         for (const track of moving) {
-            const values = at.map((t) => track.numberAt(t))
-            const [first] = values
-            const changes = values.map((value) => value - first)
+            const first = track.numberAt(from)
+            const changes = at.map((t) => track.numberAt(t) - first)
             const end = changes[changes.length - 1]
 
             /**
@@ -664,32 +694,22 @@ function createGroup(owner: TransformOwner): TransformGroup {
             )
 
             /**
-             * A value that doesn't change, like one still in its delay,
-             * fits any easing. One that changes but ends where it started
-             * fits none.
+             * The first value that moves sets the easing, and every other
+             * one must follow it. A value that doesn't change, like one
+             * still in its delay, fits any easing. One that changes but
+             * ends where it started fits none.
              */
-            if (!range) {
-                if (progress.some((p) => !(Math.abs(p) <= easingTolerance))) {
-                    return
-                }
-            } else if (!shared) {
+            if (range && !shared) {
                 shared = progress
                 progressAt = (t) => (track.numberAt(t) - first) / range
             } else if (
-                progress.some(
-                    (p, i) => !(Math.abs(p - shared![i]) <= easingTolerance)
-                )
+                progress.some((p, i) => !isNear(p, range && shared![i]))
             ) {
                 return
             }
         }
 
-        if (
-            !shared ||
-            shared.every(
-                (p, i) => Math.abs(p - position(at[i])) <= easingTolerance
-            )
-        ) {
+        if (!shared || shared.every((p, i) => isNear(p, position(at[i])))) {
             return "linear"
         }
 
@@ -807,9 +827,9 @@ function createGroup(owner: TransformOwner): TransformGroup {
         moving: TransformAnimation<any>[],
         from: number,
         to: number,
+        nativeEasing?: string,
         options: KeyframeAnimationOptions = { fill: "both" },
-        settled?: number,
-        nativeEasing?: string
+        settled?: number
     ) => {
         const bounds = moving.flatMap((track) => track.boundaries(from, to))
         const easing = nativeEasing || getEasing(moving, from, to, bounds)
@@ -830,7 +850,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
             keyframes = null
         }
 
-        return element.animate(keyframes, {
+        return create(keyframes, {
             ...options,
             duration: to - from,
             easing: easing || "linear",
@@ -906,11 +926,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
         keys = transformPropOrder.filter((key) => {
             if (byKey.has(key)) return true
             const value = (statics[key] = read(owner, key))
-            return (
-                value !== undefined &&
-                parseFloat(value as string) !==
-                    (key.startsWith("scale") ? 1 : 0)
-            )
+            return value !== undefined && !isDefaultTransform(key, value)
         })
 
         stop(false)
@@ -925,7 +941,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
             if (tween && tween[1] > now) {
                 const [from, to, easing] = tween
                 add(
-                    run(moving, from, to, undefined, undefined, easing),
+                    run(moving, from, to, easing),
                     from - now,
                     to - from
                 )
@@ -940,9 +956,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
                     (trackEnd) =>
                         trackEnd < end - 1 &&
                         add(
-                            element.animate(null, {
-                                duration: trackEnd - now,
-                            }),
+                            create(null, { duration: trackEnd - now }),
                             0,
                             trackEnd - now
                         )
@@ -962,6 +976,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
                         looping,
                         from,
                         from + cycle,
+                        undefined,
                         {
                             iterations: Infinity,
                             iterationStart: (end - from) / cycle,
@@ -1058,7 +1073,12 @@ function createGroup(owner: TransformOwner): TransformGroup {
                 animation.playbackRate = rate
                 animation.startTime = now - local / rate
             } else {
-                animation.pause()
+                /**
+                 * Hold it without pause(), whose pending pause setting
+                 * currentTime would end at once, leaving WebKit holding its
+                 * ready time (see create()).
+                 */
+                animation.startTime = null
                 animation.currentTime = local
             }
         }
@@ -1119,9 +1139,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
 
         if (isEnded) return
 
-        tracks.forEach(({ state }, track) => {
-            if (state === "idle" || state === "finished") tracks.delete(track)
-        })
+        tracks.forEach((track) => hasEnded(track) && tracks.delete(track))
 
         if (end()) return
 
@@ -1186,8 +1204,7 @@ function createGroup(owner: TransformOwner): TransformGroup {
              * Only drop the stopped animation. Others can be idle because
              * they're part way through play(), and are about to run.
              */
-            const { state } = track
-            if (state === "idle" || state === "finished") tracks.delete(track)
+            hasEnded(track) && tracks.delete(track)
             end() || group.schedule(true)
         },
 
@@ -1225,6 +1242,8 @@ function createGroup(owner: TransformOwner): TransformGroup {
             tracks.forEach(
                 (track) => track.state === "running" && track.js?.start()
             )
+
+            return true
         },
     }
 

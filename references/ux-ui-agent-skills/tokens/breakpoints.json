@@ -6,27 +6,27 @@
     "sm": {
       "$type": "dimension",
       "$value": "640px",
-      "$description": "Large phones / landscape — @media (min-width: 640px)"
+      "$description": "Large phones / landscape: @media (min-width: 640px)"
     },
     "md": {
       "$type": "dimension",
       "$value": "768px",
-      "$description": "Tablets — @media (min-width: 768px)"
+      "$description": "Tablets: @media (min-width: 768px)"
     },
     "lg": {
       "$type": "dimension",
       "$value": "1024px",
-      "$description": "Small laptops — @media (min-width: 1024px)"
+      "$description": "Small laptops: @media (min-width: 1024px)"
     },
     "xl": {
       "$type": "dimension",
       "$value": "1280px",
-      "$description": "Desktops — @media (min-width: 1280px)"
+      "$description": "Desktops: @media (min-width: 1280px)"
     },
     "2xl": {
       "$type": "dimension",
       "$value": "1536px",
-      "$description": "Large desktops — @media (min-width: 1536px)"
+      "$description": "Large desktops: @media (min-width: 1536px)"
     }
   },
 
@@ -44,7 +44,7 @@
     "$description": "Grid column defaults per breakpoint",
     "columns": {
       "mobile":  { "$type": "number", "$value": 4, "$description": "< 640px" },
-      "tablet":  { "$type": "number", "$value": 8, "$description": "640px – 1023px" },
+      "tablet":  { "$type": "number", "$value": 8, "$description": "640px to 1023px" },
       "desktop": { "$type": "number", "$value": 12, "$description": ">= 1024px" }
     },
     "gutter": {
@@ -67,7 +67,7 @@
   },
 
   "z-index": {
-    "$description": "Layering scale — avoids z-index wars",
+    "$description": "Layering scale: avoids z-index wars",
     "base":       { "$type": "number", "$value": 0 },
     "dropdown":   { "$type": "number", "$value": 10 },
     "sticky":     { "$type": "number", "$value": 20 },

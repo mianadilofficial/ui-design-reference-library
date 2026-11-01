@@ -15,13 +15,13 @@ app/
 ├── not-found.tsx           ← 404 page
 ├── globals.css             ← Tailwind + token CSS variables
 │
-├── (auth)/                 ← Route group — shared auth layout, no URL segment
+├── (auth)/                 ← Route group: shared auth layout, no URL segment
 │   ├── layout.tsx          ← Centered card layout (Auth Template)
 │   ├── login/page.tsx
 │   ├── register/page.tsx
 │   └── forgot-password/page.tsx
 │
-├── (dashboard)/            ← Route group — shared dashboard layout
+├── (dashboard)/            ← Route group: shared dashboard layout
 │   ├── layout.tsx          ← Header + Sidebar layout
 │   ├── page.tsx            ← Dashboard home (Dashboard Template)
 │   ├── loading.tsx         ← Dashboard skeleton
@@ -50,7 +50,7 @@ app/
 
 ## Server vs Client Components
 
-**Default: Server Components** — render on the server, zero JS shipped to client.
+**Default: Server Components.** Render on the server, zero JS shipped to client.
 
 | Use Server Component When | Use Client Component When |
 |--------------------------|--------------------------|
@@ -62,16 +62,16 @@ app/
 ### The "use client" Boundary
 
 ```typescript
-// components/ui/button.tsx — needs onClick → client component
+// components/ui/button.tsx: needs onClick → client component
 "use client";
 export function Button({ ... }) { ... }
 
-// app/(dashboard)/page.tsx — server component (default)
+// app/(dashboard)/page.tsx: server component (default)
 // Can import and use Button even though page is server component
 import { Button } from "@/components/ui/button";
 
 export default async function DashboardPage() {
-  const stats = await getStats(); // Direct DB/API call — server only
+  const stats = await getStats(); // Direct DB/API call, server only
   return (
     <main>
       <StatsGrid data={stats} />   {/* Server component */}
@@ -149,10 +149,10 @@ const jetbrainsMono = JetBrains_Mono({
 ```typescript
 import Image from "next/image";
 
-// Fixed size — known dimensions
+// Fixed size: known dimensions
 <Image src="/hero.webp" alt="Hero" width={1200} height={600} priority />
 
-// Responsive fill — parent is position: relative
+// Responsive fill: parent is position: relative
 <div className="relative aspect-video">
   <Image src={url} alt={alt} fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
 </div>
@@ -168,16 +168,16 @@ import Image from "next/image";
 ```
 
 **Key props:**
-- `priority` — above-the-fold images (LCP candidate)
-- `sizes` — responsive hint for srcset (important for fill images)
-- `placeholder="blur"` + `blurDataURL` — smooth loading experience
+- `priority`: above-the-fold images (LCP candidate)
+- `sizes`: responsive hint for srcset (important for fill images)
+- `placeholder="blur"` + `blurDataURL`: smooth loading experience
 
 ---
 
 ## Loading, Error, and Not Found
 
 ```typescript
-// app/(dashboard)/loading.tsx — Suspense boundary
+// app/(dashboard)/loading.tsx: Suspense boundary
 export default function Loading() {
   return (
     <div className="animate-pulse space-y-4 p-6">
@@ -193,7 +193,7 @@ export default function Loading() {
 ```
 
 ```typescript
-// app/(dashboard)/error.tsx — Error boundary
+// app/(dashboard)/error.tsx: Error boundary
 "use client";
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
@@ -210,7 +210,7 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
 ```
 
 ```typescript
-// app/not-found.tsx — 404
+// app/not-found.tsx: 404
 import Link from "next/link";
 
 export default function NotFound() {

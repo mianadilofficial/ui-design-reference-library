@@ -32,14 +32,14 @@ TEMPLATE = """## {name}
 | lg | `sizing.control.lg` | `space.5` | body-lg | `icon.lg` |
 
 **States (8):**
-1. **Default** — base tokens
-2. **Hover** — `opacity.subtle` overlay / `-hover` token
-3. **Focus** — `shadow.focus-ring`
-4. **Active/Pressed** — `opacity.pressed` / `-active` token
-5. **Disabled** — `state.disabled` (opacity 0.5, not-allowed, no pointer events)
-6. **Loading** — spinner + `aria-busy="true"` (if async)
-7. **Error** — `state.error.border` + message (if input)
-8. **Selected** — `state.selected.bg` (if selectable)
+1. **Default**: base tokens
+2. **Hover**: `opacity.subtle` overlay / `-hover` token
+3. **Focus**: `shadow.focus-ring`
+4. **Active/Pressed**: `opacity.pressed` / `-active` token
+5. **Disabled**: `state.disabled` (opacity 0.5, not-allowed, no pointer events)
+6. **Loading**: spinner + `aria-busy="true"` (if async)
+7. **Error**: `state.error.border` + message (if input)
+8. **Selected**: `state.selected.bg` (if selectable)
 
 **Accessibility:**
 - ARIA pattern: see `accessibility/aria-patterns.md` (<pattern name>)
@@ -71,7 +71,7 @@ def main(argv):
     if out:
         out = out if out.is_absolute() else ROOT / out
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(body)
+        out.write_text(body, encoding="utf-8")
         print(f"Wrote {out}")
     else:
         print(body)
@@ -79,4 +79,8 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    # Findings quote what they found (an arrow, an emoji, a Thai name), and a
+    # Windows console in a legacy code page cannot print it.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main(sys.argv[1:]))

@@ -48,6 +48,9 @@ test('the tarball carries everything a consumer needs', () => {
     'tokens/colors.json',
     'examples/index.html',
     'templates/product-design/design-tokens.json',
+    // The library is fetched on demand, so these two are what make it usable:
+    // the index names every spec with its sha256, the loader fetches one.
+    'design-systems/library.json', 'scripts/library.mjs',
   ]) {
     assert.ok(packed.includes(required), `the package is missing ${required}`);
   }
@@ -59,15 +62,31 @@ test('the tarball is not accidentally huge', () => {
   // exactly 400 by adding AGENTS.md and two scripts, all of it text. Raised, and
   // backed by the two assertions that actually catch a binary: total bytes, and
   // no single file larger than a long markdown document.
-  assert.ok(packed.length > 250 && packed.length < 500,
-    `unexpected file count: ${packed.length}`);
+  //
+  // 3.0.0 grew the library to 2,144 specs, 26MB, and stopped shipping it: an
+  // install carries the index and fetches a spec when one is used. One spec in
+  // the tarball means the exclusion in package.json stopped matching.
+  const library = packed.filter(p => p.startsWith('design-systems/library/'));
+  assert.deepEqual(library.slice(0, 5), [],
+    `the package ships ${library.length} file(s) from design-systems/library/`);
+
+  assert.ok(manifest.files.length > 250 && manifest.files.length < 500,
+    `unexpected file count: ${manifest.files.length}`);
 
   const MB = 1024 * 1024;
-  assert.ok(manifest.unpackedSize < 12 * MB,
-    `unpacked ${(manifest.unpackedSize / MB).toFixed(1)}MB - a text kit should not reach 12MB`);
+  const bytes = manifest.files.reduce((n, f) => n + f.size, 0);
+  assert.ok(bytes < 12 * MB,
+    `${(bytes / MB).toFixed(1)}MB unpacked - a text kit should not reach 12MB`);
+
+  // The library index is the one large text file: a description and a sha256
+  // for each of 2,144 specs, 1,013kB when it was added. It is generated, and
+  // tests/meta/registry.test.mjs holds it to the specs, so it gets its own bound.
+  const INDEX = 'design-systems/library.json';
+  const index = manifest.files.find(f => f.path === INDEX);
+  assert.ok(index && index.size < 2 * MB, `${INDEX} is ${index && (index.size / MB).toFixed(1)}MB`);
 
   const big = manifest.files
-    .filter(f => f.size > 600 * 1024 && !f.path.startsWith('examples/thumbs/'))
+    .filter(f => f.size > 600 * 1024 && !f.path.startsWith('examples/thumbs/') && f.path !== INDEX)
     .map(f => `${f.path} (${(f.size / 1024).toFixed(0)}kB)`);
   assert.deepEqual(big, [],
     `a file this large is almost certainly binary:\n  ${big.join('\n  ')}`);

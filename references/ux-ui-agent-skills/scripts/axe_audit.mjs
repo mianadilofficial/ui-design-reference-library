@@ -22,7 +22,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`axe_audit: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`axe_audit: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -59,7 +59,7 @@ try {
     console.log('Fix: npm install (axe-core is a devDependency)');
     process.exit(1);
   }
-  console.log('axe_audit: could not load axe-core (no local copy + no network) — SKIPPED');
+  console.log('axe_audit: could not load axe-core (no local copy + no network): SKIPPED');
   process.exit(0);
 }
 
@@ -72,7 +72,7 @@ await browser.close();
 const v = results.violations || [];
 const blocking = v.filter(x => ['serious', 'critical'].includes(x.impact));
 const mode = dark ? ' [dark]' : '';
-console.log(`axe-core WCAG 2.2 A/AA — ${file}${mode}`);
+console.log(`axe-core WCAG 2.2 A/AA: ${file}${mode}`);
 if (!v.length) { console.log('OK: 0 violations.'); process.exit(0); }
 for (const x of v) {
   console.log(`  ${(x.impact || '?').toUpperCase()}  ${x.id}: ${x.help} (${x.nodes.length} node${x.nodes.length > 1 ? 's' : ''})`);

@@ -5,6 +5,7 @@ import type {Item, Node} from "fumadocs-core/page-tree";
 import type {SearchItemType, SharedProps} from "fumadocs-ui/components/dialog/search";
 import type {ComponentProps} from "react";
 
+import {useTranslations} from "@fuma-translate/react";
 import {Sparkles} from "@gravity-ui/icons";
 import {useAgent} from "@heroui/agent/next";
 import {Chip, Kbd, Tag, TagGroup} from "@heroui/react";
@@ -27,6 +28,7 @@ import {tv} from "tailwind-variants";
 
 import {useDictionary} from "@/hooks/use-dictionary";
 import {HEROUI_DOCS_AGENT_ID} from "@/lib/heroui-agent";
+import {readsAsQuestion} from "@/lib/search-question";
 
 // Default suggested pages for each tag
 const DEFAULT_SUGGESTIONS: Record<"native" | "web", string[]> = {
@@ -133,7 +135,6 @@ export default function CustomSearchDialog(props: SharedProps) {
     if (previousPathnameRef.current !== pathname) {
       const defaultTag = getDefaultTag(pathname);
 
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelected(new Set([defaultTag]));
       previousPathnameRef.current = pathname;
     }
@@ -340,6 +341,32 @@ export default function CustomSearchDialog(props: SharedProps) {
     });
   }, [query.data, releasesPath, migrationPath, stripLocale]);
 
+  const hasResults =
+    Boolean(pageTreeAction) || proResults.length > 0 || (queryData?.length ?? 0) > 0;
+
+  let searchItems: SearchItemType[] | null = null;
+
+  if (search.length === 0) {
+    searchItems = defaultSuggestions.length > 0 ? defaultSuggestions : null;
+  } else if (assistantAction && readsAsQuestion(search)) {
+    // Questions go to Ask AI first, since keyword hits rarely answer them.
+    searchItems = [
+      assistantAction,
+      ...(pageTreeAction ? [pageTreeAction] : []),
+      ...proResults,
+      ...(queryData ?? []),
+    ];
+  } else if (hasResults) {
+    searchItems = [
+      ...(pageTreeAction ? [pageTreeAction] : []),
+      ...proResults,
+      ...(queryData ?? []),
+    ];
+  } else if (queryData) {
+    // Search finished with no matches: offer Ask AI instead of the empty state
+    searchItems = assistantAction ? [assistantAction] : [];
+  }
+
   return (
     <SearchDialog
       isLoading={query.isLoading}
@@ -349,8 +376,8 @@ export default function CustomSearchDialog(props: SharedProps) {
       {...restProps}
     >
       <SearchDialogOverlay />
-      <SearchDialogContent className="border-none bg-surface">
-        <div className="border-none px-2 pt-2">
+      <SearchDialogContent className="border-none bg-surface *:border-b-0">
+        <div className="px-2 pt-2">
           <TagGroup
             disallowEmptySelection
             aria-label={dict.frameworksTabs.ariaLabel}
@@ -368,27 +395,14 @@ export default function CustomSearchDialog(props: SharedProps) {
             </TagGroup.List>
           </TagGroup>
         </div>
-        <SearchDialogHeader className="border-b border-separator">
+        <SearchDialogHeader>
           <SearchDialogIcon />
           <SearchDialogInput placeholder={dict.searchDialog.placeholder} />
           <SearchDialogClose />
         </SearchDialogHeader>
         <SearchDialogList
           className="**:aria-selected:bg-default **:aria-selected:text-foreground"
-          items={
-            search.length === 0
-              ? defaultSuggestions.length > 0
-                ? defaultSuggestions
-                : null
-              : queryData || pageTreeAction || proResults.length > 0
-                ? [
-                    ...(assistantAction ? [assistantAction] : []),
-                    ...(pageTreeAction ? [pageTreeAction] : []),
-                    ...proResults,
-                    ...(Array.isArray(queryData) ? queryData : []),
-                  ]
-                : null
-          }
+          items={searchItems}
         />
       </SearchDialogContent>
     </SearchDialog>
@@ -396,7 +410,7 @@ export default function CustomSearchDialog(props: SharedProps) {
 }
 
 function SearchDialogInput(props: ComponentProps<"input">) {
-  const {text} = useI18n();
+  const t = useTranslations({note: "search dialog"});
   const {onSearchChange, search} = useSearch();
 
   return (
@@ -404,7 +418,7 @@ function SearchDialogInput(props: ComponentProps<"input">) {
       {...props}
       autoFocus
       className="placeholder:text-fd-muted-foreground w-0 flex-1 bg-transparent text-lg focus-visible:outline-none"
-      placeholder={props.placeholder || text.search}
+      placeholder={props.placeholder || t("Search")}
       value={search}
       onChange={(e) => onSearchChange(e.target.value)}
     />

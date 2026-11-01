@@ -1,11 +1,11 @@
-# H7 — is taste applied, or only documented
+# H7: is taste applied, or only documented
 
 The owner's report that started this: *taste is not applied at all in new
 projects.* Nothing had confirmed or refuted it, which is why H7 sat at 0 with
 "no instrument" beside it.
 
 This case is the instrument. The prompt never names the skill, never says
-"taste", and never asks for a brief — it is the sentence someone would actually
+"taste", and never asks for a brief. It is the sentence someone would actually
 type. What it measures is whether the kit's first demand reaches the model
 unprompted: **the Brief Inference block, written out before any markup.**
 
@@ -33,7 +33,7 @@ The Brief Inference block is different in exactly one way that matters: it is
 required **before** any markup, so it belongs to the part of the turn that
 happens whether or not the build succeeds. Grading the trace rather than
 `last_message` reads the whole session, so the block counts wherever in the turn
-it was written — which is the honest reading of a rule about ordering, and it
+it was written, which is the honest reading of a rule about ordering, and it
 does not depend on the run completing.
 
 `runs: 3` rather than 2, because this is the indicator whose answer was

@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>fold-aware, but the hinge is ignored</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; display:grid; gap:24px; grid-template-columns:minmax(0,1fr); }
+  /* The page answers the fold, so it has claimed to know where the hinge is, and
+     then splits into three equal columns that ignore it. On iPhone Duo half
+     closed the middle column, its heading and its button land on the 40px hinge.
+     verify_responsive.mjs must reject this. */
+  @media (horizontal-viewport-segments: 2) {
+    main { grid-template-columns:repeat(3, minmax(0,1fr)); }
+  }
+  button { font:inherit; padding:8px 16px; }
+</style></head>
+<body><main>
+  <section><h2>Inbox</h2><p>Twelve unread messages from three people.</p></section>
+  <section><h2>Selected thread</h2><p>Quarterly numbers, final draft attached.</p><button type="button">Reply to the thread</button></section>
+  <section><h2>Details</h2><p>Sent Tuesday at nine.</p></section>
+</main></body></html>

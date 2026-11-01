@@ -40,7 +40,7 @@ fun DsButton(
 ```
 
 ## States & a11y
-- `enabled = false` disables + dims. `Modifier.semantics { role = Role.Button; contentDescription/stateDescription }`. Focus handled by Compose focus system; min touch target 48dp (Material) — meets `tokens/sizing.json`.
+- `enabled = false` disables + dims. `Modifier.semantics { role = Role.Button; contentDescription/stateDescription }`. Focus handled by Compose focus system; min touch target 48dp (Material), which meets `tokens/sizing.json`.
 
 ## Motion
 `animate*AsState` / `AnimatedVisibility` with token durations + mapped `Easing`. Honor reduced motion via `LocalAccessibilityManager`/system setting → snap to target.

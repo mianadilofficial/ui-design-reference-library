@@ -1,9 +1,9 @@
 # Adapter: React Native
 
-Follows the [Framework Adapter Protocol](../adapter-protocol.md). No CSS/DOM — tokens become a typed JS theme object; styles via `StyleSheet`. Accessibility via RN a11y props.
+Follows the [Framework Adapter Protocol](../adapter-protocol.md). No CSS/DOM: tokens become a typed JS theme object; styles via `StyleSheet`. Accessibility via RN a11y props.
 
 ## Token layer
-Export tokens as a typed TS object (mirror `tokens/*.json` values). Resolve dark mode with `useColorScheme()` selecting a light/dark token map. Density via swapping the active map. No CSS variables — components import the resolved theme (context provider recommended).
+Export tokens as a typed TS object (mirror `tokens/*.json` values). Resolve dark mode with `useColorScheme()` selecting a light/dark token map. Density via swapping the active map. No CSS variables; components import the resolved theme (context provider recommended).
 
 ```ts
 export const theme = {
@@ -47,7 +47,7 @@ const s = StyleSheet.create({
 
 ## States & a11y
 - `accessibilityRole`, `accessibilityState` (disabled/busy/selected), `accessibilityLabel`. Focus ring N/A on touch; provide clear pressed state. Minimum target 44×44 (`tokens/sizing.json`).
-- Hover only on RN-Web/tvOS — never depend on it.
+- Hover only on RN-Web/tvOS, so never depend on it.
 
 ## Motion
-`Animated`/Reanimated with token durations. Honor `AccessibilityInfo.isReduceMotionEnabled()` — fall back to opacity/instant.
+`Animated`/Reanimated with token durations. Honor `AccessibilityInfo.isReduceMotionEnabled()` and fall back to opacity/instant.

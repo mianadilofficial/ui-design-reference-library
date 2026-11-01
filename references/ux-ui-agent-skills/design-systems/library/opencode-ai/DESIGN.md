@@ -1,284 +1,273 @@
-# Design System Inspired by OpenCode
+---
+version: alpha
+name: OpenCode
+category: "AI & LLM Platforms"
+description: "OpenCode (opencode.ai) is a monospace-only, terminal-flavored product site - warm off-white canvas (#fdfcfc), near-black ink (#201d1d) and mid-gray body text (#646262), a Berkeley Mono / IBM Plex Mono stack at 16px, 38px bold headline, 4px-radius solid dark buttons, 6px inputs and tabs, hairline borders, and no shadows or gradients."
 
-> Category: AI & LLM
-> AI coding platform. Developer-centric dark theme.
+colors:
+  canvas: "#fdfcfc"
+  ink: "#646262"
+  primary: "#201d1d"
+  on-primary: "#fdfcfc"
+  surface-weak: "#f8f7f7"
+  ink-weak: "#9a9898"
+  icon: "#8d8b8b"
+  hairline: "#0f00001f"
+  primary-hover: "#302c2c"
 
-## 1. Visual Theme & Atmosphere
+typography:
+  display:
+    fontFamily: "\"Berkeley Mono\", \"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    fontSize: 38px
+    fontWeight: 700
+    lineHeight: 57px
+  display-mobile:
+    fontFamily: "\"Berkeley Mono\", \"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    fontSize: 22px
+    fontWeight: 700
+    lineHeight: 33px
+  subheading:
+    fontFamily: "\"Berkeley Mono\", \"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    fontSize: 16px
+    fontWeight: 700
+    lineHeight: 24px
+  body:
+    fontFamily: "\"Berkeley Mono\", \"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 32px
+  button:
+    fontFamily: "\"Berkeley Mono\", \"IBM Plex Mono\", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace"
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 24px
 
-OpenCode's website embodies a terminal-native, monospace-first aesthetic that reflects its identity as an open source AI coding agent. The entire visual system is built on a stark dark-on-light contrast using a near-black background (`#201d1d`) with warm off-white text (`#fdfcfc`). This isn't a generic dark theme -- it's a warm, slightly reddish-brown dark that feels like a sophisticated terminal emulator rather than a cold IDE. The warm undertone in both the darks and lights (notice the subtle red channel in `#201d1d` -- rgb(32, 29, 29)) creates a cohesive, lived-in quality.
+rounded:
+  xs: 4px
+  sm: 6px
 
-Berkeley Mono is the sole typeface, establishing an unapologetic monospace identity. Every element -- headings, body text, buttons, navigation -- shares this single font family, creating a unified "everything is code" philosophy. The heading at 38px bold with 1.50 line-height is generous and readable, while body text at 16px with weight 500 provides a slightly heavier-than-normal reading weight that enhances legibility on screen. The monospace grid naturally enforces alignment and rhythm across the layout.
+spacing:
+  s1: 4px
+  s2: 8px
+  s3: 10px
+  s4: 12px
+  s5: 16px
+  s6: 20px
+  s7: 24px
+  s8: 32px
+  s9: 40px
+  s10: 64px
 
-The color system is deliberately minimal. The primary palette consists of just three functional tones: the warm near-black (`#201d1d`), a medium warm gray (`#9a9898`), and a bright off-white (`#fdfcfc`). Semantic colors borrow from the Apple HIG palette -- blue accent (`#007aff`), red danger (`#ff3b30`), green success (`#30d158`), orange warning (`#ff9f0a`) -- giving the interface familiar, trustworthy signal colors without adding brand complexity. Borders use a subtle warm transparency (`rgba(15, 0, 0, 0.12)`) that ties into the warm undertone of the entire system.
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.xs}"
+    padding: 8px 16px 8px 10px
+    height: 40px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-docs:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button}"
+    rounded: "{rounded.xs}"
+    padding: 8px 12px 8px 20px
+    height: 40px
+  button-outline:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.xs}"
+    padding: 8px 12px 8px 20px
+    height: 42px
+    borderColor: "{colors.hairline}"
+  link:
+    textColor: "{colors.primary}"
+    typography: "{typography.body}"
+  nav:
+    textColor: "{colors.ink}"
+  nav-link:
+    textColor: "{colors.primary}"
+    typography: "{typography.body}"
+  text-input:
+    backgroundColor: "{colors.surface-weak}"
+    textColor: "{colors.primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.sm}"
+    padding: 20px
+    height: 66px
+    borderColor: "{colors.hairline}"
+  footer:
+    textColor: "{colors.ink}"
+    borderColor: "{colors.hairline}"
+---
+
+## Overview
+
+OpenCode's site (https://opencode.ai, captured in light mode at 1280px) presents an open-source AI coding agent as if it were a terminal session. Everything is set in a monospace font, the layout is a single centered column inside thin vertical hairlines, and features are written as a `[*]` bullet list. The palette is a warm off-white, one near-black, and two or three grays; there is no accent hue on the page. The only imagery is a dark screenshot/video of the agent's own TUI and three tiny halftone-style "Fig" illustrations.
+
+The page flows: header (pixel-style OpenCode wordmark at left; GitHub, Docs, Data, Zen, Go, Enterprise links; a dark "Download" button) -> headline "The open source AI coding agent" -> a sub-line about free models and any provider -> an install box with tabs (curl, npm, bun, brew, paru, yay) showing `curl -fsSL https://opencode.ai/v2/install | bash` -> a full-bleed dark product video -> "What is OpenCode?" with seven `[*]` features and a "Read docs" button -> a stats paragraph with three "Fig" figures (208K GitHub Stars, 950 Contributors, 16M Monthly Devs) -> privacy statement -> FAQ -> a Zen product call-out with an outlined button -> waitlist email form -> footer.
 
 **Key Characteristics:**
-- Berkeley Mono as the sole typeface -- monospace everywhere, no sans-serif or serif voices
-- Warm near-black primary (`#201d1d`) with reddish-brown undertone, not pure black
-- Off-white text (`#fdfcfc`) with warm tint, not pure white
-- Minimal 4px border radius throughout -- sharp, utilitarian corners
-- 8px base spacing system scaling up to 96px
-- Apple HIG-inspired semantic colors (blue, red, green, orange)
-- Transparent warm borders using `rgba(15, 0, 0, 0.12)`
-- Email input with generous 20px padding and 6px radius -- the most generous component radius
-- Single button variant: dark background, light text, tight vertical padding (4px 20px)
-- Underlined links as default link style, reinforcing the text-centric identity
+- One typeface family in monospace for everything: headline, body, nav, buttons, even FAQ and form fields.
+- Warm neutrals: canvas `{colors.canvas}` (#fdfcfc), strong ink/primary `{colors.primary}` (#201d1d), body copy `{colors.ink}` (#646262), weak text `{colors.ink-weak}` (#9a9898).
+- Flat: no box-shadows measured, no gradients; structure is drawn with 1px `{colors.hairline}` rules.
+- Small, square-ish corners: `{rounded.xs}` 4px on buttons, `{rounded.sm}` 6px on inputs and the install panel.
+- Generous line-height on body copy (32px on 16px text) that gives the "terminal log" airiness.
+- Product-as-hero: the most visually dense element is a real screenshot of the TUI on a near-black background.
+- Playful technical microcopy: `[*]` bullets, "Fig 1." captions, "Be the first to know..." waitlist.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary
-- **OpenCode Dark** (`#201d1d`): Primary background, button fills, link text. A warm near-black with subtle reddish-brown warmth -- rgb(32, 29, 29).
-- **OpenCode Light** (`#fdfcfc`): Primary text on dark surfaces, button text. A barely-warm off-white that avoids clinical pure white.
-- **Mid Gray** (`#9a9898`): Secondary text, muted links. A neutral warm gray that bridges dark and light.
+> Source: measured on https://opencode.ai; values cross-checked with the site's own CSS (`/_build/assets/index-C1kvjbTM.css`, `[data-page="opencode"]` custom properties).
 
-### Secondary
-- **Dark Surface** (`#302c2c`): Slightly lighter than primary dark, used for elevated surfaces and subtle differentiation.
-- **Border Gray** (`#646262`): Stronger borders, outline rings on interactive elements.
-- **Light Surface** (`#f1eeee`): Light mode surface, subtle background variation.
+### Brand & Accent
+- **Primary** (`{colors.primary}` - `#201d1d`): `--color-background-strong` / `--color-text-strong` in the page's CSS (`hsl(0, 5%, 12%)`). Fill of the Download and Read docs buttons and the heading color. The page has no chromatic brand color.
+- **Primary Hover** (`{colors.primary-hover}` - `#302c2c`): `hsl(0, 5%, 18%)`, the measured hover fill of the Download button.
+- **On Primary** (`{colors.on-primary}` - `#fdfcfc`): button label.
 
-### Accent
-- **Accent Blue** (`#007aff`): Primary accent, links, interactive highlights. Apple system blue.
-- **Accent Blue Hover** (`#0056b3`): Darker blue for hover states.
-- **Accent Blue Active** (`#004085`): Deepest blue for pressed/active states.
+### Surface
+- **Canvas** (`{colors.canvas}` - `#fdfcfc`): `--color-background` `hsl(0, 20%, 99%)`; the page and header.
+- **Surface Weak** (`{colors.surface-weak}` - `#f8f7f7`): `--color-background-weak` `hsl(0, 8%, 97%)`; the waitlist input and the install-box panel body.
+- **Hairline** (`{colors.hairline}` - `#0f00001f`): `--color-border-weak` `hsla(0, 100%, 3%, 0.12)`; all rules, the outline button border and the input border.
+
+### Text
+- **Ink** (`{colors.ink}` - `#646262`): `--color-text` `hsl(0, 1%, 39%)`; body paragraphs, nav container and footer text (the most-read color on the page).
+- **Ink Weak** (`{colors.ink-weak}` - `#9a9898`): `--color-text-weak` `hsl(0, 1%, 60%)`; footer links and inactive tabs.
+- **Icon** (`{colors.icon}` - `#8d8b8b`): `--color-icon` `hsl(0, 1%, 55%)`; copy icon and decorative marks.
+
+### Dark scheme
+The same stylesheet redefines these variables under `prefers-color-scheme: dark` (for example `--color-background: hsl(0, 9%, 7%)`, `--color-text-strong: hsl(0, 15%, 94%)`), so the site follows the OS theme. Only the light values were captured and are tokens here.
+
+### Selection color
+`::selection` uses `--color-background-interactive`, `hsl(62, 84%, 88%)` in light mode, a pale yellow-green; it is not otherwise used on the page.
 
 ### Semantic
-- **Danger Red** (`#ff3b30`): Error states, destructive actions. Apple system red.
-- **Danger Hover** (`#d70015`): Darker red for hover on danger elements.
-- **Danger Active** (`#a50011`): Deepest red for pressed danger states.
-- **Success Green** (`#30d158`): Success states, positive feedback. Apple system green.
-- **Warning Orange** (`#ff9f0a`): Warning states, caution signals. Apple system orange.
-- **Warning Hover** (`#cc7f08`): Darker orange for hover on warning elements.
-- **Warning Active** (`#995f06`): Deepest orange for pressed warning states.
+`:root` also declares a separate `--color-*` set (accent `#007aff`, danger `#ff3b30`, success `#30d158`, warning `#ff9f0a`, and a light/dark neutral ramp). Their origin was not determined and they were not visible in the captured page, so they are not tokens here.
 
-### Text Scale
-- **Text Muted** (`#6e6e73`): Muted labels, disabled text, placeholder content.
-- **Text Secondary** (`#424245`): Secondary text on light backgrounds, captions.
-
-### Border
-- **Border Warm** (`rgba(15, 0, 0, 0.12)`): Primary border color, warm transparent black with red tint.
-- **Border Tab** (`#9a9898`): Tab underline border, 2px solid bottom.
-- **Border Outline** (`#646262`): 1px solid outline border for containers.
-
-## 3. Typography Rules
+## Typography
 
 ### Font Family
-- **Universal**: `Berkeley Mono`, with fallbacks: `IBM Plex Mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace`
+The stack on `:root` is `--font-mono: "Berkeley Mono", "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace`, and `--font-sans` is set to the same variable, so every text role resolves to monospace. Only IBM Plex Mono (weights 400, 500, 700) was reported as a loaded web font on the page; Berkeley Mono is first in the stack and applies where it is installed on the viewer's machine. Berkeley Mono is a commercial typeface from U.S. Graphics Company (https://usgraphics.com/products/berkeley-mono lists licensing tiers; the page itself returned an access error in this session, so only the search description supports that).
 
 ### Hierarchy
 
-| Role | Size | Weight | Line Height | Notes |
-|------|------|--------|-------------|-------|
-| Heading 1 | 38px (2.38rem) | 700 | 1.50 | Hero headlines, page titles |
-| Heading 2 | 16px (1.00rem) | 700 | 1.50 | Section titles, bold emphasis |
-| Body | 16px (1.00rem) | 400 | 1.50 | Standard body text, paragraphs |
-| Body Medium | 16px (1.00rem) | 500 | 1.50 | Links, button text, nav items |
-| Body Tight | 16px (1.00rem) | 500 | 1.00 (tight) | Compact labels, tab items |
-| Caption | 14px (0.88rem) | 400 | 2.00 (relaxed) | Footnotes, metadata, small labels |
+| Token | Size | Weight | Line Height | Use |
+|---|---|---|---|---|
+| `{typography.display}` | 38px | 700 | 57px | Hero h1 |
+| `{typography.display-mobile}` | 22px | 700 | 33px | h1 at 390px |
+| `{typography.subheading}` | 16px | 700 | 24px | "What is OpenCode?" and section titles |
+| `{typography.body}` | 16px | 400 | 32px | Paragraphs, nav, links |
+| `{typography.button}` | 16px | 500 | 24px | Buttons |
+
+A 14px size is also measured (64 characters, small text) and 13px/14px appear in the site CSS; they are not separate tokens here.
 
 ### Principles
-- **One font, one voice**: Berkeley Mono is used exclusively. There is no typographic variation between display, body, and code -- everything speaks in the same monospace register. Hierarchy is achieved through size and weight alone.
-- **Weight as hierarchy**: 700 for headings, 500 for interactive/medium emphasis, 400 for body text. Three weight levels create the entire hierarchy.
-- **Generous line-height**: 1.50 as the standard line-height gives text room to breathe within the monospace grid. The relaxed 2.00 line-height on captions creates clear visual separation.
-- **Tight for interaction**: Interactive elements (tabs, compact labels) use 1.00 line-height for dense, clickable targets.
+- Three weights: 400 (body), 500 (buttons), 700 (headings and bold feature names).
+- No letter-spacing adjustments were measured; monospace spacing does the rhythm.
+- Bold is used inline for emphasis (feature names like "LSP enabled", the figures "208,000", "950", "13,000", "16M").
 
-## 4. Component Stylings
+### Font substitutes
+If neither Berkeley Mono nor IBM Plex Mono is available, the stack falls through to platform monospace fonts (SFMono, Menlo, Consolas ...). IBM Plex Mono is open-source and is the practical match for the page as loaded.
 
-### Buttons
+## Layout
 
-**Primary (Dark Fill)**
-- Background: `#201d1d` (OpenCode Dark)
-- Text: `#fdfcfc` (OpenCode Light)
-- Padding: 4px 20px
-- Radius: 4px
-- Font: 16px Berkeley Mono, weight 500, line-height 2.00 (relaxed)
-- Outline: `rgb(253, 252, 252) none 0px`
-- Use: Primary CTAs, main actions
+- **Frame.** One centered column; the capture shows full-height hairlines at the left and right edges of the column. The CSS declares page padding of 5rem on desktop (`--padding: 5rem`), dropping to 1.5rem at narrow widths (`max-width: 60rem` breakpoint).
+- **Header.** 40px tall bar content with the wordmark, links and a Download button; separated from the page by a hairline.
+- **Hero.** Left-aligned headline, sub-line, then a full-width install box.
+- **Install box.** A tab row (curl, npm, bun, brew, paru, yay) over a command line, in a bordered box; the active tab has a 2px underline in the strong color.
+- **Product video.** A full-bleed, near-black band of the TUI.
+- **Content sections.** Section titles, `[*]`-prefixed paragraphs, and a two-column definition feel (bold term, then description).
+- **Figures.** Three equal columns with small illustrations and captions "Fig 1." to "Fig 3.".
+- **Spacing.** Measured gaps: 12px, 16px, 24px, 10px, 64px, 32px, 8px, 40px; paddings: 80px, 16px, 20px, 64px, 8px, 32px. They are recorded as the `{spacing.s1}` to `{spacing.s10}` ladder (4px to 64px).
 
-### Inputs
+## Elevation & Depth
 
-**Email Input**
-- Background: `#f8f7f7` (light neutral)
-- Text: `#201d1d`
-- Border: `1px solid rgba(15, 0, 0, 0.12)`
-- Padding: 20px
-- Radius: 6px
-- Font: Berkeley Mono, standard size
-- Use: Form fields, email capture
+There is none. The measured box-shadow list is empty and the page uses no gradients. Depth is expressed with:
 
-### Links
+- 1px `{colors.hairline}` borders on inputs, the install box and the outline button.
+- A background shift from `{colors.canvas}` to `{colors.surface-weak}` inside panels.
+- A full-bleed black band for the product video, the single high-contrast moment.
+- A 2px underline on the active tab.
 
-**Default Link**
-- Color: `#201d1d`
-- Decoration: underline 1px
-- Font-weight: 500
-- Use: Primary text links in body content
+## Shapes
 
-**Light Link**
-- Color: `#fdfcfc`
-- Decoration: none
-- Use: Links on dark backgrounds, navigation
+- `{rounded.xs}` (4px): buttons (Download, Read docs, Learn about Zen).
+- `{rounded.sm}` (6px): the waitlist input and the install box's panel (square on top where it meets the tabs, 6px at the bottom corners per the CSS).
+- No pills, no circles in the UI chrome. The wordmark and the figure illustrations are pixel-grid drawings.
 
-**Muted Link**
-- Color: `#9a9898`
-- Decoration: none
-- Use: Footer links, secondary navigation
+## Components
 
-### Tabs
+### Download button
+`{components.button-primary}`: `{colors.primary}` fill, `{colors.canvas}` label, 16px/500, `{rounded.xs}`, padding 8px 16px 8px 10px (an icon sits at the left), 40px tall. Hover swaps the fill to `{colors.primary-hover}` (`{components.button-primary-hover}`); no other change measured.
 
-**Tab Navigation**
-- Border-bottom: `2px solid #9a9898` (active tab indicator)
-- Font: 16px, weight 500, line-height 1.00
-- Use: Section switching, content filtering
+### Read docs button
+`{components.button-docs}`: same fill, padding 8px 12px 8px 20px, trailing arrow icon, 40px tall (the measured element was 40px).
 
-### Navigation
-- Clean horizontal layout with Berkeley Mono throughout
-- Brand logotype left-aligned in monospace
-- Links at 16px weight 500 with underline decoration
-- Dark background matching page background
-- No backdrop blur or transparency -- solid surfaces only
+### Outline button
+`{components.button-outline}`: `{colors.canvas}` fill, `{colors.primary}` text, 1px `{colors.hairline}` border, 42px tall, used for "Learn about Zen".
 
-### Image Treatment
-- Terminal/code screenshots as hero imagery
-- Dark terminal aesthetic with monospace type
-- Minimal borders, content speaks for itself
+### Nav links
+`{components.nav-link}`: `{colors.primary}` 16px regular, underline on hover (measured on GitHub, Docs and others).
 
-### Distinctive Components
+### Install tabs and command box
+Tabs are transparent buttons with `{colors.ink-weak}` text and 16px vertical padding; selected is the strong color with a 2px bottom border. The panel body is `{colors.surface-weak}` with a hairline border and 16px padding; the command is monospace with a copy icon at right.
 
-**Terminal Hero**
-- Full-width dark terminal window as hero element
-- ASCII art / stylized logo within terminal frame
-- Monospace command examples with syntax highlighting
-- Reinforces the CLI-first identity of the product
+### Feature list
+`[*]` marker in a muted color, a bold term in `{colors.primary}`, then a description in `{colors.ink}`.
 
-**Feature List**
-- Bulleted feature items with Berkeley Mono text
-- Weight 500 for feature names, 400 for descriptions
-- Tight vertical spacing between items
-- No cards or borders -- pure text layout
+### Waitlist form
+`{components.text-input}`: `{colors.surface-weak}` fill, 1px hairline border, `{rounded.sm}`, 20px padding, 66px tall and wide as the column (918px in the capture), with a "Subscribe" button.
 
-**Email Capture**
-- Light background input (`#f8f7f7`) contrasting dark page
-- Generous 20px padding for comfortable typing
-- 6px radius -- the roundest element in the system
-- Newsletter/waitlist pattern
+### FAQ
+Eight FAQ items with plus/minus icons (data-slot `faq-item`, `faq-icon-plus`, `faq-icon-minus` in the markup): questions such as "What is OpenCode?" and "How much does OpenCode cost?"
 
-## 5. Layout Principles
+### Footer
+`{components.footer}`: GitHub with a star count ("208K" in brackets), Docs, Changelog, Discord, X; "© 2026 Anomaly", Brand, Privacy, Terms and a language picker. Link text in `{colors.ink-weak}`.
 
-### Spacing System
-- Base unit: 8px
-- Fine scale: 1px, 2px, 4px (sub-8px for borders and micro-adjustments)
-- Standard scale: 8px, 12px, 16px, 20px, 24px
-- Extended scale: 32px, 40px, 48px, 64px, 80px, 96px
-- The system follows a clean 4/8px grid with consistent doubling
+## Design System Architecture
 
-### Grid & Container
-- Max content width: approximately 800-900px (narrow, reading-optimized)
-- Single-column layout as the primary pattern
-- Centered content with generous horizontal margins
-- Hero section: full-width dark terminal element
-- Feature sections: single-column text blocks
-- Footer: multi-column link grid
+OpenCode publishes a brand page and a theming system, not a component library.
 
-### Whitespace Philosophy
-- **Monospace rhythm**: The fixed-width nature of Berkeley Mono creates a natural vertical grid. Line-heights of 1.50 and 2.00 maintain consistent rhythm.
-- **Narrow and focused**: Content is constrained to a narrow column, creating generous side margins that focus attention on the text.
-- **Sections through spacing**: No decorative dividers. Sections are separated by generous vertical spacing (48-96px) rather than borders or background changes.
+- **Brand guidelines.** https://opencode.ai/brand ("Brand guidelines - Resources and assets to help you work with the OpenCode brand") offers a "Download all assets" package and PNG/SVG downloads for eight logo variants. The page text lists no color or type specifications.
+- **Site CSS.** The landing page defines its tokens as scoped custom properties on `[data-page="opencode"]` with semantic names (`--color-background`, `--color-background-weak`, `--color-background-strong`, `--color-text`, `--color-text-weak`, `--color-text-weaker`, `--color-text-strong`, `--color-text-inverted`, `--color-border`, `--color-border-weak`, `--color-icon`) in HSL, with a dark variant. Components are addressed by `data-slot` and `data-component` attributes (for example `data-slot="tab"`, `data-slot="faq-item"`, `[data-component="button"]`). Fonts are `--font-mono` and `--font-sans` (aliased to mono).
+- **App theming.** The product's TUI themes are documented at https://opencode.ai/docs/themes: built-in themes (system, tokyonight, everforest, ayu, catppuccin, gruvbox, kanagawa, nord, matrix, one-dark and others), a JSON format, and a theme hierarchy that loads from user config and project `.opencode/themes` directories. By default OpenCode uses "our own opencode theme", per that page.
+- **Source.** https://github.com/anomalyco/opencode (the GitHub link on the site's own homepage; the repo page was reachable but its contents were not read in detail here).
+- **Build.** The site is a bundled web app (assets under `/_build/assets/`).
 
-### Border Radius Scale
-- Micro (4px): Default for all elements -- buttons, containers, badges
-- Input (6px): Form inputs get slightly more roundness
-- The entire system uses just two radius values, reinforcing the utilitarian aesthetic
+## Do's and Don'ts
 
-## 6. Depth & Elevation
+### Do
+- Do set everything in monospace at 16px with 32px line-height for body copy.
+- Do keep the palette to `{colors.canvas}`, `{colors.primary}`, `{colors.ink}` and `{colors.ink-weak}`.
+- Do draw structure with 1px `{colors.hairline}` borders.
+- Do use `{rounded.xs}` for buttons and `{rounded.sm}` for inputs and panels.
+- Do write features as `[*]` lines and label figures "Fig N.".
+- Do let the product screenshot be the only dark, dense element.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow, no border | Default state for most elements |
-| Border Subtle (Level 1) | `1px solid rgba(15, 0, 0, 0.12)` | Section dividers, input borders, horizontal rules |
-| Border Tab (Level 2) | `2px solid #9a9898` bottom only | Active tab indicator |
-| Border Outline (Level 3) | `1px solid #646262` | Container outlines, elevated elements |
+### Don't
+- Don't add shadows or gradients; none were measured.
+- Don't introduce a color accent; the site has none in this view.
+- Don't use sans-serif or italic text; the stack is monospace.
+- Don't round buttons into pills.
+- Don't use weights beyond 400, 500 and 700.
 
-**Shadow Philosophy**: OpenCode's depth system is intentionally flat. There are no box-shadows in the extracted tokens -- zero shadow values were detected. Depth is communicated exclusively through border treatments and background color shifts. This flatness is consistent with the terminal aesthetic: terminals don't have shadows, and neither does OpenCode. The three border levels (transparent warm, tab indicator, solid outline) create sufficient visual hierarchy without any elevation illusion.
+## Responsive Behavior
 
-### Decorative Depth
-- Background color shifts between `#201d1d` and `#302c2c` create subtle surface differentiation
-- Transparent borders at 12% opacity provide barely-visible structure
-- The warm reddish tint in border colors (`rgba(15, 0, 0, 0.12)`) ties borders to the overall warm dark palette
-- No gradients, no blurs, no ambient effects -- pure flat terminal aesthetic
+- **Headline.** 38px (`{typography.display}`) at 1280px, 22px (`{typography.display-mobile}`) at 390px.
+- **Padding.** The CSS switches `--padding` from 5rem to 1.5rem and `--vertical-padding` from 4rem to 3rem at `max-width: 60rem`.
+- **Line breaks.** `data-slot="br"` elements are hidden below the 60rem breakpoint, so manual line breaks in copy collapse.
+- **Other breakpoints** in the CSS include 65rem, 55rem, 50rem, 48rem, 40rem, 35rem, 30rem and 550px, used for sections such as the figures and FAQ.
+- **Theme.** Follows `prefers-color-scheme`.
+- **Touch targets.** Buttons are 40-42px tall.
 
-## 7. Interaction & Motion
+## Iteration Guide
 
-### Hover States
-- Links: color shift from default to accent blue (`#007aff`) or underline style change
-- Buttons: subtle background lightening or border emphasis
-- Accent blue provides a three-stage hover sequence: `#007aff` → `#0056b3` → `#004085` (default → hover → active)
-- Danger red: `#ff3b30` → `#d70015` → `#a50011`
-- Warning orange: `#ff9f0a` → `#cc7f08` → `#995f06`
-
-### Focus States
-- Border-based focus: increased border opacity or solid border color
-- No shadow-based focus rings -- consistent with the flat, no-shadow aesthetic
-- Keyboard focus likely uses outline or border color shift to accent blue
-
-### Transitions
-- Minimal transitions expected -- terminal-inspired interfaces favor instant state changes
-- Color transitions: 100-150ms for subtle state feedback
-- No scale, rotate, or complex transform animations
-
-## 8. Responsive Behavior
-
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <640px | Single column, reduced padding, heading scales down |
-| Tablet | 640-1024px | Content width expands, slight padding increase |
-| Desktop | >1024px | Full content width (~800-900px centered), maximum whitespace |
-
-### Touch Targets
-- Buttons with 4px 20px padding provide adequate horizontal touch area
-- Input fields with 20px padding ensure comfortable mobile typing
-- Tab items at 16px with tight line-height may need mobile adaptation
-
-### Collapsing Strategy
-- Hero heading: 38px → 28px → 24px on smaller screens
-- Navigation: horizontal links → hamburger/drawer on mobile
-- Feature lists: maintain single-column, reduce horizontal padding
-- Terminal hero: maintain full-width, reduce internal padding
-- Footer columns: multi-column → stacked single column
-- Section spacing: 96px → 64px → 48px on mobile
-
-### Image Behavior
-- Terminal screenshots maintain aspect ratio and border treatment
-- Full-width elements scale proportionally
-- Monospace type maintains readability at all sizes due to fixed-width nature
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Page background: `#201d1d` (warm near-black)
-- Primary text: `#fdfcfc` (warm off-white)
-- Secondary text: `#9a9898` (warm gray)
-- Muted text: `#6e6e73`
-- Accent: `#007aff` (blue)
-- Danger: `#ff3b30` (red)
-- Success: `#30d158` (green)
-- Warning: `#ff9f0a` (orange)
-- Button bg: `#201d1d`, button text: `#fdfcfc`
-- Border: `rgba(15, 0, 0, 0.12)` (warm transparent)
-- Input bg: `#f8f7f7`, input border: `rgba(15, 0, 0, 0.12)`
-
-### Example Component Prompts
-- "Create a hero section on `#201d1d` warm dark background. Headline at 38px Berkeley Mono weight 700, line-height 1.50, color `#fdfcfc`. Subtitle at 16px weight 400, color `#9a9898`. Primary CTA button (`#201d1d` bg with `1px solid #646262` border, 4px radius, 4px 20px padding, `#fdfcfc` text at weight 500)."
-- "Design a feature list: single-column on `#201d1d` background. Feature name at 16px Berkeley Mono weight 700, color `#fdfcfc`. Description at 16px weight 400, color `#9a9898`. No cards, no borders -- pure text with 16px vertical gap between items."
-- "Build an email capture form: `#f8f7f7` background input, `1px solid rgba(15, 0, 0, 0.12)` border, 6px radius, 20px padding. Adjacent dark button (`#201d1d` bg, `#fdfcfc` text, 4px radius, 4px 20px padding). Berkeley Mono throughout."
-- "Create navigation: sticky `#201d1d` background. 16px Berkeley Mono weight 500 for links, `#fdfcfc` text. Brand name left-aligned in monospace. Links with underline decoration. No blur, no transparency -- solid dark surface."
-- "Design a footer: `#201d1d` background, multi-column link grid. Links at 16px Berkeley Mono weight 400, color `#9a9898`. Section headers at weight 700. Border-top `1px solid rgba(15, 0, 0, 0.12)` separator."
-
-### Iteration Guide
-1. Berkeley Mono is the only font -- never introduce a second typeface. Size and weight create all hierarchy.
-2. Keep surfaces flat: no shadows, no gradients, no blur effects. Use borders and background shifts only.
-3. The warm undertone matters: use `#201d1d` not `#000000`, use `#fdfcfc` not `#ffffff`. The reddish warmth is subtle but essential.
-4. Border radius is 4px everywhere except inputs (6px). Never use rounded pills or large radii.
-5. Semantic colors follow Apple HIG: `#007aff` blue, `#ff3b30` red, `#30d158` green, `#ff9f0a` orange. Each has hover and active darkened variants.
-6. Three-stage interaction: default → hover (darkened) → active (deeply darkened) for all semantic colors.
-7. Borders use `rgba(15, 0, 0, 0.12)` -- a warm transparent dark, not neutral gray. This ties borders to the warm palette.
-8. Spacing follows an 8px grid: 8, 16, 24, 32, 40, 48, 64, 80, 96px. Use 4px for fine adjustments only.
+1. Canvas `{colors.canvas}`; body in `{typography.body}` with `{colors.ink}`; headings in `{colors.primary}` bold.
+2. One solid dark button (`{components.button-primary}`), optionally an outline twin (`{components.button-outline}`).
+3. Section titles at `{typography.subheading}`; page title `{typography.display}`.
+4. Panels: `{colors.surface-weak}` with 1px `{colors.hairline}` and `{rounded.sm}`.
+5. Show real code or a real product capture instead of illustration.
+6. Voice: direct technical statements with concrete numbers (208,000 stars, 950 contributors, 75+ providers), bracketed bullets, and short imperative CTAs ("Download", "Read docs", "Subscribe").

@@ -2,7 +2,7 @@
 
 Generated rather than drawn, so the geometry is exact and reproducible.
 
-## Stacked rainbow — the primary set
+## Stacked rainbow: the primary set
 
 | File | Use |
 |---|---|
@@ -31,7 +31,7 @@ baseline hangs the extrusion off the bottom edge.
 Two directions, both generated from `tokens/colors.json` rather than drawn by
 hand, so the geometry is exact and the colours trace to the token source.
 
-## Y2K chrome — alternate
+## Y2K chrome: alternate
 
 | File | Use |
 |---|---|
@@ -54,7 +54,7 @@ The first version fanned its lines from the wrong origin and read as a starburst
 Legible down to **32px**. At 16 it is a smudge, as any mark with a horizon
 would be; use a flat glyph at that size.
 
-## Isometric blocks — the alternate
+## Isometric blocks: the alternate
 
 | File | Use |
 |---|---|
@@ -67,13 +67,13 @@ Two things in it are easy to get wrong and were, at first:
 **Isometric sends the grid axes to the screen diagonals.** A diagonal in grid
 space projects to an upright plus. The X you see is a grid-aligned cross.
 
-**Cubes placed edge to edge fuse into one mass** — adjacent top faces share a
+**Cubes placed edge to edge fuse into one mass**: adjacent top faces share a
 value and the eye reads a blob. The gap between them is what makes the shape
 legible.
 
 The accent cube is stacked above the crossing so nothing occludes it. On the
 flat version it sat behind the front cube and the idea was lost. That is the
-kit's own composition rule — one thing leads — applied to its own mark.
+kit's own composition rule (one thing leads) applied to its own mark.
 
 ## No indigo-to-blue gradient
 

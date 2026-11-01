@@ -18,7 +18,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_focustrap: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_focustrap: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -31,7 +31,15 @@ const open = (argv.find(a => a.startsWith('--open=')) || '').split('=')[1];
 const dialogSel = (argv.find(a => a.startsWith('--dialog=')) || '').split('=')[1]
   || '[role="dialog"],dialog[open]';
 const dark = argv.includes('--dark');
-if (!file || !open) { console.log('usage: node scripts/verify_focustrap.mjs <file.html> --open=<trigger> [--dialog=<sel>] [--dark]'); process.exit(0); }
+/* No trigger means nothing was opened and nothing was measured. That exited 0,
+   and run through gate.mjs it left a passing receipt for the page, which cleared
+   the Stop hook for a page no gate had looked at (2026-10-20). Exit 2 is this
+   repo's "I could not look". */
+if (!file || !open) {
+  console.log('verify_focustrap: no --open=<trigger> given, so no dialog was opened and nothing was measured.');
+  console.log('usage: node scripts/verify_focustrap.mjs <file.html> --open=<trigger> [--dialog=<sel>] [--dark]');
+  process.exit(2);
+}
 
 const browser = await chromium.launch({ channel: 'chrome' }).catch(() => chromium.launch());
 const page = await browser.newPage({ viewport: { width: 1100, height: 800 } });
@@ -56,7 +64,7 @@ const sem = await page.evaluate(sel => {
 }, dialogSel);
 
 if (!sem.open) {
-  console.log(`verify_focustrap: no visible dialog (${dialogSel}) opened by ${open} — cannot verify`);
+  console.log(`verify_focustrap: no visible dialog (${dialogSel}) opened by ${open}: cannot verify`);
   await browser.close(); process.exit(1);
 }
 if (sem.role !== 'dialog') fails.push(`dialog missing role="dialog" (got ${sem.role})`);
@@ -81,7 +89,7 @@ for (let i = 0; i < steps; i++) {
   }, dialogSel);
   if (!inside) { leaked = true; leakWhere = `after ${i + 1} Tab(s)`; break; }
 }
-if (leaked) fails.push(`focus ESCAPED the dialog ${leakWhere} — keyboard trap leak (WCAG 2.4.3)`);
+if (leaked) fails.push(`focus ESCAPED the dialog ${leakWhere}: keyboard trap leak (WCAG 2.4.3)`);
 
 // Escape closes + returns focus to trigger
 await page.keyboard.press('Escape');
@@ -95,7 +103,7 @@ else if (afterEsc.focusBackOnTrigger === false) fails.push('focus not returned t
 
 await browser.close();
 const mode = dark ? ' [dark]' : '';
-console.log(`focus-trap — ${file}${mode} (dialog had ${sem.count} focusables)`);
+console.log(`focus-trap: ${file}${mode} (dialog had ${sem.count} focusables)`);
 if (fails.length) { console.log('\nFAIL:'); for (const f of fails) console.log('  x ' + f); process.exit(1); }
 console.log('OK: role/aria-modal/name present, Tab stays trapped, Escape closes and returns focus.');
 process.exit(0);

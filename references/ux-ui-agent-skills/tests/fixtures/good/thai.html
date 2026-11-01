@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><title>Thai text done right</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* The journal's own OFL faces, so the glyphs are the same on every machine. */
+  @font-face { font-family:"Fixture Display"; src:url("../../../examples/sites/journal/fonts/journal-display.woff2") format("woff2"); font-weight:400 700; }
+  @font-face { font-family:"Fixture Reading"; src:url("../../../examples/sites/journal/fonts/journal-reading.woff2") format("woff2"); font-weight:400 700; }
+  body { margin:0; background:#ffffff; color:#1d1d1f; font:16px/1.7 "Fixture Reading", serif; }
+  main { padding:24px; display:grid; gap:32px; }
+  /* The same text as bad/thai.html, set so verify_thai.mjs must accept it, plus
+     the breaks it must not mistake for defects:
+     1. the compound and the count kept whole by a white-space:nowrap span;
+     2. the same heading at line-height 1.5 and no tracking;
+     3. หนึ่ง after a classifier ("a matter") breaking before ข้อเสนอ: no count there;
+     4. วัน / ที่ in "the day that": ambiguous, so not a listed compound;
+     5. a paragraph of running Thai at the reading leading, its ชาวบ้าน kept whole. */
+  .narrow { inline-size:min-content; margin:0; }
+  .keep { white-space:nowrap; }
+  h1 { font:700 48px/1.5 "Fixture Display", sans-serif; inline-size:min-content; margin:0; }
+  .measure { max-inline-size:20em; margin:0; }
+</style></head>
+<body><main>
+  <p class="narrow"><span class="keep">ใบอนุญาต</span></p>
+  <p class="narrow">มี <span class="keep">23 คน</span></p>
+  <h1>ญาติ ปั้น</h1>
+  <p class="narrow">อีกเรื่องหนึ่งข้อเสนอ</p>
+  <p class="narrow">ถึงวันที่เรา</p>
+  <p class="measure">น้ำขึ้นถึงพื้นบ้านทุกปีในเดือนที่ฝนตกหนัก <span class="keep">ชาวบ้าน</span>ยกของขึ้นที่สูง ปั้นคันดินกั้นน้ำ และรอให้น้ำลดก่อนจะเริ่มซ่อมสิ่งที่เสียหาย</p>
+</main></body></html>

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CONTENT-OVERFLOW gate — enforces the handoff rule in CLAUDE.md that nothing
+ * CONTENT-OVERFLOW gate. Enforces the handoff rule in CLAUDE.md that nothing
  * else enforced: "Edge cases addressed (long text, empty, overflow, single item,
  * many items)."
  *
@@ -14,7 +14,7 @@
  *                 user simply never sees the rest. An explicit ellipsis is
  *                 deliberate truncation and is NOT flagged.
  *   B. OVERLAP    two interactive controls physically overlap by more than a
- *                 quarter of the smaller one — long content has pushed the
+ *                 quarter of the smaller one: long content has pushed the
  *                 layout on top of itself, so one control is partly untappable.
  *
  * verify_responsive.mjs covers the third failure (the page itself scrolling
@@ -34,7 +34,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_overflow: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_overflow: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -84,7 +84,7 @@ const AUDIT = () => {
   const clipped = [];
   for (const el of document.querySelectorAll('body *')) {
     if (!vis(el) || srOnly(el)) continue;
-    // Only judge elements that own text directly — not layout wrappers.
+    // Only judge elements that own text directly, not layout wrappers.
     const ownsText = [...el.childNodes].some(n => n.nodeType === 3 && n.textContent.trim().length > 2);
     if (!ownsText) continue;
     const cs = getComputedStyle(el);
@@ -92,9 +92,9 @@ const AUDIT = () => {
     const hiddenY = cs.overflowY === 'hidden' || cs.overflowY === 'clip';
     const ellipsis = cs.textOverflow === 'ellipsis';
     if (hiddenX && !ellipsis && el.scrollWidth > el.clientWidth + 1) {
-      clipped.push(`${name(el)} — ${el.scrollWidth - el.clientWidth}px of text cut off horizontally, no ellipsis`);
+      clipped.push(`${name(el)}: ${el.scrollWidth - el.clientWidth}px of text cut off horizontally, no ellipsis`);
     } else if (hiddenY && el.scrollHeight > el.clientHeight + 1) {
-      clipped.push(`${name(el)} — ${el.scrollHeight - el.clientHeight}px of text cut off vertically`);
+      clipped.push(`${name(el)}: ${el.scrollHeight - el.clientHeight}px of text cut off vertically`);
     }
   }
 
@@ -104,7 +104,7 @@ const AUDIT = () => {
     .map(el => ({ el, r: el.getBoundingClientRect(), positioned: /absolute|fixed/.test(getComputedStyle(el).position) }));
   const overlaps = [];
   /* A positioned control sitting wholly inside another is a deliberate inline
-     affordance — the clear button in a search field, the reveal toggle in a
+     affordance: the clear button in a search field, the reveal toggle in a
      password field. Layout collapse produces PARTIAL overlap instead. */
   const layeredAffordance = (a, b) => {
     const [small, big] = a.r.width * a.r.height <= b.r.width * b.r.height ? [a, b] : [b, a];
@@ -161,10 +161,10 @@ for (const w of widths) {
 await browser.close();
 
 if (problems.length) {
-  console.log('verify_overflow: FAIL — content does not survive its container');
+  console.log('verify_overflow: FAIL: content does not survive its container');
   for (const p of [...new Set(problems)].slice(0, 40)) console.log('  x ' + p);
   console.log('  Fix A: let the text wrap, or truncate on purpose with text-overflow:ellipsis + a title/tooltip.');
   console.log('  Fix B: allow the row to wrap (flex-wrap) or give the control min-width:0 so it can shrink.');
   process.exit(1);
 }
-console.log(`verify_overflow: OK — ${files.length} file(s) @${widths.join('/')}px: no silently clipped text, no overlapping controls`);
+console.log(`verify_overflow: OK: ${files.length} file(s) @${widths.join('/')}px: no silently clipped text, no overlapping controls`);

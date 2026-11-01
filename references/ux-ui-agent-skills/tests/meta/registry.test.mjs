@@ -7,7 +7,8 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT } from '../helpers/run.mjs';
 
@@ -29,7 +30,7 @@ const evals = countEntries(read('evals', 'run.mjs'), 'const GATES = [');
 
 test('the accuracy report still runs the full check list', () => {
   // Not a magic number to bump casually: dropping a check silently shrinks what
-  // "100%" means. Adding one is fine — update this line in the same commit.
+  // "100%" means. Adding one is fine; update this line in the same commit.
   assert.equal(accuracy, 52, `accuracy_report.mjs now has ${accuracy} checks`);
 });
 
@@ -141,8 +142,25 @@ test('every counted thing matches what the surfaces claim', () => {
     for (const [, n] of src.matchAll(/(\d+) runnable skills/g)) {
       assert.equal(Number(n), truth.skills, `${f} claims ${n} runnable skills, ${truth.skills} exist`);
     }
-    for (const [, n] of src.matchAll(/(\d+) (?:brand-grade )?design systems/g)) {
-      assert.equal(Number(n), truth.systems, `${f} claims ${n} design systems, ${truth.systems} exist`);
+    for (const [, n] of src.matchAll(/(\d[\d,]*) (?:brand-grade )?design systems/g)) {
+      assert.equal(Number(n.replace(/,/g, '')), truth.systems, `${f} claims ${n} design systems, ${truth.systems} exist`);
+    }
+  }
+
+  // The library count is written out in prose across the docs, skills and rules.
+  // It went from 138 to 2,144 in one release, so every one of them is read here:
+  // "2,144 design systems", "2,144-system library", "2,144 named systems",
+  // "2,144 design-system specs", and the Thai "ดีไซน์ซิสเต็ม 2,144 ชุด".
+  const prose = ['README.md', 'AGENTS.md', 'CLAUDE.md', 'taste/aesthetic-systems.md',
+    ...readdirSync(join(ROOT, 'docs')).filter(f => f.endsWith('.md')).map(f => `docs/${f}`),
+    ...readdirSync(join(ROOT, '.claude/rules')).map(f => `.claude/rules/${f}`),
+    ...readdirSync(join(ROOT, '.claude/skills')).map(s => `.claude/skills/${s}/SKILL.md`)
+      .filter(f => existsSync(join(ROOT, f)))];
+  const claims = /(\d[\d,]*)(?: (?:named |brand-grade |concrete, named |measured )?design systems| named systems|-system library| design-system specs| named design systems)|ดีไซน์ซิสเต็ม (\d[\d,]*) ชุด|1 ใน (\d[\d,]*) ชุด/g;
+  for (const f of prose) {
+    for (const m of read(...f.split('/')).matchAll(claims)) {
+      const n = Number((m[1] || m[2] || m[3]).replace(/,/g, ''));
+      assert.equal(n, truth.systems, `${f} says "${m[0]}", ${truth.systems} systems ship`);
     }
   }
 
@@ -167,9 +185,31 @@ test('every counted thing matches what the surfaces claim', () => {
 
   // bin/cli.js must derive, never type.
   const cli = read('bin', 'cli.js');
-  for (const typed of [/'\d+ DTCG token files/, /'\d+ component specs/, /'\d+ runnable/]) {
+  for (const typed of [/'\d+ DTCG token files/, /'\d+ component specs/, /'\d+ runnable/, /[\d,]+-system library/]) {
     assert.ok(!typed.test(cli), `bin/cli.js types a count (${typed}); derive it from the folder`);
   }
+});
+
+test('design-systems/catalog.md is what the library generates', () => {
+  // 2,144 entries are too many to keep by hand. The file is generated, and this
+  // is what stops a spec being added or removed without the catalog following.
+  const want = execFileSync('python3', ['scripts/design_systems.py', 'catalog'],
+    { cwd: ROOT, maxBuffer: 1 << 26 }).toString('utf8');
+  assert.equal(read('design-systems', 'catalog.md'), want,
+    'design-systems/catalog.md is stale: python3 scripts/design_systems.py catalog > design-systems/catalog.md');
+});
+
+test('design-systems/library.json is what the library generates, at this version', () => {
+  // An npm install carries this index and no spec. Each spec is fetched from the
+  // tag the index names and checked against the sha256 it records, so a stale
+  // index points at the wrong tag or refuses a spec that changed, and either way
+  // the user gets nothing.
+  const want = execFileSync('python3', ['scripts/design_systems.py', 'index'],
+    { cwd: ROOT, maxBuffer: 1 << 26 }).toString('utf8');
+  assert.equal(read('design-systems', 'library.json'), want,
+    'design-systems/library.json is stale: python3 scripts/design_systems.py index > design-systems/library.json');
+  const { version } = JSON.parse(read('package.json'));
+  assert.equal(JSON.parse(want).ref, `v${version}`, 'the index names a tag other than this version');
 });
 
 test('evals/README spells the same number it scores with', () => {

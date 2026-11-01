@@ -24,16 +24,16 @@ const pressVariants: Variants = {
   },
 };
 
-const rest: TargetAndTransition = { opacity: 1, y: 0, scale: 1, filter: "blur(0px)" };
-/** Text rises about .3em out of a soft blur; the outgoing label lifts away a little faster. */
-const textIn: TargetAndTransition = { opacity: 0, y: 4, filter: `blur(${motionTokens.blur.soft}px)` };
-const textOut: TargetAndTransition = { opacity: 0, y: -3, filter: `blur(${motionTokens.blur.soft}px)`, transition: { duration: motionTokens.duration.fast, ease: [...motionTokens.ease.standard] } };
-const iconIn: TargetAndTransition = { opacity: 0, scale: .6, filter: `blur(${motionTokens.blur.subtle}px)` };
-const iconOut: TargetAndTransition = { opacity: 0, scale: .6, filter: `blur(${motionTokens.blur.subtle}px)`, transition: { duration: motionTokens.duration.fast, ease: [...motionTokens.ease.standard] } };
+const rest: TargetAndTransition = { opacity: 1, y: 0, scale: 1 };
+/** One clean crossfade: the new label rises 2px as it fades in, the outgoing one fades out faster. No blur. */
+const textIn: TargetAndTransition = { opacity: 0, y: 2 };
+const textOut: TargetAndTransition = { opacity: 0, transition: { duration: .1, ease: [...motionTokens.ease.standard] } };
+const iconIn: TargetAndTransition = { opacity: 0, scale: .85 };
+const iconOut: TargetAndTransition = { opacity: 0, transition: { duration: .1, ease: [...motionTokens.ease.standard] } };
 const fadeIn: TargetAndTransition = { ...rest, opacity: 0 };
 const fadeOut: TargetAndTransition = { opacity: 0, transition: { duration: motionTokens.duration.instant } };
-/** Scale rides the spring; opacity and blur tween so blur never overshoots below zero. */
-const iconEnter = { ...motionTokens.spring.snappy, opacity: { duration: motionTokens.duration.fast, ease: [...motionTokens.ease.enter] }, filter: { duration: motionTokens.duration.fast, ease: [...motionTokens.ease.enter] } } as const;
+/** Scale rides the spring; opacity tweens. */
+const iconEnter = { ...motionTokens.spring.snappy, opacity: { duration: motionTokens.duration.fast, ease: [...motionTokens.ease.enter] } } as const;
 
 /** A key for the label content: text plus element names, so a new label or icon crossfades while prop-only updates stay in place. */
 function labelKey(node: ReactNode): string {

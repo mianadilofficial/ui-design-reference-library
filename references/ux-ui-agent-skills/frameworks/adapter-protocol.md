@@ -1,12 +1,12 @@
 # Framework Adapter Protocol
 
-The skill supports **any** UI framework — not by shipping one file per framework, but by defining a universal translation contract. An *adapter* is the concrete application of this protocol to one target. Three full reference adapters ship in `frameworks/` (`react-tailwind.md`, `nextjs.md`, `swiftui.md`); concise adapters for other popular targets live in `frameworks/adapters/`. When no adapter exists for a requested target, **generate one on the fly** using the checklist at the bottom.
+The skill supports **any** UI framework, not by shipping one file per framework but by defining a universal translation contract. An *adapter* is the concrete application of this protocol to one target. Three full reference adapters ship in `frameworks/` (`react-tailwind.md`, `nextjs.md`, `swiftui.md`); concise adapters for other popular targets live in `frameworks/adapters/`. When no adapter exists for a requested target, **generate one on the fly** using the checklist at the bottom.
 
 > This protocol is *how to render*. It is orthogonal to *what to render* (`components/`), *what it looks like* (`tokens/`, `taste/`), and *whether it's usable* (`accessibility/`). Always compose all four.
 
 ---
 
-## The Contract — 5 things every adapter resolves
+## The Contract: 5 things every adapter resolves
 
 ### 1. Token Resolution
 Map the 3-tier token system (`tokens/*.json`) to the target's theming primitive. Primitives never appear in components; components consume **semantic** or **component** tokens.
@@ -23,11 +23,11 @@ Rule: produce the token layer first, then components reference it. Never hardcod
 
 ### 2. Component Contract
 Every generated component must expose:
-- **Variants** (e.g. primary/secondary/ghost/destructive) — driven by a typed prop.
+- **Variants** (e.g. primary/secondary/ghost/destructive): driven by a typed prop.
 - **Sizes** (sm/md/lg) with exact dimensions from `tokens/sizing.json`.
-- **The 8 states** (default, hover, focus, active, disabled, loading, error, selected) per `CLAUDE.md` — render only those that apply.
-- **Accessibility wiring** — role/name/state, keyboard model, focus management (`accessibility/aria-patterns.md`).
-- **Composition** — ref forwarding / slots / children as the target idiomatically allows.
+- **The 8 states** (default, hover, focus, active, disabled, loading, error, selected) per `CLAUDE.md`; render only those that apply.
+- **Accessibility wiring**: role/name/state, keyboard model, focus management (`accessibility/aria-patterns.md`).
+- **Composition**: ref forwarding / slots / children as the target idiomatically allows.
 
 ### 3. Styling Strategy
 Pick the idiomatic mechanism and map our tokens onto it:
@@ -44,23 +44,23 @@ Pick the idiomatic mechanism and map our tokens onto it:
 ---
 
 ## Output Rules (all adapters inherit these)
-1. Use design tokens — never hardcode color/size/space/motion.
+1. Use design tokens; never hardcode color/size/space/motion.
 2. Include accessibility on every interactive element.
 3. Handle all applicable states.
 4. Support dark mode via semantic tokens.
 5. Mobile-first / breakpoint-aware (`tokens/breakpoints.json`).
-6. Copy-paste ready — complete files, no placeholders (`workflows/redesign-audit.md` → Output Completeness).
+6. Copy-paste ready: complete files, no placeholders (`workflows/redesign-audit.md` → Output Completeness).
 
 ---
 
-## Checklist — author a new adapter on demand
+## Checklist: author a new adapter on demand
 
 When asked for a framework with no file:
 1. **Identify** the framework's: component unit, styling mechanism, theming primitive, reactivity model, ref/slot idiom, and reduced-motion query.
-2. **Token layer** — show how `tokens/*` become the target's theme (table row above).
-3. **One worked component** — implement Button end-to-end (variants, sizes, 8 states, a11y, dark mode) as the template the rest follow.
-4. **State + a11y mapping** — how focus-visible, disabled, aria/role are expressed.
-5. **Motion** — how a transition token + reduced-motion is applied.
-6. **Note gotchas** — SSR, hydration, scoped-style leakage, platform splits.
+2. **Token layer**: show how `tokens/*` become the target's theme (table row above).
+3. **One worked component**: implement Button end-to-end (variants, sizes, 8 states, a11y, dark mode) as the template the rest follow.
+4. **State + a11y mapping**: how focus-visible, disabled, aria/role are expressed.
+5. **Motion**: how a transition token + reduced-motion is applied.
+6. **Note gotchas**: SSR, hydration, scoped-style leakage, platform splits.
 
-Keep it concise — this protocol carries the shared rules; the adapter only records what's *different* about the target.
+Keep it concise. This protocol carries the shared rules; the adapter only records what's *different* about the target.

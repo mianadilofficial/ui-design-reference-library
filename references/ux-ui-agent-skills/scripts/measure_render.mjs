@@ -2,7 +2,7 @@
 /**
  * REAL-render WCAG gate. Opens HTML in headless Chrome, disables transitions,
  * and measures the contrast of every visible text element against its true
- * (alpha-composited) background. This is ground truth — not hand-typed numbers.
+ * (alpha-composited) background. This is ground truth, not hand-typed numbers.
  *
  * Usage:
  *   node scripts/measure_render.mjs examples/apple-demo/index.html
@@ -16,6 +16,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { COLOR_INIT } from './_color.mjs';
 
 let chromium;
 try { ({ chromium } = await import('playwright')); }
@@ -24,7 +25,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`measure_render: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`measure_render: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -57,7 +58,7 @@ catch {
       console.log('Fix: npm install && npx playwright install chrome');
       process.exit(1);
     }
-    console.log('measure_render: no browser available — SKIPPED');
+    console.log('measure_render: no browser available: SKIPPED');
     process.exit(0);
   }
 }
@@ -65,12 +66,13 @@ catch {
 let totalFail = 0;
 for (const f of files) {
   const page = await browser.newPage();
+  await page.addInitScript(COLOR_INIT);
   await page.goto('file://' + resolve(f));
   await page.addStyleTag({ content: '*{transition:none!important;animation:none!important}' });
   if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
 
   const items = await page.evaluate(() => {
-    const toRGBA = s => { const m = s && s.match(/[\d.]+/g); return m ? [+m[0], +m[1], +m[2], m[3] !== undefined ? +m[3] : 1] : null; };
+    const toRGBA = s => window.__dsRGBA(s);
     function bgOf(el) {
       const stack = []; let n = el;
       while (n) { const c = toRGBA(getComputedStyle(n).backgroundColor); if (c && c[3] > 0) { stack.push(c); if (c[3] >= 1) break; } n = n.parentElement; }
@@ -86,6 +88,11 @@ for (const f of files) {
       if (!el.offsetParent && getComputedStyle(el).position !== 'fixed') continue; // not visible
       const cs = getComputedStyle(el);
       if (cs.visibility === 'hidden' || +cs.opacity === 0) continue;
+      // An .sr-only label is clipped to 1px: it has no visual presentation, so
+      // contrast (WCAG 1.4.3) does not apply. The old colour parser hid this by
+      // misreading the color-mix() cell behind one; reading colours right exposed it.
+      const box = el.getBoundingClientRect();
+      if (box.width <= 2 && box.height <= 2) continue;
       const col = toRGBA(cs.color); if (!col) continue;
       const px = parseFloat(cs.fontSize), bold = parseInt(cs.fontWeight, 10) >= 700;
       out.push({ tag: el.tagName.toLowerCase() + (el.className ? '.' + String(el.className).split(' ')[0] : ''),
@@ -104,10 +111,10 @@ for (const f of files) {
   const mode = dark ? ' [dark]' : '';
   if (fails.length) {
     totalFail += fails.length;
-    console.log(`\nFAIL ${f}${mode} — ${fails.length} text pair(s) below WCAG AA:`);
+    console.log(`\nFAIL ${f}${mode}: ${fails.length} text pair(s) below WCAG AA:`);
     for (const x of fails) console.log(`  x <${x.tag}> "${x.text}" ${x.r.toFixed(2)}:1 (need ${x.need})  [rgb(${x.color.map(Math.round)}) on rgb(${x.bg.map(Math.round)})]`);
   } else {
-    console.log(`OK   ${f}${mode} — all ${items.length} text element(s) meet WCAG AA`);
+    console.log(`OK   ${f}${mode}: all ${items.length} text element(s) meet WCAG AA`);
   }
 }
 await browser.close();

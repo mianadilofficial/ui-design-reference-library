@@ -11,8 +11,8 @@ is the short version.
 - [How to Use](#how-to-use)
 - [Project Structure](#project-structure)
 - [Token Architecture](#token-architecture)
-- [Supported Frameworks — *any*](#supported-frameworks--any)
-- [Design-System Interop — *any*](#design-system-interop--any)
+- [Supported Frameworks: *any*](#supported-frameworks-any)
+- [Design-System Interop: *any*](#design-system-interop-any)
 - [Accessibility Standards](#accessibility-standards)
 - [Design Review Output](#design-review-output)
 - [Customization](#customization)
@@ -35,9 +35,9 @@ your-product/
   CLAUDE.local.md        your personal prefs, gitignored
   .mcp.json              Figma / Notion connections, env-expanded, no secrets
   .claude/
-    rules/               components.md · tokens.md · accessibility.md — load only when relevant
+    rules/               components.md · tokens.md · accessibility.md, load only when relevant
     skills/              repeatable workflows your team adds
-    commands/            /gate — the project's own all-or-nothing check
+    commands/            /gate: the project's own all-or-nothing check
     settings.json        shared permissions, checked into git
   design-tokens.json     source of truth: color, type, spacing (light + dark, WCAG-verified)
   src/components/        the real UI Claude reads and edits
@@ -68,7 +68,7 @@ WCAG 2.2 AA in both light and dark before a project starts from it.
 ## How to Use
 
 
-> **New here?** Read [**docs/WORKFLOW.md**](WORKFLOW.md) for the full end-to-end picture — how the Request Router loads layers on demand, real usage scenarios, and the automated release pipeline.
+> **New here?** Read [**docs/WORKFLOW.md**](WORKFLOW.md) for the full end-to-end picture: how the Request Router loads layers on demand, real usage scenarios, and the automated release pipeline.
 
 There are **three ways** to drive the kit. Use whichever fits the moment.
 
@@ -88,7 +88,7 @@ Type a slash command to invoke a capability directly. Each skill loads only the 
 
 Each `SKILL.md` carries an `invocation` field, so it is clear which ones you drive and which ones the agent reaches for on its own. Both kinds can be typed as a slash command.
 
-**User-invoked — you start them, they orchestrate a whole job**
+**User-invoked: you start them, they orchestrate a whole job**
 
 | Command | What it does |
 |---------|--------------|
@@ -99,7 +99,7 @@ Each `SKILL.md` carries an `invocation` field, so it is clear which ones you dri
 | `/migrate-design-system` | Map to or from Material 3, Apple HIG, shadcn, Radix, and the rest |
 | `/governance` | Version, contribute, deprecate: how the system is allowed to change |
 
-**Model-invoked — the discipline the agent applies while it works**
+**Model-invoked: the discipline the agent applies while it works**
 
 | Command | What it does |
 |---------|--------------|
@@ -108,7 +108,7 @@ Each `SKILL.md` carries an `invocation` field, so it is clear which ones you dri
 | `/design-code` | Generate code for any framework via the Adapter Protocol |
 | `/design-review` | Score a design across 6 dimensions plus Nielsen, with a findings table |
 | `/a11y-audit` | WCAG 2.2 audit and contrast checks |
-| `/apply-aesthetic` | Apply an archetype or one of 138 named design systems |
+| `/apply-aesthetic` | Apply an archetype or one of 2,144 named design systems |
 | `/design-qa` | Stand up the CI gates that keep regressions out |
 | `/ux-writing` | Write or review buttons, errors, empty states, microcopy |
 | `/token-build` | Tokens to CSS, Tailwind, iOS, Android, Compose |
@@ -126,7 +126,7 @@ Five slash commands round it out: `/grill-me` interrogates the brief before anyt
 
 ### 3. Run the scripts (real, no dependencies)
 
-Plain `python3` — useful in the terminal or CI:
+Plain `python3`, useful in the terminal or CI:
 
 ```bash
 python3 scripts/validate_tokens.py                 # validate token JSON + alias refs
@@ -135,14 +135,14 @@ python3 scripts/contrast.py "#1d1d1f" "#ffffff"    # WCAG contrast ratio for one
 python3 scripts/validate_component_spec.py         # every component spec is complete
 python3 scripts/lint_hardcodes.py src/             # no off-theme hex/px/timing (consistency)
 python3 scripts/lint_taste.py page.html            # heuristic anti-slop taste check
-python3 scripts/design_systems.py list             # browse the 138-system library
+python3 scripts/design_systems.py list             # browse the 2,144-system library
 python3 scripts/scaffold_component.py "Date Picker" # emit a component spec stub
 python3 scripts/validate_template.py               # the starter template stays sound
 python3 scripts/validate_instruction_surface.py    # no always-on rule got demoted
 node    evals/run.mjs --self-test                  # the cold-start scorer still works
 ```
 
-These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity, **WCAG contrast in light + dark**, spec completeness, and zero hardcoded values — so theme/color stays consistent across every page and accessibility is enforced, not assumed.
+These are the same gates CI runs (`.github/workflows/ci.yml`): token validity, **WCAG contrast in light + dark**, spec completeness, and zero hardcoded values. That keeps theme/color stays consistent across every page and accessibility is enforced, not assumed.
 
 ### Typical flow
 
@@ -165,54 +165,54 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 
 ```
 .
-├── CLAUDE.md                  # Agent persona, gates, router — the always-on brief (~270 lines)
-├── CONTEXT.md                 # Ubiquitous language — shared domain vocabulary
+├── CLAUDE.md                  # Agent persona, gates, router: the always-on brief (~270 lines)
+├── CONTEXT.md                 # Ubiquitous language: shared domain vocabulary
 ├── CLAUDE.local.md            # Personal prefs (gitignored, per-machine)
-├── .mcp.example.json          # Optional Figma MCP for THIS repo — copy to .mcp.json to use
+├── .mcp.example.json          # Optional Figma MCP for THIS repo; copy to .mcp.json to use
 │
 ├── .claude/rules/             # Depth split out of CLAUDE.md, loaded only when relevant
 │   └── tokens-and-color · typography-and-spacing · components · accessibility
 │       frameworks · review-and-research · brand-and-operations
-├── .claude/skills/            # Runnable skills — invoke via /name
+├── .claude/skills/            # Runnable skills, invoke via /name
 │   └── design-tokens · design-component · design-code · design-review · a11y-audit
 │       apply-aesthetic · redesign · migrate-design-system · prototype · ux-writing
-├── .claude/commands/          # Slash commands — /grill-me · /gate · /critique · /ship · /scaffold-project
+├── .claude/commands/          # Slash commands: /grill-me · /gate · /critique · /ship · /scaffold-project
 ├── .claude/settings.json      # Shared permissions (scripts allowlist), checked into git
-├── .claude/agents/            # design-critic — the adversarial reviewer behind /critique
+├── .claude/agents/            # design-critic: the adversarial reviewer behind /critique
 │
-├── evals/                     # Cold-start briefs + run.mjs — 14 objective gates on produced work
+├── evals/                     # Cold-start briefs + run.mjs: 14 objective gates on produced work
 │
 ├── reference/                 # Real screens the agent studies before designing/reviewing
 │
-├── templates/product-design/  # Starter layout for a NEW product repo — /scaffold-project
+├── templates/product-design/  # Starter layout for a NEW product repo (/scaffold-project)
 │   ├── CLAUDE.md · CLAUDE.local.md.template · .mcp.json · design-tokens.json
 │   └── .claude/{rules,skills,commands,settings.json} · src/components · public/images · reference
 │
 ├── scripts/                   # Real helper scripts (python3, no deps)
 │   ├── validate_tokens.py     # JSON + alias validation for tokens/
 │   ├── contrast.py            # WCAG 2.2 contrast-ratio checker
-│   ├── design_systems.py      # Browse/search the 138-system library
+│   ├── design_systems.py      # Browse/search the 2,144-system library
 │   └── scaffold_component.py  # Emit a component spec stub
 │
-├── tokens/                    # Design tokens (DTCG format) — 13 files
+├── tokens/                    # Design tokens (DTCG format), 13 files
 │   ├── colors · typography · spacing · shadows · borders · breakpoints · motion
 │   └── gradients · opacity · blur · sizing · states · theming
 │
 ├── taste/                     # Aesthetic judgment layer
 │   ├── design-taste.md        # Anti-slop doctrine, banned defaults, pre-flight check
-│   ├── aesthetic-systems.md   # Archetypes + catalog of 138 design systems
+│   ├── aesthetic-systems.md   # Archetypes, the Library Contract, how to find a system
 │   └── motion-choreography.md # Motion grammar + reduced-motion parity
 │
 ├── design-systems/            # Interop + brand library
 │   ├── interop-protocol.md    # Map to/from ANY design system
 │   ├── crosswalk.md           # Material 3 · Apple HIG · Fluent · Carbon · shadcn · Radix
 │   │                          # · Ant · Polaris · Primer · Atlassian · Bootstrap
-│   └── library/<name>/        # 138 brand-grade DESIGN.md specs
+│   └── library/<name>/        # 2,144 DESIGN.md specs (catalog.md lists them)
 │
 ├── content/                   # UX writing & content design
 │   └── voice-tone.md          # Voice & tone, error/empty-state copy, microcopy, inclusive language
 │
-├── components/                # Component specs (Atomic Design) — 50 components
+├── components/                # Component specs (Atomic Design), 50 components
 │   ├── atoms · molecules · organisms · templates
 │   ├── navigation · feedback · forms-advanced · overlays
 │   └── data-display · data-viz · icon-system
@@ -227,7 +227,7 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 │   ├── design-review.md · design-to-code.md · prototyping.md · redesign-audit.md
 │   └── governance.md · token-build.md · figma-integration.md · design-qa.md · performance.md
 │
-└── frameworks/                # Implementation patterns — ANY framework
+└── frameworks/                # Implementation patterns for ANY framework
     ├── adapter-protocol.md    # Universal translation contract
     ├── react-tailwind.md · nextjs.md · swiftui.md   # full references
     └── adapters/              # vue · svelte · angular · solid · web-components-lit · qwik · astro
@@ -236,7 +236,7 @@ These are the same gates CI runs (`.github/workflows/ci.yml`) — token validity
 ```
 
 > [!NOTE]
-> The **design-taste layer** (`taste/`) and the **138-system library** (`design-systems/library/`) set visual direction; the **system** (tokens, components, accessibility) keeps it correct. Taste serves the Aesthetics tier and never overrides accessibility. Skills under `.claude/skills/` run with agent permissions — review before use.
+> The **design-taste layer** (`taste/`) and the **2,144-system library** (`design-systems/library/`) set visual direction; the **system** (tokens, components, accessibility) keeps it correct. Taste serves the Aesthetics tier and never overrides accessibility. Skills under `.claude/skills/` run with agent permissions. Review before use.
 
 ---
 
@@ -257,17 +257,17 @@ The design token system follows a **3-tier hierarchy** using the [DTCG](https://
 
 | Tier | Role | Example |
 |------|------|---------|
-| **Primitive** | Raw color/size values — never referenced directly | `blue.600`, `space.4` |
-| **Semantic** | Purpose-based aliases — used in design | `action.primary`, `text.secondary`, `surface.card` |
-| **Component** | Scoped to specific components — used in code | `button.primary-bg`, `input.border-focus` |
+| **Primitive** | Raw color/size values, never referenced directly | `blue.600`, `space.4` |
+| **Semantic** | Purpose-based aliases, used in design | `action.primary`, `text.secondary`, `surface.card` |
+| **Component** | Scoped to specific components, used in code | `button.primary-bg`, `input.border-focus` |
 
-> Dark mode works by swapping **semantic** tokens — primitives stay the same.
-
----
+> Dark mode works by swapping **semantic** tokens; primitives stay the same.
 
 ---
 
-## Supported Frameworks — *any*
+---
+
+## Supported Frameworks: *any*
 
 
 The [**Framework Adapter Protocol**](../frameworks/adapter-protocol.md) defines a universal token→framework contract, so the agent can target a stack even with no dedicated file (it generates an adapter on demand).
@@ -280,16 +280,16 @@ The [**Framework Adapter Protocol**](../frameworks/adapter-protocol.md) defines 
 | **Next.js** | 15 (App Router) | Server/Client Components, `next/font`, `next/image`, Server Actions |
 | **SwiftUI** | 6 (iOS 18+) | `ButtonStyle`, `ViewModifier`, `@ScaledMetric`, Dynamic Type |
 
-**Concise adapters** — Vue 3 · Svelte 5 · Angular · SolidJS · Web Components (Lit) · React Native · Flutter · Jetpack Compose · vanilla CSS · CSS-in-JS (emotion/vanilla-extract/Panda)
+**Concise adapters**: Vue 3 · Svelte 5 · Angular · SolidJS · Web Components (Lit) · React Native · Flutter · Jetpack Compose · vanilla CSS · CSS-in-JS (emotion/vanilla-extract/Panda)
 
 ---
 
 ---
 
-## Design-System Interop — *any*
+## Design-System Interop: *any*
 
 
-Adopt, build on, or migrate between external design systems via a role-based crosswalk ([interop-protocol](../design-systems/interop-protocol.md) + [crosswalk](../design-systems/crosswalk.md)). Curated tables: **Material Design 3 · Apple HIG · Fluent 2 · Carbon · shadcn/ui · Radix** (others derived on demand). Plus a **library of 138 brand-grade design systems** (apple, linear, stripe, vercel, notion, spotify, tesla…) under `design-systems/library/`.
+Adopt, build on, or migrate between external design systems via a role-based crosswalk ([interop-protocol](../design-systems/interop-protocol.md) + [crosswalk](../design-systems/crosswalk.md)). Curated tables: **Material Design 3 · Apple HIG · Fluent 2 · Carbon · shadcn/ui · Radix** (others derived on demand). Plus a **library of 2,144 design systems** (apple, linear, stripe, vercel, notion, spotify, tesla…) under `design-systems/library/`.
 
 ---
 
@@ -330,13 +330,13 @@ Findings are categorized: **Critical** (must fix) → **Major** (fix this sprint
 ## Customization
 
 
-This is a **starter kit** — make it yours:
+This is a **starter kit**. Make it yours:
 
-- **Brand colors** — edit `tokens/colors.json` primitives, then update semantic references
-- **Typography** — swap font families in `tokens/typography.json` and framework files
-- **Components** — add new components following the existing spec format in `components/`
-- **Frameworks** — add new framework files in `frameworks/` (e.g., `vue.md`, `flutter.md`)
-- **Workflows** — adapt review rubrics and checklists in `workflows/` to your team's process
+- **Brand colors**: edit `tokens/colors.json` primitives, then update semantic references
+- **Typography**: swap font families in `tokens/typography.json` and framework files
+- **Components**: add new components following the existing spec format in `components/`
+- **Frameworks**: add new framework files in `frameworks/` (e.g., `vue.md`, `flutter.md`)
+- **Workflows**: adapt review rubrics and checklists in `workflows/` to your team's process
 
 ---
 

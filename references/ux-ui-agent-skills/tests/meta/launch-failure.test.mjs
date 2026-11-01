@@ -27,7 +27,7 @@ test('the stub finds the render gates', () => {
 
 for (const gate of gates) {
   test(`${gate} fails, not skips, when no browser launches`, () => {
-    const args = gate === 'verify_focustrap.mjs' ? [page, '--open', 'button'] : [page];
+    const args = gate === 'verify_focustrap.mjs' ? [page, '--open=button'] : [page];
     const r = spawnSync('node', ['--import', register, join(ROOT, 'scripts', gate), ...args], {
       cwd: ROOT, encoding: 'utf8', timeout: 60000,
       env: { ...process.env, DS_REQUIRE_BROWSER: '1' },

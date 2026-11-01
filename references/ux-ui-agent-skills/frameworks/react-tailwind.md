@@ -15,7 +15,7 @@ Tailwind v4 uses CSS-first configuration. Map design tokens to CSS custom proper
 @import "tailwindcss";
 
 @theme {
-  /* Colors — map from tokens/colors.json semantic tier */
+  /* Colors: map from tokens/colors.json semantic tier */
   --color-action-primary: #2563eb;
   --color-action-primary-hover: #1d4ed8;
   --color-action-primary-active: #1e40af;
@@ -44,7 +44,7 @@ Tailwind v4 uses CSS-first configuration. Map design tokens to CSS custom proper
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", monospace;
 
-  /* Spacing — extends default scale */
+  /* Spacing: extends default scale */
   --spacing-4_5: 18px;
 
   /* Shadows */
@@ -416,7 +416,7 @@ export function useTheme() {
 ### Animation with `prefers-reduced-motion`
 
 ```css
-/* Tailwind v4 — respect motion preferences */
+/* Tailwind v4: respect motion preferences */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

@@ -41,7 +41,7 @@ The persistent top-level navigation bar.
 
 **Responsive:**
 - **Desktop (≥ lg):** Full horizontal nav
-- **Tablet (md–lg):** Collapsed nav → hamburger menu or priority+ pattern
+- **Tablet (md-lg):** Collapsed nav → hamburger menu or priority+ pattern
 - **Mobile (< md):** Logo + hamburger + essential actions only
 
 **Animation:**
@@ -49,7 +49,7 @@ The persistent top-level navigation bar.
 - Mobile menu: slide from left, 250ms `ease-in-out`
 
 **Accessibility:**
-- `<header role="banner">` — once per page
+- `<header role="banner">`, once per page
 - `<nav aria-label="Main navigation">` for primary nav
 - Skip link: first focusable element is "Skip to main content"
 - Mobile menu: `aria-expanded`, `aria-controls`, focus trap when open
@@ -87,14 +87,14 @@ A vertical navigation panel with hierarchical navigation and collapsibility.
 |-------|-------|---------|----------|
 | Expanded | 256px | Icons + labels | Default on desktop |
 | Collapsed | 64px | Icons only + tooltips | User preference |
-| Hidden | 0px | — | Mobile default |
+| Hidden | 0px | - | Mobile default |
 | Overlay | 256px | Full, over content | Mobile when open |
 
 **Collapse Animation:** Width transition 200ms `ease-in-out`. Text fades out at 150ms, icons remain.
 
 **Responsive:**
 - **Desktop (≥ lg):** Persistent sidebar, push content
-- **Tablet (md–lg):** Collapsed by default, expand on hover/click
+- **Tablet (md-lg):** Collapsed by default, expand on hover/click
 - **Mobile (< md):** Hidden; hamburger triggers overlay with backdrop
 
 **Accessibility:**
@@ -212,7 +212,7 @@ A structured data display with sorting, filtering, pagination, and row actions.
 - Select all: `aria-label="Select all rows"`
 - Row checkbox: `aria-label="Select [item name]"`
 - Pagination: `<nav aria-label="Table pagination">`
-- Status badges: don't rely on color alone — include text
+- Status badges: don't rely on color alone; include text
 - Announce sort changes and filter results via `aria-live="polite"`
 
 ---
@@ -221,7 +221,7 @@ A structured data display with sorting, filtering, pagination, and row actions.
 
 A focused overlay that interrupts workflow for critical information or action.
 
-> **Non-negotiable — build ONE reusable Modal primitive and reuse it for every dialog.** Never hand-roll a div-as-modal per screen. Every instance MUST have: focus trap, `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape-to-close, **focus returned to the trigger on close**, and a backdrop. Missing the focus trap violates WCAG 2.4.3 + 2.1.2. Reference implementation: `examples/golden/Modal.tsx`.
+> **Non-negotiable: build ONE reusable Modal primitive and reuse it for every dialog.** Never hand-roll a div-as-modal per screen. Every instance MUST have: focus trap, `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, Escape-to-close, **focus returned to the trigger on close**, and a backdrop. Missing the focus trap violates WCAG 2.4.3 + 2.1.2. Reference implementation: `examples/golden/Modal.tsx`.
 
 **Grid Structure:**
 ```
@@ -275,7 +275,7 @@ A focused overlay that interrupts workflow for critical information or action.
 
 **Confirmation variant (destructive):**
 - The confirm button uses the **danger/destructive** token (never primary) and the SAME variant as the trigger that opened it.
-- The confirm label **restates the action** ("Delete account"), matching the title — not "Delete"/"OK"/"Yes" (`content/voice-tone.md`).
+- The confirm label **restates the action** ("Delete account"), matching the title, not "Delete"/"OK"/"Yes" (`content/voice-tone.md`).
 - **Irreversible** actions (cannot be undone) require friction (WCAG 3.3.4/3.3.6): a **type-to-confirm** field (e.g. type "DELETE") that enables the confirm button; focus the field on open. Reference: `examples/sample-app/preview.html`.
 - Order: Cancel (secondary) then the destructive action; default focus goes to the safe path / the confirm field, never auto-focuses the destructive button.
 

@@ -1,233 +1,271 @@
-# Design System Inspired by Pinterest
+---
+version: alpha
+name: Pinterest
+category: "Media & Consumer Tech"
+description: 'Pinterest.com landing page as measured: a white canvas with near-black (#000000) text, the single saturated brand red #e60023 on its "Join Pinterest for free" and "Log in" buttons (16px radius, 48px tall, #cc001f on hover), warm sand neutrals (#e5e5e0) for secondary fills, and the proprietary Pin Sans family at weights 400 to 900, with a 48px/900 hero headline. Photographs carry all the color; the chrome stays neutral.'
 
-> Category: Media & Consumer
-> Visual discovery. Red accent, masonry grid, image-first.
+colors:
+  canvas: "#ffffff"
+  ink: "#000000"
+  primary: "#e60023"
+  on-primary: "#ffffff"
+  surface-sand: "#e5e5e0"
+  ink-muted: "#62625b"
+  ink-inverse: "#ffffff"
+  ink-plum: "#211922"
+  primary-hover: "#cc001f"
+typography:
+  display:
+    fontFamily: >-
+      "Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+      Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif
+    fontSize: 48px
+    fontWeight: 900
+    lineHeight: 52.8px
+    letterSpacing: "-0.5px"
+  heading:
+    fontFamily: >-
+      "Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+      Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 700
+    lineHeight: 22.4px
+  body:
+    fontFamily: >-
+      "Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+      Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif
+    fontSize: 14px
+    fontWeight: 400
+  button:
+    fontFamily: >-
+      "Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+      Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 19.2px
+  nav:
+    fontFamily: >-
+      "Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+      Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif
+    fontSize: 12px
+    fontWeight: 400
+  input:
+    fontFamily: >-
+      "Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue",
+      Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 400
+rounded:
+  xs: 8px
+  sm: 12px
+  md: 16px
+  lg: 20px
+  xl: 24px
+  2xl: 32px
+  pill: 9999px
+spacing:
+  s1: 4px
+  s2: 6px
+  s3: 8px
+  s4: 11px
+  s5: 12px
+  s6: 14px
+  s7: 15.8px
+  s8: 16px
+  s9: 24px
+  s10: 32px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"
+    padding: 6px 14px
+    height: 48px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-login:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.md}"
+    padding: 6px 14px
+    height: 48px
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.heading}"
+    rounded: "{rounded.xs}"
+  nav-link:
+    textColor: "{colors.ink-plum}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.pill}"
+  text-input:
+    textColor: "{colors.ink}"
+    typography: "{typography.input}"
+    height: 48px
+  card:
+    textColor: "{colors.ink-plum}"
+    rounded: "{rounded.md}"
+    borderColor: "{colors.canvas}"
+  footer:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.ink-inverse}"
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-Pinterest's website is a warm, inspiration-driven canvas that treats visual discovery like a lifestyle magazine. The design operates on a soft, slightly warm white background with Pinterest Red (`#e60023`) as the singular, bold brand accent. Unlike the cool blues of most tech platforms, Pinterest's neutral scale has a distinctly warm undertone — grays lean toward olive/sand (`#91918c`, `#62625b`, `#e5e5e0`) rather than cool steel, creating a cozy, craft-like atmosphere that invites browsing.
+This file describes the Pinterest logged-out landing page (`https://www.pinterest.com`) as captured and measured at a 1280px desktop viewport and a 390px mobile viewport. Every color, size and radius in the frontmatter was read from the live page; nothing is taken from memory. Where the capture and the measurement disagree, the prose says so.
 
-The typography uses Pin Sans — a custom proprietary font with a broad fallback stack including Japanese fonts, reflecting Pinterest's global reach. At display scale (70px, weight 600), Pin Sans creates large, inviting headlines. At smaller sizes, the system is compact: buttons at 12px, captions at 12–14px. The CSS variable naming system (`--comp-*`, `--sema-*`, `--base-*`) reveals a sophisticated three-tier design token architecture: component-level, semantic-level, and base-level tokens.
+The capture shows a white hero with a 48px black headline ("Conjure your best Halloween") on the left and a loose cluster of rounded photo tiles on the right. Below it, a full-width off-white band introduces a dense collage of photographs, then a row of "More bewitching ideas" cards, then another off-white band with a centered headline and a short paragraph. The only saturated interface color on screen is a single red (`{colors.primary}`, `#e60023`); the photographs supply the rest of the color.
 
-What distinguishes Pinterest is its generous border-radius system (12px–40px, plus 50% for circles) and warm-tinted button backgrounds. The secondary button (`#e5e5e0`) has a distinctly warm, sand-like tone rather than cold gray. The primary red button uses 16px radius — rounded but not pill-shaped. Combined with warm badge backgrounds (`hsla(60,20%,98%,.5)` — a subtle yellow-warm wash) and photography-dominant layouts, the result is a design that feels handcrafted and personal, not corporate and sterile.
+**Key Characteristics**
+- One red, `{colors.primary}`, on the hero button "Join Pinterest for free" and on the header "Log in" button. In the measured background tally it covers a very small area (weight 52) compared with white (4792) and sand (538).
+- Warm neutrals rather than cool grays: the secondary fill `{colors.surface-sand}` (`#e5e5e0`) and the muted text `{colors.ink-muted}` (`#62625b`) are both warm-tinted, as is the off-white section band in the capture.
+- A single typeface, Pin Sans, in four loaded weights (400, 500, 700, 800), with a 900 weight measured on the hero headline.
+- Rounded shapes: buttons measure 16px, photo tiles in the capture have visibly large corners, and the measured radius tally contains 8px, 12px, 16px, 20px, 24px and 32px plus a few circles.
+- Photography is the content. The hero and the collage are image-led; captions beneath cards are small, bold and plain.
 
-**Key Characteristics:**
-- Warm white canvas with olive/sand-toned neutrals — cozy, not clinical
-- Pinterest Red (`#e60023`) as singular bold accent — never subtle, always confident
-- Pin Sans custom font with global fallback stack (including CJK)
-- Three-tier token architecture: `--comp-*` / `--sema-*` / `--base-*`
-- Warm secondary surfaces: sand gray (`#e5e5e0`), warm badge (`hsla(60,20%,98%,.5)`)
-- Generous border-radius: 16px standard, up to 40px for large containers
-- Photography-first content — pins/images are the primary visual element
-- Dark near-purple text (`#211922`) — warm, with a hint of plum
+## Colors
 
-## 2. Color Palette & Roles
+All hex values below are measured on the live page (`web/data/extracted/pinterest.json`) unless a source is named.
 
-### Primary Brand
-- **Pinterest Red** (`#e60023`): Primary CTA, brand accent — bold, confident red
-- **Green 700** (`#103c25`): `--base-color-green-700`, success/nature accent
-- **Green 700 Hover** (`#0b2819`): `--base-color-hover-green-700`, pressed green
+### Brand and action
+- **Pinterest red** (`{colors.primary}`, `#e60023`): background of the extractor's primary CTA ("Join Pinterest for free") and of the "Log in" button. The Pinterest brand-guidelines page says the logo is red with black or white alternatives but publishes no hex value, so the hex rests on the measurement only.
+- **Red hover** (`{colors.primary-hover}`, `#cc001f`): the measured background of the "Log in" button after hover, against `rgb(230, 0, 35)` before.
 
 ### Text
-- **Plum Black** (`#211922`): Primary text — warm near-black with plum undertone
-- **Black** (`#000000`): Secondary text, button text
-- **Olive Gray** (`#62625b`): Secondary descriptions, muted text
-- **Warm Silver** (`#91918c`): `--comp-button-color-text-transparent-disabled`, disabled text, input borders
-- **White** (`#ffffff`): Text on dark/colored surfaces
+- **Ink** (`{colors.ink}`, `#000000`): the most-read text color by character count (1007 characters) and the color of the measured h1 and h2.
+- **Ink plum** (`{colors.ink-plum}`, `#211922`): the computed color of the `body` element, the header and the link role; 176 characters carry it. It is a near-black with a slight purple cast.
+- **Ink muted** (`{colors.ink-muted}`, `#62625b`): 547 characters. It matches the root variable `--base-color-grayscale-300`. In the capture it looks like the small meta line under card titles ("Home Decor ... 59 Pins ... 1mo"); that is an observation of the screenshot, not a measured binding.
+- **Ink inverse** (`{colors.ink-inverse}`, `#ffffff`): 242 characters of page text measure white. The footer measures a `#000000` background.
+- **On primary** (`{colors.on-primary}`, `#ffffff`): the measured label color on the red "Join Pinterest for free" and "Log in" buttons, matching the white labels in the capture.
 
-### Interactive
-- **Focus Blue** (`#435ee5`): `--comp-button-color-border-focus-outer-transparent`, focus rings
-- **Performance Purple** (`#6845ab`): `--sema-color-hover-icon-performance-plus`, performance features
-- **Recommendation Purple** (`#7e238b`): `--sema-color-hover-text-recommendation`, AI recommendation
-- **Link Blue** (`#2b48d4`): Link text color
-- **Facebook Blue** (`#0866ff`): `--facebook-background-color`, social login
-- **Pressed Blue** (`#617bff`): `--base-color-pressed-blue-200`, pressed state
+### Surfaces
+- **Canvas** (`{colors.canvas}`, `#ffffff`): the page background and the largest background by area (weight 4792 against 1053 for the next, a translucent dark value).
+- **Surface sand** (`{colors.surface-sand}`, `#e5e5e0`): in the background tally and visible in the capture as the fill of "I already have an account", "Sign up" and "See more". The root variable `--sema-color-background-elevated-opaque-secondary` resolves to the same `#e5e5e0`.
+- Other background values measured but not promoted to tokens: `#efefef`, `#f6f6f3` (very small area share), `#000000` (footer) and a few translucent overlays.
 
-### Surface & Border
-- **Sand Gray** (`#e5e5e0`): Secondary button background — warm, craft-like
-- **Warm Light** (`#e0e0d9`): Circular button backgrounds, badges
-- **Warm Wash** (`hsla(60, 20%, 98%, 0.5)`): `--comp-badge-color-background-wash-light`, subtle warm badge bg
-- **Fog** (`#f6f6f3`): Light surface (at 50% opacity)
-- **Border Disabled** (`#c8c8c1`): `--sema-color-border-disabled`, disabled borders
-- **Hover Gray** (`#bcbcb3`): `--base-color-hover-grayscale-150`, hover border
-- **Dark Surface** (`#33332e`): Dark section backgrounds
+### What is not measured
+There is no measured error, success or warning color on the landing page. The root variables include `--base-color-green-100` (`#c7f0da`), `--base-color-green-700` (`#103c25`), `--base-color-orange-700` (`#5c2500`), `--base-color-blue-300` (`#677eee`) and red steps such as `--base-color-hover-red-500` (`#9e0a0a`) and `--base-color-pressed-red-600` (`#600606`), but no component on the captured page was observed using them, so they are not tokens here.
 
-### Semantic
-- **Error Red** (`#9e0a0a`): Checkbox/form error states
+## Typography
 
-## 3. Typography Rules
+### Font family
+The only family by character count is **Pin Sans** (1993 characters). The extractor lists these loaded faces: Pin Sans 400, 500, 700 and 800. The computed stack on the body is `"Pin Sans", -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, "Apple Color Emoji", ... Helvetica, "ヒラギノ角ゴ Pro W3", メイリオ, Meiryo, "ＭＳ Ｐゴシック", Arial, sans-serif`, which includes Japanese fallbacks. The root variables expose separate `body`, `heading`, `ui` and `compact` font-family roles, all beginning with `"Pin Sans"`.
 
-### Font Family
-- **Primary**: `Pin Sans`, fallbacks: `-apple-system, system-ui, Segoe UI, Roboto, Oxygen-Sans, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, Helvetica, ヒラギノ角ゴ Pro W3, メイリオ, Meiryo, ＭＳ Ｐゴシック, Arial`
+### Font substitutes
+Pin Sans is proprietary, and no download was found in the sources opened. Use the system fallbacks already present in the stack (it ends in Helvetica and Arial). No claim is made about which open-source face is closest.
 
 ### Hierarchy
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | Pin Sans | 70px (4.38rem) | 600 | normal | normal | Maximum impact |
-| Section Heading | Pin Sans | 28px (1.75rem) | 700 | normal | -1.2px | Negative tracking |
-| Body | Pin Sans | 16px (1.00rem) | 400 | 1.40 | normal | Standard reading |
-| Caption Bold | Pin Sans | 14px (0.88rem) | 700 | normal | normal | Strong metadata |
-| Caption | Pin Sans | 12px (0.75rem) | 400–500 | 1.50 | normal | Small text, tags |
-| Button | Pin Sans | 12px (0.75rem) | 400 | normal | normal | Button labels |
+| Token | Size | Weight | Line height | Tracking | Where measured |
+|---|---|---|---|---|---|
+| `{typography.display}` | 48px | 900 | 52.8px | -0.5px | hero headline |
+| `{typography.heading}` | 16px | 700 | 22.4px | normal | h2 "Trending halloween costumes" |
+| `{typography.body}` | 14px | 400 | normal | normal | extractor's body-text sample ("OR") |
+| `{typography.button}` | 16px | 500 | 19.2px | normal | the red CTA buttons |
+| `{typography.nav}` | 12px | 400 | normal | normal | nav-link role |
+| `{typography.input}` | 16px | 400 | normal | normal | the search input |
 
-### Principles
-- **Compact type scale**: The range is 12px–70px with a dramatic jump — most functional text is 12–16px, creating a dense, app-like information hierarchy.
-- **Warm weight distribution**: 600–700 for headings, 400–500 for body. No ultra-light weights — the type always feels substantial.
-- **Negative tracking on headings**: -1.2px on 28px headings creates cozy, intimate section titles.
-- **Single font family**: Pin Sans handles everything — no secondary display or monospace font detected.
+Other sizes in the character tally: 12px (727 chars), 16px (705), 20px (333), 38px (75), 48px (52), 50px (33), 70px (25), 36px (21), 28px (20). The root variables also name display sizes 72px and 60px (`--sema-font-size-display-1000`, `--sema-font-size-display-900`). Weights in the tally: 400 (1261 chars), 700 (442), 500 (192), 900 (73), 600 (25).
 
-## 4. Component Stylings
+Letter-spacing is measured as `-0.5px` at 48px, 36px and 28px; the root variable `--sema-font-letterspacing-heading-700` is `-0.5px` and body letter-spacing is `0`.
+
+### Principles seen on the page
+- Large headings are heavy (700 to 900) and tightly tracked; body and UI text is regular weight with no tracking.
+- The measured h1 weight of 900 is not among the loaded faces (400/500/700/800); how the browser resolves it was not investigated.
+- Headlines in the second and third sections ("Spooky season starts here", "Bring your favorite ideas to life") are centered; the hero headline is left-aligned.
+
+## Layout
+
+- **Container**: in the 960px-wide capture, content runs from roughly x=52 to x=908. This is read off the screenshot, not from a CSS value.
+- **Hero**: two columns. Left: headline, then two buttons side by side. Right: an asymmetric cluster of photo tiles of different sizes that overlap and crop at the top.
+- **Collage section**: a full-width grid of photographs in about five columns with unequal tile heights, narrow gaps and rounded corners.
+- **Card row**: four cards in a row with arrow controls on the first and last, each with a three-image mosaic above a bold title and a meta line.
+- **Spacing**: measured paddings are 6px, 14px, 8px, 4px, 16px, 32px, 100px, 15.8px, 11px, 24px, 12px, 48px and 150px; gaps are 4px, 8px and 16px. The frontmatter spacing group lists the ones the generator promoted.
+- **Header**: 80px tall in the measurement; it holds the badge and wordmark, "Explore", a wide sand-filled search field, text links ("About", "Businesses", "Create", "News") and the two buttons.
+- **Page length**: 5451px scroll height at 1280px width.
+
+## Elevation & Depth
+
+The page is almost flat. The only measured box-shadow in the whole tally is `rgba(0, 0, 0, 0.2) 0px 3px 12px 0px` (one element). The root variables name floating and raised shadow roles, including a floating y-offset of 3px and a raised spread of 0px. Depth in the capture comes from overlap (hero tiles overlapping each other) and from tonal bands (white against off-white).
+
+| Level | Treatment | Evidence |
+|---|---|---|
+| 0 | flat white or off-white band | most surfaces |
+| 1 | tile overlap | hero image cluster |
+| 2 | `0 3px 12px rgba(0,0,0,0.2)` | the one measured shadow |
+
+A translucent dark value (`#24242180`, area weight 1053) is also in the background tally; its role was not identified.
+
+## Shapes
+
+Measured border radii by frequency: 16px (56 elements), 8px (10), the asymmetric `16px 0 0 16px`, `0 16px 0 0` and `0 0 16px` (10 each), 12px (9), 32px (5), 999px (2), 20px (2), 50% (2), 24px (1).
+
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.xs}` | 8px | link role radius |
+| `{rounded.sm}` | 12px | measured on 9 elements; equals `--sema-rounding-300` |
+| `{rounded.md}` | 16px | buttons (measured on the CTA); the most common radius |
+| `{rounded.lg}` | 20px | rare |
+| `{rounded.xl}` | 24px | rare |
+| `{rounded.2xl}` | 32px | 5 elements |
+| `{rounded.pill}` | 9999px | the nav-link role |
+
+The root variables also define `--sema-rounding-200: 8px` and `--sema-rounding-300: 12px`.
+
+## Components
 
 ### Buttons
-
-**Primary Red**
-- Background: `#e60023` (Pinterest Red)
-- Text: `#000000` (black — unusual choice for contrast on red)
-- Padding: 6px 14px
-- Radius: 16px (generously rounded, not pill)
-- Border: `2px solid rgba(255, 255, 255, 0)` (transparent)
-- Focus: semantic border + outline via CSS variables
-
-**Secondary Sand**
-- Background: `#e5e5e0` (warm sand gray)
-- Text: `#000000`
-- Padding: 6px 14px
-- Radius: 16px
-- Focus: same semantic border system
-
-**Circular Action**
-- Background: `#e0e0d9` (warm light)
-- Text: `#211922` (plum black)
-- Radius: 50% (circle)
-- Use: Pin actions, navigation controls
-
-**Ghost / Transparent**
-- Background: transparent
-- Text: `#000000`
-- No border
-- Use: Tertiary actions
-
-### Cards & Containers
-- Photography-first pin cards with generous radius (12px–20px)
-- No traditional box-shadow on most cards
-- White or warm fog backgrounds
-- 8px white thick border on some image containers
+- **`button-primary`**: fill `{colors.primary}`, 48px tall, padding `6px 14px`, radius `{rounded.md}` (16px), 16px/500 type as measured. Hover fill `{colors.primary-hover}`. Label color `{colors.on-primary}` (white), 16px/500/19.2px type (`{typography.button}`).
+- **`button-login`**: label `{colors.on-primary}`; the extractor's secondary candidate is the header "Log in", which measured the same red fill and geometry as the primary button. The sand buttons in the capture ("Sign up", "I already have an account", "See more") were not recorded as a separate role, so only their fill color (`{colors.surface-sand}`) is documented, not a measured component spec.
+- The border measured on both buttons is `2px solid` with an unset color; the hover record shows a fully transparent white border color.
 
 ### Inputs
-- Email input: white background, `1px solid #91918c` border, 16px radius, 11px 15px padding
-- Focus: semantic border + outline system via CSS variables
+- **`text-input`**: the header search field is 48px tall with 16px text. In the capture it has a sand fill, a magnifier icon and the placeholder "Search for easy dinners, fashion, etc." The extractor recorded no fill or radius on the `input` element itself, so only height and type are tokenized.
+
+### Cards
+- **`card`**: radius `{rounded.md}`, text `{colors.ink-plum}`, border color `{colors.canvas}`. In the capture a card is a rounded image mosaic (one large image, two small) with a bold title and a two-line meta caption beneath; no card background, border or shadow is visible.
 
 ### Navigation
-- Clean header on white or warm background
-- Pinterest logo + search bar centered
-- Pin Sans 16px for nav links
-- Pinterest Red accents for active states
+- **`nav-link`**: text `{colors.ink-plum}`, `{typography.nav}` 12px/400, pill radius. **`link`**: text `{colors.ink}`, `{typography.heading}`, radius `{rounded.xs}`. Header links in the capture are plain text.
+- **`footer`**: background `{colors.ink}` (`#000000`), text `{colors.ink-inverse}` (`#ffffff`) as measured on the footer element. The footer text in the extraction begins "Get the app, iOS, Android, Quick links, Explore, Shop, Help Center".
 
-### Image Treatment
-- Pin-style masonry grid (signature Pinterest layout)
-- Rounded corners: 12px–20px on images
-- Photography as primary content — every pin is an image
-- Thick white borders (8px) on featured image containers
+## Design System Architecture
 
-## 5. Layout Principles
+Pinterest has a public design system called **Gestalt**. What was opened and confirmed:
 
-### Spacing System
-- Base unit: 8px
-- Scale: 4px, 6px, 7px, 8px, 10px, 11px, 12px, 16px, 18px, 20px, 22px, 24px, 32px, 80px, 100px
-- Large jumps: 32px → 80px → 100px for section spacing
+- The documentation home, https://gestalt.pinterest.systems/, describes Gestalt as "Pinterest's Design System" with Get Started, Foundations and Components areas. Its foundations and token pages require an internal sign-in, so token values could not be read from the docs.
+- The GitHub repository https://github.com/pinterest/gestalt describes itself as "A set of React UI components that supports Pinterest's design language", is Apache-2.0 licensed, and lists the packages `gestalt`, `gestalt-charts` and `gestalt-datepicker`. Its README says the project is no longer actively maintained and has reached end of life.
+- The folder https://github.com/pinterest/gestalt/tree/master/packages/gestalt-design-tokens contains `src`, `tokens`, `tests`, a README and a changelog, and is built with Style Dictionary for CSS, Android and iOS outputs.
 
-### Grid & Container
-- Masonry grid for pin content (signature layout)
-- Centered content sections with generous max-width
-- Full-width dark footer
-- Search bar as primary navigation element
+Whether the logged-out landing page is rendered with Gestalt components was not verified. What the page itself ships is a three-tier CSS custom-property vocabulary: of the 400 root variables captured, 32 start with `--base-`, 92 with `--sema-` and 276 with `--comp-` (for example `--base-color-grayscale-300: #62625b`, `--sema-rounding-300: 12px`, `--comp-button-border-width-transparent-default: 0px`). That is a base, semantic, component layering by naming alone; this file does not claim it originates from the Gestalt tokens package.
 
-### Whitespace Philosophy
-- **Inspiration density**: The masonry grid packs pins tightly — the content density IS the value proposition. Whitespace exists between sections, not within the grid.
-- **Breathing above, density below**: Hero/feature sections get generous padding; the pin grid is compact and immersive.
+The brand-use page https://business.pinterest.com/pinterest-brand-guidelines says to use the badge (a script white "P" in a red circle) and not the word mark, and gives no hex or typeface for partners.
 
-### Border Radius Scale
-- Standard (12px): Small cards, links
-- Button (16px): Buttons, inputs, medium cards
-- Comfortable (20px): Feature cards
-- Large (28px): Large containers
-- Section (32px): Tab elements, large panels
-- Hero (40px): Hero containers, large feature blocks
-- Circle (50%): Action buttons, tab indicators
+## Do's and Don'ts
 
-## 6. Depth & Elevation
+**Do**
+- Use `{colors.primary}` for the most important action in a view, as the hero does.
+- Keep the surrounding chrome neutral: white, `{colors.surface-sand}` and warm grays.
+- Set display text at weight 700 to 900 with `-0.5px` tracking, matching the measured h1.
+- Round buttons at `{rounded.md}` and give images corners from the measured 8 to 32px scale.
+- Let imagery carry color and variety.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Default — pins rely on content, not shadow |
-| Subtle (Level 1) | Minimal shadow (from tokens) | Elevated overlays, dropdowns |
-| Focus (Accessibility) | `--sema-color-border-focus-outer-default` ring | Focus states |
+**Don't**
+- Do not add a second saturated hue to buttons; the measured palette has one.
+- Do not add card shadows; none are visible in the capture and only one shadow is measured on the whole page.
+- Do not alter the badge (per the brand-guidelines page: no filters, effects, outlines or drop shadows; keep the P in the circle).
+- Do not use black labels on `{colors.primary}`; the measured label is `{colors.on-primary}`.
 
-**Shadow Philosophy**: Pinterest uses minimal shadows. The masonry grid relies on content (photography) to create visual interest rather than elevation effects. Depth comes from the warmth of surface colors and the generous rounding of containers.
+## Responsive Behavior
 
-## 7. Do's and Don'ts
+Two viewports were measured: 1280px and 390px. At 390px the extractor reported the same h1 (48px / 900), h2 (16px / 700), body text (14px / 400) and CTA (`#e60023`, 16px radius, 16px label, 192 by 48px) as on desktop, with a 390px-wide header 80px tall. The mobile measurement therefore recorded no reduced headline size. Layout reflow itself (column counts, menu changes) is not in this data and is not described here.
 
-### Do
-- Use warm neutrals (`#e5e5e0`, `#e0e0d9`, `#91918c`) — the warm olive/sand tone is the identity
-- Apply Pinterest Red (`#e60023`) only for primary CTAs — it's bold and singular
-- Use Pin Sans exclusively — one font for everything
-- Apply generous border-radius: 16px for buttons/inputs, 20px+ for cards
-- Keep the masonry grid dense — content density is the value
-- Use warm badge backgrounds (`hsla(60,20%,98%,.5)`) for subtle warm washes
-- Use `#211922` (plum black) for primary text — it's warmer than pure black
+## Iteration Guide
 
-### Don't
-- Don't use cool gray neutrals — always warm/olive-toned
-- Don't use pure black (`#000000`) as primary text — use plum black (`#211922`)
-- Don't use pill-shaped buttons — 16px radius is rounded but not pill
-- Don't add heavy shadows — Pinterest is flat by design, depth from content
-- Don't use small border-radius (<12px) on cards — the generous rounding is core
-- Don't introduce additional brand colors — red + warm neutrals is the complete palette
-- Don't use thin font weights — Pin Sans at 400 minimum
-
-## 8. Responsive Behavior
-
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <576px | Single column, compact layout |
-| Mobile Large | 576–768px | 2-column pin grid |
-| Tablet | 768–890px | Expanded grid |
-| Desktop Small | 890–1312px | Standard masonry grid |
-| Desktop | 1312–1440px | Full layout |
-| Large Desktop | 1440–1680px | Expanded grid columns |
-| Ultra-wide | >1680px | Maximum grid density |
-
-### Collapsing Strategy
-- Pin grid: 5+ columns → 3 → 2 → 1
-- Navigation: search bar + icons → simplified mobile nav
-- Feature sections: side-by-side → stacked
-- Hero: 70px → scales down proportionally
-- Footer: dark multi-column → stacked
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Brand: Pinterest Red (`#e60023`)
-- Background: White (`#ffffff`)
-- Text: Plum Black (`#211922`)
-- Secondary text: Olive Gray (`#62625b`)
-- Button surface: Sand Gray (`#e5e5e0`)
-- Border: Warm Silver (`#91918c`)
-- Focus: Focus Blue (`#435ee5`)
-
-### Example Component Prompts
-- "Create a hero: white background. Headline at 70px Pin Sans weight 600, plum black (#211922). Red CTA button (#e60023, 16px radius, 6px 14px padding). Secondary sand button (#e5e5e0, 16px radius)."
-- "Design a pin card: white background, 16px radius, no shadow. Photography fills top, 16px Pin Sans weight 400 description below in #62625b."
-- "Build a circular action button: #e0e0d9 background, 50% radius, #211922 icon."
-- "Create an input field: white background, 1px solid #91918c, 16px radius, 11px 15px padding. Focus: blue outline via semantic tokens."
-- "Design the dark footer: #33332e background. Pinterest script logo in white. 12px Pin Sans links in #91918c."
-
-### Iteration Guide
-1. Warm neutrals everywhere — olive/sand grays, never cool steel
-2. Pinterest Red for CTAs only — bold and singular
-3. 16px radius on buttons/inputs, 20px+ on cards — generous but not pill
-4. Pin Sans is the only font — compact at 12px for UI, 70px for display
-5. Photography carries the design — the UI stays warm and minimal
-6. Plum black (#211922) for text — warmer than pure black
+1. Start from the measured tokens: canvas `{colors.canvas}`, ink `{colors.ink}`, button red `{colors.primary}`.
+2. Build the hero: 48px/900 headline, then a red 48px-tall button and a sand button, both 16px radius.
+3. Add the collage with unequal tile heights and large rounded corners.
+4. Reserve red for one action per area; use sand for secondary actions.
+5. When a value is needed that is not in the frontmatter, measure it on the live page first (`node web/scripts/extract-tokens.mjs --slug=pinterest--<page> --url=<url> --force`) before adding it.

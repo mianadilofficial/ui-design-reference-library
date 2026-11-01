@@ -14,7 +14,7 @@ Keep design (Figma) and code (this repo) in sync in both directions. The token J
 | dark / brand / density | Figma **Modes** on the relevant collection (`tokens/theming.json`) |
 | `$type` color/dimension/number | Figma variable type Color / Number / String |
 
-Mirror the 3-tier hierarchy as three collections with aliasing — the same indirection we use in code, so a primitive change propagates identically in both tools.
+Mirror the 3-tier hierarchy as three collections with aliasing: the same indirection we use in code, so a primitive change propagates identically in both tools.
 
 ## Sync directions
 
@@ -32,7 +32,7 @@ If a Figma MCP server is connected, prefer its tools/skills over manual steps:
 
 ## Component parity
 
-- Figma component **variants/properties** = our variants + sizes + the 8 states (CLAUDE.md). A state that exists in code but not in the Figma variant set is a parity gap — flag it.
+- Figma component **variants/properties** = our variants + sizes + the 8 states (CLAUDE.md). A state that exists in code but not in the Figma variant set is a parity gap; flag it.
 - Name layers/props to match code prop names so handoff is mechanical.
 - Keep a parity checklist per component: variants (pass) , sizes (pass) , states (pass) , tokens bound (no raw hex in Figma) (pass) .
 

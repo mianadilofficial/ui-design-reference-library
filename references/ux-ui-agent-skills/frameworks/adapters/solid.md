@@ -1,6 +1,6 @@
 # Adapter: SolidJS
 
-Follows the [Framework Adapter Protocol](../adapter-protocol.md). Fine-grained reactivity, `props` (no destructure — keep reactive), JSX. Tailwind or CSS Modules.
+Follows the [Framework Adapter Protocol](../adapter-protocol.md). Fine-grained reactivity, `props` (no destructure, to keep it reactive), JSX. Tailwind or CSS Modules.
 
 ## Token layer
 CSS custom properties on `:root`; consumed via Tailwind utilities or CSS Modules. Dark mode via `[data-theme="dark"]`. Runtime theme/density via a `createSignal`/context provider.

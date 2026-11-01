@@ -357,7 +357,7 @@ ViewThatFits {
 ### Navigation Patterns
 
 ```swift
-// iOS 18+ — NavigationStack with typed destinations
+// iOS 18+: NavigationStack with typed destinations
 struct AppNavigation: View {
     @State private var path = NavigationPath()
 

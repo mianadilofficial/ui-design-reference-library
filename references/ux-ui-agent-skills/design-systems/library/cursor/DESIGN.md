@@ -1,312 +1,325 @@
-# Design System Inspired by Cursor
+---
+version: alpha
+name: Cursor
+category: "Developer Tools & IDEs"
+description: "Cursor's homepage uses warm cream grounds (#f7f7f4, #f2f1ed), olive-black ink (#26251e) with alpha-mixed greys, a custom CursorGothic sans at weight 400 (26px hero), pill buttons, and an orange accent (#f54e00) for links, with large product screenshots as the visuals."
+colors:
+  canvas: "#f2f1ed"
+  page-body: "#f7f7f4"
+  ink: "#26251e"
+  primary: "#26251e"
+  on-primary: "#f7f7f4"
+  surface-sand: "#d9d5cf"
+  ink-secondary: "#3f3e3299"
+  ink-near-black: "#0a0a0a"
+  ink-tertiary: "#5d5d4b66"
+  ink-white: "#ffffff"
+  ink-faint: "#4c4c3c80"
+  hairline-on-dark: "#ffffff1a"
+  primary-hover: "#3b3a33"
+  accent: "#f54e00"
+  ansi-red: "#cf2d56"
+  ansi-green: "#1f8a65"
+typography:
+  display:
+    fontFamily: CursorGothic, "CursorGothic Fallback", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 26px
+    fontWeight: 400
+    lineHeight: 32.5px
+    letterSpacing: "-0.325px"
+  display-mobile:
+    fontFamily: CursorGothic, "CursorGothic Fallback", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 24.375px
+    fontWeight: 400
+    lineHeight: 30.4688px
+    letterSpacing: "-0.304688px"
+  subheading:
+    fontFamily: CursorGothic, "CursorGothic Fallback", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 22px
+    fontWeight: 400
+    lineHeight: 28.6px
+    letterSpacing: "-0.11px"
+  body:
+    fontFamily: CursorGothic, "CursorGothic Fallback", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+    letterSpacing: 0.08px
+  nav:
+    fontFamily: CursorGothic, "CursorGothic Fallback", system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif
+    fontSize: 14px
+    fontWeight: 400
+    lineHeight: 14px
+  input:
+    fontFamily: system-ui, -apple-system, "system-ui", "Segoe UI", "Helvetica Neue", Arial, sans-serif
+    fontSize: 13px
+    fontWeight: 400
+    lineHeight: 17.3333px
+rounded:
+  xs: 2px
+  sm: 3px
+  md: 4px
+  lg: 5px
+  xl: 8px
+  2xl: 10px
+  3xl: 12px
+  4xl: 16px
+  pill: 9999px
+spacing:
+  s1: 1px
+  s2: 1.87px
+  s3: 2px
+  s4: 2.5px
+  s5: 3px
+  s6: 3.73px
+  s7: 4px
+  s8: 4.67px
+  s9: 5px
+  s10: 5.6px
+components:
+  button-primary:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.page-body}"
+    typography: "{typography.body}"
+    rounded: "{rounded.pill}"
+    padding: 12.48px 21.6px 12.8px
+    height: 43px
+    borderColor: "{colors.ink}"
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.page-body}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.pill}"
+    padding: 5.6px 12px 5.88px
+    height: 32px
+    borderColor: "{colors.ink}"
+  link:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+    rounded: "{rounded.md}"
+    padding: 17.5px
+  nav:
+    backgroundColor: "{colors.page-body}"
+    textColor: "{colors.ink}"
+    padding: 0px 20px
+  text-input:
+    textColor: "{colors.ink}"
+    typography: "{typography.input}"
+    padding: 8px 8px 6px
+    height: 31px
+  card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.2xl}"
+    boxShadow: rgba(0, 0, 0, 0.14) 0px 28px 70px 0px, rgba(0, 0, 0, 0.1) 0px 14px 32px 0px, oklab(0.263084 -0.00230259 0.0124794 / 0.1) 0px 0px 0px 1px
+    transform: matrix(1, 0, 0, 1, -240, -180)
+  footer:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    padding: 67.2px 20px 30px
+---
 
-> Category: Developer Tools
-> AI-first code editor. Sleek dark interface, gradient accents.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+Cursor's homepage (measured at `https://cursor.com/`, desktop 1280px and mobile 390px) is a warm, paper-toned, typographically led page. The grounds are two close cream tones, `{colors.page-body}` for the page and `{colors.canvas}` for panels and the footer; the ink is a warm olive-black (`{colors.ink}`), not pure black; and the only saturated color in the chrome is an orange accent (`{colors.accent}`) used for text links. Product screenshots do the visual work: large, realistic windows of the Cursor desktop app floating over painterly landscape artwork.
 
-Cursor's website is a study in warm minimalism meets code-editor elegance. The entire experience is built on a warm off-white canvas (`#f2f1ed`) with dark warm-brown text (`#26251e`) -- not pure black, not neutral gray, but a deeply warm near-black with a yellowish undertone that evokes old paper, ink, and craft. This warmth permeates every surface: backgrounds lean toward cream (`#e6e5e0`, `#ebeae5`), borders dissolve into transparent warm overlays using `oklab` color space, and even the error state (`#cf2d56`) carries warmth rather than clinical red. The result feels more like a premium print publication than a tech website.
-
-The custom CursorGothic font is the typographic signature -- a gothic sans-serif with aggressive negative letter-spacing at display sizes (-2.16px at 72px) that creates a compressed, engineered feel. As a secondary voice, the jjannon serif font (with OpenType `"cswh"` contextual swash alternates) provides literary counterpoint for body copy and editorial passages. The monospace voice comes from berkeleyMono, a refined coding font that connects the marketing site to Cursor's core identity as a code editor. This three-font system (gothic display, serif body, mono code) gives Cursor one of the most typographically rich palettes in developer tooling.
-
-The border system is particularly distinctive -- Cursor uses `oklab()` color space for border colors, applying warm brown at various alpha levels (0.1, 0.2, 0.55) to create borders that feel organic rather than mechanical. The signature border color `oklab(0.263084 -0.00230259 0.0124794 / 0.1)` is not a simple rgba value but a perceptually uniform color that maintains visual consistency across different backgrounds.
+The capture shows, top to bottom: a thin header with the cube logo and "CURSOR" wordmark at left, centered links (Models, Product, Enterprise, Pricing, Resources), and at right "Sign in" as text, an outlined pill "Contact sales" and a dark pill "Download"; a left-aligned hero whose h1 is surprisingly small and quiet ("Cursor is your coding agent for building ambitious software." at 26px), followed by a dark pill "Download for macOS" with a download arrow and a light-grey pill "Request a demo"; a wide rounded frame holding a faded impressionist landscape painting with a "Cursor Desktop" window on top (a task list, an agent conversation, a browser preview in a serif typeface) and a cookie notice overlapping it; a "Trusted every day by teams that build world-class software" line over a grid of logo tiles (Stripe, Datadog, Linear, NVIDIA, Figma, ramp, Decagon, Adobe); and a feature panel where the headline "Agents turn ideas into code" sits left with a grey continuation sentence and an orange "Learn about agentic development" link, beside a cropped app screenshot.
 
 **Key Characteristics:**
-- CursorGothic with aggressive negative letter-spacing (-2.16px at 72px, -0.72px at 36px) for compressed display headings
-- jjannon serif for body text with OpenType `"cswh"` (contextual swash alternates)
-- berkeleyMono for code and technical labels
-- Warm off-white background (`#f2f1ed`) instead of pure white -- the entire system is warm-shifted
-- Primary text color `#26251e` (warm near-black with yellow undertone)
-- Accent orange `#f54e00` for brand highlight and links
-- oklab-space borders at various alpha levels for perceptually uniform edge treatment
-- Pill-shaped elements with extreme radius (33.5M px, effectively full-pill)
-- 8px base spacing system with fine-grained sub-8px increments (1.5px, 2px, 2.5px, 3px, 4px, 5px, 6px)
+- Paper-warm neutrals: `{colors.page-body}` and `{colors.canvas}` instead of white; ink `{colors.ink}` with alpha steps for secondary text.
+- A custom sans, CursorGothic, at weight 400 with slightly negative tracking at larger sizes (`{typography.display}`, `{typography.subheading}`); no bold headlines anywhere in the marketing chrome.
+- Small, calm headline scale: the hero h1 is 26px (24.375px on mobile), the feature headline 22px.
+- Pill buttons (`{rounded.pill}`): dark filled for the primary action, light grey or outlined for secondary.
+- Orange (`{colors.accent}`) reserved for inline links and a few product highlights; green and red appear only inside product diffs.
+- Realistic product UI inside soft, large-radius containers with long diffuse shadows.
+- Mono (Berkeley Mono) and serif (EB Garamond) fonts appear inside the product screenshots, not in the site chrome.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary
-- **Cursor Dark** (`#26251e`): Primary text, headings, dark UI surfaces. A warm near-black with distinct yellow-brown undertone -- the defining color of the system.
-- **Cursor Cream** (`#f2f1ed`): Page background, primary surface. Not white but a warm cream that sets the entire warm tone.
-- **Cursor Light** (`#e6e5e0`): Secondary surface, button backgrounds, card fills. A slightly warmer, slightly darker cream.
-- **Pure White** (`#ffffff`): Used sparingly for maximum contrast elements and specific surface highlights.
-- **True Black** (`#000000`): Minimal use, specific code/console contexts.
+All values are measured on the live page (`web/data/extracted/cursor.json`); the site's own CSS variables (`--color-theme-*`) in the same extraction confirm the names and roles.
 
-### Accent
-- **Cursor Orange** (`#f54e00`): Brand accent, `--color-accent`. A vibrant red-orange used for primary CTAs, active links, and brand moments. Warm and urgent.
-- **Gold** (`#c08532`): Secondary accent, warm gold for premium or highlighted contexts.
+### Surfaces
+- **Page body** (`{colors.page-body}`): the page background (`--color-theme-product-editor`, `--color-theme-button-text`).
+- **Canvas** (`{colors.canvas}`): the slightly deeper cream for cards, the footer and app chrome (`--color-theme-product-chrome`).
+- **Surface sand** (`{colors.surface-sand}`): a darker warm grey-beige measured as a panel/tile fill.
+- **Hairline on dark** (`{colors.hairline-on-dark}`): 10% white used on borders of the dark UI pieces.
 
-### Semantic
-- **Error** (`#cf2d56`): `--color-error`. A warm crimson-rose rather than cold red.
-- **Success** (`#1f8a65`): `--color-success`. A muted teal-green, warm-shifted.
+### Ink
+- **Ink** (`{colors.ink}`): `--color-theme-text`, the button background and almost all text.
+- **Ink secondary** (`{colors.ink-secondary}`): 60% alpha of the ink, for secondary text (`--color-theme-text-sec` is the same 60% mix).
+- **Ink tertiary** (`{colors.ink-tertiary}`) and **ink faint** (`{colors.ink-faint}`): lighter alpha steps for captions and placeholders in the screenshots.
+- **Ink near-black** (`{colors.ink-near-black}`): the near-black used in a few high-contrast labels.
+- **White** (`{colors.ink-white}`): on dark pieces.
 
-### Timeline / Feature Colors
-- **Thinking** (`#dfa88f`): Warm peach for "thinking" state in AI timeline.
-- **Grep** (`#9fc9a2`): Soft sage green for search/grep operations.
-- **Read** (`#9fbbe0`): Soft blue for file reading operations.
-- **Edit** (`#c0a8dd`): Soft lavender for editing operations.
+### Action
+- **Primary** (`{colors.primary}`): the same olive-black as ink, used as the fill of dark pills (`--color-theme-button-bg`).
+- **On-primary** (`{colors.on-primary}`): button text, the same cream as the page.
+- **Primary hover** (`{colors.primary-hover}`): `--color-theme-button-hover-bg`, a slightly lifted olive-grey.
 
-### Surface Scale
-- **Surface 100** (`#f7f7f4`): Lightest button/card surface, barely tinted.
-- **Surface 200** (`#f2f1ed`): Primary page background.
-- **Surface 300** (`#ebeae5`): Button default background, subtle emphasis.
-- **Surface 400** (`#e6e5e0`): Card backgrounds, secondary surfaces.
-- **Surface 500** (`#e1e0db`): Tertiary button background, deeper emphasis.
+### Accent and product semantics
+- **Accent** (`{colors.accent}`): `--color-theme-accent`, the orange of text links such as "Learn about agentic development".
+- **ANSI green** (`{colors.ansi-green}`) and **ANSI red** (`{colors.ansi-red}`): `--color-theme-product-ansi-green` and `-red`, the diff colors in product screenshots (for example "+70" in green and "-21" in red).
 
-### Border Colors
-- **Border Primary** (`oklab(0.263084 -0.00230259 0.0124794 / 0.1)`): Standard border, 10% warm brown in oklab space.
-- **Border Medium** (`oklab(0.263084 -0.00230259 0.0124794 / 0.2)`): Emphasized border, 20% warm brown.
-- **Border Strong** (`rgba(38, 37, 30, 0.55)`): Strong borders, table rules.
-- **Border Solid** (`#26251e`): Full-opacity dark border for maximum contrast.
-- **Border Light** (`#f2f1ed`): Light border matching page background.
+### Usage rules
+- Never set the page on pure white or pure black.
+- Use alpha mixes of `{colors.ink}` for hierarchy rather than introducing grey hues.
+- Keep orange to links and tiny highlights; never use it as a button fill.
 
-### Shadows & Depth
-- **Card Shadow** (`rgba(0,0,0,0.14) 0px 28px 70px, rgba(0,0,0,0.1) 0px 14px 32px, oklab(0.263084 -0.00230259 0.0124794 / 0.1) 0px 0px 0px 1px`): Heavy elevated card with warm oklab border ring.
-- **Ambient Shadow** (`rgba(0,0,0,0.02) 0px 0px 16px, rgba(0,0,0,0.008) 0px 0px 8px`): Subtle ambient glow for floating elements.
+## Typography
 
-## 3. Typography Rules
+### Families
+- **CursorGothic** (400): all marketing headings, body and navigation. The Design Compass write-up of the identity (https://designcompass.org/en/2025/11/27/typographically-focused-branding-of-ai-tool-cursors/) says the identity is a collaboration between Cursor and Chimera and that "the core of the refresh is Cursor Gothic, based on Chimera's retail typeface, Waldenburg", and that the logo and lockups are embedded in the typeface as a ligature.
+- **system-ui** stack: used inside the app screenshots and inputs (measured at 13px).
+- **Berkeley Mono** (400): code and terminal text in the screenshots.
+- **EB Garamond** (400, 500 italic) and **Lato**: only inside the mocked "Acme Labs" page and similar demo content.
+- **CursorIcons16**: icon font.
 
-### Font Family
-- **Display/Headlines**: `CursorGothic`, with fallbacks: `CursorGothic Fallback, system-ui, Helvetica Neue, Helvetica, Arial`
-- **Body/Editorial**: `jjannon`, with fallbacks: `Iowan Old Style, Palatino Linotype, URW Palladio L, P052, ui-serif, Georgia, Cambria, Times New Roman, Times`
-- **Code/Technical**: `berkeleyMono`, with fallbacks: `ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New`
-- **UI/System**: `system-ui`, with fallbacks: `-apple-system, Segoe UI, Helvetica Neue, Arial`
-- **Icons**: `CursorIcons16` (icon font at 14px and 12px)
-- **OpenType Features**: `"cswh"` on jjannon body text, `"ss09"` on CursorGothic buttons/captions
+### Scale (measured)
+| Role | Token | Font | Size / line-height | Weight | Tracking |
+|---|---|---|---|---|---|
+| Hero h1 | `display` | CursorGothic | 26px / 32.5px | 400 | -0.325px |
+| Hero h1, mobile | `display-mobile` | CursorGothic | 24.375px / 30.4688px | 400 | -0.304688px |
+| Feature headline (h3) | `subheading` | CursorGothic | 22px / 28.6px | 400 | -0.11px |
+| Body | `body` | CursorGothic | 16px / 24px | 400 | 0.08px |
+| Navigation / small button | `nav` | CursorGothic | 14px / 14px | 400 | normal |
+| Input | `input` | system-ui | 13px / 17.3333px | 400 | normal |
 
-### Hierarchy
-
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | CursorGothic | 72px (4.50rem) | 400 | 1.10 (tight) | -2.16px | Maximum compression, hero statements |
-| Section Heading | CursorGothic | 36px (2.25rem) | 400 | 1.20 (tight) | -0.72px | Feature sections, CTA headlines |
-| Sub-heading | CursorGothic | 26px (1.63rem) | 400 | 1.25 (tight) | -0.325px | Card headings, sub-sections |
-| Title Small | CursorGothic | 22px (1.38rem) | 400 | 1.30 (tight) | -0.11px | Smaller titles, list headings |
-| Body Serif | jjannon | 19.2px (1.20rem) | 500 | 1.50 | normal | Editorial body with `"cswh"` |
-| Body Serif SM | jjannon | 17.28px (1.08rem) | 400 | 1.35 | normal | Standard body text, descriptions |
-| Body Sans | CursorGothic | 16px (1.00rem) | 400 | 1.50 | normal/0.08px | UI body text |
-| Button Label | CursorGothic | 14px (0.88rem) | 400 | 1.00 (tight) | normal | Primary button text |
-| Button Caption | CursorGothic | 14px (0.88rem) | 400 | 1.50 | 0.14px | Secondary button with `"ss09"` |
-| Caption | CursorGothic | 11px (0.69rem) | 400-500 | 1.50 | normal | Small captions, metadata |
-| System Heading | system-ui | 20px (1.25rem) | 700 | 1.55 | normal | System UI headings |
-| System Caption | system-ui | 13px (0.81rem) | 500-600 | 1.33 | normal | System UI labels |
-| System Micro | system-ui | 11px (0.69rem) | 500 | 1.27 (tight) | 0.048px | Uppercase micro labels |
-| Mono Body | berkeleyMono | 12px (0.75rem) | 400 | 1.67 (relaxed) | normal | Code blocks |
-| Mono Small | berkeleyMono | 11px (0.69rem) | 400 | 1.33 | -0.275px | Inline code, terminal |
-| Lato Heading | Lato | 16px (1.00rem) | 600 | 1.33 | normal | Lato section headings |
-| Lato Caption | Lato | 14px (0.88rem) | 400-600 | 1.33 | normal | Lato captions |
-| Lato Micro | Lato | 12px (0.75rem) | 400-600 | 1.27 (tight) | 0.053px | Lato small labels |
+A 20px bold system-ui "Mission Control Interface" h2 was also measured, but it is text inside a product screenshot, so it is not a site token. The most-used sizes by characters are 16px, 12px, 14px, 13px, 11px and 22px; the many small sizes come from the product screenshots.
 
 ### Principles
-- **Gothic compression for impact**: CursorGothic at display sizes uses -2.16px letter-spacing at 72px, progressively relaxing: -0.72px at 36px, -0.325px at 26px, -0.11px at 22px, normal at 16px and below. The tracking creates a sense of precision engineering.
-- **Serif for soul**: jjannon provides literary warmth. The `"cswh"` feature adds contextual swash alternates that give body text a calligraphic quality.
-- **Three typographic voices**: Gothic (display/UI), serif (editorial/body), mono (code/technical). Each serves a distinct communication purpose.
-- **Weight restraint**: CursorGothic uses weight 400 almost exclusively, relying on size and tracking for hierarchy rather than weight. System-ui components use 500-700 for functional emphasis.
+- Headlines are small and regular-weight; hierarchy comes from color (ink vs 60% ink) and position, not size or weight. The feature headline pairs a full-ink first sentence with a grey-ink continuation in the same size.
+- Tracking tightens as size grows: -0.0125em at 26px, -0.005em at 22px, +0.005em at 16px body.
+- Weight 400 dominates (about 11000 of the measured characters), with only small amounts at 500, 600 and 700.
 
-## 4. Component Stylings
+### Font substitutes
+CursorGothic is proprietary. A close stand-in is a Univers/Akzidenz-style neo-grotesque such as Inter Display or Helvetica Neue at 400 with the same tracking; for the mono in mock UI use Berkeley Mono or JetBrains Mono.
+
+## Layout
+
+- Content is left-aligned inside wide margins; the measured header is 52px tall (`--site-header-height`) with a 64px sticky offset.
+- The hero text block sits at the left, with the product frame spanning the full container width beneath it.
+- Logo tiles are an eight-column grid of equal sand tiles with logos centered, in a single row at desktop.
+- Feature panels use `{colors.canvas}` blocks with an off-center, cropped screenshot that bleeds off the panel's right edge; the headline sits at the vertical middle on the left.
+- Vertical rhythm is generous: large gaps between the hero, the frame, the trust row and the feature panel.
+- The tiny spacing values in the generated token list (1px to 5.6px) come from the product UI; page-level spacing is multiples of 4px to 16px.
+
+## Elevation & Depth
+
+- Pages are flat; the screenshots carry the depth. The measured popover/card shadow stacks a 28px/70px blur at 14% black, a 14px/32px blur at 10% black and a 1px hairline ring: a long, diffuse "floating window" shadow.
+- Product windows have macOS-style traffic-light dots and a title bar ("Cursor Desktop"), grounding the screenshots as real apps.
+- Painterly background artwork is lightly desaturated and sits behind windows to give a soft, tactile backdrop; the Design Compass article notes the background image "features artwork from real artists".
+- The cookie notice is a white translucent card with the same floating shadow style.
+
+## Shapes
+
+- `{rounded.pill}`: all site buttons and nav pills.
+- `{rounded.4xl}` (16px) and `{rounded.2xl}` (10px): large frames and cards (the measured card radius is 10px); `--radius-2xl` in the site CSS is 1rem.
+- `{rounded.xl}` 8px and `{rounded.md}` 4px: smaller panels, code chips (`--prose-code-border-radius` is 4px), and product UI elements.
+- `{rounded.xs}` 2px, `{rounded.sm}` 3px, `{rounded.lg}` 5px, `{rounded.3xl}` 12px: product UI details.
+- The logo itself is a cube with subtly rounded corners (Design Compass), in 2D, 2.5D and 3D forms.
+
+## Components
 
 ### Buttons
-
-**Primary (Warm Surface)**
-- Background: `#ebeae5` (Surface 300)
-- Text: `#26251e` (Cursor Dark)
-- Padding: 10px 12px 10px 14px
-- Radius: 8px
-- Outline: none
-- Hover: text shifts to `var(--color-error)` (`#cf2d56`)
-- Focus shadow: `rgba(0,0,0,0.1) 0px 4px 12px`
-- Use: Primary actions, main CTAs
-
-**Secondary Pill**
-- Background: `#e6e5e0` (Surface 400)
-- Text: `oklab(0.263 / 0.6)` (60% warm brown)
-- Padding: 3px 8px
-- Radius: full pill (33.5M px)
-- Hover: text shifts to `var(--color-error)`
-- Use: Tags, filters, secondary actions
-
-**Tertiary Pill**
-- Background: `#e1e0db` (Surface 500)
-- Text: `oklab(0.263 / 0.6)` (60% warm brown)
-- Radius: full pill
-- Use: Active filter state, selected tags
-
-**Ghost (Transparent)**
-- Background: `rgba(38, 37, 30, 0.06)` (6% warm brown)
-- Text: `rgba(38, 37, 30, 0.55)` (55% warm brown)
-- Padding: 6px 12px
-- Use: Tertiary actions, dismiss buttons
-
-**Light Surface**
-- Background: `#f7f7f4` (Surface 100) or `#f2f1ed` (Surface 200)
-- Text: `#26251e` or `oklab(0.263 / 0.9)` (90%)
-- Padding: 0px 8px 1px 12px
-- Use: Dropdown triggers, subtle interactive elements
-
-### Cards & Containers
-- Background: `#e6e5e0` or `#f2f1ed`
-- Border: `1px solid oklab(0.263 / 0.1)` (warm brown at 10%)
-- Radius: 8px (standard), 4px (compact), 10px (featured)
-- Shadow: `rgba(0,0,0,0.14) 0px 28px 70px, rgba(0,0,0,0.1) 0px 14px 32px` for elevated cards
-- Hover: shadow intensification
-
-### Inputs & Forms
-- Background: transparent or surface
-- Text: `#26251e`
-- Padding: 8px 8px 6px (textarea)
-- Border: `1px solid oklab(0.263 / 0.1)`
-- Focus: border shifts to `oklab(0.263 / 0.2)` or accent orange
+- **Primary** (`button-primary`): `{colors.ink}` fill, `{colors.page-body}` label, CursorGothic 16px, pill, 43px tall, `12.48px 21.6px 12.8px` padding, 1px border in the same ink. Hover fill is `{colors.primary-hover}`. Example: "Download for macOS" with a download arrow.
+- **Secondary** (`button-secondary`): the 32px-tall header "Download" pill, 14px, `5.6px 12px 5.88px` padding.
+- **Light pill**: "Request a demo →" in a light grey-beige fill with ink text, same height as the primary.
+- **Outlined pill**: "Contact sales" in the header, transparent with a 1px ink-alpha border (`--color-theme-button-sec-border` is a 60% ink mix).
+- Cookie buttons ("Reject All", "Accept All Cookies") reuse the dark pill; "Cookies Settings" is outlined.
 
 ### Navigation
-- Clean horizontal nav on warm cream background
-- Cursor logotype left-aligned (~96x24px)
-- Links: 14px CursorGothic or system-ui, weight 500
-- CTA button: warm surface with Cursor Dark text
-- Tab navigation: bottom border `1px solid oklab(0.263 / 0.1)` with active tab differentiation
+- Header on `{colors.page-body}`, padding `0px 20px`, items at 14px; menus with small down arrows. "Sign in" is plain text.
 
-### Image Treatment
-- Code editor screenshots with `1px solid oklab(0.263 / 0.1)` border
-- Rounded corners: 8px standard
-- AI chat/timeline screenshots dominate feature sections
-- Warm gradient or solid cream backgrounds behind hero images
+### Links
+- Inline links in feature copy are orange (`{colors.accent}`) with a trailing arrow; footer and nav links are ink.
 
-### Distinctive Components
+### Cards and frames
+- Product frames: large radius, deep soft shadow, content is a real screenshot of Cursor with a left task list ("READY FOR REVIEW 5"), a center agent chat, a right preview pane.
+- Logo tiles: flat sand tiles (`{colors.surface-sand}` family) with centered monochrome logos.
 
-**AI Timeline**
-- Vertical timeline showing AI operations: thinking (peach), grep (sage), read (blue), edit (lavender)
-- Each step uses its semantic color with matching text
-- Connected with vertical lines
-- Core visual metaphor for Cursor's AI-first coding experience
+### Inputs
+- `text-input`: 13px system-ui, `8px 8px 6px` padding, 31px tall (the chat box in the screenshot: "Plan, search, build anything...").
 
-**Code Editor Previews**
-- Dark code editor screenshots with warm cream border frame
-- berkeleyMono for code text
-- Syntax highlighting using timeline colors
+### Footer
+- `{colors.canvas}` background, padding `67.2px 20px 30px`; columns Product, Resources, Company, Legal, Connect; a compliance line (SOC 2, ISO27001, ISO42001, AIUC-1).
 
-**Pricing Cards**
-- Warm surface backgrounds with bordered containers
-- Feature lists using jjannon serif for readability
-- CTA buttons with accent orange or primary dark styling
+## Imagery & Art Direction
 
-## 5. Layout Principles
+- **Painterly backdrops**: the first product frame is set on a soft, desaturated landscape painting (mountains and sky in muted ochre and blue-grey). Design Compass says the background artwork is by real artists, tying the product to a creative, human register.
+- **Realistic app windows**: the "Cursor Desktop" window shows a left sidebar of tasks with diff counts ("+70", "+135 -21"), a central chat transcript with file chips ("app/page.tsx +52 -0", "app/globals.css +18 -0") and a right-hand browser preview. A second window shows a "feature-prd.md" plan with a task checklist and a "Build" button in a gold-brown tone.
+- **Serif inside the demo**: the preview page uses an italic serif "Acme Labs" heading; this is demo content, which signals that the product builds designed sites, not that the site chrome is serif.
+- **Logo tiles**: flat sand tiles with greyscale logos, eight across.
+- **No people photography** appears in the first screens of the capture.
+- **Motion**: Design Compass notes a mini code-editor interaction implemented with CSS where "the cursor itself" acts as a development tool; static captures cannot show it.
 
-### Spacing System
-- Base unit: 8px
-- Fine scale: 1.5px, 2px, 2.5px, 3px, 4px, 5px, 6px (sub-8px for micro-adjustments)
-- Standard scale: 8px, 10px, 12px, 14px (derived from extraction)
-- Extended scale (inferred): 16px, 24px, 32px, 48px, 64px, 96px
-- Notable: fine-grained sub-8px increments for precise icon/text alignment
+## Microcopy Voice
 
-### Grid & Container
-- Max content width: approximately 1200px
-- Hero: centered single-column with generous top padding (80-120px)
-- Feature sections: 2-3 column grids for cards and features
-- Full-width sections with warm cream or slightly darker backgrounds
-- Sidebar layouts for documentation and settings pages
+- Plain, confident, and modest in size: "Cursor is your coding agent for building ambitious software."
+- Feature headlines are two-part statements: a bold claim in full ink and a softer explanation in grey: "Agents turn ideas into code" followed by "Accelerate development by handing off tasks to Cursor, while you focus on making decisions."
+- Links are phrased as invitations with an arrow: "Learn about agentic development".
+- Buttons are literal: "Download for macOS", "Request a demo", "Contact sales", "Sign in".
+- Social proof leads with a calm sentence: "Trusted every day by teams that build world-class software".
+- The brand page mandates the short name: "Refer to us as Cursor. Not Cursor AI or Cursor Code."
 
-### Whitespace Philosophy
-- **Warm negative space**: The cream background means whitespace has warmth and texture, unlike cold white minimalism. Large empty areas feel cozy rather than clinical.
-- **Compressed text, open layout**: Aggressive negative letter-spacing on CursorGothic headlines is balanced by generous surrounding margins. Text is dense; space around it breathes.
-- **Section variation**: Alternating surface tones (cream → lighter cream → cream) create subtle section differentiation without harsh boundaries.
+## Interaction States
 
-### Border Radius Scale
-- Micro (1.5px): Fine detail elements
-- Small (2px): Inline elements, code spans
-- Medium (3px): Small containers, inline badges
-- Standard (4px): Cards, images, compact buttons
-- Comfortable (8px): Primary buttons, cards, menus
-- Featured (10px): Larger containers, featured cards
-- Full Pill (33.5M px / 9999px): Pill buttons, tags, badges
+- Dark pill hover (measured on the header "Download" pill): fill and border change from `{colors.ink}` to `{colors.primary-hover}`; the text stays `{colors.page-body}`.
+- Site CSS defines hover text as the same cream (`--color-theme-button-hover-text`) and a hover border matching the hover fill.
+- Secondary outlined pills use a 60% ink border and transparent fill, per `--color-theme-button-sec-*`.
+- Easing: `--ease-out-spring` is `cubic-bezier(.25, 1, .5, 1)` and the default transition easing is `cubic-bezier(.4, 0, .2, 1)`.
+- Focus and disabled states are not visible in the capture and are left unspecified.
 
-## 6. Depth & Elevation
+## Page Section Inventory
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Page background, text blocks |
-| Border Ring (Level 1) | `oklab(0.263 / 0.1) 0px 0px 0px 1px` | Standard card/container border (warm oklab) |
-| Border Medium (Level 1b) | `oklab(0.263 / 0.2) 0px 0px 0px 1px` | Emphasized borders, active states |
-| Ambient (Level 2) | `rgba(0,0,0,0.02) 0px 0px 16px, rgba(0,0,0,0.008) 0px 0px 8px` | Floating elements, subtle glow |
-| Elevated Card (Level 3) | `rgba(0,0,0,0.14) 0px 28px 70px, rgba(0,0,0,0.1) 0px 14px 32px, oklab ring` | Modals, popovers, elevated cards |
-| Focus | `rgba(0,0,0,0.1) 0px 4px 12px` on button focus | Interactive focus feedback |
+1. **Header**: logo, five links, "Sign in", outlined "Contact sales", dark "Download".
+2. **Hero**: left-aligned 26px headline; dark and light pill buttons.
+3. **Product frame**: landscape painting, the Cursor Desktop window, an overlapping cookie notice.
+4. **Trust row**: one centered sentence, eight logo tiles.
+5. **Feature panel (agents)**: a `{colors.canvas}` block, left text, right cropped screenshot titled "Mission Control Interface".
+6. **Second feature panel**: a browser-like window ("cursor.com/agent") with an "Acme Research Dashboard" prompt, starting at the bottom of the capture.
+7. **Footer**: five link columns, legal links and certifications.
 
-**Shadow Philosophy**: Cursor's depth system is built around two ideas. First, borders use perceptually uniform oklab color space rather than rgba, ensuring warm brown borders look consistent across different background tones. Second, elevation shadows use dramatically large blur values (28px, 70px) with moderate opacity (0.14, 0.1), creating a diffused, atmospheric lift rather than hard-edged drop shadows. Cards don't feel like they float above the page -- they feel like the page has gently opened a space for them.
+## Design System Architecture
 
-### Decorative Depth
-- Warm cream surface variations create subtle tonal depth without shadows
-- oklab borders at 10% and 20% create a spectrum of edge definition
-- No harsh divider lines -- section separation through background tone shifts and spacing
+Cursor does not publish a public component or token library. Its public brand resource is the guidelines page https://cursor.com/brand ("Resources to represent Cursor consistently and accurately"), which offers downloadable logos (2D default and 2.5D; horizontal lockup preferred, vertical lockup, cube or wordmark), app icons (2.5D default, 2D, 3D, light and dark), avatars, and a naming rule: "Refer to us as Cursor. Not Cursor AI or Cursor Code." It publishes no hex values or type scale.
 
-## 7. Interaction & Motion
+The identity was developed with the type studio Chimera, per Design Compass, around the custom CursorGothic. The site's own CSS exposes a theme layer of custom properties that works as the de-facto token system: `--color-theme-fg`, `--color-theme-text`, `--color-theme-text-sec`, `--color-theme-text-tertiary`, `--color-theme-button-bg`, `--color-theme-button-hover-bg`, `--color-theme-accent`, `--color-theme-border-01` through `-03` (alpha mixes of the ink), `--color-theme-product-*` (the colors inside product mock-ups, including ANSI red and green), plus radius (`--radius-2xs` 2px to `--radius-3xl` 24px), font (`--font-system`, `--font-mono`), header height (`--site-header-height` 52px) and easing tokens (`--ease-out-spring`). Borders and washes are built from `color-mix(in oklab, #26251e N%, transparent)`, which is why every grey on the page is a translucent ink.
 
-### Hover States
-- Buttons: text color shifts to `--color-error` (`#cf2d56`) on hover -- a distinctive warm crimson that signals interactivity
-- Links: color shift to accent orange (`#f54e00`) or underline decoration with `rgba(38, 37, 30, 0.4)`
-- Cards: shadow intensification on hover (ambient → elevated)
+## Do's and Don'ts
 
-### Focus States
-- Shadow-based focus: `rgba(0,0,0,0.1) 0px 4px 12px` for depth-based focus indication
-- Border focus: `oklab(0.263 / 0.2)` (20% border) for input/form focus
-- Consistent warm tone in all focus states -- no cold blue focus rings
+### Do
+- Use warm cream grounds (`{colors.page-body}`, `{colors.canvas}`) and olive-black ink.
+- Build secondary text and borders as alpha mixes of `{colors.ink}`.
+- Keep headlines at weight 400 and modest sizes; let screenshots carry the visual weight.
+- Use pill buttons: dark for primary, light or outlined for secondary.
+- Use orange only for inline links and small highlights.
+- Show real product UI with long, soft shadows and macOS window chrome.
+- Name the product "Cursor", never "Cursor AI" or "Cursor Code" (per the brand page).
 
-### Transitions
-- Color transitions: 150ms ease for text/background color changes
-- Shadow transitions: 200ms ease for elevation changes
-- Transform: subtle scale or translate for interactive feedback
+### Don't
+- Don't use pure white or pure black backgrounds.
+- Don't add bold or heavy display type.
+- Don't use orange, green or red as large fills.
+- Don't use sharp-cornered buttons.
+- Don't use stock illustration; use product screenshots or real artwork.
+- Don't place the logo as a loose icon beside text without the lockup; the lockup lives in the typeface.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <600px | Single column, reduced padding, stacked navigation |
-| Tablet Small | 600-768px | 2-column grids begin |
-| Tablet | 768-900px | Expanded card grids, sidebar appears |
-| Desktop Small | 900-1279px | Full layout forming |
-| Desktop | >1279px | Full layout, maximum content width |
+- Measured at 1280px and 390px. The hero h1 changes from 26px to 24.375px (`{typography.display}` to `{typography.display-mobile}`); line-height and tracking scale proportionally.
+- The mobile layout of the screenshot frames, logo grid and feature panel was not captured and is unspecified.
+- Header height is 52px in the CSS variable; mobile navigation was not inspected.
+- Buttons stay pills and keep their padding.
 
-### Touch Targets
-- Buttons use comfortable padding (6px-14px vertical, 8px-14px horizontal)
-- Pill buttons maintain tap-friendly sizing with 3px-10px padding
-- Navigation links at 14px with adequate spacing for touch
+## Iteration Guide
 
-### Collapsing Strategy
-- Hero: 72px CursorGothic → 36px → 26px on smaller screens, maintaining proportional letter-spacing
-- Navigation: horizontal links → hamburger menu on mobile
-- Feature cards: 3-column → 2-column → single column stacked
-- Code editor screenshots: maintain aspect ratio, may shrink with border treatment preserved
-- Timeline visualization: horizontal → vertical stacking
-- Section spacing: 80px+ → 48px → 32px on mobile
-
-### Image Behavior
-- Editor screenshots maintain warm border treatment at all sizes
-- AI timeline adapts from horizontal to vertical layout
-- Product screenshots use responsive images with consistent border radius
-- Full-width hero images scale proportionally
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary CTA background: `#ebeae5` (warm cream button)
-- Page background: `#f2f1ed` (warm off-white)
-- Text color: `#26251e` (warm near-black)
-- Secondary text: `rgba(38, 37, 30, 0.55)` (55% warm brown)
-- Accent: `#f54e00` (orange)
-- Error/hover: `#cf2d56` (warm crimson)
-- Success: `#1f8a65` (muted teal)
-- Border: `oklab(0.263084 -0.00230259 0.0124794 / 0.1)` or `rgba(38, 37, 30, 0.1)` as fallback
-
-### Example Component Prompts
-- "Create a hero section on `#f2f1ed` warm cream background. Headline at 72px CursorGothic weight 400, line-height 1.10, letter-spacing -2.16px, color `#26251e`. Subtitle at 17.28px jjannon weight 400, line-height 1.35, color `rgba(38,37,30,0.55)`. Primary CTA button (`#ebeae5` bg, 8px radius, 10px 14px padding) with hover text shift to `#cf2d56`."
-- "Design a card: `#e6e5e0` background, border `1px solid rgba(38,37,30,0.1)`. Radius 8px. Title at 22px CursorGothic weight 400, letter-spacing -0.11px. Body at 17.28px jjannon weight 400, color `rgba(38,37,30,0.55)`. Use `#f54e00` for link accents."
-- "Build a pill tag: `#e6e5e0` background, `rgba(38,37,30,0.6)` text, full-pill radius (9999px), 3px 8px padding, 14px CursorGothic weight 400."
-- "Create navigation: sticky `#f2f1ed` background with backdrop-filter blur. 14px system-ui weight 500 for links, `#26251e` text. CTA button right-aligned with `#ebeae5` bg and 8px radius. Bottom border `1px solid rgba(38,37,30,0.1)`."
-- "Design an AI timeline showing four steps: Thinking (`#dfa88f`), Grep (`#9fc9a2`), Read (`#9fbbe0`), Edit (`#c0a8dd`). Each step: 14px system-ui label + 16px CursorGothic description + vertical connecting line in `rgba(38,37,30,0.1)`."
-
-### Iteration Guide
-1. Always use warm tones -- `#f2f1ed` background, `#26251e` text, never pure white/black for primary surfaces
-2. Letter-spacing scales with font size for CursorGothic: -2.16px at 72px, -0.72px at 36px, -0.325px at 26px, normal at 16px
-3. Use `rgba(38, 37, 30, alpha)` as a CSS-compatible fallback for oklab borders
-4. Three fonts, three voices: CursorGothic (display/UI), jjannon (editorial), berkeleyMono (code)
-5. Pill shapes (9999px radius) for tags and filters; 8px radius for primary buttons and cards
-6. Hover states use `#cf2d56` text color -- the warm crimson shift is a signature interaction
-7. Shadows use large blur values (28px, 70px) for diffused atmospheric depth
-8. The sub-8px spacing scale (1.5, 2, 2.5, 3, 4, 5, 6px) is critical for icon/text micro-alignment
+1. Start with a `{colors.page-body}` page and `{colors.ink}` text; set all type in CursorGothic (or a neo-grotesque substitute) at 400.
+2. Write a short, quiet headline at 26px, and one dark pill primary plus one light pill secondary.
+3. Place one large product screenshot in a rounded frame with a long diffuse shadow, on soft artwork.
+4. Add a trust row of flat sand tiles with monochrome logos.
+5. In feature panels, pair a full-ink sentence with a 60%-ink continuation at 22px; add an orange `{colors.accent}` link with an arrow.
+6. Derive all greys from `{colors.ink}` alpha; avoid new hues.
+7. Compare against the capture: cream, quiet, product-first.

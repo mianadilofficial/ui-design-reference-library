@@ -74,6 +74,17 @@ const ENTRIES = [
     css: ['examples/golden/theme.css', 'examples/golden/components.css', 'examples/sample-app/styles.css'],
   },
   {
+    // The same screen with its delete confirmation open. Rendered closed, the
+    // confirm Delete never reaches the page, and lint_intent passed a blue one
+    // there without seeing it (2026-10-20, #11).
+    name: 'settings-confirm',
+    file: 'examples/sample-app/Settings.tsx',
+    export: 'Settings',
+    title: 'Settings.tsx with the delete confirmation open, server-rendered',
+    css: ['examples/golden/theme.css', 'examples/golden/components.css', 'examples/sample-app/styles.css'],
+    props: { initialConfirmOpen: true },
+  },
+  {
     name: 'button-variants',
     file: 'examples/golden/Button.tsx',
     export: 'Button',

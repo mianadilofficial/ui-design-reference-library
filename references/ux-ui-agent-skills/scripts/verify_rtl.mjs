@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * RTL gate. Renders a page LTR then RTL (dir="rtl") and flags layout that breaks
- * only in RTL — the tell of physical left/right CSS instead of logical properties
+ * only in RTL: the tell of physical left/right CSS instead of logical properties
  * (margin-inline-*, inset-inline-*, text-align: start). Catches horizontal
  * overflow that appears solely when the page is mirrored.
  *
@@ -17,7 +17,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_rtl: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_rtl: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -46,7 +46,7 @@ await page.waitForTimeout(120);
 const rtl = await overflow();
 await browser.close();
 
-console.log(`RTL — ${file}`);
+console.log(`RTL: ${file}`);
 console.log(`  LTR horizontal overflow: ${ltr.x}px | RTL: ${rtl.x}px`);
 if (rtl.x > ltr.x + 2) {
   console.log(`\nFAIL: RTL introduces ${rtl.x - ltr.x}px of horizontal overflow not present in LTR.`);
@@ -54,5 +54,5 @@ if (rtl.x > ltr.x + 2) {
   console.log('  → replace physical left/right with logical properties (margin-inline-*, inset-inline-*, text-align: start).');
   process.exit(1);
 }
-console.log('OK: layout mirrors cleanly — no RTL-only horizontal overflow.');
+console.log('OK: layout mirrors cleanly, no RTL-only horizontal overflow.');
 process.exit(0);

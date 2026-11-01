@@ -1,176 +1,305 @@
-# Design System Inspired by Wise
+---
+version: alpha
+name: Wise
+category: "Fintech & Crypto"
+description: "Wise pairs a bright green (#9fe870) hero field with forest-green (#163300) ink and pill buttons, setting display type in the proprietary Wise Sans at weight 900 (86.86px) and everything else in Inter 600, with round-cornered cards (10-36px radii) and almost no shadows."
 
-> Category: Fintech & Crypto
-> Money transfer. Bright green accent, friendly and clear.
+colors:
+  canvas: "#ffffff"
+  ink: "#163300"
+  primary: "#163300"
+  on-primary: "#9fe870"
+  ink-secondary: "#454745"
+  ink-strong: "#0e0f0c"
+  negative: "#cf2929"
+  ink-pale: "#e8ebe6"
+  bright-green: "#9fe870"
+  bright-blue: "#a0e1e1"
+  hairline: "#0e0f0c1f"
+  primary-hover: "#0d1f00"
+  card-border: "#1633001f"
+  footer-bg: "#16330014"
+typography:
+  display:
+    fontFamily: "\"Wise Sans\", Inter, sans-serif"
+    fontSize: 86.8571px
+    fontWeight: 900
+    lineHeight: 73.8285px
+  display-mobile:
+    fontFamily: "\"Wise Sans\", Inter, sans-serif"
+    fontSize: 44.9092px
+    fontWeight: 900
+    lineHeight: 38.1728px
+  heading:
+    fontFamily: Inter, Helvetica, Arial, sans-serif
+    fontSize: 32.6857px
+    fontWeight: 600
+    lineHeight: 44px
+    letterSpacing: "-0.980572px"
+  subheading:
+    fontFamily: "\"Wise Sans\", Inter, sans-serif"
+    fontSize: 40px
+    fontWeight: 400
+    lineHeight: 34px
+  body:
+    fontFamily: Inter, Helvetica, Arial, sans-serif
+    fontSize: 20px
+    fontWeight: 600
+    lineHeight: 28px
+    letterSpacing: 0.1px
+  button:
+    fontFamily: Inter, Helvetica, Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 600
+    lineHeight: 24px
+    letterSpacing: "-0.176px"
+  nav:
+    fontFamily: Inter, Helvetica, Arial, sans-serif
+    fontSize: 18px
+    fontWeight: 600
+    lineHeight: 26px
+    letterSpacing: "-0.108px"
+  input:
+    fontFamily: "\"Wise Sans\", Inter, sans-serif"
+    fontSize: 52px
+    fontWeight: 400
+    lineHeight: 78px
+rounded:
+  xs: 2px
+  sm: 10px
+  md: 16px
+  lg: 18.36px
+  xl: 27.54px
+  2xl: 30px
+  3xl: 32px
+  4xl: 36.72px
+  pill: 9999px
+spacing:
+  s1: 3px
+  s2: 4px
+  s3: 4.59px
+  s4: 5px
+  s5: 6px
+  s6: 8px
+  s7: 9.18px
+  s8: 10px
+  s9: 11px
+  s10: 12px
+components:
+  button-primary:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 11px 24px
+    height: 48px
+    borderColor: "{colors.ink}"
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 8px 12px
+    height: 32px
+    borderColor: "{colors.ink}"
+  link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.xs}"
+  nav:
+    textColor: "{colors.ink}"
+    transform: matrix(1, 0, 0, 1, 0, 0)
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.nav}"
+    rounded: "{rounded.xs}"
+  text-input:
+    textColor: "{colors.ink}"
+    typography: "{typography.input}"
+    height: 47px
+  card:
+    textColor: "{colors.ink}"
+    rounded: "{rounded.sm}"
+    borderColor: "{colors.card-border}"
+  footer:
+    backgroundColor: "{colors.footer-bg}"
+    textColor: "{colors.ink-secondary}"
+---
 
-## 1. Visual Theme & Atmosphere
+## Overview
 
-Wise's website is a bold, confident fintech platform that communicates "money without borders" through massive typography and a distinctive lime-green accent. The design operates on a warm off-white canvas with near-black text (`#0e0f0c`) and a signature Wise Green (`#9fe870`) — a fresh, lime-bright color that feels alive and optimistic, unlike the corporate blues of traditional banking.
+Wise's homepage (captured from the Thailand site, headline "Send money globally for less") is a two-green system. The first screen is a full-bleed `{colors.bright-green}` (#9fe870) field carrying a dark forest-green (`{colors.primary}`, #163300) headline set in the proprietary Wise Sans at weight 900 and a size of 86.8571px with a 73.8285px line-height, so the lines are packed nearly solid. A dark forest announcement bar sits above a nav with a small wordmark, "Personal" and "Platform" links and a pill "Sign up" button. Centered underneath, a phone-shaped card floats the live currency calculator: a photographic green header with a white search field, then a white panel with large amount figures (45,000.00 THB and 1,329.55 USD) and a full-width bright-green "Send money" pill. Past the fold the page returns to white (`{colors.canvas}`) for an Inter-set value-proposition section with mint-colored circular icons (`{colors.bright-blue}`, #a0e1e1), a rounded photo and icon-led feature rows.
 
-The typography uses Wise Sans — a proprietary font used at extreme weight 900 (black) for display headings with a remarkably tight line-height of 0.85 and OpenType `"calt"` (contextual alternates). At 126px, the text is so dense it feels like a protest sign — bold, urgent, and impossible to ignore. Inter serves as the body font with weight 600 as the default for emphasis, creating a consistently confident voice.
-
-What distinguishes Wise is its green-on-white-on-black material palette. Lime Green (`#9fe870`) appears on buttons with dark green text (`#163300`), creating a nature-inspired CTA that feels fresh. Hover states use `scale(1.05)` expansion rather than color changes — buttons physically grow on interaction. The border-radius system uses 9999px for buttons (pill), 30px–40px for cards, and the shadow system is minimal — just `rgba(14,15,12,0.12) 0px 0px 0px 1px` ring shadows.
+The tone is plain and numeric: "no hidden fees and no paperwork", "77% of payments arrive in under 20 seconds". Copy leads with figures, and the figures themselves are the most decorated type on the page.
 
 **Key Characteristics:**
-- Wise Sans at weight 900, 0.85 line-height — billboard-scale bold headlines
-- Lime Green (`#9fe870`) accent with dark green text (`#163300`) — nature-inspired fintech
-- Inter body at weight 600 as default — confident, not light
-- Near-black (`#0e0f0c`) primary with warm green undertone
-- Scale(1.05) hover animations — buttons physically grow
-- OpenType `"calt"` on all text
-- Pill buttons (9999px) and large rounded cards (30px–40px)
-- Semantic color system with comprehensive state management
+- Forest green `#163300` as the action and text color, bright green `#9fe870` as the brand field and the text color on the dark buttons.
+- Wise Sans at weight 900 for the hero and calculator amounts; Inter at 600 for nearly everything else (7,688 measured characters in Inter against 260 in Wise Sans).
+- Pill buttons (`{rounded.pill}`) in two sizes, 48px and 32px tall.
+- Generous, soft corner radii on cards and photos (10px, 16px, 18.36px, 27.54px, 36.72px measured).
+- Shadows are almost absent: 1px ring shadows in forest-green tint, with one soft drop (`0 6px 20px` at 8% black) measured once.
+- Imagery pairs photographic and illustrative color blocks; in the capture the calculator header is a green photographic texture and a warm pink-orange image runs below the card.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary Brand
-- **Near Black** (`#0e0f0c`): Primary text, background for dark sections
-- **Wise Green** (`#9fe870`): Primary CTA button, brand accent
-- **Dark Green** (`#163300`): Button text on green, deep green accent
-- **Light Mint** (`#e2f6d5`): Soft green surface, badge backgrounds
-- **Pastel Green** (`#cdffad`): `--color-interactive-contrast-hover`, hover accent
+> **Source pages:** home (`https://wise.com/`, Thailand locale), plus the published token package cited in SOURCES.json.
+
+### Brand & Accent
+- **Forest Green** (`{colors.primary}` and `{colors.ink}` — `#163300`): The primary button fill, the main text color (most-read by characters) and the heading color. The published Neptune token package defines it as `--color-forest-green` and, in its light "personal" theme, as `--color-interactive-primary`.
+- **Bright Green** (`{colors.bright-green}` and `{colors.on-primary}` — `#9fe870`): The hero background and the text color on forest-green buttons. In the same package it is `--color-bright-green` and `--color-interactive-accent`.
+- **Primary Hover** (`{colors.primary-hover}` — `#0d1f00`): Button hover; measured on hover and equal to the package's `--color-interactive-primary-hover` in the personal theme.
+- **Bright Blue** (`{colors.bright-blue}` — `#a0e1e1`): Fill of the mint icon circles; also named `--color-bright-blue` in the package.
+
+### Surface
+- **Canvas** (`{colors.canvas}` — `#ffffff`): The page background below the hero and the calculator panel.
+- **Footer Background** (`{colors.footer-bg}` — `#16330014`): A 8%-opacity forest-green tint; the personal theme calls the same value `--color-background-screen-hover` / `--color-background-neutral`.
+- **Hairline** (`{colors.hairline}` — `#0e0f0c1f`) and **Card Border** (`{colors.card-border}` — `#1633001f`): 1px dividers and card outlines.
+
+### Text
+- **Ink Strong** (`{colors.ink-strong}` — `#0e0f0c`): Section headings; the personal theme's `--color-content-primary`.
+- **Ink Secondary** (`{colors.ink-secondary}` — `#454745`): Supporting copy; `--color-content-secondary` in the same theme.
+- **Ink Pale** (`{colors.ink-pale}` — `#e8ebe6`): Measured on a few characters; the dark forest-green theme in the package lists it as `--color-content-secondary`.
 
 ### Semantic
-- **Positive Green** (`#054d28`): `--color-sentiment-positive-primary`, success
-- **Danger Red** (`#d03238`): `--color-interactive-negative-hover`, error/destructive
-- **Warning Yellow** (`#ffd11a`): `--color-sentiment-warning-hover`, warnings
-- **Background Cyan** (`rgba(56,200,255,0.10)`): `--color-background-accent`, info tint
-- **Bright Orange** (`#ffc091`): `--color-bright-orange`, warm accent
+- **Negative** (`{colors.negative}` — `#cf2929`): Error red, measured in text and listed as `--color-content-negative` in the token package.
 
-### Neutral
-- **Warm Dark** (`#454745`): Secondary text, borders
-- **Gray** (`#868685`): Muted text, tertiary
-- **Light Surface** (`#e8ebe6`): Subtle green-tinted light surface
+## Typography
 
-## 3. Typography Rules
+### Font Family
 
-### Font Families
-- **Display**: `Wise Sans`, fallback: `Inter` — OpenType `"calt"` on all text
-- **Body / UI**: `Inter`, fallbacks: `Helvetica, Arial`
+`Wise Sans` is a custom typeface drawn by Luke Prowse of NaN Typefaces with the agency Ragged Edge for the 2023 rebrand (type-01.com says it supports 342 languages; Creative Review describes the identity). The measured stacks are `"Wise Sans", Inter, sans-serif` for display and `Inter, Helvetica, Arial, sans-serif` for text. Creative Review notes Inter is open source; the display stack lists Inter as its fallback. `Averta` is also loaded in the page's font set, but was not found on measured text.
 
 ### Hierarchy
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Mega | Wise Sans | 126px (7.88rem) | 900 | 0.85 (ultra-tight) | normal | `"calt"` |
-| Display Hero | Wise Sans | 96px (6.00rem) | 900 | 0.85 | normal | `"calt"` |
-| Section Heading | Wise Sans | 64px (4.00rem) | 900 | 0.85 | normal | `"calt"` |
-| Sub-heading | Wise Sans | 40px (2.50rem) | 900 | 0.85 | normal | `"calt"` |
-| Alt Heading | Inter | 78px (4.88rem) | 600 | 1.10 (tight) | -2.34px | `"calt"` |
-| Card Title | Inter | 26px (1.62rem) | 600 | 1.23 (tight) | -0.39px | `"calt"` |
-| Feature Title | Inter | 22px (1.38rem) | 600 | 1.25 (tight) | -0.396px | `"calt"` |
-| Body | Inter | 18px (1.13rem) | 400 | 1.44 | 0.18px | `"calt"` |
-| Body Semibold | Inter | 18px (1.13rem) | 600 | 1.44 | -0.108px | `"calt"` |
-| Button | Inter | 18px–22px | 600 | 1.00–1.44 | -0.108px | `"calt"` |
-| Caption | Inter | 14px (0.88rem) | 400–600 | 1.50–1.86 | -0.084px to -0.108px | `"calt"` |
-| Small | Inter | 12px (0.75rem) | 400–600 | 1.00–2.17 | -0.084px to -0.108px | `"calt"` |
+| Token | Size | Weight | Line Height | Letter Spacing | Use |
+|---|---|---|---|---|---|
+| `{typography.display}` | 86.8571px | 900 | 73.8285px | — | Hero headline |
+| `{typography.display-mobile}` | 44.9092px | 900 | 38.1728px | — | Hero at 390px |
+| `{typography.heading}` | 32.6857px | 600 | 44px | -0.980572px | Section headings (Inter) |
+| `{typography.subheading}` | 40px | 400 | 34px | — | Wise Sans accent text |
+| `{typography.body}` | 20px | 600 | 28px | 0.1px | Hero supporting copy |
+| `{typography.button}` | 16px | 600 | 24px | -0.176px | Pill buttons |
+| `{typography.nav}` | 18px | 600 | 26px | -0.108px | Nav links |
+| `{typography.input}` | 52px | 400 | 78px | — | Calculator amount fields |
 
 ### Principles
-- **Weight 900 as identity**: Wise Sans Black (900) is used exclusively for display — the heaviest weight in any analyzed system. It creates text that feels stamped, pressed, physical.
-- **0.85 line-height**: The tightest display line-height analyzed. Letters overlap vertically, creating dense, billboard-like text blocks.
-- **"calt" everywhere**: Contextual alternates enabled on ALL text — both Wise Sans and Inter.
-- **Weight 600 as body default**: Inter Semibold is the standard reading weight — confident, not light.
+- **Black weight for the brand moment.** Wise Sans appears at weight 900 only where the brand speaks; Inter handles the rest.
+- **Tight display leading.** 73.83 over 86.86 is about 0.85; do not loosen it.
+- **Semibold Inter for body.** The measured body is 600 rather than 400, which makes the copy read confidently on green.
+- **Numbers are display.** Amount fields reuse the Wise Sans stack at 52px.
 
-## 4. Component Stylings
+### Note on Font Substitutes
+Wise Sans is bespoke. If it is unavailable, Inter at weight 900 with a 0.85 line-height is the declared fallback in the stack; expect wider letterforms than the original.
+
+## Layout
+
+### Spacing System
+- Scale generated from the page: `{spacing.s1}` 3px, `{spacing.s2}` 4px, `{spacing.s3}` 4.59px, `{spacing.s4}` 5px, `{spacing.s5}` 6px, `{spacing.s6}` 8px, `{spacing.s7}` 9.18px, `{spacing.s8}` 10px, `{spacing.s9}` 11px, `{spacing.s10}` 12px. Much of the page's spacing is fluid (`clamp()` custom properties named `--mw-space-*` and `--eds-space-*` were measured), so values like 9.18px appear to be that scaling resolved at a 1280px viewport.
+- Buttons use `11px 24px` (large) and `8px 12px` (small) padding.
+
+### Grid & Container
+- A single centered column for the hero and calculator, then a two-column pattern with a photograph on the left and text rows on the right; a three-up row of icon-plus-text claims sits between them.
+- The measured page height is 15,595px at 1280px wide, so the page is long and sectioned.
+
+### Whitespace Philosophy
+Generous vertical air around the hero text and the calculator; the green field gives the hero its own room before white sections take over.
+
+## Elevation & Depth
+
+| Level | Treatment | Use |
+|---|---|---|
+| 0 | Flat | Most surfaces |
+| 1 | `0 0 0 1px` forest-green at 12% | Card outline ring |
+| 2 | `0 6px 20px` at 8% black | A single soft lift measured once |
+| 3 | Color field | The bright-green hero is the primary depth device |
+
+## Shapes
+
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.xs}` | 2px | Links and small elements |
+| `{rounded.sm}` | 10px | Cards, matching `--radius-small` in the package |
+| `{rounded.md}` | 16px | Medium surfaces, matching `--radius-medium` |
+| `{rounded.lg}` | 18.36px | Cards |
+| `{rounded.xl}` | 27.54px | Large panels |
+| `{rounded.2xl}` | 30px | Panels |
+| `{rounded.3xl}` | 32px | Panels, matching `--radius-xlarge` |
+| `{rounded.4xl}` | 36.72px | Calculator-card scale |
+| `{rounded.pill}` | 9999px | All buttons and chips |
+
+The fractional radii (18.36, 27.54, 36.72) were measured at the 1280px viewport; custom properties on the page use `clamp()` for radii too.
+
+## Components
 
 ### Buttons
 
-**Primary Green Pill**
-- Background: `#9fe870` (Wise Green)
-- Text: `#163300` (Dark Green)
-- Padding: 5px 16px
-- Radius: 9999px
-- Hover: scale(1.05) — button physically grows
-- Active: scale(0.95) — button compresses
-- Focus: inset ring + outline
+**`button-primary`** — forest-green pill with bright-green text.
+- Background `{colors.ink}`, text `{colors.on-primary}`, type `{typography.button}`, padding `11px 24px`, height 48px, `{rounded.pill}`. Hover `button-primary-hover` darkens to `{colors.primary-hover}`.
 
-**Secondary Subtle Pill**
-- Background: `rgba(22, 51, 0, 0.08)` (dark green at 8% opacity)
-- Text: `#0e0f0c`
-- Padding: 8px 12px 8px 16px
-- Radius: 9999px
-- Same scale hover/active behavior
+**`button-secondary`** — the compact nav variant ("Sign up"): same colors, `8px 12px` padding, 32px tall.
 
-### Cards & Containers
-- Radius: 16px (small), 30px (medium), 40px (large cards/tables)
-- Border: `1px solid rgba(14,15,12,0.12)` or `1px solid #9fe870` (green accent)
-- Shadow: `rgba(14,15,12,0.12) 0px 0px 0px 1px` (ring shadow)
+### Inputs
+
+**`text-input`** — large calculator amount: `{typography.input}` (52px Wise Sans), 47px tall. The white card holds "You send exactly" and "Recipient gets" rows with currency chips.
+
+### Cards
+
+**`card`** — `{rounded.sm}` radius with a `{colors.card-border}` outline.
 
 ### Navigation
-- Green-tinted navigation hover: `rgba(211,242,192,0.4)`
-- Clean header with Wise wordmark
-- Pill CTAs right-aligned
 
-## 5. Layout Principles
+**`nav-link`** — 18px Inter 600, forest green; the nav is on the bright-green hero with a pill "Sign up" at right and "Help" and "Log in" text links.
 
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 3px, 4px, 5px, 8px, 10px, 11px, 12px, 16px, 18px, 19px, 20px, 22px, 24px
+### Footer
 
-### Border Radius Scale
-- Minimal (2px): Links, inputs
-- Standard (10px): Comboboxes, inputs
-- Card (16px): Small cards, buttons, radio
-- Medium (20px): Links, medium cards
-- Large (30px): Feature cards
-- Section (40px): Tables, large cards
-- Mega (1000px): Presentation elements
-- Pill (9999px): All buttons, images
-- Circle (50%): Icons, badges
+**`footer`** — a `{colors.footer-bg}` tinted background with `{colors.ink-secondary}` text.
 
-## 6. Depth & Elevation
+## Design System Architecture
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Default |
-| Ring (Level 1) | `rgba(14,15,12,0.12) 0px 0px 0px 1px` | Card borders |
-| Inset (Level 2) | `rgb(134,134,133) 0px 0px 0px 1px inset` | Input focus |
+Wise has a design-system site at wise.design (the page opened showed only navigation and a link to docs.wise.design, which redirected to a 404) and publishes a token package on npm, `@transferwise/neptune-tokens` (version 8.26.0 opened), whose repository on GitHub is not public. The package is generated with Style Dictionary and ships CSS custom properties for base colors, themes (`personal`, `business`, `platform`, `navy`, `light`, `dark`, several with forest-green or bright-green variants), sentiments (negative, neutral, proposition, success, warning), radius (`--radius-small` 10px, `-medium` 16px, `-large` 24px, `-xlarge` 32px, `-full` 9999px) and a size scale. Colors are named by role (`--color-content-primary`, `--color-interactive-primary`, `--color-background-screen`) rather than by hue, and the live site's root variables follow the same role names.
 
-**Shadow Philosophy**: Wise uses minimal shadows — ring shadows only. Depth comes from the bold green accent against the neutral canvas.
+Sources: https://unpkg.com/@transferwise/neptune-tokens@8.26.0/tokens.css, https://unpkg.com/@transferwise/neptune-tokens@8.26.0/themes/personal/tokens.css and https://wise.design.
 
-## 7. Do's and Don'ts
+Type-01 (https://type-01.com/wise-sans-the-font-update-shaping-wises-visual-identity/) reports that the typography system was streamlined from 22 styles to 14: four display, four title and six body styles. Creative Review (https://www.creativereview.co.uk/wise-rebrand-ragged-edge/) says the design system was tested to exceed WCAG 3.0 requirements and supports more than 146 languages.
+
+## Do's and Don'ts
 
 ### Do
-- Use Wise Sans weight 900 for display — the extreme boldness IS the brand
-- Apply line-height 0.85 on Wise Sans display — ultra-tight is intentional
-- Use Lime Green (#9fe870) for primary CTAs with Dark Green (#163300) text
-- Apply scale(1.05) hover and scale(0.95) active on buttons
-- Enable "calt" on all text
-- Use Inter weight 600 as the body default
+- Pair `{colors.primary}` forest green with `{colors.on-primary}` bright green on buttons.
+- Use Wise Sans at 900 for hero lines and large numbers only.
+- Keep display leading near 0.85.
+- Use pill buttons everywhere.
+- Name colors by role (content, interactive, background) as the token package does.
 
 ### Don't
-- Don't use light font weights for Wise Sans — only 900
-- Don't relax the 0.85 line-height on display — the density is the identity
-- Don't use the Wise Green as background for large surfaces — it's for buttons and accents
-- Don't skip the scale animation on buttons
-- Don't use traditional shadows — ring shadows only
+- Don't put bright-green text on white; it is a dark-surface text color.
+- Don't use Wise Sans for body copy.
+- Don't add shadows beyond the 1px ring and one soft lift.
+- Don't use pure black for display text; the brand's ink is `{colors.primary}`.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
 ### Breakpoints
+The extraction captured 1280px desktop and 390px mobile.
+
 | Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <576px | Single column |
-| Tablet | 576–992px | 2-column |
-| Desktop | 992–1440px | Full layout |
-| Large | >1440px | Expanded |
+|---|---|---|
+| Desktop | 1280px | 86.86px hero, nav links visible |
+| Mobile | 390px | Hero falls to 44.91px / 38.17px |
 
-## 9. Agent Prompt Guide
+### Touch Targets
+Large buttons are 48px tall and small ones 32px. Mobile target sizes were not separately measured.
 
-### Quick Color Reference
-- Text: Near Black (`#0e0f0c`)
-- Background: White (`#ffffff` / off-white)
-- Accent: Wise Green (`#9fe870`)
-- Button text: Dark Green (`#163300`)
-- Secondary: Gray (`#868685`)
+### Collapsing Strategy
+Spacing and radii are fluid, driven by `clamp()` custom properties, so values scale between viewports rather than jumping at fixed breakpoints.
 
-### Example Component Prompts
-- "Create hero: white background. Headline at 96px Wise Sans weight 900, line-height 0.85, 'calt' enabled, #0e0f0c text. Green pill CTA (#9fe870, 9999px radius, 5px 16px padding, #163300 text). Hover: scale(1.05)."
-- "Build a card: 30px radius, 1px solid rgba(14,15,12,0.12). Title at 22px Inter weight 600, body at 18px weight 400."
+## Iteration Guide
 
-### Iteration Guide
-1. Wise Sans 900 at 0.85 line-height — the extreme weight IS the brand
-2. Lime Green for buttons only — dark green text on green background
-3. Scale animations (1.05 hover, 0.95 active) on all interactive elements
-4. "calt" on everything — contextual alternates are mandatory
-5. Inter 600 for body — confident reading weight
+1. Work on one component at a time.
+2. Reference tokens by name (`{colors.primary}`, `{rounded.pill}`).
+3. Keep forest green and bright green as a pair.
+4. Add new variants as separate entries.
+5. Keep body in Inter 600 (`{typography.body}`) and use Wise Sans only through `{typography.display}`.
+6. Re-measure any fluid value at the viewport you care about.

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>oklch theme</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* A theme written in oklch, the way every Tailwind v4 palette is. Chrome reports
+     these computed colours as oklch(), not rgb(), so a gate that reads the numbers
+     out of the string sees oklch(0.2 0.014 30) as near-black rgb(0.2, 0.014, 30)
+     and fails every line on this page. All of it passes AA, light and dark; the
+     .sr-only label is clipped to 1px and has no contrast to measure. */
+  :root {
+    --color-surface-page: oklch(1 0 0);
+    --color-surface-raised: oklch(0.97 0.006 30);
+    --color-text-primary: oklch(0.2 0.014 30);
+    --color-text-secondary: oklch(0.45 0.02 30);
+    --color-action-primary: oklch(0.45 0.16 260);
+    --color-action-primary-hover: oklch(0.38 0.15 260);
+    --color-action-danger: oklch(0.5 0.19 27);
+    --color-on-action: oklch(1 0 0);
+    --color-tint: oklch(0.2 0 0 / 0.04);
+  }
+  [data-theme="dark"] {
+    --color-surface-page: oklch(0.18 0.01 30);
+    --color-surface-raised: oklch(0.24 0.012 30);
+    --color-text-primary: oklch(0.96 0.005 30);
+    --color-text-secondary: oklch(0.78 0.01 30);
+    --color-action-primary: oklch(0.8 0.1 260);
+    --color-action-primary-hover: oklch(0.86 0.08 260);
+    --color-action-danger: oklch(0.78 0.12 27);
+    --color-on-action: oklch(0.16 0.01 30);
+    --color-tint: oklch(1 0 0 / 0.04);
+  }
+  body { margin:0; background:var(--color-surface-page); color:var(--color-text-primary); font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; display:grid; gap:16px; max-inline-size:40rem; }
+  h1 { font-size:40px; line-height:1.2; margin:0; }
+  .muted { color:var(--color-text-secondary); margin:0; }
+  .panel { background:var(--color-surface-raised); border-radius:12px; padding:16px; }
+  .tint { background:var(--color-tint); border-radius:8px; padding:8px 12px; }
+  .mix { color:color-mix(in oklch, var(--color-text-primary) 85%, var(--color-action-primary)); margin:0; }
+  .actions { display:flex; gap:8px; }
+  button { font:inherit; min-block-size:44px; padding:8px 16px; border:0; border-radius:8px; cursor:pointer;
+           background:var(--color-action-primary); color:var(--color-on-action); }
+  button:hover { background:var(--color-action-primary-hover); }
+  button:focus-visible { outline:2px solid var(--color-action-primary); outline-offset:2px; }
+  button.danger { background:var(--color-action-danger); }
+  .sr-only { position:absolute; inline-size:1px; block-size:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+  .ghost { color:var(--color-surface-raised); }
+</style></head>
+<body><main>
+  <h1>Billing</h1>
+  <p class="muted">Your plan renews on the first of each month.</p>
+  <section class="panel">
+    <p class="tint">Two seats are free on this plan.</p>
+    <p class="mix">Mixed in oklch from the text and the accent.</p>
+    <p class="tint">Seats used: 3 of 5<span class="sr-only ghost">, a label no one sees, so contrast does not apply</span></p>
+  </section>
+  <div class="actions"><button type="button">Save changes</button><button type="button" class="danger">Delete workspace</button></div>
+</main></body></html>

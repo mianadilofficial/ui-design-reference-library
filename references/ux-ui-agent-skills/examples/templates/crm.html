@@ -20,8 +20,7 @@
   @media (min-width:48rem){
     .kpis{grid-template-columns:minmax(12rem,1.5fr) repeat(auto-fit,minmax(10rem,1fr))}
   }
-  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:var(--space-4);
-    align-items:start}
+  .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));gap:var(--space-4)}
   .col{display:grid;gap:var(--space-3);align-content:start;background:var(--color-surface-raised);
     border-radius:var(--radius-card);padding:var(--space-3)}
   .col > header{display:flex;justify-content:space-between;align-items:baseline;gap:var(--space-2);
@@ -53,6 +52,43 @@
   .tl .pip .ico{inline-size:.875rem;block-size:.875rem}
   .tl p{font-size:var(--text-sm);overflow-wrap:anywhere}
   .tl time{display:block;font-size:var(--text-xs);color:var(--color-text-secondary);margin-block-start:var(--space-1)}
+  /* iPhone Duo, half closed like a book: the pipeline on one viewport segment,
+     the selected deal on the other, and nothing on the hinge between them. Safari
+     reports the segments through env() once its Viewport Segments flag is on. The
+     simulator in examples/foldable/ passes the same three numbers in the URL,
+     because no desktop browser has a fold to report, so the layout is written
+     once for each path and reads only --seg-a, --seg-b and --hinge. */
+  @media (horizontal-viewport-segments: 2) {
+    :root{--seg-a:env(viewport-segment-width 0 0, 50%);--seg-b:env(viewport-segment-width 1 0, 50%);
+      --hinge:calc(env(viewport-segment-left 1 0, 0px) - env(viewport-segment-right 0 0, 0px))}
+  }
+  :root{--pane-a:calc(var(--seg-a) - var(--space-6) - var(--space-4));
+    --pane-b:calc(var(--seg-b) - var(--space-6) - var(--space-4));
+    --pane-gap:calc(var(--hinge) + 2 * var(--space-4))}
+  @media (horizontal-viewport-segments: 2) {
+    .side,.topbar,.page,.credit{padding-inline:var(--space-6)}
+    .side{display:grid;grid-template-columns:var(--pane-a) var(--pane-b);column-gap:var(--pane-gap);justify-items:start}
+    .side > *{grid-column:1;min-inline-size:0;max-inline-size:100%}
+    nav.menu{flex-wrap:wrap}
+    .topbar > div:first-child{flex:0 0 var(--pane-a);margin-inline-end:var(--pane-gap)}
+    .page{grid-template-columns:var(--pane-a) var(--pane-b);column-gap:var(--pane-gap)}
+    .page > .kpis{grid-column:1;grid-template-columns:minmax(0,1fr)}
+    .page > .board{grid-column:1}
+    .page > .detail{grid-column:2;grid-row:1 / span 2;align-self:start;position:sticky;inset-block-start:var(--space-4)}
+    .credit{display:grid;grid-template-columns:var(--pane-a) var(--pane-b);column-gap:var(--pane-gap)}
+  }
+  :root.fold-sim {
+    .side,.topbar,.page,.credit{padding-inline:var(--space-6)}
+    .side{display:grid;grid-template-columns:var(--pane-a) var(--pane-b);column-gap:var(--pane-gap);justify-items:start}
+    .side > *{grid-column:1;min-inline-size:0;max-inline-size:100%}
+    nav.menu{flex-wrap:wrap}
+    .topbar > div:first-child{flex:0 0 var(--pane-a);margin-inline-end:var(--pane-gap)}
+    .page{grid-template-columns:var(--pane-a) var(--pane-b);column-gap:var(--pane-gap)}
+    .page > .kpis{grid-column:1;grid-template-columns:minmax(0,1fr)}
+    .page > .board{grid-column:1}
+    .page > .detail{grid-column:2;grid-row:1 / span 2;align-self:start;position:sticky;inset-block-start:var(--space-4)}
+    .credit{display:grid;grid-template-columns:var(--pane-a) var(--pane-b);column-gap:var(--pane-gap)}
+  }
 </style>
 </head>
 <body>
@@ -144,7 +180,7 @@
           <div>
             <p class="eyebrow">Health</p>
             <p class="note" style="margin-block:var(--space-2)">Score 58 of 100. Logins fell 34% after the security review.</p>
-            <div class="track" role="img" aria-label="Deal health 58 out of 100"><i style="inline-size:58%;background:var(--color-feedback-warning)"></i></div>
+            <div class="track" role="img" aria-label="Deal health 58 out of 100"><i style="inline-size:58%;background:var(--color-feedback-warning-icon)"></i></div>
           </div>
           <ul class="tl">
             <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-file-text"/></svg></span>
@@ -176,6 +212,22 @@
     deals.forEach(o => o.setAttribute('aria-pressed', String(o === d)));
     document.getElementById('deal').textContent = d.querySelector('.co').textContent;
   }));
+
+  /* ?fold=455,40 is the simulator's fold: where the first segment ends and how
+     wide the hinge is. Only a real number pair is accepted. */
+  const fold = (new URLSearchParams(location.search).get('fold') || '').split(',').map(Number);
+  if (fold.length === 2 && fold.every(n => Number.isFinite(n) && n >= 0)) {
+    const root = document.documentElement;
+    const place = () => {
+      const [a, hinge] = fold;
+      root.style.setProperty('--seg-a', a + 'px');
+      root.style.setProperty('--hinge', hinge + 'px');
+      root.style.setProperty('--seg-b', Math.max(0, root.clientWidth - a - hinge) + 'px');
+    };
+    place();
+    root.classList.add('fold-sim');
+    addEventListener('resize', place);
+  }
 </script>
 </body>
 </html>

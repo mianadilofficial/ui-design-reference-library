@@ -81,6 +81,7 @@ export interface IProjectionNode<I = unknown> {
     unblockUpdate(): void
     isUpdating: boolean
     needsReset: boolean
+    needsShow?: boolean
     startUpdate(): void
     willUpdate(notifyListeners?: boolean): void
     didUpdate(): void
@@ -109,7 +110,8 @@ export interface IProjectionNode<I = unknown> {
         box: Box,
         transformOnly?: boolean,
         output?: Box,
-        skipOwnTransform?: boolean
+        skipOwnTransform?: boolean,
+        start?: number
     ): Box
     resolveTargetDelta(force?: boolean): void
     removeRelativeTarget(): void

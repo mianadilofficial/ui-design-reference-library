@@ -17,6 +17,17 @@ both:
   5. A SKILL.md frontmatter value is a plain YAML scalar containing ": " or " #".
      A strict YAML loader reads that as a nested mapping or a comment, rejects
      the file, and the skill is silently skipped.
+  6. A skill names a file of the kit by a path relative to the repo root
+     (`.claude/rules/...`, `tokens/...`, `scripts/...`). Installed as a plugin,
+     the kit lives outside the user's project, so the path resolves against
+     the wrong folder and the file never opens (#9). Every kit path in a skill
+     must go through ${CLAUDE_SKILL_DIR}/../../../, which works on every
+     install route.
+  7. A skill runs a browser gate directly. Run that way, a gate on a machine
+     with no browser prints SKIPPED and exits 0, and an agent reading the exit
+     code takes it as a pass (#10). Measurement gates go through scripts/gate.mjs
+     (requires the browser, records a receipt); the taste heuristics carry
+     DS_REQUIRE_BROWSER=1 and stay out of the receipts the Stop hook accepts.
 
 It also holds the line on size: the whole point of the split is that the always-on
 brief stays short.
@@ -128,6 +139,43 @@ def main():
                 issues.append(f"frontmatter: {skill.relative_to(ROOT)} `{m.group(1)}` is an unquoted "
                               "value containing ': ' or ' #' - invalid YAML; quote it")
 
+    # Kit files named from a skill must be reachable on a plugin install, where
+    # the kit is not the user's cwd. Measured on 2026-10-20: under the plugin,
+    # design-tokens opened none of the 15 files its steps name.
+    kit_path = re.compile(r"(?<![\w./}$-])(?:\.claude/(?:rules|agents)/|(?:accessibility|taste|frameworks|"
+                          r"components|design-systems|content|tokens|workflows|scripts|templates|evals|"
+                          r"hooks|mcp|examples)/)")
+    # ship releases THIS repo and only ever runs with the kit as its cwd.
+    repo_only = {"ship"}
+    for skill in sorted((ROOT / ".claude" / "skills").glob("*/SKILL.md")):
+        if skill.parent.name in repo_only:
+            continue
+        parts = skill.read_text(encoding="utf-8").split("---", 2)
+        body = parts[2] if len(parts) == 3 else parts[0]
+        body = re.sub(r"\$\{CLAUDE_SKILL_DIR\}/\S*", "", body)
+        for n, line in enumerate(body.splitlines(), 1):
+            m = kit_path.search(line)
+            if m:
+                issues.append(f"plugin path: {skill.relative_to(ROOT)} names `{m.group(0)}...` without "
+                              "${CLAUDE_SKILL_DIR}/../../../ - it will not resolve on a plugin install")
+                break
+
+    # A skill must not run a browser gate bare (#10). The list is every script
+    # that imports playwright, so a new gate is covered the day it lands.
+    browser_gates = sorted(p.name for p in (ROOT / "scripts").glob("*.mjs")
+                           if re.search(r"""import\(['"]playwright['"]\)|from ['"]playwright['"]""",
+                                        p.read_text(encoding="utf-8")))
+    direct = re.compile(r"(?<!DS_REQUIRE_BROWSER=1 )node (?:\$\{CLAUDE_SKILL_DIR\}/\.\./\.\./\.\./|\$KIT/)?scripts/("
+                        + "|".join(re.escape(g) for g in browser_gates) + r")")
+    for skill in sorted((ROOT / ".claude" / "skills").glob("*/SKILL.md")):
+        if skill.parent.name in repo_only:
+            continue
+        m = direct.search(skill.read_text(encoding="utf-8"))
+        if m:
+            issues.append(f"browser gate: {skill.relative_to(ROOT)} runs {m.group(1)} directly - "
+                          "with no browser that is SKIPPED and exit 0; use scripts/gate.mjs, "
+                          "or DS_REQUIRE_BROWSER=1 for a taste heuristic")
+
     # A version the install ships must be a version the release actually cut.
     versions = {}
     for label, path, key in (("package.json", PKG, "version"),
@@ -161,4 +209,8 @@ def main():
 
 
 if __name__ == "__main__":
+    # Findings quote what they found (an arrow, an emoji, a Thai name), and a
+    # Windows console in a legacy code page cannot print it.
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     sys.exit(main())

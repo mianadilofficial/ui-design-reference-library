@@ -1,307 +1,341 @@
-# Design System Inspired by Clay
+---
+version: alpha
+name: Clay
+category: "Design & Creative Tools"
+description: "Clay is a playful GTM-data brand set in Roobert (88px/575 hero, -3.52px tracking): lime (#cbd810) and black pill-less 12px buttons, a deep forest-green hero (#035d44), warm oat neutrals (#f4f3f0, #fffdf9) and candy swatches (dragonfruit, tangerine, slushie, ube) behind rounded 18px tiles and 3D clay-style illustrations."
+colors:
+  canvas: "#ffffff"
+  ink: "#000000"
+  primary: "#cbd810"
+  on-primary: "#000000"
+  surface-oat: "#f4f3f0"
+  surface-cream: "#fffdf9"
+  ink-oat: "#1b1a18"
+  ink-on-pink: "#46022f"
+  ink-on-orange: "#381005"
+  ink-muted: "#55534e"
+  ink-on-lime: "#102b03"
+  oat-100: "#fefdfb"
+  oat-400: "#dad4c8"
+  oat-200: "#f3f2ed"
+  forest: "#035d44"
+  slushie: "#3bd3fd"
+typography:
+  display:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 88px
+    fontWeight: 575
+    lineHeight: 88px
+    letterSpacing: "-3.52px"
+  display-mobile:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 41.6px
+    fontWeight: 575
+    lineHeight: 41.6px
+    letterSpacing: "-1.664px"
+  heading:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 72px
+    fontWeight: 500
+    lineHeight: 72px
+    letterSpacing: "-2.16px"
+  subheading:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 48px
+    fontWeight: 500
+    lineHeight: 48px
+    letterSpacing: "-1.92px"
+  body:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 22.4px
+  button:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 18px
+    fontWeight: 500
+    lineHeight: 27px
+    letterSpacing: "-0.18px"
+  button-secondary:
+    fontFamily: Roobertvf, Arial, sans-serif
+    fontSize: 13.92px
+    fontWeight: 500
+    lineHeight: 20.88px
+    letterSpacing: "-0.1392px"
+rounded:
+  xs: 4px
+  sm: 6.4px
+  md: 10px
+  lg: 12px
+  xl: 14px
+  2xl: 16px
+  3xl: 18px
+  4xl: 24px
+  pill: 9999px
+spacing:
+  s1: 0.5px
+  s2: 2.08px
+  s3: 3.2px
+  s4: 4px
+  s5: 5.6px
+  s6: 6.4px
+  s7: 6.96px
+  s8: 8px
+  s9: 10px
+  s10: 10.4px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.lg}"
+    padding: 9px 18px
+    height: 47px
+  button-light:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button}"
+    rounded: "{rounded.lg}"
+    padding: 9px 18px
+    height: 47px
+  button-nav-dark:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.canvas}"
+    typography: "{typography.button-secondary}"
+    rounded: "{rounded.lg}"
+    padding: 8px 16px
+    height: 39px
+  button-nav-oat:
+    backgroundColor: "{colors.oat-200}"
+    textColor: "{colors.ink}"
+    typography: "{typography.button-secondary}"
+    rounded: "{rounded.lg}"
+    height: 39px
+  button-nav-oat-hover:
+    backgroundColor: "{colors.oat-400}"
+  nav-link:
+    textColor: "{colors.ink}"
+    typography: "{typography.body}"
+  textarea:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.ink-oat}"
+    typography: "{typography.body}"
+    padding: 11.2px 16px 16px
+    height: 144px
+  card:
+    backgroundColor: "{colors.oat-100}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.3xl}"
+    padding: 16px 20px
+    borderColor: "{colors.canvas}"
+  footer:
+    backgroundColor: "{colors.surface-cream}"
+    textColor: "{colors.ink}"
+---
 
-> Category: Design & Creative
-> Creative agency. Organic shapes, soft gradients, art-directed layout.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+Clay (clay.com, the GTM data and workflow platform) wraps a B2B product in a toy-box visual language. The capture (`web/data/captures/clay.jpg`) opens with a dark-plum announcement bar in a chunky display wordmark ("SCULPT: The most creative minds in GTM. October 8, San Francisco", "SCULPT KEYNOTE RECAP ->"), then a floating white navigation card with the lowercase "clay" wordmark and a small rainbow-cloud mark (Product, Solutions, Resources, Company, Pricing, a command-K search, Log in, "Get a demo", and a black "Start free trial").
 
-Clay's website is a warm, playful celebration of color that treats B2B data enrichment like a craft rather than an enterprise chore. The design language is built on a foundation of warm cream backgrounds (`#faf9f7`) and oat-toned borders (`#dad4c8`, `#eee9df`) that give every surface the tactile quality of handmade paper. Against this artisanal canvas, a vivid swatch palette explodes with personality — Matcha green, Slushie cyan, Lemon gold, Ube purple, Pomegranate pink, Blueberry navy, and Dragonfruit magenta — each named like flavors at a juice bar, not colors in an enterprise UI kit.
+The hero is a full-bleed rolling green hillside rendered as a soft 3D clay scene: a funnel pouring colored candy shapes, a pencil, a mailbox, a seesaw with a magnifying glass, a fan, a blue looping pipe, an orange tube and a staircase of orange and tan blocks, with stylized pine trees. Over the lower, darker part of the hill sit the white headline "Build systems to grow revenue" and, on the right, "Infrastructure to get any data, run agentic workflows, and launch GTM plays." with a white "Start free trial ->" button and a lime "Get a demo ->" button, followed by "or install directly with" and three small integration icons.
 
-The typography is anchored by Roobert, a geometric sans-serif with character, loaded with an extensive set of OpenType stylistic sets (`"ss01"`, `"ss03"`, `"ss10"`, `"ss11"`, `"ss12"`) that give the text a distinctive, slightly quirky personality. At display scale (80px, weight 600), Roobert uses aggressive negative letter-spacing (-3.2px) that compresses headlines into punchy, billboard-like statements. Space Mono serves as the monospace companion for code and technical labels, completing the craft-meets-tech duality.
+A large oat-colored rounded panel overlaps the hero's bottom edge: "Trusted by more than 500,000 leading GTM teams of all sizes. Inspired by our customers. Built with love." It contains a mosaic of rounded tiles holding customer logos (Stripe, Figma, Vanta, perplexity, Notion, OpenAI, Cursor, HubSpot, Intercom, Canva, Anthropic) and quote or stat tiles ("80%+ enrichment coverage", "+140% outbound pipeline"). The next sections switch to white: a huge centered "GTM engineers build on Clay" heading, a subtitle ("Find every account in your TAM in one place."), a row of rounded use-case chips (TAM Sourcing, Automated Inbound, Lead Scoring, Automated Outbound, CRM Enrichment, Launch Ads, Rep Productivity) and a product screenshot of a lead table with a "Find with filters" modal over a bright cyan panel. A further heading begins "What do you want to build?".
 
-What makes Clay truly distinctive is its hover micro-animations: buttons on hover rotate slightly (`rotateZ(-8deg)`), translate upward (`translateY(-80%)`), change background to a contrasting swatch color, and cast a hard offset shadow (`rgb(0,0,0) -7px 7px`). This playful hover behavior — where a button literally tilts and jumps on interaction — creates a sense of physical delight that's rare in B2B software. Combined with generously rounded containers (24px–40px radius), dashed borders alongside solid ones, and a multi-layer shadow system that includes inset highlights, Clay feels like a design system that was made by people who genuinely enjoy making things.
+**Key characteristics**
+- One typeface, Roobert (variable), used from 88px display at weight 575 down to 14px UI, with strongly negative tracking at large sizes (-3.52px at 88px).
+- A lime primary (`{colors.primary}`) with black text on the main CTA, black-on-white and black buttons in the nav, never gradient buttons.
+- Deep forest green (`{colors.forest}`) hero behind white type, followed by warm cream/oat panels (`{colors.surface-oat}`, `{colors.surface-cream}`).
+- Candy swatches (blueberry, dragonfruit, lemon, lime, slushie, tangerine, ube, matcha, pomegranate) used as tile backgrounds with deeply tinted text.
+- Generous rounding: 12px buttons, 18px tiles, 24px to 48px panels, full pills for chips.
+- 3D clay-style illustration and playful logo wall; screenshots are real product UI.
 
-**Key Characteristics:**
-- Warm cream canvas (`#faf9f7`) with oat-toned borders (`#dad4c8`) — artisanal, not clinical
-- Named swatch palette: Matcha, Slushie, Lemon, Ube, Pomegranate, Blueberry, Dragonfruit
-- Roobert font with 5 OpenType stylistic sets — quirky geometric character
-- Playful hover animations: rotateZ(-8deg) + translateY(-80%) + hard offset shadow
-- Space Mono for code and technical labels
-- Generous border radius: 24px cards, 40px sections, 1584px pills
-- Mixed border styles: solid + dashed in the same interface
-- Multi-layer shadow with inset highlight: `0px 1px 1px` + `-1px inset` + `-0.5px`
+## Colors
 
-## 2. Color Palette & Roles
+Measured on clay.com (`web/data/extracted/clay.json`); the site also exposes its swatch library as CSS variables, which gives the names.
 
-### Primary
-- **Clay Black** (`#000000`): Text, headings, pricing card text, `--_theme--pricing-cards---text`
-- **Pure White** (`#ffffff`): Card backgrounds, button backgrounds, inverse text
-- **Warm Cream** (`#faf9f7`): Page background — the warm, paper-like canvas
+### Core
+- **Canvas** `{colors.canvas}`: white page background for the white sections.
+- **Ink** `{colors.ink}`: black, the main text color and the black button fill.
+- **Primary lime** `{colors.primary}` (swatch `lime-300`): main CTA ("Get a demo" in the hero), label `{colors.on-primary}`.
+- **Forest** `{colors.forest}`: the dark green of the hero hillside.
+- **Slushie** `{colors.slushie}`: bright cyan behind the product screenshot (`slushie-500` in the older ramp).
 
-### Swatch Palette — Named Colors
+### Warm neutrals (oat)
+- **Surface oat** `{colors.surface-oat}` (`oat-200`): the trusted-by panel and light sections.
+- **Surface cream** `{colors.surface-cream}`: the footer and near-white sections.
+- **Oat 100** `{colors.oat-100}`: tile fill for testimonial and logo cards (and light text on dark).
+- **Oat 200** `{colors.oat-200}`: light fill of the nav "Get a demo" button.
+- **Oat 400** `{colors.oat-400}`: the hover fill of that button.
+- **Ink oat** `{colors.ink-oat}` (oat 500 in the newer ramp): soft black for input and body text.
+- **Ink muted** `{colors.ink-muted}` (oat 800): secondary text.
 
-**Matcha (Green)**
-- **Matcha 300** (`#84e7a5`): `--_swatches---color--matcha-300`, light green accent
-- **Matcha 600** (`#078a52`): `--_swatches---color--matcha-600`, mid green
-- **Matcha 800** (`#02492a`): `--_swatches---color--matcha-800`, deep green for dark sections
+### Swatch pairs: tile fills with deep tinted text
+Each candy hue has a pale tile fill and a very dark same-hue text color, named in the CSS variables; measured text colors on the page include:
+- **Ink on pink** `{colors.ink-on-pink}` (dragonfruit 500) on dragonfruit-100 tiles.
+- **Ink on orange** `{colors.ink-on-orange}` (tangerine 500) on tangerine-100 tiles.
+- **Ink on lime** `{colors.ink-on-lime}` (lime 500) on lime-100 tiles.
+- A navy (`blueberry-500`, #001433) text color appears for blueberry tiles.
+Pale tile fills seen in the measured backgrounds: #f0f8ff (blue), #fff0fa (pink), #fff3ed (orange), #fcfee2 (lime), #f5f3ff (violet).
 
-**Slushie (Cyan)**
-- **Slushie 500** (`#3bd3fd`): `--_swatches---color--slushie-500`, bright cyan accent
-- **Slushie 800** (`#0089ad`): `--_swatches---color--slushie-800`, deep teal
+### Full swatch library (CSS variables)
+Blueberry, dragonfruit, lemon, lime, matcha, oat, pomegranate, slushie, tangerine and ube each carry 3 to 8 steps from 50 to 950; a separate grey ramp (grey-50 to grey-700) supports UI chrome. These are internal names; only the hues listed above are visibly used on the home page.
 
-**Lemon (Gold)**
-- **Lemon 400** (`#f8cc65`): `--_swatches---color--lemon-400`, warm pale gold
-- **Lemon 500** (`#fbbd41`): `--_swatches---color--lemon-500`, primary gold
-- **Lemon 700** (`#d08a11`): `--_swatches---color--lemon-700`, deep amber
-- **Lemon 800** (`#9d6a09`): `--_swatches---color--lemon-800`, dark amber
+## Typography
 
-**Ube (Purple)**
-- **Ube 300** (`#c1b0ff`): `--_swatches---color--ube-300`, soft lavender
-- **Ube 800** (`#43089f`): `--_swatches---color--ube-800`, deep purple
-- **Ube 900** (`#32037d`): `--_swatches---color--ube-900`, darkest purple
+| Role | Family | Size / line | Weight | Letter-spacing |
+|---|---|---|---|---|
+| Display | Roobertvf | 88px / 88px | 575 | -3.52px |
+| Display mobile | Roobertvf | 41.6px / 41.6px | 575 | -1.664px |
+| Heading | Roobertvf | 72px / 72px | 500 | -2.16px |
+| Subheading | Roobertvf | 48px / 48px | 500 | -1.92px |
+| Body | Roobertvf | 16px / 22.4px | 400 | normal |
+| Button | Roobertvf | 18px / 27px | 500 | -0.18px |
+| Button small | Roobertvf | 13.92px / 20.88px | 500 | -0.1392px |
 
-**Pomegranate (Pink/Red)**
-- **Pomegranate 400** (`#fc7981`): `--_swatches---color--pomegranate-400`, warm coral-pink
+Roobert, per its foundry page at displaay.net, is a mono-linear geometric sans designed by Martin Vácha, first created in 2017 for Moogfest, available as a variable font with weight, slant and mono axes and sold commercially. The site loads it as "Roobertvf" (weights 300 to 900) and also loads Space Mono (400 and 700) for the eyebrow and wordmark-adjacent mono text, and the Phosphor icon font.
 
-**Blueberry (Navy Blue)**
-- **Blueberry 800** (`#01418d`): `--_swatches---color--blueberry-800`, deep navy
+**Font substitutes:** Roobert is commercial. Close free options are a geometric sans with a friendly feel such as Figtree or Manrope; use Arial as the final fallback exactly as the site does.
 
-### Neutral Scale (Warm)
-- **Warm Silver** (`#9f9b93`): Secondary/muted text, footer links
-- **Warm Charcoal** (`#55534e`): Tertiary text, dark muted links
-- **Dark Charcoal** (`#333333`): Link text on light backgrounds
+**Principles**
+- Leading equals font size (1.0) at display and heading sizes; tracking scales with size (about -4% of size).
+- Body copy is 16px/22.4px, tight and compact.
+- Headlines are enormous: 88px, 72px and 48px steps; there is no mid-size heading between 48 and 16 on the home page.
+- Space Mono is loaded by the page; small uppercase captions such as "QUALIFIED AND SCORED WITH CLAY" and "ENRICHMENT COVERAGE" appear in the capture.
 
-### Surface & Border
-- **Oat Border** (`#dad4c8`): Primary border — warm, cream-toned structural lines
-- **Oat Light** (`#eee9df`): Secondary lighter border
-- **Cool Border** (`#e6e8ec`): Cool-toned border for contrast sections
-- **Dark Border** (`#525a69`): Border on dark sections
-- **Light Frost** (`#eff1f3`): Subtle button background (at 0% opacity on hover)
+## Layout
 
-### Badges
-- **Badge Blue Bg** (`#f0f8ff`): Blue-tinted badge surface
-- **Badge Blue Text** (`#3859f9`): Vivid blue badge text
-- **Focus Ring** (`rgb(20, 110, 245) solid 2px`): Accessibility focus indicator
+- Full-bleed hero with an overlapping rounded panel ("trusted by" mosaic) that straddles the green and white; panels have 24 to 48px radii and extend nearly to the viewport edges with a small margin.
+- A floating nav card sits above the hero with white fill and rounded corners.
+- Content sections are centered stacks: huge heading, one-line subtitle, chip row, large product screenshot.
+- Tiles in the mosaic are a masonry-like grid with varied widths; each tile is padded 16px by 20px.
+- Measured gaps: 16px (most common), 8px, 32px, 10px, 4px, 12px, 24px, 20px and 48px.
+- The site's layout variables are named like `--_layout---gap--regular`, `--_layout---section-horizontal--medium` and `--layout--section-padding-sm`, reflecting a Webflow-built component library.
+- The measured footer block is 1,538px tall and opens with "Turn your growth ideas into reality today".
 
-### Shadows
-- **Clay Shadow** (`rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset, rgba(0,0,0,0.05) 0px -0.5px 1px`): Multi-layer with inset highlight — the signature
-- **Hard Offset** (`rgb(0,0,0) -7px 7px`): Hover state — playful hard shadow
+## Elevation & Depth
 
-## 3. Typography Rules
+- Flat and tactile: tiles are distinguished by fill color and a faint 2px inset ring in the tile's own pale hue (for example `inset 0 0 0 2px` in light blue, orange, lime, pink and oat).
+- White inset hairlines at 5% (`inset 0 0 0 1px`) on dark panels.
+- Product screenshots float on a bright cyan field with soft-edged UI cards and cursor illustrations; no heavy shadow.
+- A fully transparent 100px inset shadow is present on links (a hover-animation hook).
+- Depth is conveyed by the 3D clay illustration in the hero and overlapping panels rather than shadows.
 
-### Font Families
-- **Primary**: `Roobert`, fallback: `Arial`
-- **Monospace**: `Space Mono`
-- **OpenType Features**: `"ss01"`, `"ss03"`, `"ss10"`, `"ss11"`, `"ss12"` on all Roobert text (display uses all 5; body/UI uses `"ss03"`, `"ss10"`, `"ss11"`, `"ss12"`)
+## Shapes
 
-### Hierarchy
+| Token | Value | Use |
+|---|---|---|
+| `{rounded.xs}` | 4px | micro elements |
+| `{rounded.sm}` | 6.4px | small chips |
+| `{rounded.md}` | 10px | small buttons |
+| `{rounded.lg}` | 12px | all buttons (most frequent) |
+| `{rounded.xl}` | 14px | chips |
+| `{rounded.2xl}` | 16px | media frames |
+| `{rounded.3xl}` | 18px | testimonial and logo tiles |
+| `{rounded.4xl}` | 24px | larger tiles |
+| `{rounded.pill}` | 9999px | chips and toggles |
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | Roobert | 80px (5.00rem) | 600 | 1.00 (tight) | -3.2px | All 5 stylistic sets |
-| Display Secondary | Roobert | 60px (3.75rem) | 600 | 1.00 (tight) | -2.4px | All 5 stylistic sets |
-| Section Heading | Roobert | 44px (2.75rem) | 600 | 1.10 (tight) | -0.88px to -1.32px | All 5 stylistic sets |
-| Card Heading | Roobert | 32px (2.00rem) | 600 | 1.10 (tight) | -0.64px | All 5 stylistic sets |
-| Feature Title | Roobert | 20px (1.25rem) | 600 | 1.40 | -0.4px | All 5 stylistic sets |
-| Sub-heading | Roobert | 20px (1.25rem) | 500 | 1.50 | -0.16px | 4 stylistic sets (no ss01) |
-| Body Large | Roobert | 20px (1.25rem) | 400 | 1.40 | normal | 4 stylistic sets |
-| Body | Roobert | 18px (1.13rem) | 400 | 1.60 (relaxed) | -0.36px | 4 stylistic sets |
-| Body Standard | Roobert | 16px (1.00rem) | 400 | 1.50 | normal | 4 stylistic sets |
-| Body Medium | Roobert | 16px (1.00rem) | 500 | 1.20–1.40 | -0.16px to -0.32px | 4–5 stylistic sets |
-| Button | Roobert | 16px (1.00rem) | 500 | 1.50 | -0.16px | 4 stylistic sets |
-| Button Large | Roobert | 24px (1.50rem) | 400 | 1.50 | normal | 4 stylistic sets |
-| Button Small | Roobert | 12.8px (0.80rem) | 500 | 1.50 | -0.128px | 4 stylistic sets |
-| Nav Link | Roobert | 15px (0.94rem) | 500 | 1.60 (relaxed) | normal | 4 stylistic sets |
-| Caption | Roobert | 14px (0.88rem) | 400 | 1.50–1.60 | -0.14px | 4 stylistic sets |
-| Small | Roobert | 12px (0.75rem) | 400 | 1.50 | normal | 4 stylistic sets |
-| Uppercase Label | Roobert | 12px (0.75rem) | 600 | 1.20 (tight) | 1.08px | `text-transform: uppercase`, 4 sets |
-| Badge | Roobert | 9.6px | 600 | — | — | Pill badges |
+Larger values seen in measurements: 32px, 48px (panel tops) and extreme 100px/1600px for pills.
 
-### Principles
-- **Five stylistic sets as identity**: The combination of `"ss01"`, `"ss03"`, `"ss10"`, `"ss11"`, `"ss12"` on Roobert creates a distinctive typographic personality. `ss01` is reserved for headings and emphasis — body text omits it, creating a subtle hierarchy through glyph variation.
-- **Aggressive display compression**: -3.2px at 80px, -2.4px at 60px — the most compressed display tracking alongside the most generous body spacing (1.60 line-height), creating dramatic contrast.
-- **Weight 600 for headings, 500 for UI, 400 for body**: Clean three-tier system where each weight has a strict role.
-- **Uppercase labels with positive tracking**: 12px uppercase at 1.08px letter-spacing creates the systematic wayfinding pattern.
-
-## 4. Component Stylings
+## Components
 
 ### Buttons
-
-**Primary (Transparent with Hover Animation)**
-- Background: transparent (`rgba(239, 241, 243, 0)`)
-- Text: `#000000`
-- Padding: 6.4px 12.8px
-- Border: none (or `1px solid #717989` for outlined variant)
-- Hover: background shifts to swatch color (e.g., `#434346`), text to white, `rotateZ(-8deg)`, `translateY(-80%)`, hard shadow `rgb(0,0,0) -7px 7px`
-- Focus: `rgb(20, 110, 245) solid 2px` outline
-
-**White Solid**
-- Background: `#ffffff`
-- Text: `#000000`
-- Padding: 6.4px
-- Hover: oat-200 swatch color, animated rotation + shadow
-- Use: Primary CTA on colored sections
-
-**Ghost Outlined**
-- Background: transparent
-- Text: `#000000`
-- Padding: 8px
-- Border: `1px solid #717989`
-- Radius: 4px
-- Hover: dragonfruit swatch color, white text, animated rotation
-
-### Cards & Containers
-- Background: `#ffffff` on cream canvas
-- Border: `1px solid #dad4c8` (warm oat) or `1px dashed #dad4c8`
-- Radius: 12px (standard cards), 24px (feature cards/images), 40px (section containers/footer)
-- Shadow: `rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset, rgba(0,0,0,0.05) 0px -0.5px 1px`
-- Colorful section backgrounds using swatch palette (matcha, slushie, ube, lemon)
-
-### Inputs & Forms
-- Text: `#000000`
-- Border: `1px solid #717989`
-- Radius: 4px
-- Focus: `rgb(20, 110, 245) solid 2px` outline
+- **Primary (hero)**: `{colors.primary}` lime, black label, `{typography.button}`, radius `{rounded.lg}`, padding 9px 18px, height 47px, trailing arrow icon.
+- **Light**: white fill, black label, same size ("Start free trial" over the green hero).
+- **Nav dark**: black fill, white label, 13.92px/500, padding 8px 16px, height 39px.
+- **Nav oat**: oat-200 fill with black label, which darkens to oat-400 on hover (measured), height 39px.
+- Other measured "Start free trial" variants on the page use accent fills (magenta, blue, rust) at 42px tall inside colored tiles, each with white text.
 
 ### Navigation
-- Sticky top nav on cream background
-- Roobert 15px weight 500 for nav links
-- Clay logo left-aligned
-- CTA buttons right-aligned with pill radius
-- Border bottom: `1px solid #dad4c8`
-- Mobile: hamburger collapse at 767px
+- Floating card with the wordmark, five links at 16px, command-K search, Log in, and two buttons. Height measured at 58px, full-width container.
 
-### Image Treatment
-- Product screenshots in white cards with oat borders
-- Colorful illustrated sections with swatch background colors
-- 8px–24px radius on images
-- Full-width colorful section backgrounds
+### Use-case chips
+- Rounded pill chips on oat fill with 16px labels; the row is clipped at both edges in the capture.
 
-### Distinctive Components
+### Cards and tiles
+- Fill `{colors.oat-100}`, radius `{rounded.3xl}` (18px), padding 16px 20px, 1px white border. Contain a logo, a quote (in 12px text) and sometimes a metric with tiny uppercase caption ("80%+" "ENRICHMENT COVERAGE").
 
-**Swatch Color Sections**
-- Full-width sections with swatch-colored backgrounds (matcha green, slushie cyan, ube purple, lemon gold)
-- White text on dark swatches, black text on light swatches
-- Each section tells a distinct product story through its color
+### Textarea (prompt box)
+- White fill, `{colors.ink-oat}` text, 16px with -0.16px tracking, padding 11.2px 16px 16px, height 144px, 624px wide at desktop.
 
-**Playful Hover Buttons**
-- Rotate -8deg + translate upward on hover
-- Hard offset shadow (`-7px 7px`) instead of soft blur
-- Background transitions to contrasting swatch color
-- Creates a physical, toy-like interaction quality
+### Footer
+- `{colors.surface-cream}` background with a white-to-cream gradient at the top; closing headline "Turn your growth ideas into reality today" with a "Start for free" call.
 
-**Dashed Border Elements**
-- Dashed borders (`1px dashed #dad4c8`) alongside solid borders
-- Used for secondary containers and decorative elements
-- Adds a hand-drawn, craft-like quality
+## Design System Architecture
 
-## 5. Layout Principles
+No public design-system documentation or brand-guidelines page was found for clay.com (clay.com/brand returns 404; the clay.com home page exposes no styleguide link). The de-facto system comes from the page's CSS variables (roughly 400 custom properties), which reveal a Webflow-built token library:
+- **Swatches**: `--_swatches---color--{hue}-{step}` (e.g. matcha-300, lemon-700, slushie-800, ube-900) and a `--loam---web-library_swatches---{hue}--{step}` set plus `terra-swatches` for the older ramp.
+- **Typography**: `--loam---web-library_typography-v2---h1--font-weight-2`, `...paragraph-sm--font-size-2`, `--_typography---paragraph-medium--font-size`, and eyebrow tokens with min and max rem values for fluid sizing.
+- **Components**: `--loam---web-library_components---button--border-radius`, `...input-label--letter-spacing`.
+- **Layout**: `--_layout---gap--regular`, `--_layout---section-horizontal--medium`, `--loam---web-library_layout--restart---section-vertical--medium`, and `--layout--section-padding-sm`.
+- **Neutrals**: `--color--grey-medium` and `--color--clay-black` (#000).
 
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 4px, 6.4px, 8px, 12px, 12.8px, 16px, 18px, 20px, 24px
+Facts about the typeface come from the foundry page https://displaay.net/typeface/roobert; the page's copy and structure come from https://www.clay.com/.
 
-### Grid & Container
-- Max content width centered
-- Feature sections alternate between white cards and colorful swatch backgrounds
-- Card grids: 2–3 columns on desktop
-- Full-width colorful sections break the grid
-- Footer with generous 40px radius container
+## Imagery, Voice and Density
 
-### Whitespace Philosophy
-- **Warm, generous breathing**: The cream background provides a warm rest between content blocks. Spacing is generous but not austere — it feels inviting, like a well-set table.
-- **Color as spatial rhythm**: The alternating swatch-colored sections create visual rhythm through hue rather than just whitespace. Each color section is its own "room."
-- **Craft-like density inside cards**: Within cards, content is compact and well-organized, contrasting with the generous outer spacing.
+### Imagery and art direction
+- Hero art is a soft, matte 3D "clay" diorama: pastel-saturated objects (funnel, pencil, mailbox, seesaw, magnifier, tube, pipe, stepped bars) on green hills with simplified pine trees, lit with gentle shadows.
+- Object colors repeat the swatch library: orange, teal, blue, tan, red dot, yellow-green.
+- Customer logos are shown in full color or as soft greyed wordmarks (the leftmost tiles fade), inside rounded white or oat tiles.
+- Product screenshots are real UI with a pointer-hand illustration and a spotlight modal; the surrounding field is bright cyan with a pale gradient.
+- The wordmark is a lowercase "clay" with a small multicolor cloud glyph; the SCULPT event wordmark is a chunky display lettering in white on plum.
 
-### Border Radius Scale
-- Sharp (4px): Ghost buttons, inputs
-- Standard (8px): Small cards, images, links
-- Badge (11px): Tag badges
-- Card (12px): Standard cards, buttons
-- Feature (24px): Feature cards, images, panels
-- Section (40px): Large sections, footer, containers
-- Pill (1584px): CTAs, pill-shaped buttons
+### Microcopy voice
+- Direct, confident and a little cheeky: "Build systems to grow revenue", "Inspired by our customers. Built with love."
+- Benefit-first section headlines from the page: "Get data from the most complete data marketplace", "Put agents that know your business to work", "Build GTM plays on a visual canvas", "Launch new plays as fast as you have ideas".
+- Short CTAs: "Start free trial", "Get a demo", "Explore data marketplace", "Explore agents".
+- Proof is quantified: "+140% outbound pipeline", "80%+ enrichment coverage", "3x enrichment rate".
+- Questions as headings ("What do you want to build?") invite exploration.
 
-## 6. Depth & Elevation
+### Density
+- Hero is sparse (two headline blocks and two buttons), the logo mosaic is dense (many tiles in rows), and the product demo is detailed.
+- Use-case chips offer seven options in a single scrolling row.
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow, cream canvas | Page background |
-| Clay Shadow (Level 1) | `rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px inset, rgba(0,0,0,0.05) 0px -0.5px` | Cards, buttons — multi-layer with inset highlight |
-| Hover Hard (Level 2) | `rgb(0,0,0) -7px 7px` | Hover state — playful hard offset shadow |
-| Focus (Level 3) | `rgb(20, 110, 245) solid 2px` | Keyboard focus ring |
+### Interaction cues
+- Trailing arrows on both hero buttons.
+- Nav "Get a demo" shifts from oat-200 to oat-400 on hover; the black "Start free trial" lightens to a dark slate on hover (measured hover fill rgb(40, 44, 53)).
+- Tiles with external links show a small diagonal arrow in the top right corner.
+- Command-K hint beside a search icon in the nav.
 
-**Shadow Philosophy**: Clay's shadow system is uniquely three-layered: a downward cast (`0px 1px 1px`), an upward inset highlight (`0px -1px 1px inset`), and a subtle edge (`0px -0.5px 1px`). This creates a "pressed into clay" quality where elements feel both raised AND embedded — like a clay tablet where content is stamped into the surface. The hover hard shadow (`-7px 7px`) is deliberately retro-graphic, referencing print-era drop shadows and adding physical playfulness.
+## Component Anatomy Reference
 
-### Decorative Depth
-- Full-width swatch-colored sections create dramatic depth through color contrast
-- Dashed borders add visual texture alongside solid borders
-- Product illustrations with warm, organic art style
+| Component | Fill | Text | Radius | Padding | Height |
+|---|---|---|---|---|---|
+| Hero lime button | `{colors.primary}` | `{colors.ink}` | `{rounded.lg}` | 9px 18px | 47px |
+| Hero light button | `{colors.canvas}` | `{colors.ink}` | `{rounded.lg}` | 9px 18px | 47px |
+| Nav dark button | `{colors.ink}` | `{colors.canvas}` | `{rounded.lg}` | 8px 16px | 39px |
+| Nav oat button | `{colors.oat-200}` | `{colors.ink}` | `{rounded.lg}` | 8px 16px | 39px |
+| Tile | `{colors.oat-100}` | `{colors.ink}` | `{rounded.3xl}` | 16px 20px | content |
+| Textarea | `{colors.canvas}` | `{colors.ink-oat}` | none | 11.2px 16px 16px | 144px |
 
-## 7. Do's and Don'ts
+## Do's and Don'ts
 
-### Do
-- Use warm cream (`#faf9f7`) as the page background — the warmth is the identity
-- Apply all 5 OpenType stylistic sets on Roobert headings: `"ss01", "ss03", "ss10", "ss11", "ss12"`
-- Use the named swatch palette (Matcha, Slushie, Lemon, Ube, Pomegranate, Blueberry) for section backgrounds
-- Apply the playful hover animation: `rotateZ(-8deg)`, `translateY(-80%)`, hard shadow `-7px 7px`
-- Use warm oat borders (`#dad4c8`) — not neutral gray
-- Mix solid and dashed borders for visual variety
-- Use generous radius: 24px for cards, 40px for sections
-- Use weight 600 exclusively for headings, 500 for UI, 400 for body
+**Do**
+- Use lime with black text for the one primary action in a view.
+- Put white display type over the forest green hero.
+- Set headlines at 72 to 88px with leading equal to size and strong negative tracking.
+- Use warm oat panels and candy-tinted tiles to group content; pair each pale fill with its deep tinted ink.
+- Round everything: 12px buttons, 18px tiles, pill chips.
+- Show real product UI on a bright color field.
 
-### Don't
-- Don't use cool gray backgrounds — the warm cream (`#faf9f7`) is non-negotiable
-- Don't use neutral gray borders (`#ccc`, `#ddd`) — always use the warm oat tones
-- Don't mix more than 2 swatch colors in the same section
-- Don't skip the OpenType stylistic sets — they define Roobert's character
-- Don't use subtle hover effects — the rotation + hard shadow is the signature interaction
-- Don't use small border radius (<12px) on feature cards — the generous rounding is structural
-- Don't use standard shadows (blur-based) — Clay uses hard offset and multi-layer inset
-- Don't forget the uppercase labels with 1.08px tracking — they're the wayfinding system
+**Don't**
+- Don't use lime for body text or on white (contrast is low); it is a button fill.
+- Don't use cool greys; the neutral family is oat.
+- Don't use drop shadows to elevate tiles; use fill and inset hairlines.
+- Don't mix a second typeface for display; Roobert handles all sizes (mono only for labels).
+- Don't use stock photography; use the clay-style illustration and product screenshots.
 
-## 8. Responsive Behavior
+## Responsive Behavior
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <479px | Single column, tight padding |
-| Mobile | 479–767px | Standard mobile, stacked layout |
-| Tablet | 768–991px | 2-column grids, condensed nav |
-| Desktop | 992px+ | Full layout, 3-column grids, expanded sections |
+- The hero headline steps from 88px (-3.52px tracking) to 41.6px (-1.664px) at 390px, keeping leading equal to size.
+- Typography variables on the page carry min and max rem values (for example `font-size-min-rem` and `font-size-max-rem` on eyebrow and paragraph styles), the site's own mechanism for fluid sizing.
+- Section padding tokens come in small, medium and large steps for horizontal and vertical padding.
 
-### Touch Targets
-- Buttons: minimum 6.4px + 12.8px padding for adequate touch area
-- Nav links: 15px font with generous spacing
-- Mobile: full-width buttons for easy tapping
+## Iteration Guide
 
-### Collapsing Strategy
-- Hero: 80px → 60px → smaller display text
-- Navigation: horizontal → hamburger at 767px
-- Feature sections: multi-column → stacked
-- Colorful sections: maintain full-width but compress padding
-- Card grids: 3-column → 2-column → single column
-
-### Image Behavior
-- Product screenshots scale proportionally
-- Colorful section illustrations adapt to viewport width
-- Rounded corners maintained across breakpoints
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Background: Warm Cream (`#faf9f7`)
-- Text: Clay Black (`#000000`)
-- Secondary text: Warm Silver (`#9f9b93`)
-- Border: Oat Border (`#dad4c8`)
-- Green accent: Matcha 600 (`#078a52`)
-- Cyan accent: Slushie 500 (`#3bd3fd`)
-- Gold accent: Lemon 500 (`#fbbd41`)
-- Purple accent: Ube 800 (`#43089f`)
-- Pink accent: Pomegranate 400 (`#fc7981`)
-
-### Example Component Prompts
-- "Create a hero on warm cream (#faf9f7) background. Headline at 80px Roobert weight 600, line-height 1.00, letter-spacing -3.2px, OpenType 'ss01 ss03 ss10 ss11 ss12', black text. Subtitle at 20px weight 400, line-height 1.40, #9f9b93 text. Two buttons: white solid pill (12px radius) and ghost outlined (4px radius, 1px solid #717989)."
-- "Design a colorful section with Matcha 800 (#02492a) background. Heading at 44px Roobert weight 600, letter-spacing -1.32px, white text. Body at 18px weight 400, line-height 1.60, #84e7a5 text. White card inset with oat border (#dad4c8), 24px radius."
-- "Build a button with playful hover: default transparent background, black text, 16px Roobert weight 500. On hover: background #434346, text white, transform rotateZ(-8deg) translateY(-80%), hard shadow rgb(0,0,0) -7px 7px."
-- "Create a card: white background, 1px solid #dad4c8 border, 24px radius. Shadow: rgba(0,0,0,0.1) 0px 1px 1px, rgba(0,0,0,0.04) 0px -1px 1px inset. Title at 32px Roobert weight 600, letter-spacing -0.64px."
-- "Design an uppercase label: 12px Roobert weight 600, text-transform uppercase, letter-spacing 1.08px, OpenType 'ss03 ss10 ss11 ss12'."
-
-### Iteration Guide
-1. Start with warm cream (#faf9f7) — never cool white
-2. Swatch colors are for full sections, not small accents — go bold with matcha, slushie, ube
-3. Oat borders (#dad4c8) everywhere — dashed variants for decoration
-4. OpenType stylistic sets are mandatory — they make Roobert look like Roobert
-5. Hover animations are the signature — rotation + hard shadow, not subtle fades
-6. Generous radius: 24px cards, 40px sections — nothing looks sharp or corporate
-7. Three weights: 600 (headings), 500 (UI), 400 (body) — strict roles
+1. Establish canvas white, ink black, lime primary, forest green hero.
+2. Set Roobert at 88/88 weight 575 for the hero line, 72 and 48 for sections, 16/22.4 for body.
+3. Build tiles on oat-100 with 18px radius; give accent tiles a pale hue fill and the matching deep ink.
+4. Use 12px radius for every button; make hero buttons 47px tall and nav buttons 39px.
+5. Add a single 3D-clay illustration on a saturated field as the hero image.
+6. Use measured swatch names (matcha, lemon, ube, slushie, tangerine, dragonfruit, blueberry, pomegranate) when adding a new accent, and pair with the deep tinted text color of the same hue.

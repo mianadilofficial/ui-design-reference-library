@@ -251,7 +251,7 @@ const main = async () => {
     return;
   }
 
-  console.log(`\nHarness Score — computed at ${HEAD}\n`);
+  console.log(`\nHarness Score, computed at ${HEAD}\n`);
   console.log('  ID   indicator                        score   source');
   console.log('  ' + '-'.repeat(84));
   for (const r of rows) {

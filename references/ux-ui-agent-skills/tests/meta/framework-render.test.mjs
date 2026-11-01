@@ -133,6 +133,33 @@ test('the destructive variant is declared on the element, so lint_intent can see
     'the Delete button must carry the destructive variant, not a primary fill');
 });
 
+test('the confirm dialog is rendered open, and a blue confirm Delete is caught', (t) => {
+  if (!available) return t.skip('esbuild/react not installed');
+  // Rendered closed, the confirm Delete never reached a page, and lint_intent
+  // passed a primary-filled one without seeing it (#11, measured 2026-10-20).
+  const html = renderedPage('settings-confirm.html');
+  const deletes = [...html.matchAll(/<button[^>]*data-variant="(\w+)"[^>]*>\s*Delete( account)?</g)].map(m => m[1]);
+  assert.deepEqual(deletes, ['destructive', 'destructive'], 'trigger and confirm must both render, both destructive');
+
+  const dir = mkdtempSync(join(tmpdir(), 'ds-fw-'));
+  try {
+    cpSync(join(ROOT, 'examples'), join(dir, 'examples'), { recursive: true });
+    const src = join(dir, 'examples/sample-app/Settings.tsx');
+    const before = readFileSync(src, 'utf8');
+    const after = before.replace('<Button variant="destructive" onClick={() => setConfirmOpen(false)}>Delete</Button>',
+      '<Button onClick={() => setConfirmOpen(false)}>Delete</Button>');
+    assert.notEqual(after, before, 'setup: the confirm Delete line moved');
+    writeFileSync(src, after);
+    const r = render(['--root', dir, '--out', join(dir, 'out')]);
+    assert.equal(r.status, 0, r.out);
+    const lint = node('lint_intent.mjs', [join(dir, 'out', 'settings-confirm.html')], { env: { DS_REQUIRE_BROWSER: '1' } });
+    assert.equal(lint.status, 1, `a blue confirm Delete was accepted:\n${lint.out}`);
+    assert.match(lint.out, /"Delete" is destructive but painted with action\.primary/);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
 test('the dashboard leads with one figure instead of four equal cards', (t) => {
   if (!available) return t.skip('esbuild/react not installed');
   // Non-negotiable 4. The React source mapped four identical StatCards until

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * H6 — the critic catch rate, scored against seeded defects.
+ * H6: the critic catch rate, scored against seeded defects.
  *
  *   node evals/score_critic.mjs <critique-output.md> [--fixture <name>] [--json]
  *
@@ -143,7 +143,7 @@ if (asJson) {
   process.exit(0);
 }
 
-console.log(`\nH6 — critic catch rate, against ${scored.length} seeded defect(s)`);
+console.log(`\nH6: critic catch rate, against ${scored.length} seeded defect(s)`);
 console.log('Scored, each critique against its own page only:');
 for (const b of bound) console.log(`  ${basename(b.path)}  ->  ${b.fixture}`);
 console.log('='.repeat(72));

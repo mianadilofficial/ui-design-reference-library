@@ -5,7 +5,7 @@
  * The kit already proves a control is reachable (verify_keyboard), large enough
  * (verify_target_size) and readable in every state (verify_states). None of that
  * catches the failure a designer spots in two seconds: a header that says
- * `aria-sort="ascending"`, draws a chevron, highlights on hover — and sorts nothing.
+ * `aria-sort="ascending"`, draws a chevron, highlights on hover, and sorts nothing.
  * The doctrine's answer was "click every control and look", which is a promise, not
  * a gate. This is the gate.
  *
@@ -45,7 +45,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`verify_interactive: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`verify_interactive: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -193,13 +193,13 @@ for (const f of files) {
       const stateMoved = stateBefore !== null && changed.stateAfter !== null
         && stateBefore !== changed.stateAfter;
       if (stateMoved && before && changed.after && before === changed.after) {
-        invisible.push(`${f.split('/').pop()}  ${c.label} — ${c.declares.join(', ')} flipped, but the control looks identical`);
+        invisible.push(`${f.split('/').pop()}  ${c.label}: ${c.declares.join(', ')} flipped, but the control looks identical`);
       }
       continue;
     }
     const where = `${f.split('/').pop()}  ${c.label}`;
-    if (c.declares.length) dead.push(`${where} — declares ${c.declares.join(', ')} but a click changes nothing`);
-    else inert.push(`${where} — click has no observable effect`);
+    if (c.declares.length) dead.push(`${where}: declares ${c.declares.join(', ')} but a click changes nothing`);
+    else inert.push(`${where}: click has no observable effect`);
   }
 
 }
@@ -207,7 +207,7 @@ await browser.close();
 
 const mode = dark ? ' (dark)' : '';
 if (dead.length) {
-  console.log(`verify_interactive: ${advisory ? 'ADVISORY' : 'FAIL'}${mode} — a control promises state it does not deliver`);
+  console.log(`verify_interactive: ${advisory ? 'ADVISORY' : 'FAIL'}${mode}: a control promises state it does not deliver`);
   for (const d of dead) console.log('  x [A dead] ' + d);
   console.log('  Fix: wire the handler so the state attribute actually changes, or stop');
   console.log('       declaring the state (drop aria-sort/aria-pressed and the affordance with it).');
@@ -218,10 +218,10 @@ if (inert.length) {
   if (inert.length > 8) console.log(`    ... and ${inert.length - 8} more`);
 }
 if (invisible.length) {
-  console.log(`verify_interactive: ${advisory ? 'ADVISORY' : 'FAIL'}${mode} — a state change nobody can see`);
+  console.log(`verify_interactive: ${advisory ? 'ADVISORY' : 'FAIL'}${mode}: a state change nobody can see`);
   for (const i of invisible) console.log('  x [C invisible] ' + i);
   console.log('  Fix: give the control itself a visual state - a track that fills, an icon that');
   console.log('       swaps, a label that changes. aria-checked alone serves only a screen reader.');
 }
 if ((dead.length || invisible.length) && !advisory) process.exit(1);
-console.log(`verify_interactive: OK${mode} — ${checked} control(s) clicked across ${files.length} file(s); every declared state contract is honoured.`);
+console.log(`verify_interactive: OK${mode}: ${checked} control(s) clicked across ${files.length} file(s); every declared state contract is honoured.`);

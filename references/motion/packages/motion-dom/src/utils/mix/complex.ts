@@ -4,7 +4,7 @@ import { isCSSVariableToken } from "../../animation/utils/is-css-variable"
 import { color } from "../../value/types/color"
 import {
     analyseComplexValue,
-    complex,
+    buildTransformer,
     ComplexValueInfo,
     ComplexValues,
 } from "../../value/types/complex"
@@ -101,7 +101,6 @@ export const mixComplex = (
     origin: AnyResolvedKeyframe,
     target: AnyResolvedKeyframe
 ) => {
-    const template = complex.createTransformer(target)
     const originStats = analyseComplexValue(origin)
     const targetStats = analyseComplexValue(target)
     const canInterpolate =
@@ -121,14 +120,15 @@ export const mixComplex = (
 
         return pipe(
             mixArray(matchOrder(originStats, targetStats), targetStats.values),
-            template
+            buildTransformer(targetStats)
         )
     } else {
-        warning(
-            true,
-            `Complex values '${origin}' and '${target}' too different to mix. Ensure all colors are of the same type, and that each contains the same quantity of number and color values. Falling back to instant transition.`,
-            "complex-values-different"
-        )
+        process.env.NODE_ENV !== "production" &&
+            warning(
+                true,
+                `Complex values '${origin}' and '${target}' too different to mix. Ensure all colors are of the same type, and that each contains the same quantity of number and color values. Falling back to instant transition.`,
+                "complex-values-different"
+            )
 
         return mixImmediate(origin, target)
     }

@@ -26,10 +26,10 @@ Run the design through the **Banned Defaults checklist** in `taste/design-taste.
 
 ### 4. Apply (surgical, reversible)
 - **Tokens first.** Introduce/repair the token layer; replace hardcoded values with semantic tokens. This alone fixes most consistency slop.
-- **Typography + spacing next.** Fix scale contrast, measure (60–75ch), section whitespace, vertical rhythm.
+- **Typography + spacing next.** Fix scale contrast, measure (60 to 75ch), section whitespace, vertical rhythm.
 - **Then components.** Restore all 8 states, focus rings, hover/press, loading/empty/error.
 - **Then motion.** Add purposeful micro-interactions with reduced-motion fallbacks.
-- **Preserve behavior at every step** — don't change routes, data flow, or markup semantics unless fixing an a11y defect.
+- **Preserve behavior at every step**: don't change routes, data flow, or markup semantics unless fixing an a11y defect.
 
 ### 5. Verify (don't regress)
 - Re-run the design-review rubric; confirm findings are resolved.
@@ -44,13 +44,13 @@ Run the design through the **Banned Defaults checklist** in `taste/design-taste.
 Treat every redesign as production-critical. **A partial output is a broken output.**
 - Deliver full files, not fragments. No `// ... rest unchanged`, no `/* keep existing */` placeholders in delivered code.
 - If asked for N components/screens, deliver all N.
-- If a token, state, or breakpoint is in scope, implement it — don't stub it.
+- If a token, state, or breakpoint is in scope, implement it; don't stub it.
 - When output must be split for length, split at clean boundaries and continue until complete.
 
 ---
 
 ## Guardrails
 - Never sacrifice a working feature for aesthetics.
-- Never introduce a brand color that fails contrast — adjust it.
+- Never introduce a brand color that fails contrast; adjust it.
 - Never remove accessibility affordances that already exist.
 - Keep changes traceable to tokens so the result stays maintainable.

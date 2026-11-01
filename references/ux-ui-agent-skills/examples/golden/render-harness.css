@@ -1,4 +1,4 @@
-/* render-harness.css — chrome for the generated pages, not part of any component.
+/* render-harness.css: chrome for the generated pages, not part of any component.
  *
  * scripts/render_framework_source.mjs renders a single component per entry. A
  * lone <button> on a blank page gives the gates one state to measure, so the

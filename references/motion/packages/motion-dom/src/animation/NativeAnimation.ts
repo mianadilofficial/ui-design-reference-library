@@ -73,11 +73,13 @@ export class NativeAnimation<T extends AnyResolvedKeyframe>
         this.allowFlatten = allowFlatten
         this.options = options
 
-        invariant(
-            typeof options.type !== "string",
-            `Mini animate() doesn't support "type" as a string.`,
-            "mini-spring"
-        )
+        typeof process !== "undefined" &&
+            process.env.NODE_ENV !== "production" &&
+            invariant(
+                typeof options.type !== "string",
+                `Mini animate() doesn't support "type" as a string.`,
+                "mini-spring"
+            )
 
         const transition = applyGeneratorOptions(options)
 
@@ -103,9 +105,7 @@ export class NativeAnimation<T extends AnyResolvedKeyframe>
                     finalKeyframe,
                     this.speed
                 )
-                if (this.updateMotionValue) {
-                    this.updateMotionValue(keyframe)
-                }
+                this.updateMotionValue?.(keyframe)
 
                 /**
                  * If we can, we want to commit the final style as set by the user,

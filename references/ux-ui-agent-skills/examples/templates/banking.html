@@ -19,7 +19,7 @@
   /* a balance set at 3rem has a min-content width of its own; on a phone it
      would widen the grid track and take the page with it */
   @media (max-width:30rem){.acct.lead .bal{font-size:var(--text-3xl)}}
-  .split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+  .split{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5)}
   @media (max-width:64rem){.split{grid-template-columns:minmax(0,1fr)}}
   .spend{display:grid;gap:var(--space-3)}
   /* An `auto` track is max-content and overflows rather than shrinking once the

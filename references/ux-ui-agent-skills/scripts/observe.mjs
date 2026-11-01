@@ -340,9 +340,9 @@ h2{font-size:var(--text-xl);margin-block-end:var(--space-4)}
 .session[open] .chev{transform:rotate(90deg)}
 .session summary:active{background:var(--color-surface-brand)}
 .verdict{font-weight:600;font-size:var(--text-sm);padding:var(--space-1) var(--space-2);border-radius:var(--radius-sm);border:var(--border-width-thin) solid currentColor}
-.verdict.ok,.mark.ok{color:var(--color-feedback-success)}
-.verdict.bad,.mark.bad{color:var(--color-text-error)}
-.verdict.warn{color:var(--color-feedback-warning)}
+.verdict.ok,.mark.ok{color:var(--color-feedback-success-icon)}
+.verdict.bad,.mark.bad{color:var(--color-feedback-error-text)}
+.verdict.warn{color:var(--color-feedback-warning-icon)}
 .verdict.muted{color:var(--color-text-secondary)}
 .sid{font-family:ui-monospace,monospace;font-size:var(--text-sm)}
 .when,.counts,.path,.note{color:var(--color-text-secondary);font-size:var(--text-sm)}
@@ -354,8 +354,8 @@ h2{font-size:var(--text-xl);margin-block-end:var(--space-4)}
 .timeline{list-style:none;padding:0;display:grid;gap:var(--space-2);border-block-start:var(--border-width-thin) solid var(--color-border-default);padding-block-start:var(--space-4)}
 .tl{display:grid;grid-template-columns:5rem minmax(0,1fr);gap:var(--space-2);font-size:var(--text-sm);overflow-wrap:anywhere}
 .tl time{font-family:ui-monospace,monospace;color:var(--color-text-secondary)}
-.tl-block span,.tl-released span,.tl-finding span,.tl-gate-fail span{color:var(--color-text-error);font-weight:600}
-.tl-pass span,.tl-gate-pass span{color:var(--color-feedback-success)}
+.tl-block span,.tl-released span,.tl-finding span,.tl-gate-fail span{color:var(--color-feedback-error-text);font-weight:600}
+.tl-pass span,.tl-gate-pass span{color:var(--color-feedback-success-icon)}
 .detail{grid-column:2;padding-inline-start:var(--space-4);color:var(--color-text-secondary)}
 .empty{padding:var(--space-8);background:var(--color-surface-card);border:var(--border-width-thin) solid var(--color-border-default);border-radius:var(--radius-card);display:grid;gap:var(--space-2)}
 footer{margin-block-start:var(--space-8);color:var(--color-text-secondary);font-size:var(--text-sm)}

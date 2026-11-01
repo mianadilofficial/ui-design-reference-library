@@ -1,313 +1,207 @@
-# Design System Inspired by Vercel
+---
+version: alpha
+name: Vercel
+category: "Developer Tools & IDEs"
+description: "Vercel marketing homepage: a #fafafa near-white canvas with near-black #171717 headlines and pill buttons, set entirely in Geist Sans (400-500 weight, tight negative tracking from -0.96px to -3.84px) with Geist Mono for code. Cards are 6px-radius surfaces outlined by a hairline shadow ring rather than a fill or a drop shadow."
+colors:
+  canvas: "#fafafa"
+  ink: "#4d4d4d"
+  primary: "#171717"
+  on-primary: "#ffffff"
+  ink-faint: "#c9c9c9"
+  ink-muted: "#666666"
+  ink-subtle: "#8f8f8f"
+  primary-hover: "#383838"
+typography:
+  display:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 64px
+    fontWeight: 400
+    lineHeight: 64px
+    letterSpacing: "-3.84px"
+  display-mobile:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 48px
+    fontWeight: 400
+    lineHeight: 56px
+    letterSpacing: "-2.88px"
+  heading:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 56px
+    fontWeight: 450
+    lineHeight: 56px
+    letterSpacing: "-3.36px"
+  body:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 24px
+    fontWeight: 450
+    lineHeight: 32px
+    letterSpacing: "-0.96px"
+  button:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 16px
+    fontWeight: 500
+    lineHeight: 24px
+  nav:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 16px
+    fontWeight: 400
+    lineHeight: 24px
+  link:
+    fontFamily: GeistSans, "GeistSans Fallback"
+    fontSize: 14px
+    fontWeight: 500
+    lineHeight: 21px
+rounded:
+  xs: 4px
+  sm: 6px
+  pill: 9999px
+spacing:
+  s1: 1px
+  s2: 2px
+  s3: 3px
+  s4: 4px
+  s5: 6px
+  s6: 8px
+  s7: 10px
+  s8: 12px
+  s9: 16px
+  s10: 20px
+components:
+  button-primary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.button}"
+    rounded: "{rounded.pill}"
+    padding: 0px 12px
+    height: 40px
+  button-primary-hover:
+    backgroundColor: "{colors.primary-hover}"
+  button-secondary:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.on-primary}"
+    typography: "{typography.link}"
+    rounded: "{rounded.sm}"
+    padding: 0px 6px
+    height: 32px
+  link:
+    textColor: "{colors.primary}"
+    typography: "{typography.link}"
+    rounded: "{rounded.pill}"
+    padding: 0px 12px
+  nav:
+    textColor: "{colors.primary}"
+  nav-link:
+    textColor: "{colors.primary}"
+    typography: "{typography.nav}"
+    padding: 8px
+  card:
+    backgroundColor: "{colors.canvas}"
+    textColor: "{colors.primary}"
+    rounded: "{rounded.sm}"
+    padding: 20px
+    boxShadow: >-
+      rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0.08) 0px 0px 0px 1px, rgb(250, 250, 250)
+      0px 0px 0px 1px
+  footer:
+    textColor: "{colors.primary}"
+    padding: 40px 24px
+---
 
-> Category: Developer Tools
-> Frontend deployment. Black and white precision, Geist font.
+## Overview
 
-## 1. Visual Theme & Atmosphere
+The captured Vercel homepage is an exercise in subtraction. The page sits on a near-white canvas (`{colors.canvas}`, `#fafafa`) and almost everything on it is either near-black (`{colors.primary}`, `#171717`) or a mid grey (`{colors.ink}`, `#4d4d4d`). There is no decorative accent colour in the capture: the only chroma comes from third-party customer logos and the product screenshots of customers (Notion, Zapier) that are shown inside framed windows. The hero reads "Agentic Infrastructure" in a 64px Geist Sans display line, a large solid black triangle (the Vercel mark) sits centred in the hero, and three short capability lines sit to the right. Two pills sit under the headline: a filled black "Deploy now" and a white "Talk to sales".
 
-Vercel's website is the visual thesis of developer infrastructure made invisible — a design system so restrained it borders on philosophical. The page is overwhelmingly white (`#ffffff`) with near-black (`#171717`) text, creating a gallery-like emptiness where every element earns its pixel. This isn't minimalism as decoration; it's minimalism as engineering principle. The Geist design system treats the interface like a compiler treats code — every unnecessary token is stripped away until only structure remains.
-
-The custom Geist font family is the crown jewel. Geist Sans uses aggressive negative letter-spacing (-2.4px to -2.88px at display sizes), creating headlines that feel compressed, urgent, and engineered — like code that's been minified for production. At body sizes, the tracking relaxes but the geometric precision persists. Geist Mono completes the system as the monospace companion for code, terminal output, and technical labels. Both fonts enable OpenType `"liga"` (ligatures) globally, adding a layer of typographic sophistication that rewards close reading.
-
-What distinguishes Vercel from other monochrome design systems is its shadow-as-border philosophy. Instead of traditional CSS borders, Vercel uses `box-shadow: 0px 0px 0px 1px rgba(0,0,0,0.08)` — a zero-offset, zero-blur, 1px-spread shadow that creates a border-like line without the box model implications. This technique allows borders to exist in the shadow layer, enabling smoother transitions, rounded corners without clipping, and a subtler visual weight than traditional borders. The entire depth system is built on layered, multi-value shadow stacks where each layer serves a specific purpose: one for the border, one for soft elevation, one for ambient depth.
+The overall impression is engineered rather than expressive. Large areas of empty canvas separate each band; headlines are set tight and large; supporting copy is set in grey; evidence is a row of customer wordmarks followed by two case-study blocks that each pair a headline, a product screenshot and a short feature list.
 
 **Key Characteristics:**
-- Geist Sans with extreme negative letter-spacing (-2.4px to -2.88px at display) — text as compressed infrastructure
-- Geist Mono for code and technical labels with OpenType `"liga"` globally
-- Shadow-as-border technique: `box-shadow 0px 0px 0px 1px` replaces traditional borders throughout
-- Multi-layer shadow stacks for nuanced depth (border + elevation + ambient in single declarations)
-- Near-pure white canvas with `#171717` text — not quite black, creating micro-contrast softness
-- Workflow-specific accent colors: Ship Red (`#ff5b4f`), Preview Pink (`#de1d8d`), Develop Blue (`#0a72ef`)
-- Focus ring system using `hsla(212, 100%, 48%, 1)` — a saturated blue for accessibility
-- Pill badges (9999px) with tinted backgrounds for status indicators
+- One typeface family, Geist Sans, in three measured weights (400, 450, 500), with Geist Mono available for technical text.
+- Strongly negative letter-spacing on every display size: `-3.84px` at 64px, `-3.36px` at 56px, `-0.96px` at 24px.
+- A black-and-white button language: filled `{colors.primary}` pill plus a white outlined pill.
+- Hairline, shadow-based borders (`rgba(0, 0, 0, 0.08)` one-pixel ring) instead of solid border colours.
+- Customer proof presented as monochrome logos and framed product windows.
+- Lots of vertical whitespace; content hugs the left edge on a wide, loose grid.
 
-## 2. Color Palette & Roles
+## Colors
 
-### Primary
-- **Vercel Black** (`#171717`): Primary text, headings, dark surface backgrounds. Not pure black — the slight warmth prevents harshness.
-- **Pure White** (`#ffffff`): Page background, card surfaces, button text on dark.
-- **True Black** (`#000000`): Secondary use, `--geist-console-text-color-default`, used in specific console/code contexts.
+The palette that was measured on the live page is deliberately tiny.
 
-### Workflow Accent Colors
-- **Ship Red** (`#ff5b4f`): `--ship-text`, the "ship to production" workflow step — warm, urgent coral-red.
-- **Preview Pink** (`#de1d8d`): `--preview-text`, the preview deployment workflow — vivid magenta-pink.
-- **Develop Blue** (`#0a72ef`): `--develop-text`, the development workflow — bright, focused blue.
+- **Canvas** `{colors.canvas}` (`#fafafa`) is the page background and covers most of the capture. White (`#ffffff`, used as `{colors.on-primary}` and as the fill of the secondary pill and screenshot windows) is a second, slightly brighter surface.
+- **Primary** `{colors.primary}` (`#171717`) fills the "Deploy now" and "Sign Up" buttons and is the headline and nav colour. Its hover state is `{colors.primary-hover}` (`#383838`), measured by hovering the primary button.
+- **Ink** `{colors.ink}` (`#4d4d4d`) is the most-read text colour by character count: it carries the 24px supporting paragraphs and secondary descriptions.
+- **Greys for hierarchy**: `{colors.ink-muted}` (`#666666`), `{colors.ink-subtle}` (`#8f8f8f`) and `{colors.ink-faint}` (`#c9c9c9`) show up in smaller amounts, for small labels like "Features", disabled-looking text inside screenshots and placeholder text.
 
-### Console / Code Colors
-- **Console Blue** (`#0070f3`): `--geist-console-text-color-blue`, syntax highlighting blue.
-- **Console Purple** (`#7928ca`): `--geist-console-text-color-purple`, syntax highlighting purple.
-- **Console Pink** (`#eb367f`): `--geist-console-text-color-pink`, syntax highlighting pink.
+Reassignment note: the generator proposed `#4d4d4d` as `ink` because it is the single most-read colour; the headings, however, are `#171717`, which is also the CTA fill, so that value is both `primary` and the headline colour. This is kept as measured; nothing was recoloured.
 
-### Interactive
-- **Link Blue** (`#0072f5`): Primary link color with underline decoration.
-- **Focus Blue** (`hsla(212, 100%, 48%, 1)`): `--ds-focus-color`, focus ring on interactive elements.
-- **Ring Blue** (`rgba(147, 197, 253, 0.5)`): `--tw-ring-color`, Tailwind ring utility.
+Vercel's own Geist documentation describes its colour system as ten scales (backgrounds, gray, gray-alpha, blue, red, amber, green, teal, purple, pink), each with ten steps, where steps 1-3 are component backgrounds, 4-6 borders, 7-8 high-contrast backgrounds and 9-10 secondary and primary text. The same page recommends `gray` for text, icons, fills, borders and dividers by default and `gray-alpha` only when the background should show through. The page does not publish hex values, so the semantic colours of those scales (blue, red, amber and so on) are not added here; the homepage capture does not use them.
 
-### Neutral Scale
-- **Gray 900** (`#171717`): Primary text, headings, nav text.
-- **Gray 600** (`#4d4d4d`): Secondary text, description copy.
-- **Gray 500** (`#666666`): Tertiary text, muted links.
-- **Gray 400** (`#808080`): Placeholder text, disabled states.
-- **Gray 100** (`#ebebeb`): Borders, card outlines, dividers.
-- **Gray 50** (`#fafafa`): Subtle surface tint, inner shadow highlight.
+## Typography
 
-### Surface & Overlay
-- **Overlay Backdrop** (`hsla(0, 0%, 98%, 1)`): `--ds-overlay-backdrop-color`, modal/dialog backdrop.
-- **Selection Text** (`hsla(0, 0%, 95%, 1)`): `--geist-selection-text-color`, text selection highlight.
-- **Badge Blue Bg** (`#ebf5ff`): Pill badge background, tinted blue surface.
-- **Badge Blue Text** (`#0068d6`): Pill badge text, darker blue for readability.
+Every measured text run is in **Geist Sans** (loaded as a variable font covering weights 100-900) with **Geist Mono** loaded alongside it. The Geist documentation says the design system is "typeset with Geist Sans and Geist Mono". Licensing and distribution terms were not on the pages that were read, so none are stated here; the font stack in the tokens falls back to the site's own "GeistSans Fallback".
 
-### Shadows & Depth
-- **Border Shadow** (`rgba(0, 0, 0, 0.08) 0px 0px 0px 1px`): The signature — replaces traditional borders.
-- **Subtle Elevation** (`rgba(0, 0, 0, 0.04) 0px 2px 2px`): Minimal lift for cards.
-- **Card Stack** (`rgba(0,0,0,0.08) 0px 0px 0px 1px, rgba(0,0,0,0.04) 0px 2px 2px, rgba(0,0,0,0.04) 0px 8px 8px -8px, #fafafa 0px 0px 0px 1px`): Full multi-layer card shadow.
-- **Ring Border** (`rgb(235, 235, 235) 0px 0px 0px 1px`): Light gray ring-border for tabs and images.
+| Role | Size / line-height | Weight | Tracking |
+|---|---|---|---|
+| `{typography.display}` (h1) | 64px / 64px | 400 | -3.84px |
+| `{typography.display-mobile}` (390px viewport h1) | 48px / 56px | 400 | -2.88px |
+| `{typography.heading}` (h2) | 56px / 56px | 450 | -3.36px |
+| `{typography.body}` | 24px / 32px | 450 | -0.96px |
+| `{typography.button}` | 16px / 24px | 500 | normal |
+| `{typography.nav}` | 16px / 24px | 400 | normal |
+| `{typography.link}` | 14px / 21px | 500 | normal |
 
-## 3. Typography Rules
+The headline tier uses a line-height equal to the font-size (1.0), which makes multi-line headings such as "Build agents on infrastructure that thinks like them" read as a dense block. The 450 weight is a variable-font in-between value, slightly heavier than regular, that gives headings presence without a bold look.
 
-### Font Family
-- **Primary**: `Geist`, with fallbacks: `Arial, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol`
-- **Monospace**: `Geist Mono`, with fallbacks: `ui-monospace, SFMono-Regular, Roboto Mono, Menlo, Monaco, Liberation Mono, DejaVu Sans Mono, Courier New`
-- **OpenType Features**: `"liga"` enabled globally on all Geist text; `"tnum"` for tabular numbers on specific captions.
+## Layout
 
-### Hierarchy
+The page is a single column of full-width bands. The capture shows content aligned to the left edge, with the hero split into three zones: headline and buttons on the left, the triangle mark in the centre and a three-line list on the right. Below that, a logo row spans the full width, and the two case-study bands alternate sides: the first puts the headline on the left and the screenshot to its right, the second flips the screenshot to the right of the copy with the feature list on the left. Spacing tokens measured on the page run from `{spacing.s1}` to `{spacing.s10}` (1px up to 20px), with footer padding of 40px vertical and 24px horizontal and large unmarked gaps between bands. Vercel's own design.md for reports describes a 12-column desktop, 6-column tablet and 4-column mobile grid; that document is for Vercel-authored report sites rather than the homepage, so it is cited as context only.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | Geist | 48px (3.00rem) | 600 | 1.00–1.17 (tight) | -2.4px to -2.88px | Maximum compression, billboard impact |
-| Section Heading | Geist | 40px (2.50rem) | 600 | 1.20 (tight) | -2.4px | Feature section titles |
-| Sub-heading Large | Geist | 32px (2.00rem) | 600 | 1.25 (tight) | -1.28px | Card headings, sub-sections |
-| Sub-heading | Geist | 32px (2.00rem) | 400 | 1.50 | -1.28px | Lighter sub-headings |
-| Card Title | Geist | 24px (1.50rem) | 600 | 1.33 | -0.96px | Feature cards |
-| Card Title Light | Geist | 24px (1.50rem) | 500 | 1.33 | -0.96px | Secondary card headings |
-| Body Large | Geist | 20px (1.25rem) | 400 | 1.80 (relaxed) | normal | Introductions, feature descriptions |
-| Body | Geist | 18px (1.13rem) | 400 | 1.56 | normal | Standard reading text |
-| Body Small | Geist | 16px (1.00rem) | 400 | 1.50 | normal | Standard UI text |
-| Body Medium | Geist | 16px (1.00rem) | 500 | 1.50 | normal | Navigation, emphasized text |
-| Body Semibold | Geist | 16px (1.00rem) | 600 | 1.50 | -0.32px | Strong labels, active states |
-| Button / Link | Geist | 14px (0.88rem) | 500 | 1.43 | normal | Buttons, links, captions |
-| Button Small | Geist | 14px (0.88rem) | 400 | 1.00 (tight) | normal | Compact buttons |
-| Caption | Geist | 12px (0.75rem) | 400–500 | 1.33 | normal | Metadata, tags |
-| Mono Body | Geist Mono | 16px (1.00rem) | 400 | 1.50 | normal | Code blocks |
-| Mono Caption | Geist Mono | 13px (0.81rem) | 500 | 1.54 | normal | Code labels |
-| Mono Small | Geist Mono | 12px (0.75rem) | 500 | 1.00 (tight) | normal | `text-transform: uppercase`, technical labels |
-| Micro Badge | Geist | 7px (0.44rem) | 700 | 1.00 (tight) | normal | `text-transform: uppercase`, tiny badges |
+## Elevation & Depth
 
-### Principles
-- **Compression as identity**: Geist Sans at display sizes uses -2.4px to -2.88px letter-spacing — the most aggressive negative tracking of any major design system. This creates text that feels _minified_, like code optimized for production. The tracking progressively relaxes as size decreases: -1.28px at 32px, -0.96px at 24px, -0.32px at 16px, and normal at 14px.
-- **Ligatures everywhere**: Every Geist text element enables OpenType `"liga"`. Ligatures aren't decorative — they're structural, creating tighter, more efficient glyph combinations.
-- **Three weights, strict roles**: 400 (body/reading), 500 (UI/interactive), 600 (headings/emphasis). No bold (700) except for tiny micro-badges. This narrow weight range creates hierarchy through size and tracking, not weight.
-- **Mono for identity**: Geist Mono in uppercase with `"tnum"` or `"liga"` serves as the "developer console" voice — compact technical labels that connect the marketing site to the product.
+Depth is almost absent. Cards and screenshot windows use a one-pixel ring made from a shadow (`rgba(0, 0, 0, 0.08) 0px 0px 0px 1px`) followed by a canvas-coloured ring, so the border looks like a soft hairline that adapts to whatever sits behind it. The site's CSS variables also include a larger border-shadow token with a two-layer soft drop (a 2px and a 16px blur, both very low opacity) used for floating surfaces, and a very faint dropdown shadow. On the homepage capture the dominant effect is flat: the product screenshots look pasted onto the canvas with a ring and no heavy shadow, and the lower part of the Notion window fades into the page.
 
-## 4. Component Stylings
+## Shapes
 
-### Buttons
+Three radii are declared in the tokens: `{rounded.xs}` (4px), `{rounded.sm}` (6px) and `{rounded.pill}` (9999px). Primary buttons, the secondary pill and the "link" style use the full pill. Smaller controls and cards use 6px; 4px appears in a few small elements. The triangle logo is the one hard-edged geometric shape and acts as the visual anchor of the hero. Customer screenshots keep square-to-slightly-rounded window corners so they read as software, not as photography.
 
-**Primary White (Shadow-bordered)**
-- Background: `#ffffff`
-- Text: `#171717`
-- Padding: 0px 6px (minimal — content-driven width)
-- Radius: 6px (subtly rounded)
-- Shadow: `rgb(235, 235, 235) 0px 0px 0px 1px` (ring-border)
-- Hover: background shifts to `var(--ds-gray-1000)` (dark)
-- Focus: `2px solid var(--ds-focus-color)` outline + `var(--ds-focus-ring)` shadow
-- Use: Standard secondary button
+## Components
 
-**Primary Dark (Inferred from Geist system)**
-- Background: `#171717`
-- Text: `#ffffff`
-- Padding: 8px 16px
-- Radius: 6px
-- Use: Primary CTA ("Start Deploying", "Get Started")
+- **button-primary**: filled `{colors.primary}`, white text, 16px weight 500, 40px high with 12px horizontal padding, pill radius. Hover goes to `{colors.primary-hover}`. In the capture it is "Deploy now" and "Sign Up".
+- **button-secondary**: in the extraction the 32px-high nav variant uses the same fill with 14px text, 6px radius and 6px padding. In the capture the "Get a Demo" and "Log In" buttons in the top bar are white, bordered by a hairline ring.
+- **nav**: a slim top bar with the triangle mark, links "Products", "Resources", "Enterprise" and "Pricing" in 16px weight 400, then "Get a Demo", "Log In" and "Sign Up" aligned right. Nav links carry 8px padding.
+- **link**: 14px weight 500 text in `{colors.primary}`, in pill-shaped hit areas with 12px horizontal padding.
+- **card**: `{colors.canvas}` surface, 6px radius, 20px padding and the hairline shadow ring described above.
+- **announcement strip**: a centred one-line banner ("Ship 26 is coming to SF" with "Get your ticket") sits between nav and hero.
+- **footer**: `{colors.primary}` text on canvas with 40px 24px padding.
 
-**Pill Button / Badge**
-- Background: `#ebf5ff` (tinted blue)
-- Text: `#0068d6`
-- Padding: 0px 10px
-- Radius: 9999px (full pill)
-- Font: 12px weight 500
-- Use: Status badges, tags, feature labels
+Vercel's Geist button documentation lists five variants (default, secondary, tertiary, error, warning), three sizes (small, medium as the default, large) plus a tiny size for icon-only buttons, and three shapes (rounded, square, circle). The homepage uses only the default and secondary looks.
 
-**Large Pill (Navigation)**
-- Background: transparent or `#171717`
-- Radius: 64px–100px
-- Use: Tab navigation, section selectors
+## Design System Architecture
 
-### Cards & Containers
-- Background: `#ffffff`
-- Border: via shadow — `rgba(0, 0, 0, 0.08) 0px 0px 0px 1px`
-- Radius: 8px (standard), 12px (featured/image cards)
-- Shadow stack: `rgba(0,0,0,0.08) 0px 0px 0px 1px, rgba(0,0,0,0.04) 0px 2px 2px, #fafafa 0px 0px 0px 1px`
-- Image cards: `1px solid #ebebeb` with 12px top radius
-- Hover: subtle shadow intensification
+Vercel publishes its system as **Geist**. The introduction page at https://vercel.com/geist/introduction states that Geist is "Vercel's design system for building consistent web experiences", with four foundations (colors, typography, materials, grid), React components, an icon set, brand assets and custom typefaces. The same page names the packages `@vercel/geistcn` for components and `@vercel/geistcn-assets` for icons and assets, and notes that every docs page is available as Markdown. Colour documentation is at https://vercel.com/geist/colors and typography at https://vercel.com/geist/typography, where text styles follow a `text-heading-72` ... `text-heading-14`, `text-button-16/14/12`, `text-label-20...12` and `text-copy-24...13` pattern consumed as Tailwind classes, each preset bundling size, line-height, letter-spacing and weight. Button behaviour is documented at https://vercel.com/geist/button, and the typeface page is https://vercel.com/geist/font. The shipped CSS confirms this: the page exposes many custom properties named `--ds-*`, `--geist-*` and Tailwind `--tw-*`, such as `--ds-background-200` and `--geist-space-16x`, so the site mixes a Geist token layer with Tailwind utilities.
 
-### Inputs & Forms
-- Radio: standard styling with focus `var(--ds-gray-200)` background
-- Focus shadow: `1px 0 0 0 var(--ds-gray-alpha-600)`
-- Focus outline: `2px solid var(--ds-focus-color)` — consistent blue focus ring
-- Border: via shadow technique, not traditional border
+## Do's and Don'ts
 
-### Navigation
-- Clean horizontal nav on white, sticky
-- Vercel logotype left-aligned, 262x52px
-- Links: Geist 14px weight 500, `#171717` text
-- Active: weight 600 or underline
-- CTA: dark pill buttons ("Start Deploying", "Contact Sales")
-- Mobile: hamburger menu collapse
-- Product dropdowns with multi-level menus
+**Do**
+- Keep the canvas at `{colors.canvas}` and reserve `{colors.primary}` for the one action per band.
+- Set headings in Geist Sans with the measured negative tracking; keep line-height tight.
+- Express borders as low-alpha shadow rings.
+- Use customer logos in monochrome and let product screenshots carry the colour.
 
-### Image Treatment
-- Product screenshots with `1px solid #ebebeb` border
-- Top-rounded images: `12px 12px 0px 0px` radius
-- Dashboard/code preview screenshots dominate feature sections
-- Soft gradient backgrounds behind hero images (pastel multi-color)
+**Don't**
+- Add decorative gradients or accent colours to the marketing surface; the capture has none.
+- Use heavy weights: the measured range is 400-500.
+- Round cards beyond 6px or use pill shapes outside buttons and links.
+- Use grey below `{colors.ink-subtle}` for text that must be read.
 
-### Distinctive Components
+## Responsive Behavior
 
-**Workflow Pipeline**
-- Three-step horizontal pipeline: Develop → Preview → Ship
-- Each step has its own accent color: Blue → Pink → Red
-- Connected with lines/arrows
-- The visual metaphor for Vercel's core value proposition
+A separate 390px-wide measurement shows the h1 dropping from 64px to 48px (line-height 56px) and tracking from -3.84px to -2.88px, keeping the same proportion of tracking to size. The hero's three-column arrangement is a desktop layout; the capture used here is a narrow rendering in which the nav already shows the full link set, so exact breakpoints were not measured and are not asserted. Vercel's report guide specifies the 12/6/4 column progression for its own report pages.
 
-**Trust Bar / Logo Grid**
-- Company logos (Perplexity, ChatGPT, Cursor, etc.) in grayscale
-- Horizontal scroll or grid layout
-- Subtle `#ebebeb` border separation
+## Iteration Guide
 
-**Metric Cards**
-- Large number display (e.g., "10x faster")
-- Geist 48px weight 600 for the metric
-- Description below in gray body text
-- Shadow-bordered card container
-
-## 5. Layout Principles
-
-### Spacing System
-- Base unit: 8px
-- Scale: 1px, 2px, 3px, 4px, 5px, 6px, 8px, 10px, 12px, 14px, 16px, 32px, 36px, 40px
-- Notable gap: jumps from 16px to 32px — no 20px or 24px in primary scale
-
-### Grid & Container
-- Max content width: approximately 1200px
-- Hero: centered single-column with generous top padding
-- Feature sections: 2–3 column grids for cards
-- Full-width dividers using `border-bottom: 1px solid #171717`
-- Code/dashboard screenshots as full-width or contained with border
-
-### Whitespace Philosophy
-- **Gallery emptiness**: Massive vertical padding between sections (80px–120px+). The white space IS the design — it communicates that Vercel has nothing to prove and nothing to hide.
-- **Compressed text, expanded space**: The aggressive negative letter-spacing on headlines is counterbalanced by generous surrounding whitespace. The text is dense; the space around it is vast.
-- **Section rhythm**: White sections alternate with white sections — there's no color variation between sections. Separation comes from borders (shadow-borders) and spacing alone.
-
-### Border Radius Scale
-- Micro (2px): Inline code snippets, small spans
-- Subtle (4px): Small containers
-- Standard (6px): Buttons, links, functional elements
-- Comfortable (8px): Cards, list items
-- Image (12px): Featured cards, image containers (top-rounded)
-- Large (64px): Tab navigation pills
-- XL (100px): Large navigation links
-- Full Pill (9999px): Badges, status pills, tags
-- Circle (50%): Menu toggle, avatar containers
-
-## 6. Depth & Elevation
-
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Flat (Level 0) | No shadow | Page background, text blocks |
-| Ring (Level 1) | `rgba(0,0,0,0.08) 0px 0px 0px 1px` | Shadow-as-border for most elements |
-| Light Ring (Level 1b) | `rgb(235,235,235) 0px 0px 0px 1px` | Lighter ring for tabs, images |
-| Subtle Card (Level 2) | Ring + `rgba(0,0,0,0.04) 0px 2px 2px` | Standard cards with minimal lift |
-| Full Card (Level 3) | Ring + Subtle + `rgba(0,0,0,0.04) 0px 8px 8px -8px` + inner `#fafafa` ring | Featured cards, highlighted panels |
-| Focus (Accessibility) | `2px solid hsla(212, 100%, 48%, 1)` outline | Keyboard focus on all interactive elements |
-
-**Shadow Philosophy**: Vercel has arguably the most sophisticated shadow system in modern web design. Rather than using shadows for elevation in the traditional Material Design sense, Vercel uses multi-value shadow stacks where each layer has a distinct architectural purpose: one creates the "border" (0px spread, 1px), another adds ambient softness (2px blur), another handles depth at distance (8px blur with negative spread), and an inner ring (`#fafafa`) creates the subtle highlight that makes the card "glow" from within. This layered approach means cards feel built, not floating.
-
-### Decorative Depth
-- Hero gradient: soft, pastel multi-color gradient wash behind hero content (barely visible, atmospheric)
-- Section borders: `1px solid #171717` (full dark line) between major sections
-- No background color variation — depth comes entirely from shadow layering and border contrast
-
-## 7. Do's and Don'ts
-
-### Do
-- Use Geist Sans with aggressive negative letter-spacing at display sizes (-2.4px to -2.88px at 48px)
-- Use shadow-as-border (`0px 0px 0px 1px rgba(0,0,0,0.08)`) instead of traditional CSS borders
-- Enable `"liga"` on all Geist text — ligatures are structural, not optional
-- Use the three-weight system: 400 (body), 500 (UI), 600 (headings)
-- Apply workflow accent colors (Red/Pink/Blue) only in their workflow context
-- Use multi-layer shadow stacks for cards (border + elevation + ambient + inner highlight)
-- Keep the color palette achromatic — grays from `#171717` to `#ffffff` are the system
-- Use `#171717` instead of `#000000` for primary text — the micro-warmth matters
-
-### Don't
-- Don't use positive letter-spacing on Geist Sans — it's always negative or zero
-- Don't use weight 700 (bold) on body text — 600 is the maximum, used only for headings
-- Don't use traditional CSS `border` on cards — use the shadow-border technique
-- Don't introduce warm colors (oranges, yellows, greens) into the UI chrome
-- Don't apply the workflow accent colors (Ship Red, Preview Pink, Develop Blue) decoratively
-- Don't use heavy shadows (> 0.1 opacity) — the shadow system is whisper-level
-- Don't increase body text letter-spacing — Geist is designed to run tight
-- Don't use pill radius (9999px) on primary action buttons — pills are for badges/tags only
-- Don't skip the inner `#fafafa` ring in card shadows — it's the glow that makes the system work
-
-## 8. Responsive Behavior
-
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile Small | <400px | Tight single column, minimal padding |
-| Mobile | 400–600px | Standard mobile, stacked layout |
-| Tablet Small | 600–768px | 2-column grids begin |
-| Tablet | 768–1024px | Full card grids, expanded padding |
-| Desktop Small | 1024–1200px | Standard desktop layout |
-| Desktop | 1200–1400px | Full layout, maximum content width |
-| Large Desktop | >1400px | Centered, generous margins |
-
-### Touch Targets
-- Buttons use comfortable padding (8px–16px vertical)
-- Navigation links at 14px with adequate spacing
-- Pill badges have 10px horizontal padding for tap targets
-- Mobile menu toggle uses 50% radius circular button
-
-### Collapsing Strategy
-- Hero: display 48px → scales down, maintains negative tracking proportionally
-- Navigation: horizontal links + CTAs → hamburger menu
-- Feature cards: 3-column → 2-column → single column stacked
-- Code screenshots: maintain aspect ratio, may horizontally scroll
-- Trust bar logos: grid → horizontal scroll
-- Footer: multi-column → stacked single column
-- Section spacing: 80px+ → 48px on mobile
-
-### Image Behavior
-- Dashboard screenshots maintain border treatment at all sizes
-- Hero gradient softens/simplifies on mobile
-- Product screenshots use responsive images with consistent border radius
-- Full-width sections maintain edge-to-edge treatment
-
-## 9. Agent Prompt Guide
-
-### Quick Color Reference
-- Primary CTA: Vercel Black (`#171717`)
-- Background: Pure White (`#ffffff`)
-- Heading text: Vercel Black (`#171717`)
-- Body text: Gray 600 (`#4d4d4d`)
-- Border (shadow): `rgba(0, 0, 0, 0.08) 0px 0px 0px 1px`
-- Link: Link Blue (`#0072f5`)
-- Focus ring: Focus Blue (`hsla(212, 100%, 48%, 1)`)
-
-### Example Component Prompts
-- "Create a hero section on white background. Headline at 48px Geist weight 600, line-height 1.00, letter-spacing -2.4px, color #171717. Subtitle at 20px Geist weight 400, line-height 1.80, color #4d4d4d. Dark CTA button (#171717, 6px radius, 8px 16px padding) and ghost button (white, shadow-border rgba(0,0,0,0.08) 0px 0px 0px 1px, 6px radius)."
-- "Design a card: white background, no CSS border. Use shadow stack: rgba(0,0,0,0.08) 0px 0px 0px 1px, rgba(0,0,0,0.04) 0px 2px 2px, #fafafa 0px 0px 0px 1px. Radius 8px. Title at 24px Geist weight 600, letter-spacing -0.96px. Body at 16px weight 400, #4d4d4d."
-- "Build a pill badge: #ebf5ff background, #0068d6 text, 9999px radius, 0px 10px padding, 12px Geist weight 500."
-- "Create navigation: white sticky header. Geist 14px weight 500 for links, #171717 text. Dark pill CTA 'Start Deploying' right-aligned. Shadow-border on bottom: rgba(0,0,0,0.08) 0px 0px 0px 1px."
-- "Design a workflow section showing three steps: Develop (text color #0a72ef), Preview (#de1d8d), Ship (#ff5b4f). Each step: 14px Geist Mono uppercase label + 24px Geist weight 600 title + 16px weight 400 description in #4d4d4d."
-
-### Iteration Guide
-1. Always use shadow-as-border instead of CSS border — `0px 0px 0px 1px rgba(0,0,0,0.08)` is the foundation
-2. Letter-spacing scales with font size: -2.4px at 48px, -1.28px at 32px, -0.96px at 24px, normal at 14px
-3. Three weights only: 400 (read), 500 (interact), 600 (announce)
-4. Color is functional, never decorative — workflow colors (Red/Pink/Blue) mark pipeline stages only
-5. The inner `#fafafa` ring in card shadows is what gives Vercel cards their subtle inner glow
-6. Geist Mono uppercase for technical labels, Geist Sans for everything else
+1. Start from `{colors.canvas}`, `{colors.primary}` and `{colors.ink}`; add greys from `{colors.ink-muted}`, `{colors.ink-subtle}` and `{colors.ink-faint}` only for hierarchy.
+2. Use `{typography.display}` for the page headline and `{typography.heading}` for band headlines, and keep `{typography.body}` at 24px for lead paragraphs.
+3. Build primary actions with `button-primary`: 40px high, pill, 12px padding, hover `{colors.primary-hover}`.
+4. Draw containers with the hairline ring and 6px radius rather than fills.
+5. When introducing semantic colours (error, success), source them from the official Geist colour scales in the CSS, and record the source URL per token in SOURCES.json.
+6. Re-measure rather than guess: run the extractor on a new page before adding any value.

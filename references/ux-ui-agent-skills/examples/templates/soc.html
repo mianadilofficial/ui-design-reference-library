@@ -11,9 +11,9 @@
 <style>
   .map svg{background:var(--lin-canvas);border-radius:var(--radius-sm)}
   .land path{fill:var(--lin-raised);stroke:var(--lin-hairline);stroke-width:1}
-  .arc{fill:none;stroke:var(--color-feedback-warning);stroke-width:1.25;opacity:.7}
-  .arc.hot{stroke:var(--color-text-error);stroke-width:2;opacity:.95}
-  .src{fill:var(--color-feedback-warning)} .src.hot{fill:var(--color-text-error)}
+  .arc{fill:none;stroke:var(--color-feedback-warning-icon);stroke-width:1.25;opacity:.7}
+  .arc.hot{stroke:var(--color-feedback-error-text);stroke-width:2;opacity:.95}
+  .src{fill:var(--color-feedback-warning-icon)} .src.hot{fill:var(--color-feedback-error-text)}
   .dst{fill:var(--trm-accent)}
   .mrow{display:grid;grid-template-columns:5.5rem minmax(0,1fr);gap:var(--space-3);align-items:center}
   @media (max-width:46rem){.mrow{grid-template-columns:minmax(0,1fr);gap:var(--space-1)}}
@@ -21,7 +21,7 @@
     color:var(--lin-ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .mcs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2px;min-inline-size:0} /* ds-allow-hardcode: the 2px gutter is the grid line */
   .mc{block-size:.875rem;border-radius:1px;
-    background:color-mix(in oklab,var(--color-text-error) var(--i),var(--lin-raised))}
+    background:color-mix(in oklab,var(--color-feedback-error-text) var(--i),var(--lin-raised))}
   .big{font-size:var(--text-5xl);font-weight:700;letter-spacing:-0.04em;line-height:1;
     font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-inline-size:0}
   @media (max-width:46rem){.big{font-size:var(--text-3xl)}}
@@ -30,7 +30,7 @@
     padding-block-end:var(--space-3);border-block-end:1px solid var(--lin-hairline-soft)}
   .feed li:last-child{border-block-end:0;padding-block-end:0}
   .feed .pip{display:grid;place-items:center;inline-size:1.5rem;block-size:1.5rem;border-radius:var(--radius-full);
-    background:var(--lin-raised);color:var(--color-text-error)}
+    background:var(--lin-raised);color:var(--color-feedback-error-text)}
   .feed .pip .ico{inline-size:.75rem;block-size:.75rem}
   .feed p{overflow-wrap:anywhere}
   .feed time{display:block;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--lin-ink-3);
@@ -95,7 +95,7 @@
         <div><p><strong>Credential stuffing against the VPN portal.</strong> 4,102 attempts from 812 addresses, 3 accounts locked. Rate limit raised and geo-fence applied.</p><time datetime="2026-09-15T02:38">02:38:11</time></div></li>
       <li><span class="pip" aria-hidden="true"><svg class="ico"><use href="#i-alert-circle"/></svg></span>
         <div><p><strong>Lateral movement on FRA-APP-07.</strong> SMB enumeration followed by a scheduled task creation. Host isolated automatically, image preserved.</p><time datetime="2026-09-15T02:12">02:12:44</time></div></li>
-      <li><span class="pip" aria-hidden="true" style="color:var(--color-feedback-warning)"><svg class="ico"><use href="#i-info"/></svg></span>
+      <li><span class="pip" aria-hidden="true" style="color:var(--color-feedback-warning-icon)"><svg class="ico"><use href="#i-info"/></svg></span>
         <div><p>Unusual egress to a newly registered domain from a build agent. 42 MB over 9 minutes. Under review by tier 2.</p><time datetime="2026-09-15T01:55">01:55:02</time></div></li>
       <li><span class="pip" aria-hidden="true" style="color:var(--trm-accent)"><svg class="ico"><use href="#i-check"/></svg></span>
         <div><p>Phishing campaign contained. 214 messages recalled, 0 clicks recorded.</p><time datetime="2026-09-15T00:41">00:41:19</time></div></li>

@@ -1,6 +1,6 @@
 # Voice, Tone & UX Writing
 
-The interface speaks. Every label, message, and empty state is a sentence in a conversation with the user. Good UX writing is invisible — it removes friction without drawing attention to itself.
+The interface speaks. Every label, message, and empty state is a sentence in a conversation with the user. Good UX writing is invisible: it removes friction without drawing attention to itself.
 
 > Voice is constant (who we are). Tone adapts to context (how we say it in this moment). An error and a success both share the same voice, but their tone differs.
 
@@ -39,9 +39,9 @@ Tone shifts along the user's emotional state. Match the moment.
 
 Start actionable text with the verb. Users scan; the verb is the signal.
 
-- Good: "Save changes" — Avoid: "Click here to save your changes"
-- Good: "Invite teammates" — Avoid: "You can invite teammates here"
-- Good: "Export report" — Avoid: "Report exporting"
+- Good: "Save changes" / Avoid: "Click here to save your changes"
+- Good: "Invite teammates" / Avoid: "You can invite teammates here"
+- Good: "Export report" / Avoid: "Report exporting"
 
 Buttons are verbs, not nouns. Label the *outcome*, not the mechanism: "Create account" beats "Submit".
 
@@ -75,7 +75,7 @@ An empty state is an opportunity, not a void. Explain the value, then guide to t
 ```
 
 - Good: "No projects yet. Create your first project to organize your work." → **[Create project]**
-- Good: "Your inbox is clear. New messages will appear here." (intentional empty — reassure)
+- Good: "Your inbox is clear. New messages will appear here." (intentional empty: reassure)
 - Avoid: "No data" / "Nothing to show" (dead, unhelpful)
 
 Distinguish **first-use** empty (guide them) from **cleared** empty (reassure them).
@@ -99,11 +99,11 @@ Distinguish **first-use** empty (guide them) from **cleared** empty (reassure th
 
 ## Capitalization & Mechanics
 
-- **Sentence case** for everything — buttons, labels, headings, menus. ("Create new project", not "Create New Project")
+- **Sentence case** for everything: buttons, labels, headings, menus. ("Create new project", not "Create New Project")
 - **No terminal punctuation** on labels, buttons, or single-sentence tooltips. Use periods in multi-sentence body and error messages.
 - **Numerals** for all numbers in UI ("5 items", not "five items").
 - **Oxford comma** in lists. Serial clarity over style.
-- **Contractions** are welcome ("you're", "can't") — they read as human.
+- **Contractions** are welcome ("you're", "can't"); they read as human.
 - **Avoid** ALL CAPS for emphasis (reads as shouting, hurts screen readers), exclamation marks (max one per screen), and "please" in routine actions (it's filler).
 
 ---
@@ -112,7 +112,7 @@ Distinguish **first-use** empty (guide them) from **cleared** empty (reassure th
 
 - **Address the user as "you"**; refer to the product as "we" sparingly, never "I".
 - **No idioms or cultural references** that don't translate ("piece of cake", "home run").
-- **No directional-only or sense-only instructions** ("click the button on the right", "the green one") — pair with a label. Ties to WCAG 1.3.3 and the no-color-only rule.
+- **No directional-only or sense-only instructions** ("click the button on the right", "the green one"); pair with a label. Ties to WCAG 1.3.3 and the no-color-only rule.
 - **No ableist metaphors** ("crazy", "blind to", "sanity check" → "quick check").
 - **Gender-neutral**: "they" for unknown users; avoid "guys".
 - **Write for translation**: short sentences, one idea each, avoid stacked nouns.
@@ -122,7 +122,7 @@ Distinguish **first-use** empty (guide them) from **cleared** empty (reassure th
 ## Pre-Ship Copy Checklist
 
 1. Good: Every button starts with a verb and names the outcome
-2. Good: Every error says what happened *and* how to fix it — no dead ends
+2. Good: Every error says what happened *and* how to fix it, with no dead ends
 3. Good: Every empty state guides to a first action
 4. Good: Sentence case throughout; no ALL CAPS
 5. Good: No jargon, error codes, or stack traces shown to users
@@ -130,4 +130,4 @@ Distinguish **first-use** empty (guide them) from **cleared** empty (reassure th
 7. Good: Labels present (placeholders are not labels)
 8. Good: No directional/color-only instructions
 9. Good: Numbers as numerals; counts shown in confirmations
-10. Good: Reads naturally aloud — if it sounds robotic, rewrite it
+10. Good: Reads naturally aloud. If it sounds robotic, rewrite it

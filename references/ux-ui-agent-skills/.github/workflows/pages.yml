@@ -3,7 +3,7 @@
 # The kit's examples ARE the demo: static HTML on one shared token theme, the same
 # files scripts/accuracy_report.mjs measures. Nothing is built or transformed here,
 # so what a visitor clicks is what the gate run passed.
-name: Pages — live demo
+name: 'Pages: live demo'
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: CI — quality gates
+name: 'CI: quality gates'
 
 # Runs the design-system integrity + accessibility gates on every push and PR.
 # These enforce the rules workflows/design-qa.md prescribes (token validity,
@@ -85,7 +85,7 @@ jobs:
         run: npm run docs:shots:check
 
   render:
-    # Real-render WCAG gate — opens the example HTML in headless Chromium and
+    # Real-render WCAG gate: opens the example HTML in headless Chromium and
     # measures the actual computed-style contrast of every text element (light + dark).
     runs-on: ubuntu-latest
     steps:
@@ -103,7 +103,7 @@ jobs:
         run: node scripts/measure_render.mjs examples/apple-demo/index.html examples/sample-app/preview.html
       - name: Real-render contrast (sample, dark)
         run: node scripts/measure_render.mjs --dark examples/sample-app/preview.html
-      - name: State-aware WCAG (default/hover/focus) — sample + brandkit
+      - name: 'State-aware WCAG (default/hover/focus): sample + brandkit'
         run: |
           node scripts/verify_states.mjs examples/sample-app/preview.html
           node scripts/verify_states.mjs --dark examples/sample-app/preview.html
@@ -130,7 +130,7 @@ jobs:
         # the same gates the hand-written HTML gets, pointed at what the components
         # actually produce.
         run: |
-          for page in dashboard settings button-variants modal; do
+          for page in dashboard settings settings-confirm button-variants modal; do
             f="dist/framework-render/$page.html"
             node scripts/measure_render.mjs "$f"
             node scripts/measure_render.mjs --dark "$f"

@@ -7,7 +7,7 @@ Transform the DTCG token files in `tokens/*.json` into platform-ready artifacts 
 ## Architecture
 
 ```
-tokens/*.json  (DTCG $type/$value — source of truth)
+tokens/*.json  (DTCG $type/$value, source of truth)
       │
       ▼  transform (resolve aliases, flatten, format per platform)
 ┌─────────────┬─────────────┬──────────────┬───────────────┐
@@ -23,15 +23,15 @@ tokens/*.json  (DTCG $type/$value — source of truth)
 |------|----------|
 | **Style Dictionary** | The standard. Reads DTCG, custom transforms/formats per platform. Best for multi-platform output. |
 | **Tokens Studio** (Figma plugin) | Designers own tokens in Figma; export DTCG JSON → feed this pipeline. Round-trips with `workflows/figma-integration.md`. |
-| **W3C DTCG export** | Our files already conform — interop with any DTCG-compatible tool with no conversion. |
+| **W3C DTCG export** | Our files already conform, so they interop with any DTCG-compatible tool with no conversion. |
 | **Custom script** | Small systems: a Node/Python transform (see `scripts/validate_tokens.py` for the parse model). |
 
 ## Resolution rules (any tool must honor)
 
-1. **Resolve aliases** — `{semantic.action.primary}` → `{primitive.blue.600}` → `#2563EB`. Flatten to final values per platform; keep the reference graph for docs.
-2. **Respect tiers** — emit semantic + component tokens for consumption; primitives are internal (don't expose as the public API).
-3. **Theme/mode** — generate a base set + overrides for dark mode (`[data-theme="dark"]`) and each brand/density (`tokens/theming.json`). Don't duplicate unchanged values.
-4. **$type-aware formatting** — `color` → hex/rgb/UIColor; `dimension` → rem/px/pt/dp; `duration` → ms/seconds; `cubicBezier` → easing string/curve.
+1. **Resolve aliases**: `{semantic.action.primary}` → `{primitive.blue.600}` → `#2563EB`. Flatten to final values per platform; keep the reference graph for docs.
+2. **Respect tiers**: emit semantic + component tokens for consumption; primitives are internal (don't expose as the public API).
+3. **Theme/mode**: generate a base set + overrides for dark mode (`[data-theme="dark"]`) and each brand/density (`tokens/theming.json`). Don't duplicate unchanged values.
+4. **$type-aware formatting**: `color` → hex/rgb/UIColor; `dimension` → rem/px/pt/dp; `duration` → ms/seconds; `cubicBezier` → easing string/curve.
 
 ## Output targets
 

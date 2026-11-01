@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>low contrast in oklch</title>
+<style>
+  /* The other half of good/oklch.html: a grey that is really too light, written in
+     oklch. The gate must convert it and report the true ratio, about 2.1:1, not
+     the 1.0:1 it gets from reading oklch's numbers as rgb. */
+  :root { --color-surface-page: oklch(1 0 0); --color-text-faint: oklch(0.78 0 0); }
+  body { margin:0; background:var(--color-surface-page); font:16px/1.5 system-ui, sans-serif; }
+  main { padding:24px; }
+  p { color:var(--color-text-faint); }
+</style></head>
+<body><main>
+  <h1>Report</h1>
+  <p>This paragraph is deliberately below 4.5:1 on white.</p>
+</main></body></html>

@@ -62,7 +62,7 @@ A live region that announces important, time-sensitive information.
 
 ## 3. Button
 
-A clickable element that triggers an action (not navigation — use `<a>` for links).
+A clickable element that triggers an action (not navigation; use `<a>` for links).
 
 **Roles & Properties:**
 ```html
@@ -83,7 +83,7 @@ A clickable element that triggers an action (not navigation — use `<a>` for li
 | Space | Activate button (prevent scroll) |
 
 **Key Rules:**
-- Always prefer native `<button>` — it provides keyboard, focus, and activation for free
+- Always prefer native `<button>`: it provides keyboard, focus, and activation for free
 - `role="button"` on non-button elements requires `tabindex="0"`, Enter, and Space handlers
 - Toggle buttons use `aria-pressed` (true/false), NOT `aria-checked`
 - Icon-only buttons need `aria-label` or visually hidden text
@@ -170,7 +170,7 @@ A button that controls the visibility of a section of content.
 | Enter / Space | Toggle visibility |
 
 **Key Rules:**
-- Simpler than accordion — no header grouping needed
+- Simpler than accordion: no header grouping needed
 - `aria-expanded` on the button, NOT on the content
 - Use `hidden` attribute or `display: none` to truly hide content from screen readers
 
@@ -369,8 +369,8 @@ A set of layered sections, only one visible at a time, selected via tab buttons.
 
 **Focus Management:**
 - Only the active tab has `tabindex="0"`; others have `tabindex="-1"` (roving tabindex)
-- Arrow keys move focus AND activate (automatic activation) — preferred for fast switching
-- Alternative: Arrow keys move focus only, Enter/Space to activate (manual activation) — for expensive content loads
+- Arrow keys move focus AND activate (automatic activation), preferred for fast switching
+- Alternative: Arrow keys move focus only, Enter/Space to activate (manual activation), for expensive content loads
 
 ---
 
@@ -398,10 +398,10 @@ A popup that displays a description for an element on hover or focus.
 
 **Key Rules:**
 - Tooltip appears on hover AND focus
-- Content is supplementary — never put essential info only in tooltips
+- Content is supplementary. Never put essential info only in tooltips
 - `role="tooltip"` + `aria-describedby` links tooltip to trigger
 - Per WCAG 1.4.13: tooltip must be dismissible (Escape), hoverable, and persistent
-- Do NOT put interactive elements inside tooltips — use a Popover/Disclosure instead
+- Do NOT put interactive elements inside tooltips; use a Popover/Disclosure instead
 
 ---
 
@@ -499,11 +499,11 @@ Browsable slide set (`components/data-display.md`).
 
 ## 17. Grid (Calendar / Data Grid)
 
-Two-dimensional navigable cells — date pickers (`components/data-display.md`) and interactive tables.
+Two-dimensional navigable cells: date pickers (`components/data-display.md`) and interactive tables.
 
 **Roles:** `role="grid"` → `role="row"` → `role="gridcell"` (or `columnheader`/`rowheader`). For a date grid, column headers carry weekday names (`abbr`).
 
-**Keyboard (roving tabindex — one cell tabbable):** Arrow keys move between cells; Home/End to row edges; Ctrl+Home/End to grid corners; PageUp/Down for month (calendar); Enter/Space selects/activates. Selected cell `aria-selected="true"`; today `aria-current="date"`.
+**Keyboard (roving tabindex, one cell tabbable):** Arrow keys move between cells; Home/End to row edges; Ctrl+Home/End to grid corners; PageUp/Down for month (calendar); Enter/Space selects/activates. Selected cell `aria-selected="true"`; today `aria-current="date"`.
 
 **Announce:** month/year changes via a polite live region; for data grids, expose sort state with `aria-sort` on the header.
 

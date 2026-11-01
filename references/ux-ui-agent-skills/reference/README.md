@@ -15,8 +15,8 @@ instead of guessing.
 
 ## What does NOT go here
 
-- Generated output — that lives in `examples/`.
-- Design tokens — those live in `tokens/` (the source of truth).
+- Generated output: that lives in `examples/`.
+- Design tokens: those live in `tokens/` (the source of truth).
 - Anything with secrets or private customer data.
 
 ## How the agent uses it

@@ -1568,6 +1568,7 @@ $modal-header-padding-y: $modal-inner-padding !default;
 $modal-header-padding-x: $modal-inner-padding !default;
 $modal-header-padding: 1.5rem !default; // Keep this for backwards compatibility
 $modal-header-height: 3.5rem !default;
+$modal-header-padding-y-min: 1rem !default;
 $modal-header-bg: transparent !default;
 
 $modal-footer-bg: var(--bg-surface-tertiary) !default;
@@ -1938,12 +1939,12 @@ $table-caption-color: var(--secondary-color) !default;
 $table-bg-scale: -80% !default;
 
 $table-variants: (
-  'primary': shift-color($primary, $table-bg-scale),
-  'secondary': shift-color($secondary, $table-bg-scale),
-  'success': shift-color($success, $table-bg-scale),
-  'info': shift-color($info, $table-bg-scale),
-  'warning': shift-color($warning, $table-bg-scale),
-  'danger': shift-color($danger, $table-bg-scale),
+  'primary': mix-color-css(var(--bg-surface), var(--primary), -$table-bg-scale),
+  'secondary': mix-color-css(var(--bg-surface), var(--secondary), -$table-bg-scale),
+  'success': mix-color-css(var(--bg-surface), var(--success), -$table-bg-scale),
+  'info': mix-color-css(var(--bg-surface), var(--info), -$table-bg-scale),
+  'warning': mix-color-css(var(--bg-surface), var(--warning), -$table-bg-scale),
+  'danger': mix-color-css(var(--bg-surface), var(--danger), -$table-bg-scale),
   'light': $light,
   'dark': $dark,
 ) !default;

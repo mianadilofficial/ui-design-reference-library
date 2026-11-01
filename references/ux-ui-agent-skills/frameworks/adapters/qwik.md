@@ -42,7 +42,7 @@ const STYLES = `
 ```
 
 ## States & a11y
-- Native `<button>` semantics; custom triggers need `role`/`tabindex` + `onKeyDown$`. Focus ring via `:focus-visible` token. Event handlers are lazy (`$`) — fine for a11y as long as `disabled`/`aria-*` are server-rendered.
+- Native `<button>` semantics; custom triggers need `role`/`tabindex` + `onKeyDown$`. Focus ring via `:focus-visible` token. Event handlers are lazy (`$`), which is fine for a11y as long as `disabled`/`aria-*` are server-rendered.
 
 ## Motion
 Token-driven CSS transitions (no JS to resume). For orchestrated motion use a Web Animations call inside a `$` handler with token durations; honor `prefers-reduced-motion`.

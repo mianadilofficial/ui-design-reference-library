@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * TOKEN-BY-INTENT gate — enforces the CLAUDE.md rule that a token must be
+ * TOKEN-BY-INTENT gate. Enforces the CLAUDE.md rule that a token must be
  * chosen by MEANING, not by whatever resolves:
  *
  *   "Destructive actions (Delete, Remove, Revoke) -> action.destructive.
  *    NEVER action.primary. A blue Delete is a bug. The same destructive action
- *    uses the same danger variant everywhere — never red in one place and blue
+ *    uses the same danger variant everywhere: never red in one place and blue
  *    in another."
  *
  * Source-grepping cannot prove this (a class name says nothing about the colour
@@ -22,7 +22,7 @@
  *                     different accents in different places (red trigger,
  *                     blue confirm).
  *
- * A neutral/ghost destructive control is NOT flagged — the bug is wearing the
+ * A neutral/ghost destructive control is NOT flagged: the bug is wearing the
  * primary accent, not declining to be red.
  *
  * Usage: node scripts/lint_intent.mjs <file.html | dir> [--dark] [--tolerance=40]
@@ -31,6 +31,7 @@
 import { readdirSync, statSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { requireTargets } from './_targets.mjs';
+import { COLOR_INIT } from './_color.mjs';
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -38,7 +39,7 @@ catch {
   // stays skippable for local convenience; CI and accuracy_report set it to 1, so a
   // machine that cannot render fails loudly instead of reporting green on nothing.
   const required = process.env.DS_REQUIRE_BROWSER === "1";
-  console.log(`lint_intent: playwright not installed — ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
+  console.log(`lint_intent: playwright not installed: ${required ? "REQUIRED, FAILING" : "SKIPPED"}`);
   process.exit(required ? 1 : 0);
 }
 
@@ -80,7 +81,7 @@ const COLLECT = () => {
   const resolveToken = (name) => {
     probe.style.backgroundColor = '';
     probe.style.backgroundColor = `var(${name})`;
-    const v = getComputedStyle(probe).backgroundColor;
+    const v = window.__dsRGBString(getComputedStyle(probe).backgroundColor);
     return v && v !== 'rgba(0, 0, 0, 0)' ? v : null;
   };
   const theme = {
@@ -102,11 +103,11 @@ const COLLECT = () => {
     })
     .map((el) => {
       const cs = getComputedStyle(el);
-      const bg = cs.backgroundColor;
+      const bg = window.__dsRGBString(cs.backgroundColor);
       const alpha = (bg.match(/rgba?\(([^)]+)\)/) || [, '0,0,0,1'])[1].split(',')[3];
       const opaque = alpha === undefined || Number(alpha) > 0.1;
       // Filled control -> the fill is the accent. Ghost/outline -> the text is.
-      const accent = opaque ? bg : cs.color;
+      const accent = opaque ? bg : window.__dsRGBString(cs.color);
       const name = accessibleName(el);
       return {
         name: name.slice(0, 40),
@@ -154,6 +155,7 @@ let checked = 0;
 for (const f of files) {
   const name = f.split('/').pop();
   const page = await browser.newPage({ viewport: { width: 1280, height: 900 }, colorScheme: dark ? 'dark' : 'light' });
+  await page.addInitScript(COLOR_INIT);
   await page.goto('file://' + f);
   if (dark) await page.evaluate(() => document.documentElement.setAttribute('data-theme', 'dark'));
   const { theme, controls } = await page.evaluate(COLLECT);
@@ -192,7 +194,7 @@ for (const f of files) {
 }
 await browser.close();
 
-// 3 — same destructive action, different accent in different places.
+// 3. Same destructive action, different accent in different places.
 for (const [label, uses] of byLabel) {
   if (uses.length < 2) continue;
   const filled = uses.filter(u => u.filled);
@@ -205,9 +207,9 @@ for (const [label, uses] of byLabel) {
 }
 
 if (problems.length) {
-  console.log(`lint_intent: FAIL — token chosen by convenience, not by intent${dark ? ' [dark]' : ''}`);
+  console.log(`lint_intent: FAIL: token chosen by convenience, not by intent${dark ? ' [dark]' : ''}`);
   for (const p of [...new Set(problems)]) console.log('  x ' + p);
   console.log('  Fix: destructive -> component.button.destructive-* / action.danger, everywhere it appears.');
   process.exit(1);
 }
-console.log(`lint_intent: OK — ${files.length} file(s), ${checked} intent-bearing control(s): destructive never wears primary, affirmative never wears danger${dark ? ' [dark]' : ''}`);
+console.log(`lint_intent: OK: ${files.length} file(s), ${checked} intent-bearing control(s): destructive never wears primary, affirmative never wears danger${dark ? ' [dark]' : ''}`);

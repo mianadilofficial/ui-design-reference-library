@@ -1,5 +1,5 @@
 /**
- * Screen economy — the owner's rule, and the gate that holds it.
+ * Screen economy: the owner's rule, and the gate that holds it.
  *
  * Every part of the screen earns its space, in two senses that both bind:
  * space, because the viewport is scarce on a phone, and energy, because large
