@@ -57,6 +57,23 @@ spec-driven workflow in [spec-kit](references/spec-kit) before writing code:
   design reference from section 2.
 - A build without a written spec is ad-hoc prompting: go back and write one.
 
+## 2d. Pass the anti-slop floor with hallmark
+
+Before a page build or redesign is called finished, run it through
+[hallmark](references/hallmark) — the library's anti-AI-slop enforcement
+reference:
+
+- Its tiered gates name the tells to remove: the **Floor** never ships
+  (contrast, focus, reduced motion, invented facts, broken phone layout);
+  **Reflex** defaults (eyebrow label over every heading, one coloured word
+  in a headline, a page of empty frames, a hero that misses its screen)
+  need a recorded reason to keep.
+- Lint the result in a real browser:
+  `node references/hallmark/skills/hallmark/scripts/sloplint.mjs <file-or-dir> --render`
+- On an existing page, hallmark's redesign mode keeps the content and the
+  wiring; audit mode only reports. Do not start a redesign the user did not
+  ask for.
+
 ## 3. The quality bar (non-negotiable)
 
 - **No generic AI look.** No purple/blue gradients on everything, no identical
