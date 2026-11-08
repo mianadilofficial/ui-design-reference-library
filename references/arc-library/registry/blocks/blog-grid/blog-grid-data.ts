@@ -18,13 +18,13 @@ export type BlogPost = {
   featured?: boolean;
 };
 
-const emma: BlogAuthor = { name: "Emma Collins", role: "Product designer", avatar: "/media/people/emma-collins.jpg" };
-const marcus: BlogAuthor = { name: "Marcus Johnson", role: "Frontend engineer", avatar: "/media/people/marcus-johnson.jpg" };
-const jasmine: BlogAuthor = { name: "Jasmine Brooks", role: "Design lead", avatar: "/media/people/jasmine-brooks.jpg" };
-const daniel: BlogAuthor = { name: "Daniel Kim", role: "Backend engineer", avatar: "/media/people/daniel-kim.jpg" };
-const sofia: BlogAuthor = { name: "Sofia Ramirez", role: "Operations lead", avatar: "/media/people/sofia-ramirez.jpg" };
-const chloe: BlogAuthor = { name: "Chloe Nguyen", role: "Data analyst", avatar: "/media/people/chloe-nguyen.jpg" };
-const nathan: BlogAuthor = { name: "Nathan Cole", role: "Engineering manager", avatar: "/media/people/nathan-cole.jpg" };
+const emma: BlogAuthor = { name: "Emma Collins", role: "Product designer", avatar: "/media/people/emma-collins.svg" };
+const marcus: BlogAuthor = { name: "Marcus Johnson", role: "Frontend engineer", avatar: "/media/people/marcus-johnson.svg" };
+const jasmine: BlogAuthor = { name: "Jasmine Brooks", role: "Design lead", avatar: "/media/people/jasmine-brooks.svg" };
+const daniel: BlogAuthor = { name: "Daniel Kim", role: "Backend engineer", avatar: "/media/people/daniel-kim.svg" };
+const sofia: BlogAuthor = { name: "Sofia Ramirez", role: "Operations lead", avatar: "/media/people/sofia-ramirez.svg" };
+const chloe: BlogAuthor = { name: "Chloe Nguyen", role: "Data analyst", avatar: "/media/people/chloe-nguyen.svg" };
+const nathan: BlogAuthor = { name: "Nathan Cole", role: "Engineering manager", avatar: "/media/people/nathan-cole.svg" };
 
 export const blogCategories = ["Product", "Design", "Engineering", "Company"];
 

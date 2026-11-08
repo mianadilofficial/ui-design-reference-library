@@ -2,6 +2,12 @@
 
 New free components and blocks ship regularly. Every entry links to its live preview on uiarc.dev.
 
+## 2026-11-01
+
+### Added
+
+- [Toggle group](https://uiarc.dev/components/toggle-group) (component): A row of icon or text toggles, single or multiple: one pressed fill glides between options, or each fades in on its own and neighbours join, as in a formatting toolbar.
+
 ## 2026-10-25
 
 ### Added

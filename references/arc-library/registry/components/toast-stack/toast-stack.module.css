@@ -21,7 +21,7 @@
 .content { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); }
 .icon { position: relative; display: grid; width: 18px; height: 20px; flex: none; place-items: center; color: var(--text-muted); transition: color var(--duration-fast) var(--ease-standard); }
 .icon[data-type="success"] { color: var(--success); }
-.icon[data-type="info"] { color: var(--accent); }
+.icon[data-type="info"] { color: var(--info, var(--accent)); }
 .icon[data-type="warning"] { color: var(--warning); }
 .icon[data-type="error"] { color: var(--danger); }
 .glyph { grid-area: 1 / 1; display: grid; place-items: center; }

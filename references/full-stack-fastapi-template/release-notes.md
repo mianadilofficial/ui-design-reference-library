@@ -22,6 +22,11 @@
 
 ### Internal
 
+* ⬆ Bump the npm-packages group across 1 directory with 30 updates. PR [#2525](https://github.com/fastapi/full-stack-fastapi-template/pull/2525) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump playwright from v1.63.0-noble to v1.64.1-noble in /frontend in the docker group across 1 directory. PR [#2521](https://github.com/fastapi/full-stack-fastapi-template/pull/2521) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump the github-actions group with 6 updates. PR [#2520](https://github.com/fastapi/full-stack-fastapi-template/pull/2520) by [@dependabot[bot]](https://github.com/apps/dependabot).
+* ⬆ Bump pre-commit hooks. PR [#2523](https://github.com/fastapi/full-stack-fastapi-template/pull/2523) by [@pr-submit[bot]](https://github.com/apps/pr-submit).
+* ⬆ Bump dnspython from 2.8.0 to 2.9.0. PR [#2524](https://github.com/fastapi/full-stack-fastapi-template/pull/2524) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆ Bump certifi from 2026.6.17 to 2026.10.19. PR [#2518](https://github.com/fastapi/full-stack-fastapi-template/pull/2518) by [@dependabot[bot]](https://github.com/apps/dependabot).
 * ⬆️ Migrate `@tanstack/react-table` to 9.x. PR [#2509](https://github.com/fastapi/full-stack-fastapi-template/pull/2509) by [@YuriiMotov](https://github.com/YuriiMotov).
 * ⬆ Bump the npm-packages group across 1 directory with 25 updates. PR [#2506](https://github.com/fastapi/full-stack-fastapi-template/pull/2506) by [@dependabot[bot]](https://github.com/apps/dependabot).

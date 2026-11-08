@@ -4,7 +4,7 @@
 - **Author:** Motion B.V. (Matt Perry)
 - **Original URL:** https://github.com/motiondivision/motion
 - **License:** MIT License — see `LICENSE.md` in this folder (Copyright (c) 2024 Motion B.V.)
-- **Mirrored snapshot:** commit `7415b6cd14dfdb35d91dfc5b9758994444cc228b` (2026-11-01), shallow sparse clone (`--depth 1`, `packages/` only — docs site excluded for size)
+- **Mirrored snapshot:** commit `78f3ff51b5508f7e8c1c283d8e80bcd26fec37d7` (2026-11-08), shallow sparse clone (`--depth 1`, `packages/` only — docs site excluded for size)
 - **What it is:** The modern animation library for React and JavaScript (formerly Framer Motion) — springs, gestures, layout animations, scroll-linked motion, and exit transitions.
 - **Why it's here:** The React animation standard — agents study its declarative animation API and layout-animation patterns to build premium-feeling motion instead of static pages.
 

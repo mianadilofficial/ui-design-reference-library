@@ -17,7 +17,6 @@
 .compact { display: inline-flex; max-width: calc(100% + 8px); justify-self: start; align-items: center; gap: 10px; margin-left: -8px; border: 0; border-radius: 8px; padding: 5px 8px; background: transparent; color: var(--foreground); font: inherit; letter-spacing: inherit; text-align: left; cursor: pointer; transition: background-color var(--duration-fast) var(--ease-standard); }
 .compactTitle { min-width: 0; overflow: hidden; font-size: var(--text-base); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
 .compactBadge { flex: none; }
-.dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
 /* Secondary actions fold to the right, under the overflow button, as their slot narrows. Only the right edge clips. */
 .actions { display: flex; align-items: center; justify-content: flex-end; }

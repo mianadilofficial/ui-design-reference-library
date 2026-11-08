@@ -2,32 +2,32 @@
   "_note": "Source-of-truth for the weekly auto-sync workflow. Do not edit by hand — sync-references.yml updates it.",
   "animate-ui": {
     "branch": "main",
-    "commit": "dec9850cf8684250d4c289af3e4b3865707ce986",
-    "date": "2026-11-01",
+    "commit": "1d00dd0fd203ff7f7f4f21e3c104592007283b72",
+    "date": "2026-11-08",
     "repo": "imskyleen/animate-ui"
   },
   "arc-library": {
     "branch": "main",
-    "commit": "df3a600fd9ffca85ec8607438b599a4408ab8562",
-    "date": "2026-11-01",
+    "commit": "8302b52ed9dc79ae7ca699b158a98dfdf09656f7",
+    "date": "2026-11-08",
     "repo": "kuratlielia/arc-library"
   },
   "audiocn-ui": {
     "branch": "main",
-    "commit": "05bec0fd503e91593de733b0249f1d275b5a1da0",
-    "date": "2026-11-01",
+    "commit": "6689aa009f39a591523faa5b24673e2be75fcb72",
+    "date": "2026-11-08",
     "repo": "audiocn/ui"
   },
   "diagram-design": {
     "branch": "main",
-    "commit": "0cf73c3fcc56667ad91a9a04c439ac6ccfabc9d1",
-    "date": "2026-11-01",
+    "commit": "e57eda6102a19444538ebd611d39534fad65b663",
+    "date": "2026-11-08",
     "repo": "cathrynlavery/diagram-design"
   },
   "emilkowalski-skills": {
     "branch": "main",
-    "commit": "a81dbca07f2217b7103e510c0f13f8d5b017afc9",
-    "date": "2026-11-01",
+    "commit": "c8a79627b59d72d764d6ab6f2c87c09a48169833",
+    "date": "2026-11-08",
     "repo": "emilkowalski/skills"
   },
   "generativecharts": {
@@ -56,8 +56,8 @@
   },
   "taste-skill": {
     "branch": "main",
-    "commit": "12af471f627f866411b4bd785b19646d3672784c",
-    "date": "2026-10-25",
+    "commit": "f6b76575f949707b4e3c37cd86cb44b0b98643e8",
+    "date": "2026-11-08",
     "repo": "Leonxlnx/taste-skill"
   },
   "ui-ux-pro-max-skill": {
@@ -81,14 +81,14 @@
   "magicui": {
     "repo": "dillionverma/magicui",
     "branch": "main",
-    "commit": "3104579193fa2e2d3c659dcd9441bbd370a3296c",
-    "date": "2026-11-01"
+    "commit": "37ce829f18dd7d0a7219531a4249b664419933ea",
+    "date": "2026-11-08"
   },
   "realworld": {
     "repo": "gothinkster/realworld",
     "branch": "main",
-    "commit": "b8a37f107cdb636f213591aecbae0337f4d777f4",
-    "date": "2026-11-01"
+    "commit": "25588846c314b15a5e427ffe816e6b4af7be68c7",
+    "date": "2026-11-08"
   },
   "bulletproof-react": {
     "repo": "alan2207/bulletproof-react",
@@ -105,8 +105,8 @@
   "full-stack-fastapi-template": {
     "repo": "fastapi/full-stack-fastapi-template",
     "branch": "master",
-    "commit": "f4bcfaba7c85be3c6332cc74a20819f586dcdbc6",
-    "date": "2026-11-01"
+    "commit": "aabb90126964a164e02aff39e7c385bb0598236d",
+    "date": "2026-11-08"
   },
   "node-api-boilerplate": {
     "repo": "talyssonoc/node-api-boilerplate",
@@ -141,8 +141,8 @@
   "heroui": {
     "repo": "heroui-inc/heroui",
     "branch": "v3",
-    "commit": "b2c65a5b5236550526f23d475b1ad0c6e5eab1a2",
-    "date": "2026-11-01"
+    "commit": "68b7422d982189ed95fd1a415dd69aacfa825eb7",
+    "date": "2026-11-08"
   },
   "go-clean-arch": {
     "repo": "bxcodec/go-clean-arch",
@@ -164,8 +164,8 @@
   },
   "motion": {
     "branch": "main",
-    "commit": "7415b6cd14dfdb35d91dfc5b9758994444cc228b",
-    "date": "2026-11-01",
+    "commit": "78f3ff51b5508f7e8c1c283d8e80bcd26fec37d7",
+    "date": "2026-11-08",
     "repo": "motiondivision/motion"
   },
   "react-bits": {
@@ -176,8 +176,8 @@
   },
   "mantine": {
     "branch": "master",
-    "commit": "f2bc7373a4ffc69cf8af7b6577391f782d4e038c",
-    "date": "2026-11-01",
+    "commit": "82fb128c43f9927c1370a2732cd5aa9e6663ca11",
+    "date": "2026-11-08",
     "repo": "mantinedev/mantine"
   },
   "angular-ngrx-starter": {
@@ -207,8 +207,8 @@
   "nuxt-ui": {
     "repo": "nuxt/ui",
     "branch": "v4",
-    "commit": "200b0bfb7a5666c870742f3f43c83cf09234aed9",
-    "date": "2026-11-01"
+    "commit": "a11f0327cc374c2e5f8694db6aa0a7ddc6a028f8",
+    "date": "2026-11-08"
   },
   "portfolio-brittany": {
     "repo": "bchiang7/v4",
@@ -225,8 +225,8 @@
   "tabler-dashboard": {
     "repo": "tabler/tabler",
     "branch": "dev",
-    "commit": "096491dea4886f78891c2e29310351d5aee6c460",
-    "date": "2026-11-01"
+    "commit": "7ecb81656f5dead041668a0bd0296b12fb2c074f",
+    "date": "2026-11-08"
   },
   "spec-kit": {
     "repo": "github/spec-kit",

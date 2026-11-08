@@ -27,11 +27,11 @@ const PROJECT_URL = "https://northline.example/projects/checkout-redesign";
 
 type PersonId = "emma" | "marcus" | "ava" | "sofia" | "jasmine";
 const people: Record<PersonId, { name: string; src: string }> = {
-  emma: { name: "Emma Collins", src: "/media/people/emma-collins.jpg" },
-  marcus: { name: "Marcus Johnson", src: "/media/people/marcus-johnson.jpg" },
-  ava: { name: "Ava Mitchell", src: "/media/people/ava-mitchell.jpg" },
-  sofia: { name: "Sofia Ramirez", src: "/media/people/sofia-ramirez.jpg" },
-  jasmine: { name: "Jasmine Brooks", src: "/media/people/jasmine-brooks.jpg" },
+  emma: { name: "Emma Collins", src: "/media/people/emma-collins.svg" },
+  marcus: { name: "Marcus Johnson", src: "/media/people/marcus-johnson.svg" },
+  ava: { name: "Ava Mitchell", src: "/media/people/ava-mitchell.svg" },
+  sofia: { name: "Sofia Ramirez", src: "/media/people/sofia-ramirez.svg" },
+  jasmine: { name: "Jasmine Brooks", src: "/media/people/jasmine-brooks.svg" },
 };
 const members = (["emma", "marcus", "ava", "sofia", "jasmine"] as const).map(key => people[key]);
 
@@ -108,10 +108,6 @@ function rowMotion(reduce: boolean) {
   return reduce
     ? { initial: { opacity: 0 }, animate: { opacity: 1 }, exit: { opacity: 0 }, transition: { duration: motionTokens.duration.instant } }
     : { initial: { opacity: 0, height: 0 }, animate: { opacity: 1, height: "auto" }, exit: { opacity: 0, height: 0 }, transition: { height: motionTokens.spring.smooth, opacity: { duration: motionTokens.duration.standard, ease: [...motionTokens.ease.standard] } } };
-}
-
-function StatusDot() {
-  return <span className={styles.dot} />;
 }
 
 /** The overflow button never scales: it anchors the menu. A shared highlight glides between items under the pointer. */
@@ -203,7 +199,7 @@ function UpdatesPanel({ updates, reduce }: { updates: Update[]; reduce: boolean 
           <article className={styles.updateInner}>
             <Avatar name={author.name} src={author.src} size="md" />
             <div>
-              <div className={styles.updateHead}><span className={styles.author}>{author.name}</span><span className={styles.note}>{update.date}</span><Badge size="sm" tone={update.tone} icon={<StatusDot />}>{update.status}</Badge></div>
+              <div className={styles.updateHead}><span className={styles.author}>{author.name}</span><span className={styles.note}>{update.date}</span><Badge size="sm" tone={update.tone} dot>{update.status}</Badge></div>
               <p>{update.body}</p>
             </div>
           </article>
@@ -412,7 +408,7 @@ export function PageHeader() {
               </motion.nav>
               <motion.button type="button" className={styles.compact} inert={!condensed} aria-label="Checkout redesign, back to top" onClick={backToTop} initial={false} animate={condensed ? shown : { opacity: 0, y: 14, filter: blur(motionTokens.blur.soft) }} transition={swap(condensed)}>
                 <span className={styles.compactTitle}>Checkout redesign</span>
-                <Badge className={styles.compactBadge} size="sm" tone={status.tone} icon={<StatusDot />}>{status.label}</Badge>
+                <Badge className={styles.compactBadge} size="sm" tone={status.tone} dot>{status.label}</Badge>
               </motion.button>
             </div>
 
@@ -434,7 +430,7 @@ export function PageHeader() {
             <div className={styles.introInner}>
               <motion.div className={styles.titleRow} initial={false} animate={condensed ? { opacity: 0, y: -10, scale: .62, filter: blur(motionTokens.blur.subtle) } : shown} transition={swap(!condensed)}>
                 <h2 ref={titleRef} id={`${id}-title`} className={styles.title} tabIndex={-1}>Checkout redesign</h2>
-                <Badge tone={status.tone} icon={<StatusDot />}>{status.label}</Badge>
+                <Badge tone={status.tone} dot>{status.label}</Badge>
               </motion.div>
               <motion.div className={styles.details} initial={false} animate={condensed ? { opacity: 0, y: -6 } : { opacity: 1, y: 0 }} transition={swap(!condensed)}>
                 <p className={styles.description}>Rebuilding mobile checkout around saved payment methods and a single review step, then rolling it out in stages from October 14.</p>
